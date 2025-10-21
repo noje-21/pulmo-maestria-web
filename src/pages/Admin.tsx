@@ -56,7 +56,9 @@ const Admin = () => {
           <Card className="p-6">
             <h2 className="text-2xl font-bold mb-4">Envíos de Contacto</h2>
             <p className="text-muted-foreground mb-4">Ver y gestionar formularios de contacto</p>
-            <Button className="w-full">Ver Envíos</Button>
+            <Button className="w-full" onClick={() => navigate("/admin/contactos")}>
+              Ver Envíos
+            </Button>
           </Card>
 
           <Card className="p-6">
