@@ -34,7 +34,7 @@ export const Contacto = () => {
       const { error } = await supabase.from("contact_submissions").insert([validated]);
       if (error) throw error;
 
-      toast.success("¡Mensaje enviado con éxito! Nos pondremos en contacto pronto.");
+      toast.success("¡Mensaje enviado con éxito!");
       setFormData({ name: "", email: "", country: "", specialty: "", message: "" });
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -51,6 +51,7 @@ export const Contacto = () => {
     setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
+  // 🔗 Función para redirigir directamente fuera del sitio
   const redirectTo = (url: string) => {
     window.location.href = url;
   };
@@ -58,30 +59,24 @@ export const Contacto = () => {
   return (
     <section id="contacto" className="py-20 bg-background">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 className="text-4xl md:text-5xl font-bold text-primary mb-4 text-center">
-          Contacto
-        </h2>
+        <h2 className="text-4xl md:text-5xl font-bold text-primary mb-4 text-center">Contacto</h2>
         <p className="text-xl text-muted-foreground mb-12 text-center">
           ¿Tienes preguntas? Contáctanos
         </p>
-        
+
         <div className="grid md:grid-cols-2 gap-12">
-          {/* === Información de contacto === */}
+          {/* Información de contacto */}
           <div>
             <Card className="border-accent/20">
               <CardContent className="pt-6">
-                <h3 className="text-2xl font-semibold text-primary mb-6">
-                  Información de Contacto
-                </h3>
-                
+                <h3 className="text-2xl font-semibold text-primary mb-6">Información de Contacto</h3>
+
                 <div className="space-y-4">
                   <div className="flex items-start gap-3 cursor-pointer" onClick={() => redirectTo("mailto:magisterenhipertensionpulmonar@gmail.com")}>
                     <span className="text-2xl">✉️</span>
                     <div>
                       <p className="font-medium text-foreground">Email</p>
-                      <p className="text-accent hover:underline">
-                        magisterenhipertensionpulmonar@gmail.com
-                      </p>
+                      <p className="text-accent hover:underline">magisterenhipertensionpulmonar@gmail.com</p>
                     </div>
                   </div>
 
@@ -97,9 +92,7 @@ export const Contacto = () => {
                     <span className="text-2xl">🔗</span>
                     <div>
                       <p className="font-medium text-foreground">LinkedIn</p>
-                      <p className="text-accent hover:underline">
-                        linkedin.com/in/hipertension-pulmonar
-                      </p>
+                      <p className="text-accent hover:underline">linkedin.com/in/hipertension-pulmonar</p>
                     </div>
                   </div>
 
@@ -107,9 +100,7 @@ export const Contacto = () => {
                     <span className="text-2xl">📘</span>
                     <div>
                       <p className="font-medium text-foreground">Facebook</p>
-                      <p className="text-accent hover:underline">
-                        facebook.com/hipertensionpulmonar
-                      </p>
+                      <p className="text-accent hover:underline">facebook.com/hipertensionpulmonar</p>
                     </div>
                   </div>
 
@@ -117,9 +108,7 @@ export const Contacto = () => {
                     <span className="text-2xl">📸</span>
                     <div>
                       <p className="font-medium text-foreground">Instagram</p>
-                      <p className="text-accent hover:underline">
-                        @magisterenhipertensionpulmonar
-                      </p>
+                      <p className="text-accent hover:underline">@magisterenhipertensionpulmonar</p>
                     </div>
                   </div>
 
@@ -127,9 +116,7 @@ export const Contacto = () => {
                     <span className="text-2xl">🌐</span>
                     <div>
                       <p className="font-medium text-foreground">Sitio Web</p>
-                      <p className="text-accent hover:underline">
-                        www.circulacionpulmonar.com
-                      </p>
+                      <p className="text-accent hover:underline">www.circulacionpulmonar.com</p>
                     </div>
                   </div>
                 </div>
@@ -137,46 +124,16 @@ export const Contacto = () => {
             </Card>
           </div>
 
-          {/* === Formulario === */}
+          {/* Formulario de contacto */}
           <div>
             <Card className="border-accent/20">
               <CardContent className="pt-6">
                 <form onSubmit={handleSubmit} className="space-y-4">
-                  <div>
-                    <label htmlFor="name" className="block text-sm font-medium mb-2">
-                      Nombre Completo *
-                    </label>
-                    <Input id="name" name="name" required value={formData.name} onChange={handleChange} placeholder="Tu nombre completo" />
-                  </div>
-
-                  <div>
-                    <label htmlFor="email" className="block text-sm font-medium mb-2">
-                      Correo Electrónico *
-                    </label>
-                    <Input id="email" name="email" type="email" required value={formData.email} onChange={handleChange} placeholder="tu@email.com" />
-                  </div>
-
-                  <div>
-                    <label htmlFor="country" className="block text-sm font-medium mb-2">
-                      País *
-                    </label>
-                    <Input id="country" name="country" required value={formData.country} onChange={handleChange} placeholder="Tu país" />
-                  </div>
-
-                  <div>
-                    <label htmlFor="specialty" className="block text-sm font-medium mb-2">
-                      Especialidad *
-                    </label>
-                    <Input id="specialty" name="specialty" required value={formData.specialty} onChange={handleChange} placeholder="Ej: Cardiología, Medicina Interna..." />
-                  </div>
-
-                  <div>
-                    <label htmlFor="message" className="block text-sm font-medium mb-2">
-                      Mensaje *
-                    </label>
-                    <Textarea id="message" name="message" required value={formData.message} onChange={handleChange} placeholder="Escribe tu mensaje aquí..." rows={4} />
-                  </div>
-
+                  <Input id="name" name="name" value={formData.name} onChange={handleChange} placeholder="Tu nombre completo" required />
+                  <Input id="email" name="email" type="email" value={formData.email} onChange={handleChange} placeholder="tu@email.com" required />
+                  <Input id="country" name="country" value={formData.country} onChange={handleChange} placeholder="Tu país" required />
+                  <Input id="specialty" name="specialty" value={formData.specialty} onChange={handleChange} placeholder="Ej: Cardiología" required />
+                  <Textarea id="message" name="message" value={formData.message} onChange={handleChange} placeholder="Escribe tu mensaje aquí..." rows={4} required />
                   <Button type="submit" className="w-full bg-accent hover:bg-accent/90" disabled={loading}>
                     {loading ? "Enviando..." : "Enviar Mensaje"}
                   </Button>
