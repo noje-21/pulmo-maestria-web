@@ -1,40 +1,40 @@
 import { Card, CardContent } from "@/components/ui/card";
 
 const expertos = [
-  {
-    nombre: "Dr. Adrián Lescano",
-    cargo: "Director de la Maestría",
-    especialidad: "Cardiólogo - Especialista en Circulación Pulmonar"
+    {
+    nombre: "Dr. Nicolás Caruso",
+    cargo: "Especialista en Cardiología y Medicina del Deporte",
+    especialidad: "Sanatorio de La Trinidad Mitre · Universidad de Buenos Aires"
   },
   {
-    nombre: "Dr. Tomás Vanegas",
-    cargo: "Coordinador General",
-    especialidad: "Internista - Hipertensión Pulmonar"
+    nombre: "Dr. Fabián Caro",
+    cargo: "Jefe de Sección de Enfermedades Pulmonares Intersticiales Difusas (EPID)",
+    especialidad: "Hospital María Ferrer · Universidad de Buenos Aires"
   },
   {
-    nombre: "Dra. María Elena Soto",
-    cargo: "Docente",
-    especialidad: "Cardióloga - Investigadora Clínica"
+    nombre: "Dr. Guillermo Bortman",
+    cargo: "Ex Director de Transplantes y Unidad de Cardiología y Cirugía Cardiovascular; Jefe del Servicio de Insuficiencia Cardíaca e Hipertensión Pulmonar",
+    especialidad: "Hospital de Alta Complejidad Médica Juan Domingo Perón · Sanatorio Trinidad Mitre · Sanatorio Trinidad Palermo"
   },
   {
-    nombre: "Dr. Carlos Jerjes Sánchez",
-    cargo: "Docente",
-    especialidad: "Cardiólogo - Tromboembolia Pulmonar"
+    nombre: "Dr. Marcelo Nahin",
+    cargo: "Jefe de Cirugía Cardiovascular",
+    especialidad: "Hospital de Alta Complejidad en Red 'El Cruce' · Especialista en Medicina Legal"
   },
   {
-    nombre: "Dr. Juan Pablo Arroyo",
-    cargo: "Docente",
-    especialidad: "Cardiólogo - Ecocardiografía"
+    nombre: "Dr. Adrián José Lescano",
+    cargo: "Médico Cardiólogo · Magíster en Hipertensión Pulmonar · Magíster en Efectividad Clínica · Especialista en Ultrasonografía Cardiovascular",
+    especialidad: "Fundación Favaloro · Instituto de Efectividad Clínica y Sanitaria (IECS)"
   },
   {
-    nombre: "Dr. Julio Sandoval",
-    cargo: "Docente",
-    especialidad: "Cardiólogo - Hipertensión Pulmonar"
+    nombre: "Dr. Alejandro Nitsche",
+    cargo: "Líder Médico y Experto en Hipertensión Pulmonar y Enfermedad Pulmonar Intersticial en Enfermedades del Tejido Conectivo",
+    especialidad: "Hospital Alemán · SAPEM · Asociación Médica Argentina (AMA)"
   },
   {
-    nombre: "Dr. Julios Sandoval",
-    cargo: "Docente",
-    especialidad: "Cardiólogo - Hipertensión Pulmonar"
+    nombre: "Dra. Julieta Soricetti",
+    cargo: "Médica Cardióloga · Magíster en Hipertensión Pulmonar · Especialista Universitaria en Insuficiencia Cardíaca",
+    especialidad: "Universidad de Buenos Aires"
   }
 ];
 
