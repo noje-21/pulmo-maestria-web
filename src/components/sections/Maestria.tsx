@@ -17,12 +17,15 @@ export const Maestria = () => {
 
   const containerRef = useRef<HTMLDivElement | null>(null);
 
-  // Ajustar ancho del PDF dinámicamente según el contenedor
+  // Ajustar ancho dinámico del PDF según contenedor
   useEffect(() => {
     const updateWidth = () => {
       if (containerRef.current) {
         const width = containerRef.current.offsetWidth;
-        setPdfWidth(Math.min(width - 20, 900)); // margen y límite superior
+        // Ajusta el ancho según tamaño de pantalla
+        if (width < 640) setPdfWidth(width - 10); // móviles
+        else if (width < 1024) setPdfWidth(width - 40); // tablets
+        else setPdfWidth(Math.min(width - 60, 900)); // escritorio
       }
     };
 
@@ -149,19 +152,21 @@ export const Maestria = () => {
                     exit={{ opacity: 0, x: direction === "next" ? -50 : 50 }}
                     transition={{ duration: 0.4, ease: "easeInOut" }}
                     className="flex justify-center"
+                    style={{ width: "100%", display: "flex", justifyContent: "center" }}
                   >
                     <Page
                       pageNumber={pageNumber}
                       width={pdfWidth}
                       renderAnnotationLayer={false}
                       renderTextLayer={false}
+                      className="mx-auto"
                     />
                   </motion.div>
                 </AnimatePresence>
               </Document>
             </div>
 
-            <div className="flex justify-center items-center gap-4 mt-6">
+            <div className="flex justify-center items-center gap-4 mt-6 flex-wrap">
               <Button onClick={prevPage} disabled={pageNumber <= 1}>
                 ⬅️ Anterior
               </Button>
