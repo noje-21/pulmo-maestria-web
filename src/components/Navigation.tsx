@@ -29,11 +29,20 @@ const Navigation = () => {
     <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm shadow-md">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
-          <Link to="/" className="flex items-center space-x-3">
-            <img src={logoMaestria} alt="Logo Maestría" className="h-14 w-14 object-contain rounded-full" />
-            <span className="font-bold text-lg text-primary hidden md:block">Circulación Pulmonar</span>
+          
+          {/* LOGO + TEXTO */}
+          <Link to="/" className="flex items-center space-x-3 flex-shrink-0">
+            <img
+              src={logoMaestria}
+              alt="Logo Maestría"
+              className="h-12 w-12 object-contain rounded-full"
+            />
+            <span className="font-bold text-lg text-primary whitespace-nowrap">
+              Circulación Pulmonar
+            </span>
           </Link>
 
+          {/* NAVIGATION DESKTOP */}
           <div className="hidden md:flex items-center space-x-8">
             {navItems.map((item) => (
               <a
@@ -55,17 +64,19 @@ const Navigation = () => {
             </Link>
           </div>
 
+          {/* MOBILE MENU BUTTON */}
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="md:hidden p-2 rounded-lg hover:bg-muted"
+            className="md:hidden p-2 rounded-lg hover:bg-muted focus:outline-none"
           >
             {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
           </button>
         </div>
       </div>
 
+      {/* MOBILE MENU */}
       {isOpen && (
-        <div className="md:hidden bg-white border-t">
+        <div className="md:hidden bg-white border-t border-accent/20">
           <div className="px-4 py-4 space-y-3">
             {navItems.map((item) => (
               <a
