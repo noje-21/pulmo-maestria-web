@@ -8,7 +8,7 @@ const eventos = [
   },
   {
     fecha: "5-7 de noviembre 2025",
-    titulo: "Talleres prácticos",
+    titulo: "Circuito practico",
     descripcion: "Ecocardiografia, ECG, Hemodinamia y CCD, intersticiopatias, Enf Reumatológicas, Estudios de función pulmonar, etc."
   },
   {
@@ -23,8 +23,8 @@ const eventos = [
   },
   {
     fecha: "14-15 de noviembre 2025",
-    titulo: "Investigación y Cierre",
-    descripcion: "Simposio latinoamericano de hipertensión pulmonar: expertos nacionales e internacionales, evento certificado."
+    titulo: "Simposio latinoamericano de hipertensión pulmonar",
+    descripcion: ": Examen final."
   }
 ];
 
