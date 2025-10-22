@@ -1,12 +1,11 @@
 import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import logoMaestria from "@/assets/logo-maestria.jpg";
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const location = useLocation();
 
   const navItems = [
     { name: "Inicio", path: "/" },
@@ -26,15 +25,24 @@ const Navigation = () => {
   };
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm shadow-md">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm shadow-md overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
-          <Link to="/" className="flex items-center space-x-3">
-            <img src={logoMaestria} alt="Logo Maestría" className="h-14 w-14 object-contain rounded-full" />
-            <span className="font-bold text-lg text-primary hidden md:block">Circulación Pulmonar</span>
+
+          {/* LOGO Y TEXTO */}
+          <Link to="/" className="flex items-center gap-2 min-w-0">
+            <img
+              src={logoMaestria}
+              alt="Logo Maestría"
+              className="h-10 w-10 sm:h-12 sm:w-12 object-contain rounded-full flex-shrink-0"
+            />
+            <span className="font-bold text-sm sm:text-base md:text-lg text-primary truncate">
+              Circulación Pulmonar
+            </span>
           </Link>
 
-          <div className="hidden md:flex items-center space-x-8">
+          {/* MENÚ DE ESCRITORIO */}
+          <div className="hidden md:flex items-center gap-6 flex-wrap">
             {navItems.map((item) => (
               <a
                 key={item.name}
@@ -45,7 +53,7 @@ const Navigation = () => {
                     scrollToSection(item.path);
                   }
                 }}
-                className="text-foreground hover:text-primary transition-colors font-medium"
+                className="text-foreground hover:text-primary transition-colors font-medium whitespace-nowrap"
               >
                 {item.name}
               </a>
@@ -55,6 +63,7 @@ const Navigation = () => {
             </Link>
           </div>
 
+          {/* BOTÓN MENÚ MÓVIL */}
           <button
             onClick={() => setIsOpen(!isOpen)}
             className="md:hidden p-2 rounded-lg hover:bg-muted"
@@ -64,8 +73,9 @@ const Navigation = () => {
         </div>
       </div>
 
+      {/* MENÚ MÓVIL */}
       {isOpen && (
-        <div className="md:hidden bg-white border-t">
+        <div className="md:hidden bg-white border-t border-accent/20">
           <div className="px-4 py-4 space-y-3">
             {navItems.map((item) => (
               <a
