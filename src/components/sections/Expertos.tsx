@@ -8,7 +8,7 @@ const expertos = [
     nombre: "Dr. Nicolás Caruso",
     cargo: "Especialista en Cardiología y Medicina del Deporte",
     especialidad: "Sanatorio de La Trinidad Mitre · Universidad de Buenos Aires",
-    imagen: "/src/assets/nicolas.jpg"
+    imagen: Nicolas
   },
   {
     nombre: "Dr. Fabián Caro",
