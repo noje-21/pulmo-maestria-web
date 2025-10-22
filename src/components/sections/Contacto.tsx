@@ -5,6 +5,15 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { z } from "zod";
+
+const contactSchema = z.object({
+  name: z.string().trim().min(1, "El nombre es requerido").max(100, "El nombre debe tener menos de 100 caracteres"),
+  email: z.string().trim().email("Email inválido").max(255, "El email debe tener menos de 255 caracteres"),
+  country: z.string().trim().min(1, "El país es requerido").max(100, "El país debe tener menos de 100 caracteres"),
+  specialty: z.string().trim().min(1, "La especialidad es requerida").max(100, "La especialidad debe tener menos de 100 caracteres"),
+  message: z.string().trim().min(10, "El mensaje debe tener al menos 10 caracteres").max(2000, "El mensaje debe tener menos de 2000 caracteres")
+});
 
 export const Contacto = () => {
   const [loading, setLoading] = useState(false);
@@ -21,9 +30,18 @@ export const Contacto = () => {
     setLoading(true);
 
     try {
+      // Validate form data
+      const validated = contactSchema.parse(formData);
+
       const { error } = await supabase
         .from("contact_submissions")
-        .insert([formData]);
+        .insert([{
+          name: validated.name,
+          email: validated.email,
+          country: validated.country,
+          specialty: validated.specialty,
+          message: validated.message
+        }]);
 
       if (error) throw error;
 
@@ -36,8 +54,12 @@ export const Contacto = () => {
         message: ""
       });
     } catch (error) {
-      console.error("Error:", error);
-      toast.error("Hubo un error al enviar el mensaje. Por favor, inténtalo de nuevo.");
+      if (error instanceof z.ZodError) {
+        const firstError = error.errors[0];
+        toast.error(firstError.message);
+      } else {
+        toast.error("Hubo un error al enviar el mensaje. Por favor, intenta nuevamente.");
+      }
     } finally {
       setLoading(false);
     }

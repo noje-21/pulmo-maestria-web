@@ -15,26 +15,30 @@ const Admin = () => {
   }, []);
 
   const checkAdmin = async () => {
-    const { data: { session } } = await supabase.auth.getSession();
-    
-    if (!session) {
-      navigate("/auth");
-      return;
-    }
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (!session) {
+        navigate("/auth");
+        return;
+      }
 
-    const { data } = await supabase
-      .from("user_roles")
-      .select("role")
-      .eq("user_id", session.user.id)
-      .single();
+      const { data: isAdminData } = await supabase.rpc('is_admin', { 
+        check_user_id: session.user.id 
+      });
 
-    if (data?.role === "admin") {
-      setIsAdmin(true);
-    } else {
-      toast.error("No tienes permisos de administrador");
+      if (isAdminData) {
+        setIsAdmin(true);
+      } else {
+        toast.error("No tienes permisos de administrador");
+        navigate("/");
+      }
+    } catch (error) {
+      toast.error("Error al verificar permisos");
       navigate("/");
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   const handleLogout = async () => {
@@ -64,7 +68,9 @@ const Admin = () => {
           <Card className="p-6">
             <h2 className="text-2xl font-bold mb-4">Contenido del Sitio</h2>
             <p className="text-muted-foreground mb-4">Editar textos e imágenes</p>
-            <Button className="w-full">Editar Contenido</Button>
+            <Button className="w-full" onClick={() => navigate("/admin/content")}>
+              Editar Contenido
+            </Button>
           </Card>
 
           <Card className="p-6">

@@ -25,24 +25,29 @@ const AdminContactos = () => {
   }, []);
 
   const checkAdmin = async () => {
-    const { data: { session } } = await supabase.auth.getSession();
-    
-    if (!session) {
-      navigate("/auth");
-      return;
-    }
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (!session) {
+        navigate("/auth");
+        return;
+      }
 
-    const { data } = await supabase
-      .from("user_roles")
-      .select("role")
-      .eq("user_id", session.user.id)
-      .single();
+      const { data: isAdminData } = await supabase.rpc('is_admin', { 
+        check_user_id: session.user.id 
+      });
 
-    if (data?.role === "admin") {
-      loadSubmissions();
-    } else {
-      toast.error("No tienes permisos de administrador");
+      if (isAdminData) {
+        await loadSubmissions();
+      } else {
+        toast.error("No tienes permisos de administrador");
+        navigate("/");
+      }
+    } catch (error) {
+      toast.error("Error al verificar permisos");
       navigate("/");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -54,11 +59,9 @@ const AdminContactos = () => {
 
     if (error) {
       toast.error("Error al cargar envíos");
-      console.error(error);
     } else {
       setSubmissions(data || []);
     }
-    setLoading(false);
   };
 
   const handleDelete = async (id: string) => {

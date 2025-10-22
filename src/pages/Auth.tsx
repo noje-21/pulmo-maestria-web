@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -29,14 +29,30 @@ const Auth = () => {
     e.preventDefault();
     setLoading(true);
 
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
 
-    if (error) {
-      toast.error(error.message);
-    } else {
-      toast.success("¡Inicio de sesión exitoso!");
+      if (error) throw error;
+
+      if (data.user) {
+        // Check if user is admin
+        const { data: isAdminData } = await supabase.rpc('is_admin', { 
+          check_user_id: data.user.id 
+        });
+        
+        if (isAdminData) {
+          toast.success("¡Bienvenido Admin!");
+          navigate("/admin");
+        } else {
+          toast.success("¡Inicio de sesión exitoso!");
+          navigate("/profile");
+        }
+      }
+    } catch (error: any) {
+      toast.error(error.message || "Error al iniciar sesión");
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   return (
@@ -68,6 +84,14 @@ const Auth = () => {
             {loading ? "Iniciando..." : "Iniciar Sesión"}
           </Button>
         </form>
+        <div className="mt-4 text-center">
+          <p className="text-sm text-muted-foreground">
+            ¿No tienes cuenta?{" "}
+            <Link to="/register" className="text-primary hover:underline">
+              Regístrate aquí
+            </Link>
+          </p>
+        </div>
       </Card>
     </div>
   );
