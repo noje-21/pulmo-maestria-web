@@ -1,6 +1,6 @@
 import { Card, CardContent } from "@/components/ui/card";
 import Nicolas from "@/assets/nicolas.jpg";
-import fambin from "@/assets/fabiam.jpg";
+import Fabian from "@/assets/fabiam.jpg";
 
 
 
@@ -14,8 +14,8 @@ const expertos = [
   {
     nombre: "Dr. Fabián Caro",
     cargo: "Jefe de Sección de Enfermedades Pulmonares Intersticiales Difusas (EPID)",
-    especialidad: "Hospital María Ferrer · Universidad de Buenos Aires"
-    imagen: fambin
+    especialidad: "Hospital María Ferrer · Universidad de Buenos Aires",
+    imagen: Fabian
   },
   {
     nombre: "Dr. Guillermo Bortman",
