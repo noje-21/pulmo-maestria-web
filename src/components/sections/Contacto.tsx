@@ -8,11 +8,11 @@ import { toast } from "sonner";
 import { z } from "zod";
 
 const contactSchema = z.object({
-  name: z.string().trim().min(1, "El nombre es requerido").max(100, "El nombre debe tener menos de 100 caracteres"),
-  email: z.string().trim().email("Email inválido").max(255, "El email debe tener menos de 255 caracteres"),
-  country: z.string().trim().min(1, "El país es requerido").max(100, "El país debe tener menos de 100 caracteres"),
-  specialty: z.string().trim().min(1, "La especialidad es requerida").max(100, "La especialidad debe tener menos de 100 caracteres"),
-  message: z.string().trim().min(10, "El mensaje debe tener al menos 10 caracteres").max(2000, "El mensaje debe tener menos de 2000 caracteres")
+  name: z.string().trim().min(1, "El nombre es requerido").max(100),
+  email: z.string().trim().email("Email inválido").max(255),
+  country: z.string().trim().min(1, "El país es requerido").max(100),
+  specialty: z.string().trim().min(1, "La especialidad es requerida").max(100),
+  message: z.string().trim().min(10, "El mensaje debe tener al menos 10 caracteres").max(2000)
 });
 
 export const Contacto = () => {
@@ -31,33 +31,16 @@ export const Contacto = () => {
 
     try {
       const validated = contactSchema.parse(formData);
-
-      const { error } = await supabase
-        .from("contact_submissions")
-        .insert([{
-          name: validated.name,
-          email: validated.email,
-          country: validated.country,
-          specialty: validated.specialty,
-          message: validated.message
-        }]);
-
+      const { error } = await supabase.from("contact_submissions").insert([validated]);
       if (error) throw error;
 
       toast.success("¡Mensaje enviado con éxito! Nos pondremos en contacto pronto.");
-      setFormData({
-        name: "",
-        email: "",
-        country: "",
-        specialty: "",
-        message: ""
-      });
+      setFormData({ name: "", email: "", country: "", specialty: "", message: "" });
     } catch (error) {
       if (error instanceof z.ZodError) {
-        const firstError = error.errors[0];
-        toast.error(firstError.message);
+        toast.error(error.errors[0].message);
       } else {
-        toast.error("Hubo un error al enviar el mensaje. Por favor, intenta nuevamente.");
+        toast.error("Hubo un error al enviar el mensaje. Intenta nuevamente.");
       }
     } finally {
       setLoading(false);
@@ -65,10 +48,11 @@ export const Contacto = () => {
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData(prev => ({
-      ...prev,
-      [e.target.name]: e.target.value
-    }));
+    setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
+  const redirectTo = (url: string) => {
+    window.location.href = url;
   };
 
   return (
@@ -82,7 +66,7 @@ export const Contacto = () => {
         </p>
         
         <div className="grid md:grid-cols-2 gap-12">
-          {/* Información de contacto */}
+          {/* === Información de contacto === */}
           <div>
             <Card className="border-accent/20">
               <CardContent className="pt-6">
@@ -91,91 +75,61 @@ export const Contacto = () => {
                 </h3>
                 
                 <div className="space-y-4">
-                  <div className="flex items-start gap-3">
+                  <div className="flex items-start gap-3 cursor-pointer" onClick={() => redirectTo("mailto:magisterenhipertensionpulmonar@gmail.com")}>
                     <span className="text-2xl">✉️</span>
                     <div>
                       <p className="font-medium text-foreground">Email</p>
-                      <a 
-                        href="mailto:magisterenhipertensionpulmonar@gmail.com"
-                        className="text-accent hover:underline"
-                      >
+                      <p className="text-accent hover:underline">
                         magisterenhipertensionpulmonar@gmail.com
-                      </a>
+                      </p>
                     </div>
                   </div>
 
-                  <div className="flex items-start gap-3">
+                  <div className="flex items-start gap-3 cursor-pointer" onClick={() => redirectTo("https://wa.me/573004142568")}>
                     <span className="text-2xl">📱</span>
                     <div>
                       <p className="font-medium text-foreground">WhatsApp</p>
-                      <a 
-                        href="https://wa.me/573004142568"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-accent hover:underline"
-                      >
-                        +57 300 414 2568
-                      </a>
+                      <p className="text-accent hover:underline">+57 300 414 2568</p>
                     </div>
                   </div>
 
-                  <div className="flex items-start gap-3">
+                  <div className="flex items-start gap-3 cursor-pointer" onClick={() => redirectTo("https://www.linkedin.com/in/hipertension-pulmonar-655a43253")}>
                     <span className="text-2xl">🔗</span>
                     <div>
                       <p className="font-medium text-foreground">LinkedIn</p>
-                      <a 
-                        href="https://www.linkedin.com/in/hipertension-pulmonar-655a43253"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-accent hover:underline"
-                      >
+                      <p className="text-accent hover:underline">
                         linkedin.com/in/hipertension-pulmonar
-                      </a>
+                      </p>
                     </div>
                   </div>
 
-                  <div className="flex items-start gap-3">
+                  <div className="flex items-start gap-3 cursor-pointer" onClick={() => redirectTo("https://www.facebook.com/share/16s5MUKG3C/?mibextid=wwXIfr")}>
                     <span className="text-2xl">📘</span>
                     <div>
                       <p className="font-medium text-foreground">Facebook</p>
-                      <a 
-                        href="https://www.facebook.com/share/16s5MUKG3C/?mibextid=wwXIfr"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-accent hover:underline"
-                      >
+                      <p className="text-accent hover:underline">
                         facebook.com/hipertensionpulmonar
-                      </a>
+                      </p>
                     </div>
                   </div>
 
-                  <div className="flex items-start gap-3">
+                  <div className="flex items-start gap-3 cursor-pointer" onClick={() => redirectTo("https://instagram.com/magisterenhipertensionpulmonar")}>
                     <span className="text-2xl">📸</span>
                     <div>
                       <p className="font-medium text-foreground">Instagram</p>
-                      <a 
-                        href="https://instagram.com/magisterenhipertensionpulmonar"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-accent hover:underline"
-                      >
+                      <p className="text-accent hover:underline">
                         @magisterenhipertensionpulmonar
-                      </a>
+                      </p>
                     </div>
                   </div>
 
-                  <div className="flex items-start gap-3">
+                  <div className="flex items-start gap-3 cursor-pointer" onClick={() => redirectTo("https://www.circulacionpulmonar.com")}>
                     <span className="text-2xl">🌐</span>
                     <div>
                       <p className="font-medium text-foreground">Sitio Web</p>
-                      <a 
-                        href="https://www.circulacionpulmonar.com"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-accent hover:underline"
-                      >
+                      <p className="text-accent hover:underline">
                         www.circulacionpulmonar.com
-                      </a>
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -183,7 +137,7 @@ export const Contacto = () => {
             </Card>
           </div>
 
-          {/* Formulario de contacto */}
+          {/* === Formulario === */}
           <div>
             <Card className="border-accent/20">
               <CardContent className="pt-6">
@@ -192,79 +146,38 @@ export const Contacto = () => {
                     <label htmlFor="name" className="block text-sm font-medium mb-2">
                       Nombre Completo *
                     </label>
-                    <Input
-                      id="name"
-                      name="name"
-                      required
-                      value={formData.name}
-                      onChange={handleChange}
-                      placeholder="Tu nombre completo"
-                    />
+                    <Input id="name" name="name" required value={formData.name} onChange={handleChange} placeholder="Tu nombre completo" />
                   </div>
 
                   <div>
                     <label htmlFor="email" className="block text-sm font-medium mb-2">
                       Correo Electrónico *
                     </label>
-                    <Input
-                      id="email"
-                      name="email"
-                      type="email"
-                      required
-                      value={formData.email}
-                      onChange={handleChange}
-                      placeholder="tu@email.com"
-                    />
+                    <Input id="email" name="email" type="email" required value={formData.email} onChange={handleChange} placeholder="tu@email.com" />
                   </div>
 
                   <div>
                     <label htmlFor="country" className="block text-sm font-medium mb-2">
                       País *
                     </label>
-                    <Input
-                      id="country"
-                      name="country"
-                      required
-                      value={formData.country}
-                      onChange={handleChange}
-                      placeholder="Tu país"
-                    />
+                    <Input id="country" name="country" required value={formData.country} onChange={handleChange} placeholder="Tu país" />
                   </div>
 
                   <div>
                     <label htmlFor="specialty" className="block text-sm font-medium mb-2">
                       Especialidad *
                     </label>
-                    <Input
-                      id="specialty"
-                      name="specialty"
-                      required
-                      value={formData.specialty}
-                      onChange={handleChange}
-                      placeholder="Ej: Cardiología, Medicina Interna..."
-                    />
+                    <Input id="specialty" name="specialty" required value={formData.specialty} onChange={handleChange} placeholder="Ej: Cardiología, Medicina Interna..." />
                   </div>
 
                   <div>
                     <label htmlFor="message" className="block text-sm font-medium mb-2">
                       Mensaje *
                     </label>
-                    <Textarea
-                      id="message"
-                      name="message"
-                      required
-                      value={formData.message}
-                      onChange={handleChange}
-                      placeholder="Escribe tu mensaje aquí..."
-                      rows={4}
-                    />
+                    <Textarea id="message" name="message" required value={formData.message} onChange={handleChange} placeholder="Escribe tu mensaje aquí..." rows={4} />
                   </div>
 
-                  <Button 
-                    type="submit" 
-                    className="w-full bg-accent hover:bg-accent/90"
-                    disabled={loading}
-                  >
+                  <Button type="submit" className="w-full bg-accent hover:bg-accent/90" disabled={loading}>
                     {loading ? "Enviando..." : "Enviar Mensaje"}
                   </Button>
                 </form>
