@@ -106,7 +106,7 @@ export const Maestria = () => {
             </video>
 
             <p className="mt-4 text-muted-foreground">
-              🎥 Mira el video informativo sobre la Maestría en Circulación Pulmonar
+            Video informativo sobre la Maestría en Circulación Pulmonar
             </p>
           </div>
         </div>
