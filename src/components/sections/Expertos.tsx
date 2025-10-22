@@ -31,6 +31,11 @@ const expertos = [
     cargo: "Docente",
     especialidad: "Cardiólogo - Hipertensión Pulmonar"
   }
+  {
+    nombre: "Dr. Julio Sandoval",
+    cargo: "Docente",
+    especialidad: "Cardiólogo - Hipertensión Pulmonar"
+  }
 ];
 
 export const Expertos = () => {
