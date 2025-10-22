@@ -5,7 +5,7 @@ import { Document, Page, pdfjs } from "react-pdf";
 import "react-pdf/dist/Page/AnnotationLayer.css";
 import "react-pdf/dist/Page/TextLayer.css";
 
-// Configurar worker de PDF.js (por si luego lo usas de nuevo)
+// Configurar worker de PDF.js
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
 export const Maestria = () => {
@@ -72,8 +72,8 @@ export const Maestria = () => {
           </Card>
         </div>
 
-        {/* --- Sección del video --- */}
-        <div className="bg-card rounded-lg shadow-lg p-8 mb-8 text-center">
+        {/* --- Video informativo --- */}
+        <div className="bg-card rounded-lg shadow-lg p-8 mb-12 text-center">
           <h3 className="text-2xl font-semibold text-primary mb-6 text-center">
             Video Informativo
           </h3>
@@ -89,8 +89,22 @@ export const Maestria = () => {
             </video>
 
             <p className="mt-4 text-muted-foreground">
-              🎥 Mira el video informativo sobre la Maestría en Circulación Pulmonar
+              Video informativo sobre la Maestría en Circulación Pulmonar
             </p>
+          </div>
+        </div>
+
+        {/* --- Visor del PDF --- */}
+        <div className="bg-card rounded-lg shadow-lg p-8">
+          <h3 className="text-2xl font-semibold text-primary mb-6 text-center">
+            Programa Completo (PDF)
+          </h3>
+          <div className="w-full" style={{ height: "600px" }}>
+            <iframe
+              src="/MAESTRIA_CP_2025.pdf#toolbar=1"
+              className="w-full h-full rounded-lg border-2 border-accent/20"
+              title="Programa de la Maestría"
+            />
           </div>
         </div>
       </div>

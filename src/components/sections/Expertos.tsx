@@ -10,7 +10,13 @@ import GuilleS from "@/assets/guillermina.jpg";
 
 
 const expertos = [
-    {
+  {
+    nombre: "Dr. Adrián José Lescano",
+    cargo: "Directo de Maestria · Médico Cardiólogo · Magíster en Hipertensión Pulmonar · Magíster en Efectividad Clínica · Especialista en Ultrasonografía Cardiovascular",
+    especialidad: "Fundación Favaloro · Instituto de Efectividad Clínica y Sanitaria (IECS)",
+    imagen: Adri
+  },
+  {
     nombre: "Dr. Nicolás Caruso",
     cargo: "Especialista en Cardiología y Medicina del Deporte",
     especialidad: "Sanatorio de La Trinidad Mitre · Universidad de Buenos Aires",
@@ -33,12 +39,6 @@ const expertos = [
     cargo: "Jefe de Cirugía Cardiovascular",
     especialidad: "Hospital de Alta Complejidad en Red 'El Cruce' · Especialista en Medicina Legal",
     imagen: Marce
-  },
-  {
-    nombre: "Dr. Adrián José Lescano",
-    cargo: "Directo de Maestria · Médico Cardiólogo · Magíster en Hipertensión Pulmonar · Magíster en Efectividad Clínica · Especialista en Ultrasonografía Cardiovascular",
-    especialidad: "Fundación Favaloro · Instituto de Efectividad Clínica y Sanitaria (IECS)",
-    imagen: Adri
   },
   {
     nombre: "Dr. Alejandro Nitsche",
