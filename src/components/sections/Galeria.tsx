@@ -13,22 +13,17 @@ import gallery32 from "@/assets/secion/maestria32.jpg";
 import gallery33 from "@/assets/secion/maestria33.jpg";
 import gallery34 from "@/assets/secion/maestria34.jpg";
 
-const images = [
-  { src: gallery1, alt: "Sesión académica 2022" },
-  { src: gallery12, alt: "Sesión académica 2022" },
-  { src: gallery13, alt: "Sesión académica 2022" },
-  { src: gallery14, alt: "Sesión académica 2022" },
-  { src: gallery15, alt: "Sesión académica 2022" },
-  { src: gallery2, alt: "Sesión académica 2023" },
-  { src: gallery22, alt: "Sesión académica 2023" },
-  { src: gallery23, alt: "Sesión académica 2023" },
-  { src: gallery24, alt: "Sesión académica 2023" },
-  { src: gallery25, alt: "Sesión académica 2023" },
-  { src: gallery3, alt: "Sesión académica 2024" },
-  { src: gallery32, alt: "Sesión académica 2024" },
-  { src: gallery33, alt: "Sesión académica 2024" },
-  { src: gallery34, alt: "Sesión académica 2024" },
-];
+const galeriasPorAño = {
+  2022: [
+    gallery1, gallery12, gallery13, gallery14, gallery15
+  ],
+  2023: [
+    gallery2, gallery22, gallery23, gallery24, gallery25
+  ],
+  2024: [
+    gallery3, gallery32, gallery33, gallery34
+  ],
+};
 
 export const Galeria = () => {
   return (
@@ -38,26 +33,38 @@ export const Galeria = () => {
           Galería
         </h2>
         <p className="text-xl text-muted-foreground mb-12 text-center">
-          Momentos destacados de nuestras sesiones académicas
+          Momentos destacados en nuestras sesiones académicas
         </p>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {images.map((image, index) => (
-            <div 
-              key={index}
-              className="relative overflow-hidden rounded-lg shadow-lg group cursor-pointer aspect-video"
-            >
-              <img 
-                src={image.src} 
-                alt={image.alt}
-                className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-primary/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
-                <p className="text-white font-medium">{image.alt}</p>
-              </div>
+
+        {/* Recorremos cada año */}
+        {Object.entries(galeriasPorAño).map(([año, imagenes]) => (
+          <div key={año} className="mb-16">
+            {/* Título del año */}
+            <h3 className="text-3xl font-semibold text-primary mb-6 text-center">
+              Sesiones {año}
+            </h3>
+
+            {/* Grid de imágenes */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {imagenes.map((src, index) => (
+                <div
+                  key={index}
+                  className="relative overflow-hidden rounded-lg shadow-lg group cursor-pointer aspect-video"
+                >
+                  <img
+                    src={src}
+                    alt={`Sesión académica ${año}`}
+                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+                    loading="lazy"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-primary/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
+                    <p className="text-white font-medium">Sesión académica {año}</p>
+                  </div>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
+          </div>
+        ))}
       </div>
     </section>
   );
