@@ -1,30 +1,7 @@
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Document, Page, pdfjs } from "react-pdf";
-import "react-pdf/dist/Page/AnnotationLayer.css";
-import "react-pdf/dist/Page/TextLayer.css";
-
-// Configurar worker de PDF.js
-pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
 export const Maestria = () => {
-  const [numPages, setNumPages] = useState<number | null>(null);
-  const [pageNumber, setPageNumber] = useState(1);
-
-  const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
-    setNumPages(numPages);
-    setPageNumber(1);
-  };
-
-  const nextPage = () => {
-    if (numPages && pageNumber < numPages) setPageNumber(pageNumber + 1);
-  };
-
-  const prevPage = () => {
-    if (pageNumber > 1) setPageNumber(pageNumber - 1);
-  };
-
   return (
     <section id="maestria" className="py-20 bg-muted/30">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -32,7 +9,7 @@ export const Maestria = () => {
           Sobre la Maestría
         </h2>
 
-        {/* === Tarjetas de información === */}
+        {/* === TARJETAS === */}
         <div className="grid md:grid-cols-2 gap-8 mb-12">
           <Card className="border-accent/20">
             <CardContent className="pt-6">
@@ -101,42 +78,28 @@ export const Maestria = () => {
           </div>
         </div>
 
-        {/* === VISOR DE PDF === */}
+        {/* === VISOR DE PDF (ESTILO ADOBE) === */}
         <div className="bg-card rounded-lg shadow-lg p-8 text-center">
           <h3 className="text-2xl font-semibold text-primary mb-6 text-center">
             Programa Completo (PDF)
           </h3>
 
-          <div className="flex flex-col items-center">
-            <div className="border rounded-lg shadow-inner bg-muted p-4 w-full max-w-3xl">
-              <Document
-                file="/MAESTRIA_CP_2025.pdf"
-                onLoadSuccess={onDocumentLoadSuccess}
-                className="flex flex-col items-center"
-              >
-                <Page pageNumber={pageNumber} width={800} />
-              </Document>
-            </div>
+          <div className="relative w-full h-[90vh] rounded-lg overflow-hidden border-2 border-accent/20 shadow-inner">
+            {/* Usa embed para permitir zoom, scroll, búsqueda, etc. */}
+            <embed
+              src="/MAESTRIA_CP_2025.pdf#toolbar=1&navpanes=1&scrollbar=1"
+              type="application/pdf"
+              width="100%"
+              height="100%"
+            />
+          </div>
 
-            <div className="flex justify-center items-center gap-4 mt-6">
-              <Button onClick={prevPage} disabled={pageNumber <= 1}>
-                ⬅️ Anterior
-              </Button>
-              <span className="text-sm text-muted-foreground">
-                Página {pageNumber} de {numPages ?? "…"}
-              </span>
-              <Button onClick={nextPage} disabled={numPages ? pageNumber >= numPages : false}>
-                Siguiente ➡️
-              </Button>
-            </div>
-
-            <a
-              href="/MAESTRIA_CP_2025.pdf"
-              download
-              className="mt-6 text-accent hover:underline text-sm"
-            >
-              📥 Descargar PDF completo
-            </a>
+          <div className="text-center mt-6">
+            <Button asChild size="lg" className="bg-accent hover:bg-accent/90">
+              <a href="/MAESTRIA_CP_2025.pdf" download>
+                📥 Descargar Programa Completo (PDF)
+              </a>
+            </Button>
           </div>
         </div>
       </div>
