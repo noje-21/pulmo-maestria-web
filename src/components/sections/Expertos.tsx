@@ -32,7 +32,7 @@ const expertos = [
     especialidad: "Cardiólogo - Hipertensión Pulmonar"
   },
   {
-    nombre: "Dr. Julio Sandoval",
+    nombre: "Dr. Julios Sandoval",
     cargo: "Docente",
     especialidad: "Cardiólogo - Hipertensión Pulmonar"
   }
