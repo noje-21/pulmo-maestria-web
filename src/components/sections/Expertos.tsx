@@ -3,6 +3,10 @@ import Nicolas from "@/assets/nicolas.jpg";
 import Fabian from "@/assets/fabiam.jpg";
 import Guille from "@/assets/guillermo.jpg";
 import Marce from "@/assets/marcelo.jpg";
+import Adri from "@/assets/adrian.jpg";
+import Alejo from "@/assets/alejo.jpg";
+import Julie from "@/assets/julieta.jpg";
+import GuilleS from "@/assets/guillermina.jpg";
 
 
 const expertos = [
@@ -33,22 +37,26 @@ const expertos = [
   {
     nombre: "Dr. Adrián José Lescano",
     cargo: "Directo de Maestria · Médico Cardiólogo · Magíster en Hipertensión Pulmonar · Magíster en Efectividad Clínica · Especialista en Ultrasonografía Cardiovascular",
-    especialidad: "Fundación Favaloro · Instituto de Efectividad Clínica y Sanitaria (IECS)"
+    especialidad: "Fundación Favaloro · Instituto de Efectividad Clínica y Sanitaria (IECS)",
+    imagen: Adri
   },
   {
     nombre: "Dr. Alejandro Nitsche",
     cargo: "Líder Médico y Experto en Hipertensión Pulmonar y Enfermedad Pulmonar Intersticial en Enfermedades del Tejido Conectivo",
-    especialidad: "Hospital Alemán · SAPEM · Asociación Médica Argentina (AMA)"
+    especialidad: "Hospital Alemán · SAPEM · Asociación Médica Argentina (AMA)",
+    imagen: Alejo
   },
   {
     nombre: "Dra. Julieta Soricetti",
     cargo: "Médica Cardióloga · Magíster en Hipertensión Pulmonar · Especialista Universitaria en Insuficiencia Cardíaca",
-    especialidad: "Universidad de Buenos Aires"
+    especialidad: "Universidad de Buenos Aires",
+    imagen: Julie
   },
   {
     nombre: "Dra. Guillermina Soracio",
     cargo: "Cardióloga · Magíster en Hipertensión Pulmonar",
-    especialidad: "Presidente Electa del Consejo Argentino de Insuficiencia Cardíaca e Hipertensión Pulmonar"
+    especialidad: "Presidente Electa del Consejo Argentino de Insuficiencia Cardíaca e Hipertensión Pulmonar",
+    imagen: GuilleS
   }
 ];
 export const Expertos = () => {
