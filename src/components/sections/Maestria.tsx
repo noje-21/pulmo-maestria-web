@@ -5,7 +5,7 @@ import { Document, Page, pdfjs } from "react-pdf";
 import "react-pdf/dist/Page/AnnotationLayer.css";
 import "react-pdf/dist/Page/TextLayer.css";
 
-// Configurar el worker de PDF.js
+// Configurar worker de PDF.js (por si luego lo usas de nuevo)
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
 export const Maestria = () => {
@@ -17,10 +17,6 @@ export const Maestria = () => {
     setPageNumber(1);
   };
 
-  const goToPrevPage = () => setPageNumber((prev) => Math.max(prev - 1, 1));
-  const goToNextPage = () =>
-    setPageNumber((prev) => (numPages ? Math.min(prev + 1, numPages) : prev));
-
   return (
     <section id="maestria" className="py-20 bg-muted/30">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -28,14 +24,15 @@ export const Maestria = () => {
           Sobre la Maestría
         </h2>
 
-        {/* --- Tarjetas de información --- */}
+        {/* --- Tarjetas informativas --- */}
         <div className="grid md:grid-cols-2 gap-8 mb-12">
           <Card className="border-accent/20">
             <CardContent className="pt-6">
               <h3 className="text-2xl font-semibold text-primary mb-4">Modalidad</h3>
               <p className="text-foreground/80 leading-relaxed">
-                Maestría presencial intensiva con clases teóricas y prácticas, talleres interactivos y 
-                discusión de casos clínicos reales. Incluye acceso a material digital y seguimiento post-curso.
+                Maestría presencial intensiva con clases teóricas y prácticas, talleres interactivos
+                y discusión de casos clínicos reales. Incluye acceso a material digital y seguimiento
+                post-curso.
               </p>
             </CardContent>
           </Card>
@@ -75,42 +72,25 @@ export const Maestria = () => {
           </Card>
         </div>
 
-        {/* --- PDF con visor --- */}
+        {/* --- Sección del video --- */}
         <div className="bg-card rounded-lg shadow-lg p-8 mb-8 text-center">
           <h3 className="text-2xl font-semibold text-primary mb-6 text-center">
-            Programa Completo
+            Video Informativo
           </h3>
 
           <div className="flex flex-col items-center">
-            <Document
-              file="/MAESTRIA_CP_2025.pdf"
-              onLoadSuccess={onDocumentLoadSuccess}
-              loading={<p className="text-muted-foreground">Cargando PDF...</p>}
+            <video
+              controls
+              preload="metadata"
+              className="rounded-lg shadow-md w-full max-w-3xl h-auto"
             >
-              <Page pageNumber={pageNumber} width={800} />
-            </Document>
+              <source src="/video.mp4" type="video/mp4" />
+              Tu navegador no soporta la reproducción de video.
+            </video>
 
             <p className="mt-4 text-muted-foreground">
-              Página {pageNumber} de {numPages}
+              🎥 Mira el video informativo sobre la Maestría en Circulación Pulmonar
             </p>
-
-            <div className="flex gap-4 mt-4">
-              <Button onClick={goToPrevPage} disabled={pageNumber <= 1}>
-                ⬅️ Anterior
-              </Button>
-              <Button
-                onClick={goToNextPage}
-                disabled={numPages ? pageNumber >= numPages : true}
-              >
-                Siguiente ➡️
-              </Button>
-            </div>
-
-            <Button asChild size="lg" className="bg-accent hover:bg-accent/90 mt-6">
-              <a href="/MAESTRIA_CP_2025.pdf" download target="_blank" rel="noopener noreferrer">
-                📥 Descargar Programa Completo (PDF)
-              </a>
-            </Button>
           </div>
         </div>
       </div>
