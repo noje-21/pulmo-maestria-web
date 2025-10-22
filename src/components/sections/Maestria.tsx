@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 
 export const Maestria = () => {
@@ -78,7 +77,7 @@ export const Maestria = () => {
           </div>
         </div>
 
-        {/* === VISOR DE PDF (COMO ADOBE) === */}
+        {/* === VISOR PDF === */}
         <div className="bg-card rounded-lg shadow-lg p-8 text-center">
           <h3 className="text-2xl font-semibold text-primary mb-6 text-center">
             Programa Completo (PDF)
@@ -89,16 +88,10 @@ export const Maestria = () => {
               src="/MAESTRIA_CP_2025.pdf#toolbar=1&navpanes=1&scrollbar=1"
               width="100%"
               height="100%"
+              allow="fullscreen"
+              className="rounded-lg"
               style={{ border: "none" }}
             ></iframe>
-          </div>
-
-          <div className="text-center mt-6">
-            <Button asChild size="lg" className="bg-accent hover:bg-accent/90">
-              <a href="/MAESTRIA_CP_2025.pdf" download>
-                📥 Descargar Programa Completo (PDF)
-              </a>
-            </Button>
           </div>
         </div>
       </div>
