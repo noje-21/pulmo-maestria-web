@@ -3,8 +3,8 @@ import Nicolas from "@/assets/nicolas.jpg";
 import Fabian from "@/assets/fabiam.jpg";
 import Guille from "@/assets/guillermo.jpg";
 import Marce from "@/assets/marcelo.jpg";
-import Adri from "@/assets/adrian.jpg";
-import Alejo from "@/assets/alejo.jpg";
+import Adri from "@/assets/adrien.jpg";
+import Alejo from "@/assets/alejandro.jpg";
 import Julie from "@/assets/julieta.jpg";
 import GuilleS from "@/assets/guillermina.jpg";
 
