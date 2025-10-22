@@ -44,11 +44,11 @@ export const Hero = () => {
           onClick={scrollToContact}
           className="text-lg px-8 py-6 bg-accent hover:bg-accent/90 text-white shadow-glow"
         >
-          Preinscripción
+          Inscripción
         </Button>
         
         <p className="mt-6 text-white/80">
-          ⚠️ Cupos limitados: 30 participantes
+          ⚠️ Cupos limitados: 15 participantes
         </p>
       </div>
     </section>
