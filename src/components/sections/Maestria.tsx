@@ -62,9 +62,9 @@ export const Maestria = () => {
               title: "Inversión",
               content: (
                 <ul className="space-y-2 text-foreground/80">
-                  <li><strong>Profesionales:</strong> USD $3,000</li>
-                  <li><strong>Residentes:</strong> USD $1,500</li>
-                  <li><strong>Incluye:</strong> Material académico, certificación y coffee breaks</li>
+                  <li><strong>Profesionales:</strong> USD $2,900</li>
+                  <li><strong>Residentes:</strong> USD $1,850</li>
+                  <li><strong>Incluye:</strong> Material académico, certificación, coffee breaks, Acceso ilimitado al campus virtual, acompañamiento 1:1 con subespecialistas y expertos, entrenamiento práctico Hands on en estudios descritos en el programa</li>
                 </ul>
               ),
             },
