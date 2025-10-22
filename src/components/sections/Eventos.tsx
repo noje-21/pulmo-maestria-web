@@ -3,28 +3,28 @@ import { Card, CardContent } from "@/components/ui/card";
 const eventos = [
   {
     fecha: "3-4 de noviembre 2025",
-    titulo: "Introducción y Fundamentos",
-    descripcion: "Anatomía y fisiología de la circulación pulmonar. Bases hemodinámicas."
+    titulo: "Introducción y fundamentos de la circulación pulmonar",
+    descripcion: "Anatomía y fisiología de la circulación pulmonar. Bases hemodinámicas y Todos los grupos de HTP, estudios iniciales, abordaje inicial."
   },
   {
     fecha: "5-7 de noviembre 2025",
-    titulo: "Hipertensión Pulmonar",
-    descripcion: "Clasificación, diagnóstico y tratamiento actualizado según guías internacionales."
+    titulo: "Talleres prácticos",
+    descripcion: "Ecocardiografia, ECG, Hemodinamia y CCD, intersticiopatias, Enf Reumatológicas, Estudios de función pulmonar, etc."
   },
   {
     fecha: "8-10 de noviembre 2025",
-    titulo: "Tromboembolia Pulmonar",
+    titulo: "Clasificación de riesgos, diagnóstico y tratamiento Pulmonar",
     descripcion: "Diagnóstico avanzado, estratificación de riesgo y manejo terapéutico."
   },
   {
     fecha: "11-13 de noviembre 2025",
     titulo: "Casos Clínicos y Talleres",
-    descripcion: "Discusión de casos reales, ecocardiografía y cateterismo cardíaco derecho."
+    descripcion: "Últimas novedades, avances tecnológicos, IA, bioestadistica avanzada e interpretación de Trials."
   },
   {
     fecha: "14-15 de noviembre 2025",
     titulo: "Investigación y Cierre",
-    descripcion: "Últimos avances en investigación clínica. Evaluación final y entrega de certificados."
+    descripcion: "Simposio latinoamericano de hipertensión pulmonar: expertos nacionales e internacionales, evento certificado."
   }
 ];
 

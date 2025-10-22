@@ -38,11 +38,15 @@ export const QuienesSomos = () => {
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-accent mt-1">✓</span>
-                <span><strong>BASA (Buenos Aires Sociedad Anónima)</strong> - Apoyo institucional</span>
+                <span><strong>sanatorio trinidad de quilmes</strong> -</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-accent mt-1">✓</span>
-                <span><strong>Docentes internacionales</strong> - Red de expertos de toda Latinoamérica</span>
+                <span><strong>hospital Maria Ferrer</strong> -</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-accent mt-1">✓</span>
+                <span><strong>Red BASA</strong> -</span>
               </li>
             </ul>
             

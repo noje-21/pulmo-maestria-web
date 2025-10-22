@@ -112,7 +112,7 @@ export const Contacto = () => {
                     </div>
                   </div>
 
-                  <div className="flex items-start gap-3 cursor-pointer" onClick={() => redirectTo("https://www.circulacionpulmonar.com")}>
+                  <div className="flex items-start gap-3 cursor-pointer" onClick={() => redirectTo("https://www.maestriacp.com/")}>
                     <span className="text-2xl">🌐</span>
                     <div>
                       <p className="font-medium text-foreground">Sitio Web</p>
