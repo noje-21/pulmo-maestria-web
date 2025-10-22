@@ -23,7 +23,7 @@ const expertos = [
   },
   {
     nombre: "Dr. Adrián José Lescano",
-    cargo: "Médico Cardiólogo · Magíster en Hipertensión Pulmonar · Magíster en Efectividad Clínica · Especialista en Ultrasonografía Cardiovascular",
+    cargo: "Directo de Maestria · Médico Cardiólogo · Magíster en Hipertensión Pulmonar · Magíster en Efectividad Clínica · Especialista en Ultrasonografía Cardiovascular",
     especialidad: "Fundación Favaloro · Instituto de Efectividad Clínica y Sanitaria (IECS)"
   },
   {
