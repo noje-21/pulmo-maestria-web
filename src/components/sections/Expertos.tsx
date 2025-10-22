@@ -5,6 +5,7 @@ const expertos = [
     nombre: "Dr. Nicolás Caruso",
     cargo: "Especialista en Cardiología y Medicina del Deporte",
     especialidad: "Sanatorio de La Trinidad Mitre · Universidad de Buenos Aires"
+    imagen: "/src/assets/expertos/nicolas.jpg"
   },
   {
     nombre: "Dr. Fabián Caro",
@@ -53,23 +54,27 @@ export const Expertos = () => {
         <p className="text-xl text-muted-foreground mb-12 text-center max-w-3xl mx-auto">
           Docentes de reconocimiento internacional en el campo de la circulación pulmonar
         </p>
-        
+
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {expertos.map((experto, index) => (
             <Card key={index} className="border-accent/20 hover:border-accent/40 transition-all hover:shadow-lg">
-              <CardContent className="pt-6">
-                <div className="w-16 h-16 bg-gradient-to-br from-primary to-accent rounded-full flex items-center justify-center mb-4 mx-auto">
-                  <span className="text-2xl text-white">👨‍⚕️</span>
-                </div>
-                <h3 className="text-xl font-semibold text-primary text-center mb-2">
+              <CardContent className="pt-6 flex flex-col items-center text-center">
+                {experto.imagen ? (
+                  <img
+                    src={experto.imagen}
+                    alt={experto.nombre}
+                    className="w-24 h-24 object-cover rounded-full mb-4 border-4 border-primary/30 shadow-md"
+                  />
+                ) : (
+                  <div className="w-16 h-16 bg-gradient-to-br from-primary to-accent rounded-full flex items-center justify-center mb-4">
+                    <span className="text-2xl text-white">👨‍⚕️</span>
+                  </div>
+                )}
+                <h3 className="text-xl font-semibold text-primary mb-2">
                   {experto.nombre}
                 </h3>
-                <p className="text-accent font-medium text-center mb-2">
-                  {experto.cargo}
-                </p>
-                <p className="text-sm text-muted-foreground text-center">
-                  {experto.especialidad}
-                </p>
+                <p className="text-accent font-medium mb-2">{experto.cargo}</p>
+                <p className="text-sm text-muted-foreground">{experto.especialidad}</p>
               </CardContent>
             </Card>
           ))}
