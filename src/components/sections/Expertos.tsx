@@ -35,6 +35,11 @@ const expertos = [
     nombre: "Dra. Julieta Soricetti",
     cargo: "Médica Cardióloga · Magíster en Hipertensión Pulmonar · Especialista Universitaria en Insuficiencia Cardíaca",
     especialidad: "Universidad de Buenos Aires"
+  },
+  {
+    nombre: "Dra. Guillermina Soracio",
+    cargo: "Cardióloga · Magíster en Hipertensión Pulmonar",
+    especialidad: "Presidente Electa del Consejo Argentino de Insuficiencia Cardíaca e Hipertensión Pulmonar"
   }
 ];
 
