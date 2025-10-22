@@ -78,20 +78,19 @@ export const Maestria = () => {
           </div>
         </div>
 
-        {/* === VISOR DE PDF (ESTILO ADOBE) === */}
+        {/* === VISOR DE PDF (COMO ADOBE) === */}
         <div className="bg-card rounded-lg shadow-lg p-8 text-center">
           <h3 className="text-2xl font-semibold text-primary mb-6 text-center">
             Programa Completo (PDF)
           </h3>
 
           <div className="relative w-full h-[90vh] rounded-lg overflow-hidden border-2 border-accent/20 shadow-inner">
-            {/* Usa embed para permitir zoom, scroll, búsqueda, etc. */}
-            <embed
+            <iframe
               src="/MAESTRIA_CP_2025.pdf#toolbar=1&navpanes=1&scrollbar=1"
-              type="application/pdf"
               width="100%"
               height="100%"
-            />
+              style={{ border: "none" }}
+            ></iframe>
           </div>
 
           <div className="text-center mt-6">
