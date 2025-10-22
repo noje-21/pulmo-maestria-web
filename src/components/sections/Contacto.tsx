@@ -30,7 +30,6 @@ export const Contacto = () => {
     setLoading(true);
 
     try {
-      // Validate form data
       const validated = contactSchema.parse(formData);
 
       const { error } = await supabase
@@ -81,15 +80,16 @@ export const Contacto = () => {
         <p className="text-xl text-muted-foreground mb-12 text-center">
           ¿Tienes preguntas? Contáctanos
         </p>
-        
+
         <div className="grid md:grid-cols-2 gap-12">
+          {/* INFORMACIÓN DE CONTACTO */}
           <div>
             <Card className="border-accent/20">
               <CardContent className="pt-6">
                 <h3 className="text-2xl font-semibold text-primary mb-6">
                   Información de Contacto
                 </h3>
-                
+
                 <div className="space-y-4">
                   <div className="flex items-start gap-3">
                     <span className="text-2xl">✉️</span>
@@ -103,7 +103,7 @@ export const Contacto = () => {
                       </a>
                     </div>
                   </div>
-                  
+
                   <div className="flex items-start gap-3">
                     <span className="text-2xl">📱</span>
                     <div>
@@ -118,7 +118,7 @@ export const Contacto = () => {
                       </a>
                     </div>
                   </div>
-                  
+
                   <div className="flex items-start gap-3">
                     <span className="text-2xl">📸</span>
                     <div>
@@ -133,7 +133,38 @@ export const Contacto = () => {
                       </a>
                     </div>
                   </div>
-                  
+
+                  {/* NUEVOS ENLACES */}
+                  <div className="flex items-start gap-3">
+                    <span className="text-2xl">💼</span>
+                    <div>
+                      <p className="font-medium text-foreground">LinkedIn</p>
+                      <a 
+                        href="https://www.linkedin.com/in/hipertension-pulmonar-655a43253?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=ios_app"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-accent hover:underline"
+                      >
+                        linkedin.com/in/hipertension-pulmonar
+                      </a>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3">
+                    <span className="text-2xl">📘</span>
+                    <div>
+                      <p className="font-medium text-foreground">Facebook</p>
+                      <a 
+                        href="https://www.facebook.com/share/16s5MUKG3C/?mibextid=wwXIfr"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-accent hover:underline"
+                      >
+                        facebook.com/hipertensionpulmonar
+                      </a>
+                    </div>
+                  </div>
+
                   <div className="flex items-start gap-3">
                     <span className="text-2xl">🌐</span>
                     <div>
@@ -152,7 +183,8 @@ export const Contacto = () => {
               </CardContent>
             </Card>
           </div>
-          
+
+          {/* FORMULARIO DE CONTACTO */}
           <div>
             <Card className="border-accent/20">
               <CardContent className="pt-6">
@@ -170,7 +202,7 @@ export const Contacto = () => {
                       placeholder="Tu nombre completo"
                     />
                   </div>
-                  
+
                   <div>
                     <label htmlFor="email" className="block text-sm font-medium mb-2">
                       Correo Electrónico *
@@ -185,7 +217,7 @@ export const Contacto = () => {
                       placeholder="tu@email.com"
                     />
                   </div>
-                  
+
                   <div>
                     <label htmlFor="country" className="block text-sm font-medium mb-2">
                       País *
@@ -199,7 +231,7 @@ export const Contacto = () => {
                       placeholder="Tu país"
                     />
                   </div>
-                  
+
                   <div>
                     <label htmlFor="specialty" className="block text-sm font-medium mb-2">
                       Especialidad *
@@ -213,7 +245,7 @@ export const Contacto = () => {
                       placeholder="Ej: Cardiología, Medicina Interna..."
                     />
                   </div>
-                  
+
                   <div>
                     <label htmlFor="message" className="block text-sm font-medium mb-2">
                       Mensaje *
@@ -228,7 +260,7 @@ export const Contacto = () => {
                       rows={4}
                     />
                   </div>
-                  
+
                   <Button 
                     type="submit" 
                     className="w-full bg-accent hover:bg-accent/90"
