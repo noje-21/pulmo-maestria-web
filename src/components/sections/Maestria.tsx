@@ -1,14 +1,34 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Document, Page, pdfjs } from "react-pdf";
+import "react-pdf/dist/Page/AnnotationLayer.css";
+import "react-pdf/dist/Page/TextLayer.css";
+
+// Configurar el worker de PDF.js
+pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
 export const Maestria = () => {
+  const [numPages, setNumPages] = useState<number | null>(null);
+  const [pageNumber, setPageNumber] = useState(1);
+
+  const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
+    setNumPages(numPages);
+    setPageNumber(1);
+  };
+
+  const goToPrevPage = () => setPageNumber((prev) => Math.max(prev - 1, 1));
+  const goToNextPage = () =>
+    setPageNumber((prev) => (numPages ? Math.min(prev + 1, numPages) : prev));
+
   return (
     <section id="maestria" className="py-20 bg-muted/30">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <h2 className="text-4xl md:text-5xl font-bold text-primary mb-12 text-center">
           Sobre la Maestría
         </h2>
-        
+
+        {/* --- Tarjetas de información --- */}
         <div className="grid md:grid-cols-2 gap-8 mb-12">
           <Card className="border-accent/20">
             <CardContent className="pt-6">
@@ -19,7 +39,7 @@ export const Maestria = () => {
               </p>
             </CardContent>
           </Card>
-          
+
           <Card className="border-accent/20">
             <CardContent className="pt-6">
               <h3 className="text-2xl font-semibold text-primary mb-4">Fechas y Lugar</h3>
@@ -30,7 +50,7 @@ export const Maestria = () => {
               </ul>
             </CardContent>
           </Card>
-          
+
           <Card className="border-accent/20">
             <CardContent className="pt-6">
               <h3 className="text-2xl font-semibold text-primary mb-4">Inversión</h3>
@@ -41,7 +61,7 @@ export const Maestria = () => {
               </ul>
             </CardContent>
           </Card>
-          
+
           <Card className="border-accent/20">
             <CardContent className="pt-6">
               <h3 className="text-2xl font-semibold text-primary mb-4">Dirigido a</h3>
@@ -54,21 +74,40 @@ export const Maestria = () => {
             </CardContent>
           </Card>
         </div>
-        
-        <div className="bg-card rounded-lg shadow-lg p-8 mb-8">
+
+        {/* --- PDF con visor --- */}
+        <div className="bg-card rounded-lg shadow-lg p-8 mb-8 text-center">
           <h3 className="text-2xl font-semibold text-primary mb-6 text-center">
             Programa Completo
           </h3>
-          <div className="w-full" style={{ height: '600px' }}>
-            <iframe
-              src="/MAESTRIA_CP_2025.pdf"
-              className="w-full h-full rounded-lg border-2 border-accent/20"
-              title="Programa de la Maestría"
-            />
-          </div>
-          <div className="text-center mt-6">
-            <Button asChild size="lg" className="bg-accent hover:bg-accent/90">
-              <a href="/MAESTRIA_CP_2025.pdf" download>
+
+          <div className="flex flex-col items-center">
+            <Document
+              file="/MAESTRIA_CP_2025.pdf"
+              onLoadSuccess={onDocumentLoadSuccess}
+              loading={<p className="text-muted-foreground">Cargando PDF...</p>}
+            >
+              <Page pageNumber={pageNumber} width={800} />
+            </Document>
+
+            <p className="mt-4 text-muted-foreground">
+              Página {pageNumber} de {numPages}
+            </p>
+
+            <div className="flex gap-4 mt-4">
+              <Button onClick={goToPrevPage} disabled={pageNumber <= 1}>
+                ⬅️ Anterior
+              </Button>
+              <Button
+                onClick={goToNextPage}
+                disabled={numPages ? pageNumber >= numPages : true}
+              >
+                Siguiente ➡️
+              </Button>
+            </div>
+
+            <Button asChild size="lg" className="bg-accent hover:bg-accent/90 mt-6">
+              <a href="/MAESTRIA_CP_2025.pdf" download target="_blank" rel="noopener noreferrer">
                 📥 Descargar Programa Completo (PDF)
               </a>
             </Button>
