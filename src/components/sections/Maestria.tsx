@@ -8,7 +8,8 @@ export const Maestria = () => {
         <h2 className="text-4xl md:text-5xl font-bold text-primary mb-12 text-center">
           Sobre la Maestría
         </h2>
-        
+
+        {/* --- Tarjetas de información --- */}
         <div className="grid md:grid-cols-2 gap-8 mb-12">
           <Card className="border-accent/20">
             <CardContent className="pt-6">
@@ -19,7 +20,7 @@ export const Maestria = () => {
               </p>
             </CardContent>
           </Card>
-          
+
           <Card className="border-accent/20">
             <CardContent className="pt-6">
               <h3 className="text-2xl font-semibold text-primary mb-4">Fechas y Lugar</h3>
@@ -30,7 +31,7 @@ export const Maestria = () => {
               </ul>
             </CardContent>
           </Card>
-          
+
           <Card className="border-accent/20">
             <CardContent className="pt-6">
               <h3 className="text-2xl font-semibold text-primary mb-4">Inversión</h3>
@@ -41,7 +42,7 @@ export const Maestria = () => {
               </ul>
             </CardContent>
           </Card>
-          
+
           <Card className="border-accent/20">
             <CardContent className="pt-6">
               <h3 className="text-2xl font-semibold text-primary mb-4">Dirigido a</h3>
@@ -54,21 +55,23 @@ export const Maestria = () => {
             </CardContent>
           </Card>
         </div>
-        
+
+        {/* --- PDF con visor y descarga --- */}
         <div className="bg-card rounded-lg shadow-lg p-8 mb-8">
           <h3 className="text-2xl font-semibold text-primary mb-6 text-center">
             Programa Completo
           </h3>
-          <div className="w-full" style={{ height: '600px' }}>
+          <div className="w-full" style={{ height: "600px" }}>
             <iframe
               src="/MAESTRIA_CP_2025.pdf"
               className="w-full h-full rounded-lg border-2 border-accent/20"
               title="Programa de la Maestría"
             />
           </div>
+
           <div className="text-center mt-6">
             <Button asChild size="lg" className="bg-accent hover:bg-accent/90">
-              <a href="/MAESTRIA_CP_2025.pdf" download>
+              <a href="/MAESTRIA_CP_2025.pdf" download target="_blank" rel="noopener noreferrer">
                 📥 Descargar Programa Completo (PDF)
               </a>
             </Button>
