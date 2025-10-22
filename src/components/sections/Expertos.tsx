@@ -1,7 +1,8 @@
 import { Card, CardContent } from "@/components/ui/card";
 import Nicolas from "@/assets/nicolas.jpg";
 import Fabian from "@/assets/fabiam.jpg";
-
+import Guille from "@/assets/guillermo.jpg";
+import Marce from "@/assets/marcelo.jpg";
 
 
 const expertos = [
@@ -20,12 +21,14 @@ const expertos = [
   {
     nombre: "Dr. Guillermo Bortman",
     cargo: "Ex Director de Transplantes y Unidad de Cardiología y Cirugía Cardiovascular; Jefe del Servicio de Insuficiencia Cardíaca e Hipertensión Pulmonar",
-    especialidad: "Hospital de Alta Complejidad Médica Juan Domingo Perón · Sanatorio Trinidad Mitre · Sanatorio Trinidad Palermo"
+    especialidad: "Hospital de Alta Complejidad Médica Juan Domingo Perón · Sanatorio Trinidad Mitre · Sanatorio Trinidad Palermo",
+    imagen: Guille
   },
   {
     nombre: "Dr. Marcelo Nahin",
     cargo: "Jefe de Cirugía Cardiovascular",
-    especialidad: "Hospital de Alta Complejidad en Red 'El Cruce' · Especialista en Medicina Legal"
+    especialidad: "Hospital de Alta Complejidad en Red 'El Cruce' · Especialista en Medicina Legal",
+    imagen: Marce
   },
   {
     nombre: "Dr. Adrián José Lescano",
