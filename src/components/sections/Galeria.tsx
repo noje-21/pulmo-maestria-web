@@ -10,16 +10,16 @@ import gallery24 from "@/assets/secion/maestria24.jpg";
 import gallery25 from "@/assets/secion/maestria25.jpg";
 
 const images = [
-  { src: gallery1, alt: "Sesión académica 1" },
-  { src: gallery12, alt: "Sesión académica 2" },
-  { src: gallery13, alt: "Sesión académica 3" },
-  { src: gallery14, alt: "Sesión académica 4" },
-  { src: gallery15, alt: "Sesión académica 5" },
-  { src: gallery2, alt: "Sesión académica 11" },
-  { src: gallery22, alt: "Sesión académica 12" },
-  { src: gallery23, alt: "Sesión académica 13" },
-  { src: gallery24, alt: "Sesión académica 14" },
-  { src: gallery25, alt: "Sesión académica 15" }
+  { src: gallery1, alt: "Sesión académica 2022" },
+  { src: gallery12, alt: "Sesión académica 2022" },
+  { src: gallery13, alt: "Sesión académica 2022" },
+  { src: gallery14, alt: "Sesión académica 2022" },
+  { src: gallery15, alt: "Sesión académica 2022" },
+  { src: gallery2, alt: "Sesión académica 2023" },
+  { src: gallery22, alt: "Sesión académica 2023" },
+  { src: gallery23, alt: "Sesión académica 2023" },
+  { src: gallery24, alt: "Sesión académica 2023" },
+  { src: gallery25, alt: "Sesión académica 2023" }
 ];
 
 export const Galeria = () => {
