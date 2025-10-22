@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Document, Page, pdfjs } from "react-pdf";
@@ -11,6 +12,7 @@ pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/b
 export const Maestria = () => {
   const [numPages, setNumPages] = useState<number | null>(null);
   const [pageNumber, setPageNumber] = useState(1);
+  const [direction, setDirection] = useState<"next" | "prev">("next");
 
   const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
     setNumPages(numPages);
@@ -18,11 +20,17 @@ export const Maestria = () => {
   };
 
   const nextPage = () => {
-    if (numPages && pageNumber < numPages) setPageNumber(pageNumber + 1);
+    if (numPages && pageNumber < numPages) {
+      setDirection("next");
+      setPageNumber((prev) => prev + 1);
+    }
   };
 
   const prevPage = () => {
-    if (pageNumber > 1) setPageNumber(pageNumber - 1);
+    if (pageNumber > 1) {
+      setDirection("prev");
+      setPageNumber((prev) => prev - 1);
+    }
   };
 
   return (
@@ -34,49 +42,51 @@ export const Maestria = () => {
 
         {/* === Tarjetas de información === */}
         <div className="grid md:grid-cols-2 gap-8 mb-12">
-          <Card className="border-accent/20">
-            <CardContent className="pt-6">
-              <h3 className="text-2xl font-semibold text-primary mb-4">Modalidad</h3>
-              <p className="text-foreground/80 leading-relaxed">
-                Maestría presencial intensiva con clases teóricas y prácticas, talleres interactivos y 
-                discusión de casos clínicos reales. Incluye acceso a material digital y seguimiento post-curso.
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card className="border-accent/20">
-            <CardContent className="pt-6">
-              <h3 className="text-2xl font-semibold text-primary mb-4">Fechas y Lugar</h3>
-              <ul className="space-y-2 text-foreground/80">
-                <li><strong>Fecha:</strong> 3 al 15 de noviembre 2025</li>
-                <li><strong>Lugar:</strong> Buenos Aires, Argentina</li>
-                <li><strong>Sede:</strong> Centro Gallego de Buenos Aires</li>
-              </ul>
-            </CardContent>
-          </Card>
-
-          <Card className="border-accent/20">
-            <CardContent className="pt-6">
-              <h3 className="text-2xl font-semibold text-primary mb-4">Inversión</h3>
-              <ul className="space-y-2 text-foreground/80">
-                <li><strong>Profesionales:</strong> USD $3,000</li>
-                <li><strong>Residentes:</strong> USD $1,500</li>
-                <li><strong>Incluye:</strong> Material académico, certificación y coffee breaks</li>
-              </ul>
-            </CardContent>
-          </Card>
-
-          <Card className="border-accent/20">
-            <CardContent className="pt-6">
-              <h3 className="text-2xl font-semibold text-primary mb-4">Dirigido a</h3>
-              <ul className="space-y-2 text-foreground/80">
-                <li>✓ Cardiólogos</li>
-                <li>✓ Internistas</li>
-                <li>✓ Reumatólogos</li>
-                <li>✓ Neumonólogos</li>
-              </ul>
-            </CardContent>
-          </Card>
+          {[
+            {
+              title: "Modalidad",
+              content:
+                "Maestría presencial intensiva con clases teóricas y prácticas, talleres interactivos y discusión de casos clínicos reales. Incluye acceso a material digital y seguimiento post-curso.",
+            },
+            {
+              title: "Fechas y Lugar",
+              content: (
+                <ul className="space-y-2 text-foreground/80">
+                  <li><strong>Fecha:</strong> 3 al 15 de noviembre 2025</li>
+                  <li><strong>Lugar:</strong> Buenos Aires, Argentina</li>
+                  <li><strong>Sede:</strong> Centro Gallego de Buenos Aires</li>
+                </ul>
+              ),
+            },
+            {
+              title: "Inversión",
+              content: (
+                <ul className="space-y-2 text-foreground/80">
+                  <li><strong>Profesionales:</strong> USD $3,000</li>
+                  <li><strong>Residentes:</strong> USD $1,500</li>
+                  <li><strong>Incluye:</strong> Material académico, certificación y coffee breaks</li>
+                </ul>
+              ),
+            },
+            {
+              title: "Dirigido a",
+              content: (
+                <ul className="space-y-2 text-foreground/80">
+                  <li>✓ Cardiólogos</li>
+                  <li>✓ Internistas</li>
+                  <li>✓ Reumatólogos</li>
+                  <li>✓ Neumonólogos</li>
+                </ul>
+              ),
+            },
+          ].map((item, idx) => (
+            <Card key={idx} className="border-accent/20">
+              <CardContent className="pt-6">
+                <h3 className="text-2xl font-semibold text-primary mb-4">{item.title}</h3>
+                <div className="text-foreground/80 leading-relaxed">{item.content}</div>
+              </CardContent>
+            </Card>
+          ))}
         </div>
 
         {/* === VIDEO === */}
@@ -108,13 +118,29 @@ export const Maestria = () => {
           </h3>
 
           <div className="flex flex-col items-center">
-            <div className="border rounded-lg shadow-inner bg-muted p-4 w-full max-w-3xl">
+            <div className="border rounded-lg shadow-inner bg-muted p-4 w-full max-w-3xl overflow-hidden relative">
               <Document
                 file="/MAESTRIA_CP_2025.pdf"
                 onLoadSuccess={onDocumentLoadSuccess}
                 className="flex flex-col items-center"
               >
-                <Page pageNumber={pageNumber} width={800} />
+                <AnimatePresence mode="wait" custom={direction}>
+                  <motion.div
+                    key={pageNumber}
+                    initial={{ opacity: 0, x: direction === "next" ? 50 : -50 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: direction === "next" ? -50 : 50 }}
+                    transition={{ duration: 0.4, ease: "easeInOut" }}
+                    className="flex justify-center"
+                  >
+                    <Page
+                      pageNumber={pageNumber}
+                      width={800}
+                      renderAnnotationLayer={false}
+                      renderTextLayer={false}
+                    />
+                  </motion.div>
+                </AnimatePresence>
               </Document>
             </div>
 
