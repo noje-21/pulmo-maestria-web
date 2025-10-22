@@ -7,6 +7,7 @@ import Adri from "@/assets/adrien.jpg";
 import Alejo from "@/assets/alejandro.jpg";
 import Julie from "@/assets/julieta.jpg";
 import GuilleS from "@/assets/guillermina.jpg";
+import Dora from "@/assets/dora.jpg";
 
 
 const expertos = [
@@ -57,6 +58,12 @@ const expertos = [
     cargo: "Cardióloga · Magíster en Hipertensión Pulmonar",
     especialidad: "Presidente Electa del Consejo Argentino de Insuficiencia Cardíaca e Hipertensión Pulmonar",
     imagen: GuilleS
+  },
+  {
+    nombre: "Dra. Dora Hagg",
+    cargo: "Cordinadora del Area de Insuficienca Cardiaca-Hipertensión Pulmonar-Trasplante Cardíaco",
+    especialidad: "Hospital pediatria 'Pro.DR.Juan P.Garrahan'",
+    imagen: Dora
   }
 ];
 export const Expertos = () => {

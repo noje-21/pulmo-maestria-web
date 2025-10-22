@@ -3,25 +3,29 @@ import gallery12 from "@/assets/secion/maestria12.jpg";
 import gallery13 from "@/assets/secion/maestria13.jpg";
 import gallery14 from "@/assets/secion/maestria14.jpg";
 import gallery15 from "@/assets/secion/maestria15.jpg";
+import gallery16 from "@/assets/secion/maestria16.jpg";
 import gallery2 from "@/assets/secion/maestria2.jpg";
 import gallery22 from "@/assets/secion/maestria22.jpg";
 import gallery23 from "@/assets/secion/maestria23.jpg";
 import gallery24 from "@/assets/secion/maestria24.jpg";
 import gallery25 from "@/assets/secion/maestria25.jpg";
+import gallery26 from "@/assets/secion/maestria26.jpg";
 import gallery3 from "@/assets/secion/maestria3.jpg";
 import gallery32 from "@/assets/secion/maestria32.jpg";
 import gallery33 from "@/assets/secion/maestria33.jpg";
 import gallery34 from "@/assets/secion/maestria34.jpg";
+import gallery35 from "@/assets/secion/maestria35.jpg";
+import gallery36 from "@/assets/secion/maestria36.jpg";
 
 const galeriasPorAño = {
   2022: [
-    gallery1, gallery12, gallery13, gallery14, gallery15
+    gallery1, gallery12, gallery13, gallery14, gallery15, gallery16
   ],
   2023: [
-    gallery2, gallery22, gallery23, gallery24, gallery25
+    gallery2, gallery22, gallery23, gallery24, gallery25, gallery26
   ],
   2024: [
-    gallery3, gallery32, gallery33, gallery34
+    gallery3, gallery32, gallery33, gallery34, gallery35, gallery36
   ],
 };
 
