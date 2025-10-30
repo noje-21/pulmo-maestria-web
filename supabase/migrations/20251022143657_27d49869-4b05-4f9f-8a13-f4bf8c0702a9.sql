@@ -23,5 +23,5 @@ INSERT INTO site_content (section, content) VALUES
 ('expertos', '{"title": "Nuestros Expertos", "description": "Un equipo de reconocidos profesionales con vasta experiencia en el campo de la circulación pulmonar."}'),
 ('eventos', '{"title": "Próximos Eventos", "description": "Mantente informado sobre nuestros eventos, seminarios y conferencias."}'),
 ('quienes_somos', '{"title": "Quiénes Somos", "description": "Somos una institución dedicada a la formación de profesionales de excelencia en el área de la circulación pulmonar."}'),
-('contacto', '{"title": "Contacto", "email": "info@maestriacirculacionpulmonar.com", "whatsapp": "+5491234567890", "instagram": "@maestriacirculacionpulmonar", "website": "www.maestriacirculacionpulmonar.com"}')
+('contacto', '{"title": "Contacto", "email": "info@maestriacirculacionpulmonar.com", "whatsapp": "+5491234567890", "instagram": "@maestriacirculacionpulmonar", "website": "www.maestriacp.com"}')
 ON CONFLICT (section) DO UPDATE SET content = EXCLUDED.content;

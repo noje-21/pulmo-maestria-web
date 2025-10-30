@@ -116,7 +116,7 @@ export const Contacto = () => {
                     <span className="text-2xl">🌐</span>
                     <div>
                       <p className="font-medium text-foreground">Sitio Web</p>
-                      <p className="text-accent hover:underline">www.circulacionpulmonar.com</p>
+                      <p className="text-accent hover:underline">www.maestriacp.com</p>
                     </div>
                   </div>
                 </div>
