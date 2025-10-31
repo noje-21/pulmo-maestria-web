@@ -44,7 +44,7 @@ export const Hero = () => {
           onClick={scrollToContact}
           className="text-lg px-8 py-6 bg-accent hover:bg-accent/90 text-white shadow-glow"
         >
-          Inscripción
+          Ver programa
         </Button>
         
         <p className="mt-6 text-white/80">
