@@ -38,7 +38,7 @@ export const Hero = () => {
 
         <Button
           size="lg"
-          onClick={() => window.open("https://www.maestriacp.com/", "_blank")}
+          onClick={() => (window.location.href = "https://www.maestriacp.com/")}
           className="text-lg px-8 py-6 bg-accent hover:bg-accent/90 text-white shadow-glow"
         >
           Ver Campus
