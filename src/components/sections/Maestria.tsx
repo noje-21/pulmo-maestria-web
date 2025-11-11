@@ -8,21 +8,18 @@ import "react-pdf/dist/Page/TextLayer.css";
 
 // Configurar worker de PDF.js
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
-
 export const Maestria = () => {
   const [numPages, setNumPages] = useState<number | null>(null);
   const [pageNumber, setPageNumber] = useState(1);
   const [direction, setDirection] = useState<"next" | "prev">("next");
   const [containerWidth, setContainerWidth] = useState<number>(800);
-
   const containerRef = useRef<HTMLDivElement | null>(null);
 
   // Usamos ResizeObserver para medir el ancho real del contenedor (incluye cambios por CSS y paddings)
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
-
-    const ro = new ResizeObserver((entries) => {
+    const ro = new ResizeObserver(entries => {
       for (const entry of entries) {
         const cr = entry.contentRect;
         // restamos 1px por seguridad y el padding interno (p-4 = 16px cada lado si usas Tailwind)
@@ -32,36 +29,33 @@ export const Maestria = () => {
         setContainerWidth(available);
       }
     });
-
     ro.observe(el);
     // Medición inicial
     const rect = el.getBoundingClientRect();
     setContainerWidth(Math.max(200, Math.floor(rect.width - 32)));
-
     return () => ro.disconnect();
   }, []);
-
-  const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
+  const onDocumentLoadSuccess = ({
+    numPages
+  }: {
+    numPages: number;
+  }) => {
     setNumPages(numPages);
     setPageNumber(1);
   };
-
   const nextPage = () => {
     if (numPages && pageNumber < numPages) {
       setDirection("next");
-      setPageNumber((prev) => prev + 1);
+      setPageNumber(prev => prev + 1);
     }
   };
-
   const prevPage = () => {
     if (pageNumber > 1) {
       setDirection("prev");
-      setPageNumber((prev) => prev - 1);
+      setPageNumber(prev => prev - 1);
     }
   };
-
-  return (
-    <section id="maestria" className="py-20 bg-muted/30">
+  return <section id="maestria" className="py-20 bg-muted/30">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <h2 className="text-4xl md:text-5xl font-bold text-primary mb-12 text-center">
           Sobre la Maestría
@@ -103,34 +97,29 @@ export const Maestria = () => {
           <h3 className="text-2xl font-semibold text-primary mb-6">Programa Completo (PDF)</h3>
 
           {/* Contenedor medible */}
-          <div
-            ref={containerRef}
-            className="mx-auto w-full max-w-3xl bg-muted p-4 rounded-lg"
-            style={{ boxSizing: "border-box" }}
-          >
-            <Document
-              file="/MAESTRIA_CP_2025.pdf"
-              onLoadSuccess={onDocumentLoadSuccess}
-            >
+          <div ref={containerRef} className="mx-auto w-full max-w-3xl bg-muted p-4 rounded-lg" style={{
+          boxSizing: "border-box"
+        }}>
+            <Document file="/MAESTRIA_CP_2025.pdf" onLoadSuccess={onDocumentLoadSuccess}>
               <AnimatePresence mode="wait" custom={direction}>
-                <motion.div
-                  key={pageNumber}
-                  initial={{ opacity: 0, y: direction === "next" ? 12 : -12 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: direction === "next" ? -12 : 12 }}
-                  transition={{ duration: 0.28, ease: "easeInOut" }}
-                  className="flex justify-center"
-                >
+                <motion.div key={pageNumber} initial={{
+                opacity: 0,
+                y: direction === "next" ? 12 : -12
+              }} animate={{
+                opacity: 1,
+                y: 0
+              }} exit={{
+                opacity: 0,
+                y: direction === "next" ? -12 : 12
+              }} transition={{
+                duration: 0.28,
+                ease: "easeInOut"
+              }} className="flex justify-center">
                   {/* 
                     Pasamos width igual al ancho disponible (containerWidth).
                     Page adaptará el PDF manteniendo la proporción.
-                  */}
-                  <Page
-                    pageNumber={pageNumber}
-                    width={containerWidth}
-                    renderAnnotationLayer={true}
-                    renderTextLayer={true}
-                  />
+                   */}
+                  <Page pageNumber={pageNumber} width={containerWidth} renderAnnotationLayer={true} renderTextLayer={true} />
                 </motion.div>
               </AnimatePresence>
             </Document>
@@ -138,9 +127,9 @@ export const Maestria = () => {
 
           {/* Controles */}
           <div className="flex items-center justify-center gap-4 mt-6 flex-wrap">
-            <Button onClick={prevPage} disabled={pageNumber <= 1}>⬅️ Anterior</Button>
+            <Button onClick={prevPage} disabled={pageNumber <= 1}>⬅️</Button>
             <span className="text-sm text-muted-foreground">Página {pageNumber} de {numPages ?? "…"}</span>
-            <Button onClick={nextPage} disabled={numPages ? pageNumber >= numPages : false}>Siguiente ➡️</Button>
+            <Button onClick={nextPage} disabled={numPages ? pageNumber >= numPages : false}>➡️</Button>
           </div>
 
           <div className="mt-4">
@@ -150,6 +139,5 @@ export const Maestria = () => {
           </div>
         </div>
       </div>
-    </section>
-  );
+    </section>;
 };
