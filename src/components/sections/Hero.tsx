@@ -38,10 +38,10 @@ export const Hero = () => {
 
         <Button
           size="lg"
-          onClick={scrollToContact}
+          onClick={() => window.open("https://www.maestriacp.com/", "_blank")}
           className="text-lg px-8 py-6 bg-accent hover:bg-accent/90 text-white shadow-glow"
         >
-          Ver Campus{" "}
+          Ver Campus
         </Button>
       </div>
     </section>
