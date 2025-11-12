@@ -13,7 +13,7 @@ import Dora from "@/assets/dora.jpg";
 const expertos = [
   {
     nombre: "Dr. Adrián José Lescano",
-    cargo: "Directo de Maestria · Médico Cardiólogo · Magíster en Hipertensión Pulmonar · Magíster en Efectividad Clínica · Especialista en Ultrasonografía Cardiovascular",
+    cargo: "Director de Maestría · Médico Cardiólogo · Magíster en Hipertensión Pulmonar · Magíster en Efectividad Clínica · Especialista en Ultrasonografía Cardiovascular",
     especialidad: "Fundación Favaloro · Instituto de Efectividad Clínica y Sanitaria (IECS)",
     imagen: Adri
   },
@@ -61,8 +61,8 @@ const expertos = [
   },
   {
     nombre: "Dra. Dora Hagg",
-    cargo: "Cordinadora del Area de Insuficienca Cardiaca-Hipertensión Pulmonar-Trasplante Cardíaco",
-    especialidad: "Hospital pediatria 'Pro.DR.Juan P.Garrahan'",
+    cargo: "Coordinadora del Área de Insuficiencia Cardíaca-Hipertensión Pulmonar-Trasplante Cardíaco",
+    especialidad: "Hospital de Pediatría 'Prof. Dr. Juan P. Garrahan'",
     imagen: Dora
   }
 ];

@@ -12,8 +12,9 @@ export const QuienesSomos = () => {
           <div>
             <img 
               src={logoMaestria} 
-              alt="Logo Maestría" 
+              alt="Logo Maestría Latinoamericana en Circulación Pulmonar" 
               className="w-full max-w-md mx-auto rounded-lg shadow-lg"
+              loading="lazy"
             />
           </div>
           
@@ -38,15 +39,15 @@ export const QuienesSomos = () => {
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-accent mt-1">✓</span>
-                <span><strong>sanatorio trinidad de quilmes</strong> -</span>
+                <span><strong>Sanatorio Trinidad de Quilmes</strong> - Centro de práctica clínica</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-accent mt-1">✓</span>
-                <span><strong>hospital Maria Ferrer</strong> -</span>
+                <span><strong>Hospital María Ferrer</strong> - Referente en enfermedades respiratorias</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-accent mt-1">✓</span>
-                <span><strong>Red BASA</strong> -</span>
+                <span><strong>Red BASA</strong> - Red de instituciones de salud</span>
               </li>
             </ul>
             

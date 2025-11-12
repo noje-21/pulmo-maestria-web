@@ -9,7 +9,12 @@ export const Hero = () => {
   return (
     <section id="inicio" className="relative min-h-screen flex items-center justify-center overflow-hidden">
       <div className="absolute inset-0 z-0">
-        <img src={heroImage} alt="Maestría en Circulación Pulmonar" className="w-full h-full object-cover" />
+        <img 
+          src={heroImage} 
+          alt="Maestría en Circulación Pulmonar - Formación médica especializada en Buenos Aires" 
+          className="w-full h-full object-cover"
+          loading="eager"
+        />
         <div className="absolute inset-0 bg-gradient-to-b from-primary/90 via-primary/70 to-background/95" />
       </div>
 

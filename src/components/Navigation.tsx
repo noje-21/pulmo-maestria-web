@@ -57,7 +57,9 @@ const Navigation = () => {
                 {item.name}
               </a>)}
             <Link to="/auth">
-              <Button variant="outline" size="sm" className="bg-red-600 hover:bg-red-500 text-slate-50">AD</Button>
+              <Button variant="outline" size="sm" className="bg-primary hover:bg-primary/90 text-primary-foreground border-0">
+                Admin
+              </Button>
             </Link>
           </div>
 
@@ -80,7 +82,9 @@ const Navigation = () => {
               {item.name}
             </a>)}
           <Link to="/auth" className="block">
-            <Button variant="outline" size="sm" className="w-full">Admin</Button>
+            <Button variant="outline" size="sm" className="w-full bg-primary hover:bg-primary/90 text-primary-foreground border-0">
+              Admin
+            </Button>
           </Link>
         </div>
       </div>

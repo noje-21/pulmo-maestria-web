@@ -8,8 +8,8 @@ const eventos = [
   },
   {
     fecha: "5-7 de noviembre 2025",
-    titulo: "Circuito practico",
-    descripcion: "Ecocardiografia, ECG, Hemodinamia y CCD, intersticiopatias, Enf Reumatológicas, Estudios de función pulmonar, etc."
+    titulo: "Circuito práctico",
+    descripcion: "Ecocardiografía, ECG, Hemodinámica y CCD, intersticiopatías, Enfermedades Reumatológicas, Estudios de función pulmonar, etc."
   },
   {
     fecha: "8-10 de noviembre 2025",
@@ -19,12 +19,12 @@ const eventos = [
   {
     fecha: "11-13 de noviembre 2025",
     titulo: "Casos Clínicos y Talleres",
-    descripcion: "Últimas novedades, avances tecnológicos, IA, bioestadistica avanzada e interpretación de Trials."
+    descripcion: "Últimas novedades, avances tecnológicos, IA, bioestadística avanzada e interpretación de Trials."
   },
   {
     fecha: "14-15 de noviembre 2025",
-    titulo: "Simposio latinoamericano de hipertensión pulmonar",
-    descripcion: ": Examen final."
+    titulo: "Simposio Latinoamericano de Hipertensión Pulmonar",
+    descripcion: "Clausura y examen final."
   }
 ];
 
