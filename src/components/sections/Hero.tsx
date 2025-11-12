@@ -22,32 +22,34 @@ export const Hero = () => {
         <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-6 animate-fade-in">
           Maestría Latinoamericana en
           <br />
-          <span className="text-accent">Circulación Pulmonar 2025</span>
+          <span className="text-accent animate-pulse">Circulación Pulmonar 2025</span>
         </h1>
 
-        <p className="text-xl md:text-2xl text-white/90 mb-4 max-w-3xl mx-auto">
+        <p className="text-xl md:text-2xl text-white/90 mb-4 max-w-3xl mx-auto animate-fade-in" style={{ animationDelay: '0.2s' }}>
           Formación intensiva dirigida a internistas, cardiólogos, reumatólogos y neumonólogos
         </p>
 
-        <div className="flex flex-col sm:flex-row gap-4 items-center justify-center mb-8 text-lg text-white/90">
-          <div className="flex items-center gap-2">
-            <span className="text-accent">📅</span>
-            <span>3-15 de noviembre 2025</span>
+        <div className="flex flex-col sm:flex-row gap-4 items-center justify-center mb-8 text-lg text-white/90 animate-fade-in" style={{ animationDelay: '0.4s' }}>
+          <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full hover:bg-white/20 transition-all duration-300">
+            <span className="text-accent text-2xl">📅</span>
+            <span className="font-semibold">3-15 de noviembre 2025</span>
           </div>
-          <div className="hidden sm:block text-accent">•</div>
-          <div className="flex items-center gap-2">
-            <span className="text-accent">📍</span>
-            <span>Buenos Aires, Argentina</span>
+          <div className="hidden sm:block text-accent text-2xl">•</div>
+          <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full hover:bg-white/20 transition-all duration-300">
+            <span className="text-accent text-2xl">📍</span>
+            <span className="font-semibold">Buenos Aires, Argentina</span>
           </div>
         </div>
 
-        <Button
-          size="lg"
-          onClick={() => (window.location.href = "https://www.maestriacp.com/")}
-          className="text-lg px-8 py-6 bg-accent hover:bg-accent/90 text-white shadow-glow"
-        >
-          Ver Campus
-        </Button>
+        <div className="animate-fade-in" style={{ animationDelay: '0.6s' }}>
+          <Button
+            size="lg"
+            onClick={() => (window.location.href = "https://www.maestriacp.com/")}
+            className="text-lg px-10 py-7 bg-accent hover:bg-accent/90 text-white shadow-glow hover:scale-105 transition-all duration-300 font-bold rounded-full"
+          >
+            🎓 Ver Campus Virtual
+          </Button>
+        </div>
       </div>
     </section>
   );

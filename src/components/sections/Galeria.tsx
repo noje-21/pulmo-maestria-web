@@ -31,38 +31,48 @@ const galeriasPorAño = {
 
 export const Galeria = () => {
   return (
-    <section id="galeria" className="py-20 bg-muted/30">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 className="text-4xl md:text-5xl font-bold text-primary mb-4 text-center">
-          Galería
+    <section id="galeria" className="py-20 bg-gradient-to-b from-muted/30 to-background relative overflow-hidden">
+      <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <h2 className="text-4xl md:text-5xl font-bold text-primary mb-4 text-center animate-fade-in">
+          Galería de Momentos
         </h2>
+        <div className="w-24 h-1 bg-gradient-to-r from-primary to-accent mx-auto mb-4 rounded-full"></div>
         <p className="text-xl text-muted-foreground mb-12 text-center">
           Momentos destacados en nuestras sesiones académicas
         </p>
 
-        {/* Recorremos cada año */}
         {Object.entries(galeriasPorAño).map(([año, imagenes]) => (
-          <div key={año} className="mb-16">
-            {/* Título del año */}
-            <h3 className="text-3xl font-semibold text-primary mb-6 text-center">
-              Sesiones {año}
-            </h3>
+          <div key={año} className="mb-20">
+            <div className="flex items-center justify-center gap-4 mb-8">
+              <div className="h-px w-16 bg-gradient-to-r from-transparent to-accent"></div>
+              <h3 className="text-3xl font-bold text-primary bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+                Sesiones {año}
+              </h3>
+              <div className="h-px w-16 bg-gradient-to-l from-transparent to-accent"></div>
+            </div>
 
-            {/* Grid de imágenes */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {imagenes.map((src, index) => (
                 <div
                   key={index}
-                  className="relative overflow-hidden rounded-lg shadow-lg group cursor-pointer aspect-video"
+                  className="relative overflow-hidden rounded-2xl shadow-xl group cursor-pointer aspect-video border-4 border-transparent hover:border-accent/30 transition-all duration-500"
+                  style={{ animationDelay: `${index * 0.1}s` }}
                 >
                   <img
                     src={src}
                     alt={`Sesión académica ${año}`}
-                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-125 group-hover:rotate-2"
                     loading="lazy"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-primary/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
-                    <p className="text-white font-medium">Sesión académica {año}</p>
+                  <div className="absolute inset-0 bg-gradient-to-t from-primary via-primary/50 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-end p-6">
+                    <div className="transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+                      <p className="text-white font-bold text-lg mb-1">Sesión Académica</p>
+                      <p className="text-accent font-semibold">{año}</p>
+                    </div>
+                  </div>
+                  <div className="absolute top-4 right-4 bg-accent/90 backdrop-blur-sm px-3 py-1 rounded-full text-white font-semibold text-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    📸 Ver más
                   </div>
                 </div>
               ))}

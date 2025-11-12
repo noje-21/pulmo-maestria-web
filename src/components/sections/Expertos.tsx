@@ -68,41 +68,46 @@ const expertos = [
 ];
 export const Expertos = () => {
   return (
-    <section id="expertos" className="py-20 bg-background">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 className="text-4xl md:text-5xl font-bold text-primary mb-4 text-center">
-          Expertos
+    <section id="expertos" className="py-20 bg-gradient-to-b from-background to-muted/30 relative overflow-hidden">
+      <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <h2 className="text-4xl md:text-5xl font-bold text-primary mb-4 text-center animate-fade-in">
+          Nuestros Expertos
         </h2>
+        <div className="w-24 h-1 bg-gradient-to-r from-primary to-accent mx-auto mb-4 rounded-full"></div>
         <p className="text-xl text-muted-foreground mb-12 text-center max-w-3xl mx-auto">
           Docentes de reconocimiento internacional en el campo de la circulación pulmonar
         </p>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {expertos.map((experto, index) => (
             <Card
               key={index}
-              className="border-accent/20 hover:border-accent/40 transition-all hover:shadow-lg"
+              className="border-accent/20 hover:border-accent/50 transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 bg-gradient-to-br from-card to-card/50 group"
+              style={{ animationDelay: `${index * 0.1}s` }}
             >
-              <CardContent className="pt-6 flex flex-col items-center text-center">
-                {/* Imagen del experto */}
+              <CardContent className="pt-8 pb-6 flex flex-col items-center text-center">
                 {experto.imagen ? (
-                  <img
-                    src={experto.imagen}
-                    alt={experto.nombre}
-                    className="w-24 h-24 object-cover rounded-full mb-4 border-4 border-primary/30 shadow-md"
-                  />
+                  <div className="relative mb-6">
+                    <div className="absolute inset-0 bg-gradient-to-br from-primary to-accent rounded-full blur-xl opacity-30 group-hover:opacity-60 transition-opacity duration-300"></div>
+                    <img
+                      src={experto.imagen}
+                      alt={experto.nombre}
+                      className="relative w-32 h-32 object-cover rounded-full border-4 border-primary/30 shadow-lg group-hover:scale-110 transition-transform duration-300"
+                    />
+                  </div>
                 ) : (
-                  <div className="w-16 h-16 bg-gradient-to-br from-primary to-accent rounded-full flex items-center justify-center mb-4">
-                    <span className="text-2xl text-white">👨‍⚕️</span>
+                  <div className="w-24 h-24 bg-gradient-to-br from-primary to-accent rounded-full flex items-center justify-center mb-6 shadow-lg">
+                    <span className="text-3xl text-white">👨‍⚕️</span>
                   </div>
                 )}
 
-                {/* Información */}
-                <h3 className="text-xl font-semibold text-primary mb-2">
+                <h3 className="text-xl font-bold text-primary mb-3 group-hover:text-accent transition-colors duration-300">
                   {experto.nombre}
                 </h3>
-                <p className="text-accent font-medium mb-2">{experto.cargo}</p>
-                <p className="text-sm text-muted-foreground">
+                <div className="w-12 h-0.5 bg-gradient-to-r from-transparent via-accent to-transparent mb-3"></div>
+                <p className="text-accent font-semibold mb-3 text-sm">{experto.cargo}</p>
+                <p className="text-sm text-muted-foreground leading-relaxed">
                   {experto.especialidad}
                 </p>
               </CardContent>

@@ -171,4 +171,11 @@ All colors MUST be HSL.
       transform: translateY(0);
     }
   }
+  
+  .bg-grid-pattern {
+    background-image: 
+      linear-gradient(to right, hsl(var(--primary) / 0.05) 1px, transparent 1px),
+      linear-gradient(to bottom, hsl(var(--primary) / 0.05) 1px, transparent 1px);
+    background-size: 30px 30px;
+  }
 }

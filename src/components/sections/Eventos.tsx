@@ -30,30 +30,37 @@ const eventos = [
 
 export const Eventos = () => {
   return (
-    <section id="eventos" className="py-20 bg-muted/30">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 className="text-4xl md:text-5xl font-bold text-primary mb-4 text-center">
-          Calendario
+    <section id="eventos" className="py-20 bg-gradient-to-b from-muted/30 to-background relative overflow-hidden">
+      <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <h2 className="text-4xl md:text-5xl font-bold text-primary mb-4 text-center animate-fade-in">
+          Calendario Académico
         </h2>
+        <div className="w-24 h-1 bg-gradient-to-r from-primary to-accent mx-auto mb-4 rounded-full"></div>
         <p className="text-xl text-muted-foreground mb-12 text-center">
           Programa académico del 3 al 15 de noviembre 2025
         </p>
         
         <div className="space-y-6">
           {eventos.map((evento, index) => (
-            <Card key={index} className="border-l-4 border-l-accent hover:shadow-lg transition-all">
-              <CardContent className="pt-6">
-                <div className="flex flex-col md:flex-row md:items-center gap-4">
-                  <div className="md:w-48 flex-shrink-0">
-                    <div className="inline-block bg-accent/10 text-accent px-4 py-2 rounded-lg font-semibold">
-                      {evento.fecha}
+            <Card 
+              key={index} 
+              className="border-l-4 border-l-accent hover:border-l-primary hover:shadow-2xl transition-all duration-300 hover:-translate-x-2 bg-gradient-to-r from-card to-card/50 group"
+              style={{ animationDelay: `${index * 0.1}s` }}
+            >
+              <CardContent className="pt-6 pb-6">
+                <div className="flex flex-col md:flex-row md:items-center gap-6">
+                  <div className="md:w-56 flex-shrink-0">
+                    <div className="inline-flex items-center gap-2 bg-gradient-to-br from-accent/20 to-accent/10 text-accent px-5 py-3 rounded-xl font-bold shadow-md group-hover:scale-105 transition-transform duration-300 border-2 border-accent/20">
+                      <span className="text-lg">📅</span>
+                      <span>{evento.fecha}</span>
                     </div>
                   </div>
                   <div className="flex-grow">
-                    <h3 className="text-xl font-semibold text-primary mb-2">
+                    <h3 className="text-xl font-bold text-primary mb-3 group-hover:text-accent transition-colors duration-300">
                       {evento.titulo}
                     </h3>
-                    <p className="text-muted-foreground">
+                    <p className="text-muted-foreground leading-relaxed">
                       {evento.descripcion}
                     </p>
                   </div>

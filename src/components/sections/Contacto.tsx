@@ -72,66 +72,86 @@ export const Contacto = () => {
   };
 
   return (
-    <section id="contacto" className="py-20 bg-background">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 className="text-4xl md:text-5xl font-bold text-primary mb-4 text-center">Contacto</h2>
+    <section id="contacto" className="py-20 bg-gradient-to-b from-background to-muted/30 relative overflow-hidden">
+      <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <h2 className="text-4xl md:text-5xl font-bold text-primary mb-4 text-center animate-fade-in">
+          Contáctanos
+        </h2>
+        <div className="w-24 h-1 bg-gradient-to-r from-primary to-accent mx-auto mb-4 rounded-full"></div>
         <p className="text-xl text-muted-foreground mb-12 text-center">
-          ¿Tienes preguntas? Contáctanos
+          ¿Tienes preguntas? Estamos aquí para ayudarte
         </p>
 
         <div className="grid md:grid-cols-2 gap-12">
-          {/* Información de contacto */}
           <div>
-            <Card className="border-accent/20">
-              <CardContent className="pt-6">
-                <h3 className="text-2xl font-semibold text-primary mb-6">Información de Contacto</h3>
+            <Card className="border-accent/20 hover:shadow-2xl transition-all duration-300 bg-gradient-to-br from-card to-card/50">
+              <CardContent className="pt-8">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="p-2 bg-primary/10 rounded-lg">
+                    <span className="text-3xl">📞</span>
+                  </div>
+                  <h3 className="text-2xl font-bold text-primary">Información de Contacto</h3>
+                </div>
 
-                <div className="space-y-4">
-                  <div className="flex items-start gap-3 cursor-pointer" onClick={() => redirectTo("mailto:magisterenhipertensionpulmonar@gmail.com")}>
-                    <span className="text-2xl">✉️</span>
+                <div className="space-y-5">
+                  <div className="flex items-start gap-4 cursor-pointer group p-3 rounded-lg hover:bg-primary/5 transition-all duration-300" onClick={() => redirectTo("mailto:magisterenhipertensionpulmonar@gmail.com")}>
+                    <div className="p-2 bg-accent/10 rounded-lg group-hover:scale-110 transition-transform duration-300">
+                      <span className="text-2xl">✉️</span>
+                    </div>
                     <div>
-                      <p className="font-medium text-foreground">Email</p>
-                      <p className="text-accent hover:underline">magisterenhipertensionpulmonar@gmail.com</p>
+                      <p className="font-bold text-foreground mb-1">Email</p>
+                      <p className="text-accent hover:underline text-sm">magisterenhipertensionpulmonar@gmail.com</p>
                     </div>
                   </div>
 
-                  <div className="flex items-start gap-3 cursor-pointer" onClick={() => redirectTo("https://wa.me/573004142568")}>
-                    <span className="text-2xl">📱</span>
+                  <div className="flex items-start gap-4 cursor-pointer group p-3 rounded-lg hover:bg-primary/5 transition-all duration-300" onClick={() => redirectTo("https://wa.me/573004142568")}>
+                    <div className="p-2 bg-accent/10 rounded-lg group-hover:scale-110 transition-transform duration-300">
+                      <span className="text-2xl">📱</span>
+                    </div>
                     <div>
-                      <p className="font-medium text-foreground">WhatsApp</p>
-                      <p className="text-accent hover:underline">+57 300 414 2568</p>
+                      <p className="font-bold text-foreground mb-1">WhatsApp</p>
+                      <p className="text-accent hover:underline text-sm">+57 300 414 2568</p>
                     </div>
                   </div>
 
-                  <div className="flex items-start gap-3 cursor-pointer" onClick={() => redirectTo("https://www.linkedin.com/in/hipertension-pulmonar-655a43253")}>
-                    <span className="text-2xl">🔗</span>
+                  <div className="flex items-start gap-4 cursor-pointer group p-3 rounded-lg hover:bg-primary/5 transition-all duration-300" onClick={() => redirectTo("https://www.linkedin.com/in/hipertension-pulmonar-655a43253")}>
+                    <div className="p-2 bg-accent/10 rounded-lg group-hover:scale-110 transition-transform duration-300">
+                      <span className="text-2xl">🔗</span>
+                    </div>
                     <div>
-                      <p className="font-medium text-foreground">LinkedIn</p>
-                      <p className="text-accent hover:underline">linkedin.com/in/hipertension-pulmonar</p>
+                      <p className="font-bold text-foreground mb-1">LinkedIn</p>
+                      <p className="text-accent hover:underline text-sm">linkedin.com/in/hipertension-pulmonar</p>
                     </div>
                   </div>
 
-                  <div className="flex items-start gap-3 cursor-pointer" onClick={() => redirectTo("https://www.facebook.com/share/16s5MUKG3C/?mibextid=wwXIfr")}>
-                    <span className="text-2xl">📘</span>
+                  <div className="flex items-start gap-4 cursor-pointer group p-3 rounded-lg hover:bg-primary/5 transition-all duration-300" onClick={() => redirectTo("https://www.facebook.com/share/16s5MUKG3C/?mibextid=wwXIfr")}>
+                    <div className="p-2 bg-accent/10 rounded-lg group-hover:scale-110 transition-transform duration-300">
+                      <span className="text-2xl">📘</span>
+                    </div>
                     <div>
-                      <p className="font-medium text-foreground">Facebook</p>
-                      <p className="text-accent hover:underline">facebook.com/hipertensionpulmonar</p>
+                      <p className="font-bold text-foreground mb-1">Facebook</p>
+                      <p className="text-accent hover:underline text-sm">facebook.com/hipertensionpulmonar</p>
                     </div>
                   </div>
 
-                  <div className="flex items-start gap-3 cursor-pointer" onClick={() => redirectTo("https://instagram.com/magisterenhipertensionpulmonar")}>
-                    <span className="text-2xl">📸</span>
+                  <div className="flex items-start gap-4 cursor-pointer group p-3 rounded-lg hover:bg-primary/5 transition-all duration-300" onClick={() => redirectTo("https://instagram.com/magisterenhipertensionpulmonar")}>
+                    <div className="p-2 bg-accent/10 rounded-lg group-hover:scale-110 transition-transform duration-300">
+                      <span className="text-2xl">📸</span>
+                    </div>
                     <div>
-                      <p className="font-medium text-foreground">Instagram</p>
-                      <p className="text-accent hover:underline">@magisterenhipertensionpulmonar</p>
+                      <p className="font-bold text-foreground mb-1">Instagram</p>
+                      <p className="text-accent hover:underline text-sm">@magisterenhipertensionpulmonar</p>
                     </div>
                   </div>
 
-                  <div className="flex items-start gap-3 cursor-pointer" onClick={() => redirectTo("https://www.maestriacp.com/")}>
-                    <span className="text-2xl">🌐</span>
+                  <div className="flex items-start gap-4 cursor-pointer group p-3 rounded-lg hover:bg-primary/5 transition-all duration-300" onClick={() => redirectTo("https://www.maestriacp.com/")}>
+                    <div className="p-2 bg-accent/10 rounded-lg group-hover:scale-110 transition-transform duration-300">
+                      <span className="text-2xl">🌐</span>
+                    </div>
                     <div>
-                      <p className="font-medium text-foreground">Sitio Web</p>
-                      <p className="text-accent hover:underline">www.maestriacp.com</p>
+                      <p className="font-bold text-foreground mb-1">Campus Virtual</p>
+                      <p className="text-accent hover:underline text-sm">www.maestriacp.com</p>
                     </div>
                   </div>
                 </div>
@@ -139,18 +159,79 @@ export const Contacto = () => {
             </Card>
           </div>
 
-          {/* Formulario de contacto */}
           <div>
-            <Card className="border-accent/20">
-              <CardContent className="pt-6">
-                <form onSubmit={handleSubmit} className="space-y-4">
-                  <Input id="name" name="name" value={formData.name} onChange={handleChange} placeholder="Tu nombre completo" required />
-                  <Input id="email" name="email" type="email" value={formData.email} onChange={handleChange} placeholder="tu@email.com" required />
-                  <Input id="country" name="country" value={formData.country} onChange={handleChange} placeholder="Tu país" required />
-                  <Input id="specialty" name="specialty" value={formData.specialty} onChange={handleChange} placeholder="Ej: Cardiología" required />
-                  <Textarea id="message" name="message" value={formData.message} onChange={handleChange} placeholder="Escribe tu mensaje aquí..." rows={4} required />
-                  <Button type="submit" className="w-full bg-accent hover:bg-accent/90" disabled={loading}>
-                    {loading ? "Enviando..." : "Enviar Mensaje"}
+            <Card className="border-accent/20 hover:shadow-2xl transition-all duration-300 bg-gradient-to-br from-card to-card/50">
+              <CardContent className="pt-8">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="p-2 bg-accent/10 rounded-lg">
+                    <span className="text-3xl">📝</span>
+                  </div>
+                  <h3 className="text-2xl font-bold text-primary">Envíanos un Mensaje</h3>
+                </div>
+                <form onSubmit={handleSubmit} className="space-y-5">
+                  <div>
+                    <Input 
+                      id="name" 
+                      name="name" 
+                      value={formData.name} 
+                      onChange={handleChange} 
+                      placeholder="Tu nombre completo" 
+                      required 
+                      className="border-accent/20 focus:border-accent transition-all duration-300"
+                    />
+                  </div>
+                  <div>
+                    <Input 
+                      id="email" 
+                      name="email" 
+                      type="email" 
+                      value={formData.email} 
+                      onChange={handleChange} 
+                      placeholder="tu@email.com" 
+                      required 
+                      className="border-accent/20 focus:border-accent transition-all duration-300"
+                    />
+                  </div>
+                  <div>
+                    <Input 
+                      id="country" 
+                      name="country" 
+                      value={formData.country} 
+                      onChange={handleChange} 
+                      placeholder="Tu país" 
+                      required 
+                      className="border-accent/20 focus:border-accent transition-all duration-300"
+                    />
+                  </div>
+                  <div>
+                    <Input 
+                      id="specialty" 
+                      name="specialty" 
+                      value={formData.specialty} 
+                      onChange={handleChange} 
+                      placeholder="Ej: Cardiología" 
+                      required 
+                      className="border-accent/20 focus:border-accent transition-all duration-300"
+                    />
+                  </div>
+                  <div>
+                    <Textarea 
+                      id="message" 
+                      name="message" 
+                      value={formData.message} 
+                      onChange={handleChange} 
+                      placeholder="Escribe tu mensaje aquí..." 
+                      rows={5} 
+                      required 
+                      className="border-accent/20 focus:border-accent transition-all duration-300 resize-none"
+                    />
+                  </div>
+                  <Button 
+                    type="submit" 
+                    className="w-full bg-accent hover:bg-accent/90 text-white font-bold py-6 rounded-full hover:scale-105 transition-all duration-300 shadow-lg" 
+                    disabled={loading}
+                  >
+                    {loading ? "Enviando..." : "✉️ Enviar Mensaje"}
                   </Button>
                 </form>
               </CardContent>
