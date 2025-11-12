@@ -8,11 +8,11 @@ import { toast } from "sonner";
 import { z } from "zod";
 
 const contactSchema = z.object({
-  name: z.string().trim().min(1, "El nombre es requerido").max(100),
-  email: z.string().trim().email("Email inválido").max(255),
-  country: z.string().trim().min(1, "El país es requerido").max(100),
-  specialty: z.string().trim().min(1, "La especialidad es requerida").max(100),
-  message: z.string().trim().min(10, "El mensaje debe tener al menos 10 caracteres").max(2000)
+  name: z.string().min(1, "El nombre es requerido").max(100),
+  email: z.string().email("Email inválido").max(255),
+  country: z.string().min(1, "El país es requerido").max(100),
+  specialty: z.string().min(1, "La especialidad es requerida").max(100),
+  message: z.string().min(10, "El mensaje debe tener al menos 10 caracteres").max(2000)
 });
 
 export const Contacto = () => {
@@ -30,8 +30,23 @@ export const Contacto = () => {
     setLoading(true);
 
     try {
-      const validated = contactSchema.parse(formData);
-      const { error } = await supabase.from("contact_submissions").insert([validated]);
+      // Trim values before validation
+      const trimmedData = {
+        name: formData.name.trim(),
+        email: formData.email.trim(),
+        country: formData.country.trim(),
+        specialty: formData.specialty.trim(),
+        message: formData.message.trim()
+      };
+      
+      const validated = contactSchema.parse(trimmedData);
+      const { error } = await supabase.from("contact_submissions").insert([{
+        name: validated.name,
+        email: validated.email,
+        country: validated.country,
+        specialty: validated.specialty,
+        message: validated.message
+      }]);
       if (error) throw error;
 
       toast.success("¡Mensaje enviado con éxito!");
