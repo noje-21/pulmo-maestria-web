@@ -62,23 +62,23 @@ const Navigation = () => {
     navigate("/");
   };
   return (
-    <motion.nav 
+    <motion.nav
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.5, ease: "easeOut" }}
       className={`fixed top-0 w-full z-50 transition-all duration-500 ${
-        isScrolled 
-          ? "bg-background/80 backdrop-blur-xl shadow-xl shadow-black/5 border-b border-border/50" 
+        isScrolled
+          ? "bg-background/80 backdrop-blur-xl shadow-xl shadow-black/5 border-b border-border/50"
           : "bg-transparent"
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
           <Link to="/" className="flex items-center space-x-3 group">
-            <motion.img 
-              src={logoMaestria} 
-              alt="Maestría en Circulación Pulmonar" 
-              className="h-14 w-auto transition-all duration-300 group-hover:scale-110"
+            <motion.img
+              src={logoMaestria}
+              alt="Maestría en Circulación Pulmonar"
+              className="h-14 w-auto block bg-transparent shadow-none border-0 p-0 m-0"
               whileHover={{ scale: 1.1 }}
               transition={{ type: "spring", stiffness: 400, damping: 10 }}
             />
@@ -95,7 +95,10 @@ const Navigation = () => {
                 transition={{ delay: index * 0.1, duration: 0.5 }}
                 className="text-foreground hover:text-primary transition-all duration-300 font-medium relative group"
               >
-                {item.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
+                {item
+                  .split("-")
+                  .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+                  .join(" ")}
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
               </motion.a>
             ))}
@@ -116,7 +119,7 @@ const Navigation = () => {
                 </Button>
               </motion.div>
             )}
-            
+
             {user && (
               <motion.div
                 initial={{ opacity: 0, scale: 0.9 }}
@@ -166,7 +169,10 @@ const Navigation = () => {
                     className="block text-foreground hover:text-primary transition-all duration-300 py-3 px-4 rounded-xl hover:bg-accent font-medium"
                     onClick={() => setIsMenuOpen(false)}
                   >
-                    {item.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
+                    {item
+                      .split("-")
+                      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+                      .join(" ")}
                   </motion.a>
                 ))}
                 {isAdmin && (
@@ -194,12 +200,7 @@ const Navigation = () => {
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.7 }}
                   >
-                    <Button
-                      onClick={handleLogout}
-                      variant="ghost"
-                      size="sm"
-                      className="w-full rounded-xl mt-2"
-                    >
+                    <Button onClick={handleLogout} variant="ghost" size="sm" className="w-full rounded-xl mt-2">
                       Cerrar sesión
                     </Button>
                   </motion.div>
