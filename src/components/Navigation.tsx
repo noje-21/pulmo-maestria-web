@@ -5,11 +5,13 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import logoMaestria from "@/assets/logo-maestria.jpg";
+
 const Navigation = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [user, setUser] = useState<any>(null);
   const [isAdmin, setIsAdmin] = useState(false);
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -61,20 +63,19 @@ const Navigation = () => {
     await supabase.auth.signOut();
     navigate("/");
   };
+
   return (
     <motion.nav
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.5, ease: "easeOut" }}
       className={`fixed top-0 w-full z-50 transition-all duration-500 ${
-        isScrolled
-          ? "bg-background/80 backdrop-blur-xl shadow-xl shadow-black/5 border-b border-border/50"
-          : "bg-transparent"
+        isScrolled ? "bg-white/5 backdrop-blur-lg shadow-lg shadow-black/10 border-b border-white/10" : "bg-transparent"
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
-          <Link to="/" className="flex items-center space-x-3 group">
+          <Link to="/" className="flex items-center space-x-3 group bg-transparent p-0 m-0">
             <motion.img
               src={logoMaestria}
               alt="Maestría en Circulación Pulmonar"
@@ -138,7 +139,7 @@ const Navigation = () => {
             )}
           </div>
 
-          {/* Mobile menu button */}
+          {/* Mobile Button */}
           <motion.button
             whileTap={{ scale: 0.95 }}
             onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -158,7 +159,7 @@ const Navigation = () => {
               transition={{ duration: 0.3 }}
               className="md:hidden overflow-hidden"
             >
-              <div className="py-4 space-y-2 backdrop-blur-xl bg-background/95 rounded-2xl mt-4 p-6 shadow-xl">
+              <div className="py-4 space-y-2 backdrop-blur-xl bg-white/10 rounded-2xl mt-4 p-6 shadow-lg shadow-black/10 border border-white/10">
                 {["maestria", "expertos", "eventos", "quienes-somos", "galeria", "contacto"].map((item, index) => (
                   <motion.a
                     key={item}
@@ -175,6 +176,7 @@ const Navigation = () => {
                       .join(" ")}
                   </motion.a>
                 ))}
+
                 {isAdmin && (
                   <motion.div
                     initial={{ opacity: 0, x: -20 }}
@@ -194,6 +196,7 @@ const Navigation = () => {
                     </Button>
                   </motion.div>
                 )}
+
                 {user && (
                   <motion.div
                     initial={{ opacity: 0, x: -20 }}
@@ -213,4 +216,5 @@ const Navigation = () => {
     </motion.nav>
   );
 };
+
 export default Navigation;
