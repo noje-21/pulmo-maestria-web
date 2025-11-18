@@ -1,93 +1,215 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { Menu, X } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
+import { supabase } from "@/integrations/supabase/client";
 import logoMaestria from "@/assets/logo-maestria.jpg";
 const Navigation = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const navItems = [{
-    name: "Inicio",
-    path: "/"
-  }, {
-    name: "Maestría",
-    path: "#maestria"
-  }, {
-    name: "Expertos",
-    path: "#expertos"
-  }, {
-    name: "Eventos",
-    path: "#eventos"
-  }, {
-    name: "Quiénes Somos",
-    path: "#quienes-somos"
-  }, {
-    name: "Contacto",
-    path: "#contacto"
-  }];
-  const scrollToSection = (path: string) => {
-    if (path.startsWith("#")) {
-      const element = document.querySelector(path);
-      element?.scrollIntoView({
-        behavior: "smooth"
-      });
-      setIsOpen(false);
-    }
-  };
-  return <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm shadow-md overflow-hidden">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* CONTENEDOR PRINCIPAL */}
-        <div className="flex justify-between items-center h-20">
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [user, setUser] = useState<any>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const navigate = useNavigate();
 
-          {/* LOGO Y TEXTO */}
-          <Link to="/" className="flex items-center gap-3 min-w-0">
-            <img src={logoMaestria} alt="Logo Maestría" className="h-10 w-10 sm:h-12 sm:w-12 object-contain rounded-full flex-shrink-0" />
-            <span className="font-bold text-base sm:text-lg md:text-xl lg:text-2xl truncate text-blue-600">
-              Circulación Pulmonar
-            </span>
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+      if (session?.user) {
+        supabase
+          .from("user_roles")
+          .select("role")
+          .eq("user_id", session.user.id)
+          .single()
+          .then(({ data }) => {
+            setIsAdmin(data?.role === "admin");
+          });
+      }
+    });
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+      if (session?.user) {
+        supabase
+          .from("user_roles")
+          .select("role")
+          .eq("user_id", session.user.id)
+          .single()
+          .then(({ data }) => {
+            setIsAdmin(data?.role === "admin");
+          });
+      } else {
+        setIsAdmin(false);
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    navigate("/");
+  };
+  return (
+    <motion.nav 
+      initial={{ y: -100 }}
+      animate={{ y: 0 }}
+      transition={{ duration: 0.5, ease: "easeOut" }}
+      className={`fixed top-0 w-full z-50 transition-all duration-500 ${
+        isScrolled 
+          ? "bg-background/80 backdrop-blur-xl shadow-xl shadow-black/5 border-b border-border/50" 
+          : "bg-transparent"
+      }`}
+    >
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center h-20">
+          <Link to="/" className="flex items-center space-x-3 group">
+            <motion.img 
+              src={logoMaestria} 
+              alt="Maestría en Circulación Pulmonar" 
+              className="h-14 w-auto transition-all duration-300 group-hover:scale-110"
+              whileHover={{ scale: 1.1 }}
+              transition={{ type: "spring", stiffness: 400, damping: 10 }}
+            />
           </Link>
 
-          {/* MENÚ DESKTOP */}
-          <div className="hidden md:flex items-center gap-6 flex-wrap justify-end">
-            {navItems.map(item => <a key={item.name} href={item.path} onClick={e => {
-            if (item.path.startsWith("#")) {
-              e.preventDefault();
-              scrollToSection(item.path);
-            }
-          }} className="text-foreground hover:text-primary transition-colors font-medium whitespace-nowrap">
-                {item.name}
-              </a>)}
-            <Link to="/auth">
-              <Button variant="outline" size="sm" className="bg-primary hover:bg-primary/90 text-primary-foreground border-0">
-                Admin
-              </Button>
-            </Link>
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex items-center space-x-8">
+            {["maestria", "expertos", "eventos", "quienes-somos", "galeria", "contacto"].map((item, index) => (
+              <motion.a
+                key={item}
+                href={`#${item}`}
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1, duration: 0.5 }}
+                className="text-foreground hover:text-primary transition-all duration-300 font-medium relative group"
+              >
+                {item.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
+                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
+              </motion.a>
+            ))}
+
+            {isAdmin && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.7 }}
+              >
+                <Button
+                  onClick={() => navigate("/admin")}
+                  variant="outline"
+                  size="sm"
+                  className="ml-4 rounded-xl hover:scale-105 transition-all duration-300"
+                >
+                  Admin
+                </Button>
+              </motion.div>
+            )}
+            
+            {user && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.8 }}
+              >
+                <Button
+                  onClick={handleLogout}
+                  variant="ghost"
+                  size="sm"
+                  className="rounded-xl hover:scale-105 transition-all duration-300"
+                >
+                  Cerrar sesión
+                </Button>
+              </motion.div>
+            )}
           </div>
 
-          {/* BOTÓN MENÚ MÓVIL */}
-          <button onClick={() => setIsOpen(!isOpen)} className="md:hidden p-2 rounded-lg hover:bg-muted transition-colors" aria-label="Abrir menú">
-            {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-          </button>
+          {/* Mobile menu button */}
+          <motion.button
+            whileTap={{ scale: 0.95 }}
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            className="md:hidden p-2 rounded-xl text-foreground hover:bg-accent transition-all duration-300"
+          >
+            {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </motion.button>
         </div>
-      </div>
 
-      {/* MENÚ MÓVIL */}
-      <div className={`md:hidden bg-white border-t border-accent/20 transition-all duration-300 ease-in-out ${isOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0 overflow-hidden"}`}>
-        <div className="px-4 py-4 space-y-3">
-          {navItems.map(item => <a key={item.name} href={item.path} onClick={e => {
-          if (item.path.startsWith("#")) {
-            e.preventDefault();
-            scrollToSection(item.path);
-          }
-        }} className="block py-2 text-foreground hover:text-primary transition-colors font-medium">
-              {item.name}
-            </a>)}
-          <Link to="/auth" className="block">
-            <Button variant="outline" size="sm" className="w-full bg-primary hover:bg-primary/90 text-primary-foreground border-0">
-              Admin
-            </Button>
-          </Link>
-        </div>
+        {/* Mobile Navigation */}
+        <AnimatePresence>
+          {isMenuOpen && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.3 }}
+              className="md:hidden overflow-hidden"
+            >
+              <div className="py-4 space-y-2 backdrop-blur-xl bg-background/95 rounded-2xl mt-4 p-6 shadow-xl">
+                {["maestria", "expertos", "eventos", "quienes-somos", "galeria", "contacto"].map((item, index) => (
+                  <motion.a
+                    key={item}
+                    href={`#${item}`}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: index * 0.1 }}
+                    className="block text-foreground hover:text-primary transition-all duration-300 py-3 px-4 rounded-xl hover:bg-accent font-medium"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    {item.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
+                  </motion.a>
+                ))}
+                {isAdmin && (
+                  <motion.div
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.6 }}
+                  >
+                    <Button
+                      onClick={() => {
+                        navigate("/admin");
+                        setIsMenuOpen(false);
+                      }}
+                      variant="outline"
+                      size="sm"
+                      className="w-full rounded-xl mt-2"
+                    >
+                      Admin
+                    </Button>
+                  </motion.div>
+                )}
+                {user && (
+                  <motion.div
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.7 }}
+                  >
+                    <Button
+                      onClick={handleLogout}
+                      variant="ghost"
+                      size="sm"
+                      className="w-full rounded-xl mt-2"
+                    >
+                      Cerrar sesión
+                    </Button>
+                  </motion.div>
+                )}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
-    </nav>;
+    </motion.nav>
+  );
 };
 export default Navigation;
