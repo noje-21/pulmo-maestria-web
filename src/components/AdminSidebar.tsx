@@ -15,7 +15,9 @@ const menuItems = [
   { to: "/admin", label: "Dashboard", icon: LayoutDashboard },
   { to: "/admin/contactos", label: "Contactos", icon: MessageSquare },
   { to: "/admin/content", label: "Contenido", icon: FileText },
-  { to: "/admin/settings", label: "Ajustes", icon: Settings },
+  { to: "/admin/foro", label: "Foro", icon: MessageSquare },
+  { to: "/admin/novedades", label: "Novedades", icon: FileText },
+  { to: "/admin/media", label: "Archivos", icon: Settings },
 ];
 
 export default function AdminSidebar() {

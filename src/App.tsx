@@ -14,6 +14,13 @@ import Profile from "./pages/Profile";
 import Admin from "./pages/Admin";
 import AdminContactos from "./pages/AdminContactos";
 import AdminContent from "./pages/AdminContent";
+import AdminForo from "./pages/AdminForo";
+import AdminNovedades from "./pages/AdminNovedades";
+import AdminMedia from "./pages/AdminMedia";
+import Foro from "./pages/Foro";
+import ForoDetail from "./pages/ForoDetail";
+import Novedades from "./pages/Novedades";
+import NovedadDetail from "./pages/NovedadDetail";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -139,6 +146,117 @@ const App = () => {
                 <ProtectedRoute requireAdmin={true}>
                   <AdminContent />
                 </ProtectedRoute>
+              </motion.div>
+            } 
+          />
+          <Route 
+            path="/admin/foro" 
+            element={
+              <motion.div
+                key="admin-foro"
+                initial={{ opacity: 0, y: direction > 0 ? 50 : -50, scale: 0.995 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: direction > 0 ? -50 : 50, scale: 0.995 }}
+                transition={{ duration: 0.45 }}
+                className="min-h-screen"
+              >
+                <ProtectedRoute requireAdmin={true}>
+                  <AdminForo />
+                </ProtectedRoute>
+              </motion.div>
+            } 
+          />
+          <Route 
+            path="/admin/novedades" 
+            element={
+              <motion.div
+                key="admin-novedades"
+                initial={{ opacity: 0, y: direction > 0 ? 50 : -50, scale: 0.995 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: direction > 0 ? -50 : 50, scale: 0.995 }}
+                transition={{ duration: 0.45 }}
+                className="min-h-screen"
+              >
+                <ProtectedRoute requireAdmin={true}>
+                  <AdminNovedades />
+                </ProtectedRoute>
+              </motion.div>
+            } 
+          />
+          <Route 
+            path="/admin/media" 
+            element={
+              <motion.div
+                key="admin-media"
+                initial={{ opacity: 0, y: direction > 0 ? 50 : -50, scale: 0.995 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: direction > 0 ? -50 : 50, scale: 0.995 }}
+                transition={{ duration: 0.45 }}
+                className="min-h-screen"
+              >
+                <ProtectedRoute requireAdmin={true}>
+                  <AdminMedia />
+                </ProtectedRoute>
+              </motion.div>
+            } 
+          />
+          <Route 
+            path="/foro" 
+            element={
+              <motion.div
+                key="foro"
+                initial={{ opacity: 0, y: direction > 0 ? 50 : -50, scale: 0.995 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: direction > 0 ? -50 : 50, scale: 0.995 }}
+                transition={{ duration: 0.45 }}
+                className="min-h-screen"
+              >
+                <Foro />
+              </motion.div>
+            } 
+          />
+          <Route 
+            path="/foro/:id" 
+            element={
+              <motion.div
+                key="foro-detail"
+                initial={{ opacity: 0, y: direction > 0 ? 50 : -50, scale: 0.995 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: direction > 0 ? -50 : 50, scale: 0.995 }}
+                transition={{ duration: 0.45 }}
+                className="min-h-screen"
+              >
+                <ForoDetail />
+              </motion.div>
+            } 
+          />
+          <Route 
+            path="/novedades" 
+            element={
+              <motion.div
+                key="novedades"
+                initial={{ opacity: 0, y: direction > 0 ? 50 : -50, scale: 0.995 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: direction > 0 ? -50 : 50, scale: 0.995 }}
+                transition={{ duration: 0.45 }}
+                className="min-h-screen"
+              >
+                <Novedades />
+              </motion.div>
+            } 
+          />
+          <Route 
+            path="/novedades/:slug" 
+            element={
+              <motion.div
+                key="novedad-detail"
+                initial={{ opacity: 0, y: direction > 0 ? 50 : -50, scale: 0.995 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: direction > 0 ? -50 : 50, scale: 0.995 }}
+                transition={{ duration: 0.45 }}
+                className="min-h-screen"
+              >
+                <NovedadDetail />
               </motion.div>
             } 
           />

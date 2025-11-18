@@ -70,24 +70,32 @@ const Navigation = () => {
       animate={{ y: 0 }}
       transition={{ duration: 0.5, ease: "easeOut" }}
       className={`fixed top-0 w-full z-50 transition-all duration-500 ${
-        isScrolled ? "bg-white/5 backdrop-blur-lg shadow-lg shadow-black/10 border-b border-white/10" : "bg-transparent"
+        isScrolled ? "backdrop-blur-lg shadow-lg shadow-black/10 border-b border-white/10" : ""
       }`}
+      style={{
+        background: isScrolled ? 'rgba(255, 255, 255, 0.05)' : 'transparent'
+      }}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
-          <Link to="/" className="flex items-center space-x-3 group bg-transparent p-0 m-0">
-            <motion.img
-              src={logoMaestria}
-              alt="Maestría en Circulación Pulmonar"
-              className="h-14 w-auto block bg-transparent shadow-none border-0 p-0 m-0"
-              whileHover={{ scale: 1.1 }}
-              transition={{ type: "spring", stiffness: 400, damping: 10 }}
-            />
-          </Link>
+          <motion.div
+            whileHover={{ scale: 1.05 }}
+            transition={{ type: "spring", stiffness: 400, damping: 10 }}
+            className="cursor-pointer"
+          >
+            <Link to="/" className="flex items-center space-x-3">
+              <img
+                src={logoMaestria}
+                alt="Maestría en Circulación Pulmonar"
+                className="h-14 w-auto"
+                style={{ background: 'transparent' }}
+              />
+            </Link>
+          </motion.div>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
-            {["maestria", "expertos", "eventos", "quienes-somos", "galeria", "contacto"].map((item, index) => (
+            {["maestria", "expertos", "eventos", "foro", "novedades", "galeria", "contacto"].map((item, index) => (
               <motion.a
                 key={item}
                 href={`#${item}`}
@@ -159,8 +167,8 @@ const Navigation = () => {
               transition={{ duration: 0.3 }}
               className="md:hidden overflow-hidden"
             >
-              <div className="py-4 space-y-2 backdrop-blur-xl bg-white/10 rounded-2xl mt-4 p-6 shadow-lg shadow-black/10 border border-white/10">
-                {["maestria", "expertos", "eventos", "quienes-somos", "galeria", "contacto"].map((item, index) => (
+              <div className="py-4 space-y-2 backdrop-blur-xl rounded-2xl mt-4 p-6 shadow-lg shadow-black/10 border border-white/10" style={{ background: 'rgba(255, 255, 255, 0.1)' }}>
+                {["maestria", "expertos", "eventos", "foro", "novedades", "galeria", "contacto"].map((item, index) => (
                   <motion.a
                     key={item}
                     href={`#${item}`}
