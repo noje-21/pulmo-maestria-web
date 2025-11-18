@@ -140,25 +140,49 @@ All colors MUST be HSL.
   }
 
   .btn-hero {
-    @apply bg-gradient-to-r from-primary to-secondary text-white font-semibold px-8 py-4 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105;
+    @apply bg-gradient-to-r from-primary to-secondary text-white font-semibold px-8 py-4 rounded-2xl shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 transition-all duration-300 hover:scale-105;
   }
 
   .card-hover {
-    @apply transition-all duration-300 hover:shadow-lg hover:-translate-y-1;
+    @apply transition-all duration-300 hover:shadow-xl hover:shadow-black/5 hover:-translate-y-2;
   }
   
   .section-container {
-    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24;
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-32;
   }
   
   .shadow-glow {
-    box-shadow: 0 0 30px rgba(14, 165, 233, 0.4);
+    box-shadow: 0 0 40px rgba(14, 165, 233, 0.3);
+  }
+  
+  .glass-card {
+    @apply backdrop-blur-xl bg-white/80 dark:bg-slate-900/60 rounded-2xl shadow-xl shadow-black/5 border border-white/20;
+  }
+  
+  .modern-card {
+    @apply rounded-2xl p-8 shadow-xl shadow-black/5 bg-white/90 dark:bg-slate-900/60 backdrop-blur-lg transition-all duration-300;
+  }
+  
+  .modern-input {
+    @apply rounded-xl border border-gray-200 dark:border-gray-700 px-4 py-3 shadow-sm focus:ring-2 focus:ring-primary/30 transition-all duration-300 bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm;
+  }
+  
+  .modern-button {
+    @apply bg-primary hover:bg-primary/90 text-white rounded-xl px-6 py-3 shadow-md shadow-primary/20 hover:shadow-lg hover:shadow-primary/30 transition-all duration-300 hover:scale-105 font-medium;
   }
 }
 
 @layer utilities {
   .animate-fade-in {
     animation: fadeIn 1s ease-in-out;
+  }
+  
+  .animate-slide-up {
+    animation: slideUp 0.6s ease-out;
+  }
+  
+  .animate-scale-in {
+    animation: scaleIn 0.5s ease-out;
   }
   
   @keyframes fadeIn {
@@ -172,10 +196,37 @@ All colors MUST be HSL.
     }
   }
   
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(40px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  @keyframes scaleIn {
+    from {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+  
   .bg-grid-pattern {
     background-image: 
       linear-gradient(to right, hsl(var(--primary) / 0.05) 1px, transparent 1px),
       linear-gradient(to bottom, hsl(var(--primary) / 0.05) 1px, transparent 1px);
     background-size: 30px 30px;
+  }
+  
+  .parallax {
+    transform: translateZ(0);
+    will-change: transform;
   }
 }
