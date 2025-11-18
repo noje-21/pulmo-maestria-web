@@ -4,6 +4,7 @@ import { Menu, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
+import NotificationBell from "@/components/NotificationBell";
 import logoMaestria from "@/assets/logo-maestria.jpg";
 
 const Navigation = () => {
@@ -134,6 +135,8 @@ const Navigation = () => {
                 </Button>
               </motion.div>
             )}
+
+            <NotificationBell />
 
             {user && (
               <motion.div

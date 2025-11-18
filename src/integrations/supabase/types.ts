@@ -79,6 +79,42 @@ export type Database = {
           },
         ]
       }
+      forum_post_tags: {
+        Row: {
+          created_at: string | null
+          id: string
+          post_id: string
+          tag_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          post_id: string
+          tag_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          post_id?: string
+          tag_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "forum_post_tags_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "forum_posts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "forum_post_tags_tag_id_fkey"
+            columns: ["tag_id"]
+            isOneToOne: false
+            referencedRelation: "tags"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       forum_posts: {
         Row: {
           category: Database["public"]["Enums"]["forum_category"]
@@ -153,6 +189,75 @@ export type Database = {
           uploaded_by?: string
         }
         Relationships: []
+      }
+      notifications: {
+        Row: {
+          created_at: string | null
+          id: string
+          link: string | null
+          message: string
+          read: boolean | null
+          title: string
+          type: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          link?: string | null
+          message: string
+          read?: boolean | null
+          title: string
+          type: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          link?: string | null
+          message?: string
+          read?: boolean | null
+          title?: string
+          type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      novedad_tags: {
+        Row: {
+          created_at: string | null
+          id: string
+          novedad_id: string
+          tag_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          novedad_id: string
+          tag_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          novedad_id?: string
+          tag_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "novedad_tags_novedad_id_fkey"
+            columns: ["novedad_id"]
+            isOneToOne: false
+            referencedRelation: "novedades"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "novedad_tags_tag_id_fkey"
+            columns: ["tag_id"]
+            isOneToOne: false
+            referencedRelation: "tags"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       novedades: {
         Row: {
@@ -281,6 +386,24 @@ export type Database = {
             referencedColumns: ["user_id"]
           },
         ]
+      }
+      tags: {
+        Row: {
+          created_at: string | null
+          id: string
+          name: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          name: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          name?: string
+        }
+        Relationships: []
       }
       user_roles: {
         Row: {
