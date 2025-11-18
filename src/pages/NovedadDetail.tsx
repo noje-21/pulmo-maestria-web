@@ -38,7 +38,10 @@ const NovedadDetail = () => {
     try {
       const { data, error } = await supabase
         .from("novedades")
-        .select("*, profiles(full_name)")
+        .select(`
+          *,
+          profiles!novedades_author_id_fkey(full_name)
+        `)
         .eq("slug", slug)
         .eq("status", "published")
         .single();

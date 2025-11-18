@@ -50,12 +50,16 @@ const AdminMedia = () => {
     try {
       const { data, error } = await supabase
         .from("media_files")
-        .select("*, profiles(full_name)")
+        .select(`
+          *,
+          profiles!media_files_uploaded_by_fkey(full_name)
+        `)
         .order("created_at", { ascending: false });
 
       if (error) throw error;
       setFiles(data || []);
     } catch (error: any) {
+      console.error("Error loading files:", error);
       toast.error("Error al cargar archivos");
     } finally {
       setLoading(false);

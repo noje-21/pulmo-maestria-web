@@ -61,7 +61,10 @@ const Foro = () => {
     try {
       let query = supabase
         .from("forum_posts")
-        .select("*, profiles(full_name)")
+        .select(`
+          *,
+          profiles!forum_posts_user_id_fkey(full_name)
+        `)
         .order("is_pinned", { ascending: false })
         .order("created_at", { ascending: false });
 
@@ -85,6 +88,7 @@ const Foro = () => {
       
       setPosts(filteredData);
     } catch (error: any) {
+      console.error("Error loading posts:", error);
       toast.error("Error al cargar publicaciones");
     } finally {
       setLoading(false);

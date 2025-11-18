@@ -79,13 +79,17 @@ const ForoDetail = () => {
     try {
       const { data, error } = await supabase
         .from("forum_posts")
-        .select("*, profiles(full_name)")
+        .select(`
+          *,
+          profiles!forum_posts_user_id_fkey(full_name)
+        `)
         .eq("id", id)
         .single();
 
       if (error) throw error;
       setPost(data as any);
     } catch (error: any) {
+      console.error("Error loading post:", error);
       toast.error("Error al cargar la publicación");
       navigate("/foro");
     } finally {
@@ -97,7 +101,10 @@ const ForoDetail = () => {
     try {
       const { data, error } = await supabase
         .from("forum_comments")
-        .select("*, profiles(full_name)")
+        .select(`
+          *,
+          profiles!forum_comments_user_id_fkey(full_name)
+        `)
         .eq("post_id", id)
         .order("created_at", { ascending: true });
 
