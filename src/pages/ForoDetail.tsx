@@ -67,7 +67,7 @@ const ForoDetail = () => {
       if (post) {
         await supabase
           .from("forum_posts")
-          .update({ views_count: post.views_count + 1 })
+          .update({ views_count: (post.views_count || 0) + 1 })
           .eq("id", id);
       }
     } catch (error) {
