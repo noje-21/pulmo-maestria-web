@@ -65,12 +65,16 @@ const AdminNovedades = () => {
     try {
       const { data, error } = await supabase
         .from("novedades")
-        .select("*, profiles(full_name)")
+        .select(`
+          *,
+          profiles!novedades_author_id_fkey(full_name)
+        `)
         .order("created_at", { ascending: false });
 
       if (error) throw error;
       setNovedades(data || []);
     } catch (error: any) {
+      console.error("Error loading novedades:", error);
       toast.error("Error al cargar novedades");
     } finally {
       setLoading(false);
@@ -152,7 +156,8 @@ const AdminNovedades = () => {
       resetForm();
       loadNovedades();
     } catch (error: any) {
-      toast.error("Error al guardar novedad");
+      console.error("Error saving novedad:", error);
+      toast.error("Error al guardar novedad: " + error.message);
     }
   };
 

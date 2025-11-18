@@ -40,7 +40,10 @@ const Novedades = () => {
     try {
       const { data, error } = await supabase
         .from("novedades")
-        .select("*, profiles(full_name)")
+        .select(`
+          *,
+          profiles!novedades_author_id_fkey(full_name)
+        `)
         .eq("status", "published")
         .order("published_at", { ascending: false });
 
