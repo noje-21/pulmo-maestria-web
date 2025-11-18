@@ -4,6 +4,10 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { toast } from "sonner";
+import { motion } from "framer-motion";
+import AdminSidebar from "@/components/AdminSidebar";
+import { TableSkeleton } from "@/components/LoadingSkeleton";
+import { ArrowLeft, Trash2, Mail, MapPin, Briefcase } from "lucide-react";
 
 interface ContactSubmission {
   id: string;
@@ -81,69 +85,126 @@ const AdminContactos = () => {
   };
 
   if (loading) {
-    return <div className="min-h-screen flex items-center justify-center">Cargando...</div>;
+    return (
+      <div className="flex min-h-screen w-full">
+        <AdminSidebar />
+        <div className="flex-1 p-8">
+          <div className="max-w-6xl mx-auto">
+            <TableSkeleton rows={8} />
+          </div>
+        </div>
+      </div>
+    );
   }
 
   return (
-    <div className="min-h-screen bg-muted p-8">
-      <div className="max-w-6xl mx-auto">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-4xl font-bold text-primary">Envíos de Contacto</h1>
-          <Button onClick={() => navigate("/admin")} variant="outline">
-            Volver al Panel
-          </Button>
-        </div>
+    <div className="flex min-h-screen w-full bg-gradient-to-br from-background via-muted/30 to-background">
+      <AdminSidebar />
+      
+      <div className="flex-1 p-8 overflow-y-auto">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="max-w-6xl mx-auto"
+        >
+          <div className="flex justify-between items-center mb-8">
+            <div>
+              <h1 className="text-4xl font-bold text-primary pv-appear">Envíos de Contacto</h1>
+              <p className="text-muted-foreground mt-2">Gestiona las consultas recibidas</p>
+            </div>
+            <Button onClick={() => navigate("/admin")} variant="outline" className="pv-tap-scale">
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Volver al Panel
+            </Button>
+          </div>
 
-        {submissions.length === 0 ? (
-          <Card>
-            <CardContent className="pt-6 text-center text-muted-foreground">
-              No hay envíos aún
-            </CardContent>
-          </Card>
-        ) : (
-          <div className="space-y-4">
-            {submissions.map((submission) => (
-              <Card key={submission.id} className="border-accent/20">
-                <CardContent className="pt-6">
-                  <div className="grid md:grid-cols-2 gap-4 mb-4">
-                    <div>
-                      <p className="text-sm text-muted-foreground">Nombre</p>
-                      <p className="font-medium">{submission.name}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-muted-foreground">Email</p>
-                      <p className="font-medium">{submission.email}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-muted-foreground">País</p>
-                      <p className="font-medium">{submission.country}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-muted-foreground">Especialidad</p>
-                      <p className="font-medium">{submission.specialty}</p>
-                    </div>
-                  </div>
-                  <div className="mb-4">
-                    <p className="text-sm text-muted-foreground">Mensaje</p>
-                    <p className="mt-1">{submission.message}</p>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <p className="text-xs text-muted-foreground">
-                      {new Date(submission.created_at).toLocaleString('es-ES')}
-                    </p>
-                    <Button
-                      variant="destructive"
-                      size="sm"
-                      onClick={() => handleDelete(submission.id)}
-                    >
-                      Eliminar
-                    </Button>
-                  </div>
+          {submissions.length === 0 ? (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+            >
+              <Card className="pv-glass pv-glow">
+                <CardContent className="pt-12 pb-12 text-center text-muted-foreground">
+                  <Mail className="w-16 h-16 mx-auto mb-4 opacity-50" />
+                  <p className="text-lg">No hay envíos aún</p>
                 </CardContent>
               </Card>
-            ))}
-          </div>
-        )}
+            </motion.div>
+          ) : (
+            <div className="space-y-4">
+              {submissions.map((submission, index) => (
+                <motion.div
+                  key={submission.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.05 }}
+                  whileHover={{ y: -2 }}
+                >
+                  <Card className="border-accent/20 pv-glass pv-glow hover:shadow-xl transition-all duration-300">
+                    <CardContent className="pt-6">
+                      <div className="grid md:grid-cols-2 gap-4 mb-4">
+                        <div className="flex items-center gap-2">
+                          <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                            <Mail className="w-5 h-5 text-primary" />
+                          </div>
+                          <div>
+                            <p className="text-xs text-muted-foreground">Nombre</p>
+                            <p className="font-semibold">{submission.name}</p>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <div className="w-10 h-10 rounded-lg bg-secondary/10 flex items-center justify-center">
+                            <Mail className="w-5 h-5 text-secondary" />
+                          </div>
+                          <div>
+                            <p className="text-xs text-muted-foreground">Email</p>
+                            <p className="font-semibold">{submission.email}</p>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <div className="w-10 h-10 rounded-lg bg-accent/10 flex items-center justify-center">
+                            <MapPin className="w-5 h-5 text-accent" />
+                          </div>
+                          <div>
+                            <p className="text-xs text-muted-foreground">País</p>
+                            <p className="font-semibold">{submission.country}</p>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                            <Briefcase className="w-5 h-5 text-primary" />
+                          </div>
+                          <div>
+                            <p className="text-xs text-muted-foreground">Especialidad</p>
+                            <p className="font-semibold">{submission.specialty}</p>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="mb-4 p-4 rounded-xl bg-muted/50">
+                        <p className="text-sm text-muted-foreground mb-1">Mensaje</p>
+                        <p className="text-foreground">{submission.message}</p>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <p className="text-xs text-muted-foreground">
+                          {new Date(submission.created_at).toLocaleString('es-AR')}
+                        </p>
+                        <Button
+                          variant="destructive"
+                          size="sm"
+                          onClick={() => handleDelete(submission.id)}
+                          className="pv-tap-scale"
+                        >
+                          <Trash2 className="w-4 h-4 mr-2" />
+                          Eliminar
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))}
+            </div>
+          )}
+        </motion.div>
       </div>
     </div>
   );

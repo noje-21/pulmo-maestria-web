@@ -4,6 +4,7 @@ import { BrowserRouter } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
 import App from "./App.tsx";
 import "./index.css";
+import "./styles/animations.css";
 import { Toaster } from "@/components/ui/sonner";
 
 createRoot(document.getElementById("root")!).render(
