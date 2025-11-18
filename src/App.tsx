@@ -2,8 +2,11 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
+import { motion } from "framer-motion";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
+import ScrollToTop from "@/components/ScrollToTop";
+import useScrollDirection from "@/hooks/useScrollDirection";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import Register from "./pages/Register";
@@ -15,54 +18,149 @@ import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/auth" element={<Auth />} />
-          <Route path="/register" element={<Register />} />
+const App = () => {
+  const location = useLocation();
+  const direction = useScrollDirection();
+
+  return (
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <ScrollToTop />
+        <Routes location={location} key={location.pathname}>
+          <Route 
+            path="/" 
+            element={
+              <motion.div
+                key="home"
+                initial={{ opacity: 0, y: direction > 0 ? 50 : -50, scale: 0.995 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: direction > 0 ? -50 : 50, scale: 0.995 }}
+                transition={{ duration: 0.45 }}
+                className="min-h-screen"
+              >
+                <Index />
+              </motion.div>
+            } 
+          />
+          <Route 
+            path="/auth" 
+            element={
+              <motion.div
+                key="auth"
+                initial={{ opacity: 0, y: direction > 0 ? 50 : -50, scale: 0.995 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: direction > 0 ? -50 : 50, scale: 0.995 }}
+                transition={{ duration: 0.45 }}
+                className="min-h-screen"
+              >
+                <Auth />
+              </motion.div>
+            } 
+          />
+          <Route 
+            path="/register" 
+            element={
+              <motion.div
+                key="register"
+                initial={{ opacity: 0, y: direction > 0 ? 50 : -50, scale: 0.995 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: direction > 0 ? -50 : 50, scale: 0.995 }}
+                transition={{ duration: 0.45 }}
+                className="min-h-screen"
+              >
+                <Register />
+              </motion.div>
+            } 
+          />
           <Route 
             path="/profile" 
             element={
-              <ProtectedRoute requireAuth={true}>
-                <Profile />
-              </ProtectedRoute>
+              <motion.div
+                key="profile"
+                initial={{ opacity: 0, y: direction > 0 ? 50 : -50, scale: 0.995 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: direction > 0 ? -50 : 50, scale: 0.995 }}
+                transition={{ duration: 0.45 }}
+                className="min-h-screen"
+              >
+                <ProtectedRoute requireAuth={true}>
+                  <Profile />
+                </ProtectedRoute>
+              </motion.div>
             } 
           />
           <Route 
             path="/admin" 
             element={
-              <ProtectedRoute requireAdmin={true}>
-                <Admin />
-              </ProtectedRoute>
+              <motion.div
+                key="admin"
+                initial={{ opacity: 0, y: direction > 0 ? 50 : -50, scale: 0.995 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: direction > 0 ? -50 : 50, scale: 0.995 }}
+                transition={{ duration: 0.45 }}
+                className="min-h-screen"
+              >
+                <ProtectedRoute requireAdmin={true}>
+                  <Admin />
+                </ProtectedRoute>
+              </motion.div>
             } 
           />
           <Route 
             path="/admin/contactos" 
             element={
-              <ProtectedRoute requireAdmin={true}>
-                <AdminContactos />
-              </ProtectedRoute>
+              <motion.div
+                key="admin-contactos"
+                initial={{ opacity: 0, y: direction > 0 ? 50 : -50, scale: 0.995 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: direction > 0 ? -50 : 50, scale: 0.995 }}
+                transition={{ duration: 0.45 }}
+                className="min-h-screen"
+              >
+                <ProtectedRoute requireAdmin={true}>
+                  <AdminContactos />
+                </ProtectedRoute>
+              </motion.div>
             } 
           />
           <Route 
             path="/admin/content" 
             element={
-              <ProtectedRoute requireAdmin={true}>
-                <AdminContent />
-              </ProtectedRoute>
+              <motion.div
+                key="admin-content"
+                initial={{ opacity: 0, y: direction > 0 ? 50 : -50, scale: 0.995 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: direction > 0 ? -50 : 50, scale: 0.995 }}
+                transition={{ duration: 0.45 }}
+                className="min-h-screen"
+              >
+                <ProtectedRoute requireAdmin={true}>
+                  <AdminContent />
+                </ProtectedRoute>
+              </motion.div>
             } 
           />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
+          <Route 
+            path="*" 
+            element={
+              <motion.div
+                key="not-found"
+                initial={{ opacity: 0, y: direction > 0 ? 50 : -50, scale: 0.995 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: direction > 0 ? -50 : 50, scale: 0.995 }}
+                transition={{ duration: 0.45 }}
+                className="min-h-screen"
+              >
+                <NotFound />
+              </motion.div>
+            } 
+          />
         </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+      </TooltipProvider>
+    </QueryClientProvider>
+  );
+};
 
 export default App;
