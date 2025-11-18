@@ -87,6 +87,7 @@ export type Database = {
           id: string
           image_url: string | null
           is_pinned: boolean
+          reactions_count: number | null
           title: string
           updated_at: string
           user_id: string
@@ -99,6 +100,7 @@ export type Database = {
           id?: string
           image_url?: string | null
           is_pinned?: boolean
+          reactions_count?: number | null
           title: string
           updated_at?: string
           user_id: string
@@ -111,6 +113,7 @@ export type Database = {
           id?: string
           image_url?: string | null
           is_pinned?: boolean
+          reactions_count?: number | null
           title?: string
           updated_at?: string
           user_id?: string
@@ -160,6 +163,7 @@ export type Database = {
           id: string
           image_url: string | null
           published_at: string | null
+          reactions_count: number | null
           slug: string
           status: Database["public"]["Enums"]["novedad_status"]
           title: string
@@ -173,6 +177,7 @@ export type Database = {
           id?: string
           image_url?: string | null
           published_at?: string | null
+          reactions_count?: number | null
           slug: string
           status?: Database["public"]["Enums"]["novedad_status"]
           title: string
@@ -186,10 +191,38 @@ export type Database = {
           id?: string
           image_url?: string | null
           published_at?: string | null
+          reactions_count?: number | null
           slug?: string
           status?: Database["public"]["Enums"]["novedad_status"]
           title?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      post_reactions: {
+        Row: {
+          created_at: string | null
+          id: string
+          post_id: string
+          post_type: string
+          reaction_type: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          post_id: string
+          post_type: string
+          reaction_type?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          post_id?: string
+          post_type?: string
+          reaction_type?: string
+          user_id?: string
         }
         Relationships: []
       }

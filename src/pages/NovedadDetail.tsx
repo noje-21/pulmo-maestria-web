@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { motion } from "framer-motion";
 import Navigation from "@/components/Navigation";
+import ReactionButton from "@/components/ReactionButton";
 import { Calendar, User, ArrowLeft } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
@@ -16,6 +17,7 @@ interface Novedad {
   content: string;
   image_url?: string;
   published_at: string;
+  reactions_count: number;
   author_id: string;
   profiles?: {
     full_name: string;
@@ -114,9 +116,17 @@ const NovedadDetail = () => {
                 </h1>
 
                 <div
-                  className="prose prose-lg max-w-none"
+                  className="prose prose-lg max-w-none mb-8"
                   dangerouslySetInnerHTML={{ __html: novedad.content }}
                 />
+
+                <div className="flex items-center gap-4 pt-6 border-t">
+                  <ReactionButton 
+                    postType="novedad" 
+                    postId={novedad.id} 
+                    initialCount={novedad.reactions_count || 0}
+                  />
+                </div>
               </div>
             </Card>
           </motion.div>
