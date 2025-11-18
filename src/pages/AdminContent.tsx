@@ -7,7 +7,10 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Save } from "lucide-react";
+import { motion } from "framer-motion";
+import AdminSidebar from "@/components/AdminSidebar";
+import { CardSkeleton } from "@/components/LoadingSkeleton";
 
 interface SiteContent {
   section: string;
@@ -101,142 +104,208 @@ const AdminContent = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+      <div className="flex min-h-screen w-full">
+        <AdminSidebar />
+        <div className="flex-1 p-8">
+          <div className="max-w-6xl mx-auto space-y-6">
+            <CardSkeleton />
+            <CardSkeleton />
+            <CardSkeleton />
+          </div>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-muted p-8">
-      <div className="max-w-6xl mx-auto">
-        <div className="flex items-center gap-4 mb-8">
-          <Button variant="outline" onClick={() => navigate("/admin")}>
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Volver al Panel
-          </Button>
-          <h1 className="text-4xl font-bold text-primary">Editar Contenido del Sitio</h1>
-        </div>
+    <div className="flex min-h-screen w-full bg-gradient-to-br from-background via-muted/30 to-background">
+      <AdminSidebar />
+      
+      <div className="flex-1 p-8 overflow-y-auto">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="max-w-6xl mx-auto"
+        >
+          <div className="flex items-center gap-4 mb-8">
+            <Button variant="outline" onClick={() => navigate("/admin")} className="pv-tap-scale">
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Volver
+            </Button>
+            <div>
+              <h1 className="text-4xl font-bold text-primary">Editar Contenido del Sitio</h1>
+              <p className="text-muted-foreground mt-1">Actualiza los textos e información del sitio</p>
+            </div>
+          </div>
 
-        <div className="space-y-6">
-          {/* Hero Section */}
-          <Card className="p-6">
-            <h2 className="text-2xl font-bold mb-4">Sección Hero</h2>
-            <div className="space-y-4">
-              <div>
-                <Label>Título Principal</Label>
-                <Input
-                  value={content.hero?.title || ""}
-                  onChange={(e) => updateField("hero", "title", e.target.value)}
-                />
-              </div>
-              <div>
-                <Label>Subtítulo</Label>
-                <Input
-                  value={content.hero?.subtitle || ""}
-                  onChange={(e) => updateField("hero", "subtitle", e.target.value)}
-                />
-              </div>
-              <div>
-                <Label>Descripción</Label>
-                <Textarea
-                  value={content.hero?.description || ""}
-                  onChange={(e) => updateField("hero", "description", e.target.value)}
-                />
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label>Fechas</Label>
-                  <Input
-                    value={content.hero?.dates || ""}
-                    onChange={(e) => updateField("hero", "dates", e.target.value)}
-                  />
+          <div className="space-y-6">
+            {/* Hero Section */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+            >
+              <Card className="p-6 pv-glass pv-glow border-border/50">
+                <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
+                  <span className="text-3xl">🎯</span>
+                  Sección Hero
+                </h2>
+                <div className="space-y-4">
+                  <div>
+                    <Label>Título Principal</Label>
+                    <Input
+                      value={content.hero?.title || ""}
+                      onChange={(e) => updateField("hero", "title", e.target.value)}
+                    />
+                  </div>
+                  <div>
+                    <Label>Subtítulo</Label>
+                    <Input
+                      value={content.hero?.subtitle || ""}
+                      onChange={(e) => updateField("hero", "subtitle", e.target.value)}
+                    />
+                  </div>
+                  <div>
+                    <Label>Descripción</Label>
+                    <Textarea
+                      value={content.hero?.description || ""}
+                      onChange={(e) => updateField("hero", "description", e.target.value)}
+                    />
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Label>Fechas</Label>
+                      <Input
+                        value={content.hero?.dates || ""}
+                        onChange={(e) => updateField("hero", "dates", e.target.value)}
+                      />
+                    </div>
+                    <div>
+                      <Label>Ubicación</Label>
+                      <Input
+                        value={content.hero?.location || ""}
+                        onChange={(e) => updateField("hero", "location", e.target.value)}
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <Label>Advertencia</Label>
+                    <Input
+                      value={content.hero?.warning || ""}
+                      onChange={(e) => updateField("hero", "warning", e.target.value)}
+                    />
+                  </div>
                 </div>
-                <div>
-                  <Label>Ubicación</Label>
-                  <Input
-                    value={content.hero?.location || ""}
-                    onChange={(e) => updateField("hero", "location", e.target.value)}
-                  />
+                <Button onClick={() => handleSave("hero")} disabled={saving} className="mt-4 pv-tap-scale">
+                  <Save className="w-4 h-4 mr-2" />
+                  {saving ? "Guardando..." : "Guardar Cambios"}
+                </Button>
+              </Card>
+            </motion.div>
+
+            {/* Maestría Section */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+            >
+              <Card className="p-6 pv-glass pv-glow border-border/50">
+                <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
+                  <span className="text-3xl">🎓</span>
+                  Sección Maestría
+                </h2>
+                <div className="space-y-4">
+                  <div>
+                    <Label>Título</Label>
+                    <Input
+                      value={content.maestria?.title || ""}
+                      onChange={(e) => updateField("maestria", "title", e.target.value)}
+                    />
+                  </div>
+                  <div>
+                    <Label>Descripción</Label>
+                    <Textarea
+                      value={content.maestria?.description || ""}
+                      onChange={(e) => updateField("maestria", "description", e.target.value)}
+                    />
+                  </div>
                 </div>
-              </div>
-              <div>
-                <Label>Advertencia</Label>
-                <Input
-                  value={content.hero?.warning || ""}
-                  onChange={(e) => updateField("hero", "warning", e.target.value)}
-                />
-              </div>
-              <Button onClick={() => handleSave("hero")} disabled={saving}>
-                {saving ? "Guardando..." : "Guardar Cambios"}
-              </Button>
-            </div>
-          </Card>
+                <Button onClick={() => handleSave("maestria")} disabled={saving} className="mt-4 pv-tap-scale">
+                  <Save className="w-4 h-4 mr-2" />
+                  {saving ? "Guardando..." : "Guardar Cambios"}
+                </Button>
+              </Card>
+            </motion.div>
 
-          {/* Maestría Section */}
-          <Card className="p-6">
-            <h2 className="text-2xl font-bold mb-4">Sección Maestría</h2>
-            <div className="space-y-4">
-              <div>
-                <Label>Título</Label>
-                <Input
-                  value={content.maestria?.title || ""}
-                  onChange={(e) => updateField("maestria", "title", e.target.value)}
-                />
-              </div>
-              <div>
-                <Label>Descripción</Label>
-                <Textarea
-                  value={content.maestria?.description || ""}
-                  onChange={(e) => updateField("maestria", "description", e.target.value)}
-                  rows={6}
-                />
-              </div>
-              <Button onClick={() => handleSave("maestria")} disabled={saving}>
-                {saving ? "Guardando..." : "Guardar Cambios"}
-              </Button>
-            </div>
-          </Card>
+            {/* Expertos Section */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+            >
+              <Card className="p-6 pv-glass pv-glow border-border/50">
+                <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
+                  <span className="text-3xl">👨‍⚕️</span>
+                  Sección Expertos
+                </h2>
+                <div className="space-y-4">
+                  <div>
+                    <Label>Título</Label>
+                    <Input
+                      value={content.expertos?.title || ""}
+                      onChange={(e) => updateField("expertos", "title", e.target.value)}
+                    />
+                  </div>
+                  <div>
+                    <Label>Descripción</Label>
+                    <Textarea
+                      value={content.expertos?.description || ""}
+                      onChange={(e) => updateField("expertos", "description", e.target.value)}
+                    />
+                  </div>
+                </div>
+                <Button onClick={() => handleSave("expertos")} disabled={saving} className="mt-4 pv-tap-scale">
+                  <Save className="w-4 h-4 mr-2" />
+                  {saving ? "Guardando..." : "Guardar Cambios"}
+                </Button>
+              </Card>
+            </motion.div>
 
-          {/* Contacto Section */}
-          <Card className="p-6">
-            <h2 className="text-2xl font-bold mb-4">Sección Contacto</h2>
-            <div className="space-y-4">
-              <div>
-                <Label>Email</Label>
-                <Input
-                  type="email"
-                  value={content.contacto?.email || ""}
-                  onChange={(e) => updateField("contacto", "email", e.target.value)}
-                />
-              </div>
-              <div>
-                <Label>WhatsApp</Label>
-                <Input
-                  value={content.contacto?.whatsapp || ""}
-                  onChange={(e) => updateField("contacto", "whatsapp", e.target.value)}
-                />
-              </div>
-              <div>
-                <Label>Instagram</Label>
-                <Input
-                  value={content.contacto?.instagram || ""}
-                  onChange={(e) => updateField("contacto", "instagram", e.target.value)}
-                />
-              </div>
-              <div>
-                <Label>Website</Label>
-                <Input
-                  value={content.contacto?.website || ""}
-                  onChange={(e) => updateField("contacto", "website", e.target.value)}
-                />
-              </div>
-              <Button onClick={() => handleSave("contacto")} disabled={saving}>
-                {saving ? "Guardando..." : "Guardar Cambios"}
-              </Button>
-            </div>
-          </Card>
-        </div>
+            {/* Contacto Section */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
+            >
+              <Card className="p-6 pv-glass pv-glow border-border/50">
+                <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
+                  <span className="text-3xl">📧</span>
+                  Sección Contacto
+                </h2>
+                <div className="space-y-4">
+                  <div>
+                    <Label>Título</Label>
+                    <Input
+                      value={content.contacto?.title || ""}
+                      onChange={(e) => updateField("contacto", "title", e.target.value)}
+                    />
+                  </div>
+                  <div>
+                    <Label>Descripción</Label>
+                    <Textarea
+                      value={content.contacto?.description || ""}
+                      onChange={(e) => updateField("contacto", "description", e.target.value)}
+                    />
+                  </div>
+                </div>
+                <Button onClick={() => handleSave("contacto")} disabled={saving} className="mt-4 pv-tap-scale">
+                  <Save className="w-4 h-4 mr-2" />
+                  {saving ? "Guardando..." : "Guardar Cambios"}
+                </Button>
+              </Card>
+            </motion.div>
+          </div>
+        </motion.div>
       </div>
     </div>
   );
