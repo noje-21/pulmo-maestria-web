@@ -17,6 +17,7 @@ import AdminContent from "./pages/AdminContent";
 import AdminForo from "./pages/AdminForo";
 import AdminNovedades from "./pages/AdminNovedades";
 import AdminMedia from "./pages/AdminMedia";
+import AdminDashboard from "./pages/AdminDashboard";
 import Foro from "./pages/Foro";
 import ForoDetail from "./pages/ForoDetail";
 import Novedades from "./pages/Novedades";

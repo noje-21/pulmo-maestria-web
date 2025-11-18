@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
 import Navigation from "@/components/Navigation";
+import ReactionButton from "@/components/ReactionButton";
 import { Calendar, User, ArrowLeft, MessageSquare, Send } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
@@ -17,6 +18,7 @@ interface ForumPost {
   content: string;
   category: string;
   created_at: string;
+  reactions_count: number;
   user_id: string;
   profiles?: {
     full_name: string;
@@ -166,8 +168,11 @@ const ForoDetail = () => {
               Volver al Foro
             </Button>
 
-            {/* Post Content */}
-            <Card className="p-8 md:p-12 mb-8 modern-card pv-glass pv-glow">
+            <Card className="p-8 md:p-12 modern-card pv-glass pv-glow mb-8">
+              <h1 className="text-4xl md:text-5xl font-bold mb-6">
+                {post.title}
+              </h1>
+
               <div className="flex items-center gap-6 text-sm text-muted-foreground mb-6">
                 <div className="flex items-center gap-2">
                   <User className="w-4 h-4" />
@@ -183,61 +188,81 @@ const ForoDetail = () => {
                 </div>
               </div>
 
-              <h1 className="text-4xl md:text-5xl font-bold mb-6">
-                {post.title}
-              </h1>
-
-              <div className="prose prose-lg max-w-none text-foreground">
-                {post.content}
+              <div className="prose prose-lg max-w-none mb-8">
+                <p className="whitespace-pre-wrap">{post.content}</p>
               </div>
+
+              <ReactionButton 
+                postType="forum" 
+                postId={post.id} 
+                initialCount={post.reactions_count || 0}
+              />
             </Card>
 
-            {/* Comments Section */}
             <Card className="p-8 modern-card pv-glass pv-glow">
-              <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
-                <MessageSquare className="w-6 h-6" />
-                Comentarios ({comments.length})
-              </h2>
-
-              {/* Add Comment Form */}
-              <div className="mb-8">
-                <Textarea
-                  value={newComment}
-                  onChange={(e) => setNewComment(e.target.value)}
-                  placeholder="Escribe tu comentario..."
-                  rows={4}
-                  className="modern-input mb-4"
-                />
-                <Button onClick={handleAddComment} className="modern-btn pv-tap-scale">
-                  <Send className="w-4 h-4 mr-2" />
-                  Publicar Comentario
-                </Button>
+              <div className="flex items-center gap-3 mb-6">
+                <MessageSquare className="w-6 h-6 text-primary" />
+                <h2 className="text-2xl font-bold">
+                  Comentarios ({comments.length})
+                </h2>
               </div>
 
-              {/* Comments List */}
+              {user && (
+                <div className="mb-8">
+                  <Textarea
+                    value={newComment}
+                    onChange={(e) => setNewComment(e.target.value)}
+                    placeholder="Escribe tu comentario..."
+                    className="modern-input min-h-[120px] mb-4"
+                  />
+                  <Button
+                    onClick={handleAddComment}
+                    className="modern-btn pv-tap-scale"
+                  >
+                    <Send className="w-4 h-4 mr-2" />
+                    Publicar Comentario
+                  </Button>
+                </div>
+              )}
+
+              {!user && (
+                <div className="mb-8 p-6 bg-muted rounded-xl text-center">
+                  <p className="text-muted-foreground mb-4">
+                    Debes iniciar sesión para comentar
+                  </p>
+                  <Button
+                    onClick={() => navigate("/auth")}
+                    variant="outline"
+                    className="pv-tap-scale"
+                  >
+                    Iniciar Sesión
+                  </Button>
+                </div>
+              )}
+
               <div className="space-y-6">
-                {comments.map((comment) => (
+                {comments.map((comment, index) => (
                   <motion.div
                     key={comment.id}
-                    initial={{ opacity: 0, y: 10 }}
+                    initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="border-l-4 border-primary/20 pl-6 py-4"
+                    transition={{ delay: index * 0.1 }}
+                    className="p-6 rounded-xl bg-muted/50"
                   >
-                    <div className="flex items-center gap-4 text-sm text-muted-foreground mb-2">
-                      <div className="flex items-center gap-2">
-                        <User className="w-3 h-3" />
-                        <span className="font-semibold">{comment.profiles?.full_name || "Usuario"}</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Calendar className="w-3 h-3" />
-                        <span>
-                          {format(new Date(comment.created_at), "dd MMM yyyy, HH:mm", {
-                            locale: es,
-                          })}
-                        </span>
-                      </div>
+                    <div className="flex items-center gap-3 mb-3">
+                      <User className="w-5 h-5 text-primary" />
+                      <span className="font-medium">
+                        {comment.profiles?.full_name || "Usuario"}
+                      </span>
+                      <span className="text-sm text-muted-foreground">
+                        {format(new Date(comment.created_at), "dd MMM, yyyy", {
+                          locale: es,
+                        })}
+                      </span>
                     </div>
-                    <p className="text-foreground">{comment.content}</p>
+                    <p className="text-muted-foreground whitespace-pre-wrap">
+                      {comment.content}
+                    </p>
                   </motion.div>
                 ))}
 

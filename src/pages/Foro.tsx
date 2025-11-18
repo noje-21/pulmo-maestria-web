@@ -11,7 +11,8 @@ import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
 import Navigation from "@/components/Navigation";
 import AnimatedOnView from "@/components/AnimatedOnView";
-import { MessageSquare, Plus, Pin, Eye, Calendar, User } from "lucide-react";
+import ReactionButton from "@/components/ReactionButton";
+import { MessageSquare, Plus, Pin, Eye, Calendar, User, Search } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 
@@ -23,6 +24,7 @@ interface ForumPost {
   image_url?: string;
   created_at: string;
   views_count: number;
+  reactions_count: number;
   is_pinned: boolean;
   user_id: string;
   profiles?: {
@@ -36,6 +38,7 @@ const Foro = () => {
   const [showNewPost, setShowNewPost] = useState(false);
   const [user, setUser] = useState<any>(null);
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
+  const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
 
   const [newPost, setNewPost] = useState({
@@ -47,7 +50,7 @@ const Foro = () => {
   useEffect(() => {
     checkAuth();
     loadPosts();
-  }, [selectedCategory]);
+  }, [selectedCategory, searchQuery]);
 
   const checkAuth = async () => {
     const { data: { session } } = await supabase.auth.getSession();
@@ -69,7 +72,18 @@ const Foro = () => {
       const { data, error } = await query;
 
       if (error) throw error;
-      setPosts(data as any || []);
+      
+      let filteredData = data as any || [];
+      
+      // Filtrar por búsqueda
+      if (searchQuery) {
+        filteredData = filteredData.filter((post: ForumPost) =>
+          post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          post.content.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+      }
+      
+      setPosts(filteredData);
     } catch (error: any) {
       toast.error("Error al cargar publicaciones");
     } finally {
@@ -152,18 +166,29 @@ const Foro = () => {
           {/* Filters and Create Button */}
           <AnimatedOnView>
             <div className="flex flex-col md:flex-row gap-4 mb-8 items-start md:items-center justify-between">
-              <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-                <SelectTrigger className="w-full md:w-64 modern-input">
-                  <SelectValue placeholder="Filtrar por categoría" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">Todas las categorías</SelectItem>
-                  <SelectItem value="general">General</SelectItem>
-                  <SelectItem value="clinical_questions">Preguntas Clínicas</SelectItem>
-                  <SelectItem value="case_discussions">Casos Discutidos</SelectItem>
-                  <SelectItem value="shared_resources">Recursos Compartidos</SelectItem>
-                </SelectContent>
-              </Select>
+              <div className="flex flex-col md:flex-row gap-4 flex-1 w-full">
+                <div className="relative flex-1">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                  <Input
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Buscar publicaciones..."
+                    className="pl-10 modern-input"
+                  />
+                </div>
+                <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+                  <SelectTrigger className="w-full md:w-64 modern-input">
+                    <SelectValue placeholder="Filtrar por categoría" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Todas las categorías</SelectItem>
+                    <SelectItem value="general">General</SelectItem>
+                    <SelectItem value="clinical_questions">Preguntas Clínicas</SelectItem>
+                    <SelectItem value="case_discussions">Casos Discutidos</SelectItem>
+                    <SelectItem value="shared_resources">Recursos Compartidos</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
 
               <Button
                 onClick={() => setShowNewPost(!showNewPost)}
@@ -311,6 +336,13 @@ const Foro = () => {
                               <MessageSquare className="w-4 h-4" />
                               <span>0 comentarios</span>
                             </div>
+                          </div>
+                          <div className="mt-4" onClick={(e) => e.stopPropagation()}>
+                            <ReactionButton 
+                              postType="forum" 
+                              postId={post.id} 
+                              initialCount={post.reactions_count || 0}
+                            />
                           </div>
                         </div>
                       </div>

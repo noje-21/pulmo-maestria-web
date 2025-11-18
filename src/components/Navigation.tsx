@@ -73,7 +73,8 @@ const Navigation = () => {
         isScrolled ? "backdrop-blur-lg shadow-lg shadow-black/10 border-b border-white/10" : ""
       }`}
       style={{
-        background: isScrolled ? 'rgba(255, 255, 255, 0.05)' : 'transparent'
+        background: 'transparent',
+        backgroundColor: 'transparent'
       }}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -84,12 +85,17 @@ const Navigation = () => {
             className="cursor-pointer"
           >
             <Link to="/" className="flex items-center space-x-3">
-              <img
-                src={logoMaestria}
-                alt="Maestría en Circulación Pulmonar"
-                className="h-14 w-auto mix-blend-normal"
-                style={{ background: 'transparent', backgroundColor: 'transparent' }}
-              />
+              <div className="h-14 w-auto flex items-center">
+                <img
+                  src={logoMaestria}
+                  alt="Maestría en Circulación Pulmonar"
+                  className="h-full w-auto object-contain"
+                  style={{ 
+                    mixBlendMode: 'normal',
+                    filter: 'none'
+                  }}
+                />
+              </div>
             </Link>
           </motion.div>
 
