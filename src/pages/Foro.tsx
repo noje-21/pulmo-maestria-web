@@ -1,20 +1,19 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { toast } from "sonner";
+import { Badge } from "@/components/ui/badge";
 import { motion, AnimatePresence } from "framer-motion";
 import Navigation from "@/components/Navigation";
-import AnimatedOnView from "@/components/AnimatedOnView";
 import ReactionButton from "@/components/ReactionButton";
-import { MessageSquare, Plus, Pin, Eye, Calendar, User, Search } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { MessageSquare, Calendar, User, Eye, Plus, Search, Filter, Pin } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
+import { toast } from "sonner";
+import { ListSkeleton } from "@/components/LoadingSkeleton";
 
 interface ForumPost {
   id: string;
@@ -33,28 +32,45 @@ interface ForumPost {
 }
 
 const Foro = () => {
+  const navigate = useNavigate();
   const [posts, setPosts] = useState<ForumPost[]>([]);
   const [loading, setLoading] = useState(true);
-  const [showNewPost, setShowNewPost] = useState(false);
-  const [user, setUser] = useState<any>(null);
-  const [selectedCategory, setSelectedCategory] = useState<string>("all");
+  const [isAdmin, setIsAdmin] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const navigate = useNavigate();
-
-  const [newPost, setNewPost] = useState({
-    title: "",
-    content: "",
-    category: "general",
-  });
+  const [categoryFilter, setCategoryFilter] = useState<string>("all");
+  const [authorFilter, setAuthorFilter] = useState<string>("all");
+  const [authors, setAuthors] = useState<{ id: string; name: string }[]>([]);
 
   useEffect(() => {
-    checkAuth();
+    checkAdmin();
     loadPosts();
-  }, [selectedCategory, searchQuery]);
+    loadAuthors();
+  }, []);
 
-  const checkAuth = async () => {
+  const checkAdmin = async () => {
     const { data: { session } } = await supabase.auth.getSession();
-    setUser(session?.user ?? null);
+    if (session?.user) {
+      const { data } = await supabase
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", session.user.id)
+        .single();
+      setIsAdmin(data?.role === "admin");
+    }
+  };
+
+  const loadAuthors = async () => {
+    try {
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("id, full_name")
+        .order("full_name");
+      
+      if (error) throw error;
+      setAuthors(data?.map(p => ({ id: p.id, name: p.full_name })) || []);
+    } catch (error: any) {
+      console.error("Error loading authors:", error);
+    }
   };
 
   const loadPosts = async () => {
@@ -68,294 +84,271 @@ const Foro = () => {
         .order("is_pinned", { ascending: false })
         .order("created_at", { ascending: false });
 
-      if (selectedCategory !== "all") {
-        query = query.eq("category", selectedCategory as any);
+      if (searchQuery) {
+        query = query.or(`title.ilike.%${searchQuery}%,content.ilike.%${searchQuery}%`);
+      }
+
+      if (categoryFilter !== "all") {
+        query = query.eq("category", categoryFilter as any);
+      }
+
+      if (authorFilter !== "all") {
+        query = query.eq("user_id", authorFilter);
       }
 
       const { data, error } = await query;
 
       if (error) throw error;
-      
-      let filteredData = data as any || [];
-      
-      // Filtrar por búsqueda
-      if (searchQuery) {
-        filteredData = filteredData.filter((post: ForumPost) =>
-          post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          post.content.toLowerCase().includes(searchQuery.toLowerCase())
-        );
-      }
-      
-      setPosts(filteredData);
+      setPosts(data as any || []);
     } catch (error: any) {
       console.error("Error loading posts:", error);
-      toast.error("Error al cargar publicaciones");
+      toast.error("Error al cargar las publicaciones");
     } finally {
       setLoading(false);
     }
   };
 
-  const handleCreatePost = async () => {
-    if (!user) {
-      toast.error("Debes iniciar sesión para crear una publicación");
-      navigate("/auth");
-      return;
-    }
-
-    if (!newPost.title.trim() || !newPost.content.trim()) {
-      toast.error("Por favor completa todos los campos");
-      return;
-    }
-
-    try {
-      const { error } = await supabase.from("forum_posts").insert([{
-        user_id: user.id,
-        title: newPost.title,
-        content: newPost.content,
-        category: newPost.category as any,
-      }]);
-
-      if (error) throw error;
-
-      toast.success("Publicación creada exitosamente");
-      setNewPost({ title: "", content: "", category: "general" });
-      setShowNewPost(false);
-      loadPosts();
-    } catch (error: any) {
-      toast.error("Error al crear publicación");
-    }
-  };
+  useEffect(() => {
+    loadPosts();
+  }, [searchQuery, categoryFilter, authorFilter]);
 
   const getCategoryLabel = (category: string) => {
-    const labels: { [key: string]: string } = {
+    const labels: Record<string, string> = {
       general: "General",
       clinical_questions: "Preguntas Clínicas",
       case_discussions: "Casos Discutidos",
-      shared_resources: "Recursos Compartidos",
+      shared_resources: "Recursos Compartidos"
     };
     return labels[category] || category;
   };
 
   const getCategoryColor = (category: string) => {
-    const colors: { [key: string]: string } = {
-      general: "bg-primary/10 text-primary",
-      clinical_questions: "bg-secondary/10 text-secondary",
-      case_discussions: "bg-accent/10 text-accent",
-      shared_resources: "bg-muted text-muted-foreground",
+    const colors: Record<string, string> = {
+      general: "bg-blue-500/10 text-blue-700 dark:text-blue-300",
+      clinical_questions: "bg-purple-500/10 text-purple-700 dark:text-purple-300",
+      case_discussions: "bg-green-500/10 text-green-700 dark:text-green-300",
+      shared_resources: "bg-orange-500/10 text-orange-700 dark:text-orange-300"
     };
-    return colors[category] || "bg-muted text-muted-foreground";
+    return colors[category] || "bg-gray-500/10 text-gray-700";
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background via-muted/30 to-background">
+        <Navigation />
+        <div className="pt-32 pb-20 px-4 sm:px-6 lg:px-8">
+          <div className="max-w-7xl mx-auto">
+            <ListSkeleton items={6} />
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-muted/30 to-background">
       <Navigation />
       
       <div className="pt-32 pb-20 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-6xl mx-auto">
-          <AnimatedOnView>
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="text-center mb-12"
-            >
-              <h1 className="text-4xl md:text-5xl font-bold mb-4 gradient-text">
-                Foro de la Comunidad
-              </h1>
-              <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-                Comparte conocimientos, discute casos y conecta con otros profesionales
-              </p>
-            </motion.div>
-          </AnimatedOnView>
+        <div className="max-w-7xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mb-12 text-center"
+          >
+            <h1 className="text-5xl md:text-6xl font-bold mb-4">
+              Foro Comunitario
+            </h1>
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+              Participa en discusiones, comparte experiencias y conecta con otros profesionales
+            </p>
+          </motion.div>
 
-          {/* Filters and Create Button */}
-          <AnimatedOnView>
-            <div className="flex flex-col md:flex-row gap-4 mb-8 items-start md:items-center justify-between">
-              <div className="flex flex-col md:flex-row gap-4 flex-1 w-full">
-                <div className="relative flex-1">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-                  <Input
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="Buscar publicaciones..."
-                    className="pl-10 modern-input"
-                  />
-                </div>
-                <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-                  <SelectTrigger className="w-full md:w-64 modern-input">
-                    <SelectValue placeholder="Filtrar por categoría" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">Todas las categorías</SelectItem>
-                    <SelectItem value="general">General</SelectItem>
-                    <SelectItem value="clinical_questions">Preguntas Clínicas</SelectItem>
-                    <SelectItem value="case_discussions">Casos Discutidos</SelectItem>
-                    <SelectItem value="shared_resources">Recursos Compartidos</SelectItem>
-                  </SelectContent>
-                </Select>
+          <div className="space-y-6 mb-8">
+            <div className="flex flex-col lg:flex-row gap-4">
+              <div className="relative flex-1">
+                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
+                <Input
+                  type="text"
+                  placeholder="Buscar publicaciones por título o contenido..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-12 modern-input"
+                />
               </div>
-
-              <Button
-                onClick={() => setShowNewPost(!showNewPost)}
-                className="modern-btn pv-tap-scale"
-              >
-                <Plus className="w-4 h-4 mr-2" />
-                Nueva Publicación
-              </Button>
+              {isAdmin && (
+                <Button
+                  onClick={() => navigate("/admin/foro")}
+                  className="modern-btn pv-tap-scale whitespace-nowrap"
+                >
+                  <Plus className="w-4 h-4 mr-2" />
+                  Crear Publicación
+                </Button>
+              )}
             </div>
-          </AnimatedOnView>
 
-          {/* New Post Form */}
-          <AnimatePresence>
-            {showNewPost && (
-              <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: "auto" }}
-                exit={{ opacity: 0, height: 0 }}
-                transition={{ duration: 0.3 }}
-              >
-                <Card className="p-6 mb-8 modern-card pv-glass pv-glow">
-                  <h3 className="text-2xl font-bold mb-4">Crear Nueva Publicación</h3>
-                  <div className="space-y-4">
-                    <div>
-                      <Label>Título</Label>
-                      <Input
-                        value={newPost.title}
-                        onChange={(e) => setNewPost({ ...newPost, title: e.target.value })}
-                        placeholder="Título de tu publicación"
-                        className="modern-input"
-                      />
-                    </div>
-                    <div>
-                      <Label>Categoría</Label>
-                      <Select
-                        value={newPost.category}
-                        onValueChange={(value) => setNewPost({ ...newPost, category: value })}
-                      >
-                        <SelectTrigger className="modern-input">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="general">General</SelectItem>
-                          <SelectItem value="clinical_questions">Preguntas Clínicas</SelectItem>
-                          <SelectItem value="case_discussions">Casos Discutidos</SelectItem>
-                          <SelectItem value="shared_resources">Recursos Compartidos</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div>
-                      <Label>Contenido</Label>
-                      <Textarea
-                        value={newPost.content}
-                        onChange={(e) => setNewPost({ ...newPost, content: e.target.value })}
-                        placeholder="Escribe el contenido de tu publicación..."
-                        rows={6}
-                        className="modern-input"
-                      />
-                    </div>
-                    <div className="flex gap-3">
-                      <Button onClick={handleCreatePost} className="modern-btn pv-tap-scale">
-                        Publicar
-                      </Button>
-                      <Button
-                        onClick={() => setShowNewPost(false)}
-                        variant="outline"
-                        className="pv-tap-scale"
-                      >
-                        Cancelar
-                      </Button>
-                    </div>
-                  </div>
-                </Card>
-              </motion.div>
-            )}
-          </AnimatePresence>
+            <div className="flex flex-wrap gap-4 items-center">
+              <div className="flex items-center gap-2">
+                <Filter className="w-4 h-4 text-muted-foreground" />
+                <span className="text-sm font-medium">Filtros:</span>
+              </div>
+              
+              <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+                <SelectTrigger className="w-[200px] modern-input">
+                  <SelectValue placeholder="Categoría" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Todas las categorías</SelectItem>
+                  <SelectItem value="general">General</SelectItem>
+                  <SelectItem value="clinical_questions">Preguntas Clínicas</SelectItem>
+                  <SelectItem value="case_discussions">Casos Discutidos</SelectItem>
+                  <SelectItem value="shared_resources">Recursos Compartidos</SelectItem>
+                </SelectContent>
+              </Select>
 
-          {/* Posts List */}
-          {loading ? (
-            <div className="text-center py-12">
-              <div className="pv-spinner mx-auto"></div>
+              <Select value={authorFilter} onValueChange={setAuthorFilter}>
+                <SelectTrigger className="w-[200px] modern-input">
+                  <SelectValue placeholder="Autor" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Todos los autores</SelectItem>
+                  {authors.map(author => (
+                    <SelectItem key={author.id} value={author.id}>
+                      {author.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+
+              {(categoryFilter !== "all" || authorFilter !== "all") && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => {
+                    setCategoryFilter("all");
+                    setAuthorFilter("all");
+                  }}
+                  className="text-sm"
+                >
+                  Limpiar filtros
+                </Button>
+              )}
             </div>
-          ) : posts.length === 0 ? (
-            <AnimatedOnView>
-              <Card className="p-12 text-center modern-card pv-glass">
-                <MessageSquare className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
-                <h3 className="text-xl font-semibold mb-2">No hay publicaciones aún</h3>
-                <p className="text-muted-foreground">
-                  Sé el primero en crear una publicación en el foro
-                </p>
-              </Card>
-            </AnimatedOnView>
-          ) : (
-            <div className="space-y-6">
+          </div>
+
+          <AnimatePresence mode="wait">
+            <motion.div 
+              className="grid gap-6"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+            >
               {posts.map((post, index) => (
-                <AnimatedOnView key={post.id}>
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.1 }}
-                    whileHover={{ y: -4 }}
+                <motion.div
+                  key={post.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.05 }}
+                >
+                  <Card
+                    onClick={() => navigate(`/foro/${post.id}`)}
+                    className="p-6 modern-card pv-glass pv-glow hover:shadow-2xl cursor-pointer transition-all duration-300 hover:scale-[1.01] group"
                   >
-                    <Card
-                      className="p-6 modern-card pv-glass pv-glow cursor-pointer hover:shadow-xl hover:shadow-primary/10 transition-all duration-300 pv-tap-scale"
-                      onClick={() => navigate(`/foro/${post.id}`)}
-                    >
-                      <div className="flex items-start gap-4">
-                        <div className="flex-1">
-                          <div className="flex items-center gap-3 mb-3">
+                    <div className="flex items-start gap-4">
+                      <div className="flex-1 space-y-4">
+                        <div className="flex items-start justify-between gap-4">
+                          <div className="flex items-center gap-3 flex-1">
                             {post.is_pinned && (
                               <Pin className="w-5 h-5 text-primary" />
                             )}
-                            <span
-                              className={`text-xs font-medium px-3 py-1 rounded-full ${getCategoryColor(
-                                post.category
-                              )}`}
-                            >
-                              {getCategoryLabel(post.category)}
+                            <h3 className="text-2xl font-bold group-hover:text-primary transition-colors line-clamp-2 flex-1">
+                              {post.title}
+                            </h3>
+                          </div>
+                          <Badge className={getCategoryColor(post.category)}>
+                            {getCategoryLabel(post.category)}
+                          </Badge>
+                        </div>
+
+                        <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
+                          <div className="flex items-center gap-2">
+                            <User className="w-4 h-4" />
+                            <span>{post.profiles?.full_name || "Usuario"}</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Calendar className="w-4 h-4" />
+                            <span>
+                              {format(new Date(post.created_at), "dd MMM, yyyy", {
+                                locale: es,
+                              })}
                             </span>
                           </div>
-                          <h3 className="text-2xl font-bold mb-2 hover:text-primary transition-colors">
-                            {post.title}
-                          </h3>
-                          <p className="text-muted-foreground line-clamp-2 mb-4">
-                            {post.content}
-                          </p>
-                          <div className="flex items-center gap-6 text-sm text-muted-foreground">
-                            <div className="flex items-center gap-2">
-                              <User className="w-4 h-4" />
-                              <span>{post.profiles?.full_name || "Usuario"}</span>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <Calendar className="w-4 h-4" />
-                              <span>
-                                {format(new Date(post.created_at), "dd 'de' MMMM, yyyy", {
-                                  locale: es,
-                                })}
-                              </span>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <Eye className="w-4 h-4" />
-                              <span>{post.views_count} vistas</span>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <MessageSquare className="w-4 h-4" />
-                              <span>0 comentarios</span>
-                            </div>
+                          <div className="flex items-center gap-2">
+                            <Eye className="w-4 h-4" />
+                            <span>{post.views_count} vistas</span>
                           </div>
-                          <div className="mt-4" onClick={(e) => e.stopPropagation()}>
+                        </div>
+
+                        {post.image_url && (
+                          <div className="rounded-xl overflow-hidden max-h-48">
+                            <img 
+                              src={post.image_url} 
+                              alt={post.title}
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                        )}
+
+                        <p className="text-muted-foreground line-clamp-3">
+                          {post.content}
+                        </p>
+
+                        <div className="flex items-center gap-3 pt-2 border-t">
+                          <div onClick={(e) => e.stopPropagation()}>
                             <ReactionButton 
                               postType="forum" 
                               postId={post.id} 
                               initialCount={post.reactions_count || 0}
                             />
                           </div>
+                          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                            <MessageSquare className="w-4 h-4" />
+                            <span>Comentarios</span>
+                          </div>
                         </div>
                       </div>
-                    </Card>
-                  </motion.div>
-                </AnimatedOnView>
+                    </div>
+                  </Card>
+                </motion.div>
               ))}
-            </div>
-          )}
+
+              {posts.length === 0 && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                >
+                  <Card className="p-12 text-center modern-card pv-glass pv-glow">
+                    <MessageSquare className="w-16 h-16 mx-auto mb-4 text-muted-foreground opacity-50" />
+                    <h3 className="text-2xl font-bold mb-2">No se encontraron publicaciones</h3>
+                    <p className="text-muted-foreground mb-6">
+                      {searchQuery || categoryFilter !== "all" || authorFilter !== "all"
+                        ? "Intenta ajustar los filtros de búsqueda"
+                        : "Sé el primero en iniciar una conversación"}
+                    </p>
+                    {isAdmin && !searchQuery && categoryFilter === "all" && authorFilter === "all" && (
+                      <Button
+                        onClick={() => navigate("/admin/foro")}
+                        className="modern-btn pv-tap-scale"
+                      >
+                        <Plus className="w-4 h-4 mr-2" />
+                        Crear Primera Publicación
+                      </Button>
+                    )}
+                  </Card>
+                </motion.div>
+              )}
+            </motion.div>
+          </AnimatePresence>
         </div>
       </div>
     </div>
