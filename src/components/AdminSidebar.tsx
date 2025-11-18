@@ -6,18 +6,22 @@ import {
   LayoutDashboard, 
   MessageSquare, 
   FileText, 
-  Settings,
+  TrendingUp,
+  Image,
+  Mail,
+  Newspaper,
   ChevronLeft,
   ChevronRight
 } from "lucide-react";
 
 const menuItems = [
   { to: "/admin", label: "Dashboard", icon: LayoutDashboard },
-  { to: "/admin/contactos", label: "Contactos", icon: MessageSquare },
+  { to: "/admin/stats", label: "Estadísticas", icon: TrendingUp },
+  { to: "/admin/contactos", label: "Contactos", icon: Mail },
   { to: "/admin/content", label: "Contenido", icon: FileText },
   { to: "/admin/foro", label: "Foro", icon: MessageSquare },
-  { to: "/admin/novedades", label: "Novedades", icon: FileText },
-  { to: "/admin/media", label: "Archivos", icon: Settings },
+  { to: "/admin/novedades", label: "Novedades", icon: Newspaper },
+  { to: "/admin/media", label: "Archivos", icon: Image },
 ];
 
 export default function AdminSidebar() {

@@ -24,7 +24,7 @@ interface ForumPost {
   image_url?: string;
   created_at: string;
   views_count: number;
-  reactions_count: number;
+  reactions_count?: number;
   is_pinned: boolean;
   user_id: string;
   profiles?: {

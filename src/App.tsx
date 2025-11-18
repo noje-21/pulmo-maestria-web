@@ -151,7 +151,24 @@ const App = () => {
             } 
           />
           <Route 
-            path="/admin/foro" 
+            path="/admin/stats" 
+            element={
+              <motion.div
+                key="admin-stats"
+                initial={{ opacity: 0, y: direction > 0 ? 50 : -50, scale: 0.995 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: direction > 0 ? -50 : 50, scale: 0.995 }}
+                transition={{ duration: 0.45 }}
+                className="min-h-screen"
+              >
+                <ProtectedRoute requireAdmin={true}>
+                  <AdminDashboard />
+                </ProtectedRoute>
+              </motion.div>
+            } 
+          />
+          <Route 
+            path="/admin/foro"
             element={
               <motion.div
                 key="admin-foro"

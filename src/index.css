@@ -115,6 +115,11 @@ All colors MUST be HSL.
   body {
     @apply bg-background text-foreground font-sans antialiased;
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    /* Performance optimizations */
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -169,6 +174,24 @@ All colors MUST be HSL.
   
   .modern-button {
     @apply bg-primary hover:bg-primary/90 text-white rounded-xl px-6 py-3 shadow-md shadow-primary/20 hover:shadow-lg hover:shadow-primary/30 transition-all duration-300 hover:scale-105 font-medium;
+  }
+  
+  .modern-btn {
+    @apply rounded-xl px-6 py-3 font-medium shadow-md hover:shadow-lg transition-all duration-300 hover:scale-105;
+  }
+  
+  /* Performance optimized classes */
+  .pv-tap-scale {
+    @apply transition-transform duration-200 active:scale-95;
+    will-change: transform;
+  }
+  
+  .pv-glass {
+    @apply backdrop-blur-lg bg-white/80 dark:bg-slate-900/80;
+  }
+  
+  .pv-glow {
+    @apply shadow-xl shadow-primary/5 dark:shadow-primary/10;
   }
 }
 

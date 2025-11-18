@@ -111,10 +111,23 @@ const AdminNovedades = () => {
 
     try {
       const { data: { session } } = await supabase.auth.getSession();
-      if (!session) return;
+      if (!session) {
+        toast.error("Debes iniciar sesión");
+        return;
+      }
+
+      // Generar slug automáticamente si está vacío
+      const slug = formData.slug || formData.title.toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '');
 
       const dataToSave = {
-        ...formData,
+        title: formData.title,
+        slug: slug,
+        excerpt: formData.excerpt || formData.content.substring(0, 200),
+        content: formData.content,
+        image_url: formData.image_url || null,
+        status: formData.status,
         author_id: session.user.id,
         published_at: formData.status === "published" ? new Date().toISOString() : null,
       };
