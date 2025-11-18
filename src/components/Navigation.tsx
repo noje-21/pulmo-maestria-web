@@ -90,7 +90,7 @@ const Navigation = () => {
                 <img
                   src={logoMaestria}
                   alt="Maestría en Circulación Pulmonar"
-                  className="h-full w-auto object-contain rounded-xl shadow-sm"
+                  className="h-full w-auto object-contain rounded-lg shadow-sm"
                   style={{
                     mixBlendMode: "normal",
                     filter: "none",
