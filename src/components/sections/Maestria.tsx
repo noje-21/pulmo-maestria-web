@@ -104,7 +104,8 @@ export const Maestria = () => {
 
         <div className="bg-gradient-to-br from-card to-card/50 rounded-2xl shadow-xl p-8 mb-12 text-center border border-accent/10 hover:shadow-2xl transition-all duration-500">
           <div className="flex items-center justify-center gap-3 mb-6">
-            <span className="text-4xl">🎥</span>
+            <span className="text-4xl">
+          </span>
             <h3 className="text-2xl font-semibold text-primary">Video Informativo</h3>
           </div>
           <video controls preload="metadata" className="rounded-xl shadow-2xl w-full max-w-3xl h-auto mx-auto border-4 border-primary/20">
@@ -149,11 +150,7 @@ export const Maestria = () => {
           </div>
 
           <div className="flex items-center justify-center gap-6 mt-8 flex-wrap">
-            <Button 
-              onClick={prevPage} 
-              disabled={pageNumber <= 1}
-              className="px-6 py-3 bg-primary hover:bg-primary/90 text-white disabled:opacity-30 disabled:cursor-not-allowed hover:scale-105 transition-all duration-300 rounded-full font-semibold shadow-lg"
-            >
+            <Button onClick={prevPage} disabled={pageNumber <= 1} className="px-6 py-3 bg-primary hover:bg-primary/90 text-white disabled:opacity-30 disabled:cursor-not-allowed hover:scale-105 transition-all duration-300 rounded-full font-semibold shadow-lg">
               ⬅️ Anterior
             </Button>
             <div className="px-6 py-3 bg-accent/10 rounded-full border-2 border-accent/20">
@@ -161,22 +158,13 @@ export const Maestria = () => {
                 Página {pageNumber} de {numPages ?? "…"}
               </span>
             </div>
-            <Button 
-              onClick={nextPage} 
-              disabled={numPages ? pageNumber >= numPages : false}
-              className="px-6 py-3 bg-primary hover:bg-primary/90 text-white disabled:opacity-30 disabled:cursor-not-allowed hover:scale-105 transition-all duration-300 rounded-full font-semibold shadow-lg"
-            >
+            <Button onClick={nextPage} disabled={numPages ? pageNumber >= numPages : false} className="px-6 py-3 bg-primary hover:bg-primary/90 text-white disabled:opacity-30 disabled:cursor-not-allowed hover:scale-105 transition-all duration-300 rounded-full font-semibold shadow-lg">
               Siguiente ➡️
             </Button>
           </div>
 
           <div className="mt-8">
-            <a 
-              href="/MAESTRIA_CP_2025.pdf" 
-              target="_blank" 
-              rel="noopener noreferrer" 
-              className="inline-flex items-center gap-2 text-accent hover:text-accent/80 transition-all duration-300 text-base font-semibold px-6 py-3 rounded-full bg-accent/5 hover:bg-accent/10 border-2 border-accent/20 hover:scale-105"
-            >
+            <a href="/MAESTRIA_CP_2025.pdf" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-accent hover:text-accent/80 transition-all duration-300 text-base font-semibold px-6 py-3 rounded-full bg-accent/5 hover:bg-accent/10 border-2 border-accent/20 hover:scale-105">
               <span className="text-xl">📖</span>
               Abrir PDF en nueva pestaña
             </a>
