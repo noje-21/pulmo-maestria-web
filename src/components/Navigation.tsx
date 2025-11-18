@@ -87,8 +87,8 @@ const Navigation = () => {
               <img
                 src={logoMaestria}
                 alt="Maestría en Circulación Pulmonar"
-                className="h-14 w-auto"
-                style={{ background: 'transparent' }}
+                className="h-14 w-auto mix-blend-normal"
+                style={{ background: 'transparent', backgroundColor: 'transparent' }}
               />
             </Link>
           </motion.div>
