@@ -1,4 +1,5 @@
 import Navigation from "@/components/Navigation";
+import AnimatedOnView from "@/components/AnimatedOnView";
 import { Hero } from "@/components/sections/Hero";
 import { Maestria } from "@/components/sections/Maestria";
 import { Expertos } from "@/components/sections/Expertos";
@@ -13,12 +14,24 @@ const Index = () => {
     <div className="min-h-screen">
       <Navigation />
       <Hero />
-      <Maestria />
-      <Expertos />
-      <Eventos />
-      <QuienesSomos />
-      <Galeria />
-      <Contacto />
+      <AnimatedOnView>
+        <Maestria />
+      </AnimatedOnView>
+      <AnimatedOnView>
+        <Expertos />
+      </AnimatedOnView>
+      <AnimatedOnView>
+        <Eventos />
+      </AnimatedOnView>
+      <AnimatedOnView>
+        <QuienesSomos />
+      </AnimatedOnView>
+      <AnimatedOnView>
+        <Galeria />
+      </AnimatedOnView>
+      <AnimatedOnView>
+        <Contacto />
+      </AnimatedOnView>
       <Footer />
     </div>
   );
