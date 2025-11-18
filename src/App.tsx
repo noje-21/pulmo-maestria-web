@@ -20,6 +20,7 @@ import AdminMedia from "./pages/AdminMedia";
 import AdminDashboard from "./pages/AdminDashboard";
 import Foro from "./pages/Foro";
 import ForoDetail from "./pages/ForoDetail";
+import ForoStats from "./pages/ForoStats";
 import Novedades from "./pages/Novedades";
 import NovedadDetail from "./pages/NovedadDetail";
 import NotFound from "./pages/NotFound";
@@ -245,6 +246,21 @@ const App = () => {
                 className="min-h-screen"
               >
                 <ForoDetail />
+              </motion.div>
+            } 
+          />
+          <Route 
+            path="/foro/stats" 
+            element={
+              <motion.div
+                key="foro-stats"
+                initial={{ opacity: 0, y: direction > 0 ? 50 : -50, scale: 0.995 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: direction > 0 ? -50 : 50, scale: 0.995 }}
+                transition={{ duration: 0.45 }}
+                className="min-h-screen"
+              >
+                <ForoStats />
               </motion.div>
             } 
           />
