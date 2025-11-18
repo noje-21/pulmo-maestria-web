@@ -44,6 +44,11 @@ export const Footer = () => {
                   → Contacto
                 </a>
               </li>
+              <li>
+                <a href="/auth" className="text-white/80 hover:text-accent transition-all duration-300 hover:translate-x-1 inline-block">
+                  → Iniciar sesión
+                </a>
+              </li>
             </ul>
           </div>
           
