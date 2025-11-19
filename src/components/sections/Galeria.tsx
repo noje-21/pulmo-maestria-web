@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, ChevronLeft, ChevronRight, Download } from "lucide-react";
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Autoplay, Navigation, Pagination, EffectFade } from 'swiper/modules';
-import 'swiper/css';
-import 'swiper/css/navigation';
-import 'swiper/css/pagination';
-import 'swiper/css/effect-fade';
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Autoplay, Navigation, Pagination, EffectFade } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
+import "swiper/css/effect-fade";
 
 import gallery1 from "@/assets/secion/maestria1.jpg";
 import gallery12 from "@/assets/secion/maestria12.jpg";
@@ -41,22 +41,22 @@ const galeriasPorAño: YearGallery[] = [
     images: [gallery3, gallery32, gallery33, gallery34, gallery35, gallery36],
     title: "Sesiones Académicas 2024",
     subtitle: "Edición Especial",
-    description: "Momentos destacados de nuestras sesiones más recientes"
+    description: "Momentos destacados de nuestras sesiones más recientes",
   },
   {
     year: "2023",
     images: [gallery2, gallery22, gallery23, gallery24, gallery25, gallery26],
     title: "Sesiones Académicas 2023",
     subtitle: "Excelencia Académica",
-    description: "Un año de aprendizaje y crecimiento profesional"
+    description: "Un año de aprendizaje y crecimiento profesional",
   },
   {
     year: "2022",
     images: [gallery1, gallery12, gallery13, gallery14, gallery15, gallery16],
     title: "Sesiones Académicas 2022",
     subtitle: "Inicios Inolvidables",
-    description: "Los primeros pasos de nuestra comunidad académica"
-  }
+    description: "Los primeros pasos de nuestra comunidad académica",
+  },
 ];
 
 export const Galeria = () => {
@@ -89,7 +89,7 @@ export const Galeria = () => {
   };
 
   const handleDownload = () => {
-    const link = document.createElement('a');
+    const link = document.createElement("a");
     link.href = currentImage;
     link.download = `sesion-${Date.now()}.jpg`;
     document.body.appendChild(link);
@@ -98,10 +98,13 @@ export const Galeria = () => {
   };
 
   return (
-    <section id="galeria" className="py-24 bg-gradient-to-b from-background via-muted/20 to-background relative overflow-hidden">
+    <section
+      id="galeria"
+      className="py-24 bg-gradient-to-b from-background via-muted/20 to-background relative overflow-hidden"
+    >
       {/* Background decoration */}
       <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
-      
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Header */}
         <motion.div
@@ -133,9 +136,13 @@ export const Galeria = () => {
             <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-primary/10 via-accent/5 to-background border-2 border-primary/20 shadow-2xl shadow-primary/10 p-8 md:p-12">
               {/* Background texture */}
               <div className="absolute inset-0 opacity-5">
-                <div className="absolute inset-0" style={{ 
-                  backgroundImage: 'radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.3) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(255, 87, 87, 0.3) 0%, transparent 50%)',
-                }}></div>
+                <div
+                  className="absolute inset-0"
+                  style={{
+                    backgroundImage:
+                      "radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.3) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(255, 87, 87, 0.3) 0%, transparent 50%)",
+                  }}
+                ></div>
               </div>
 
               {/* Year Badge */}
@@ -196,7 +203,7 @@ export const Galeria = () => {
                     prevEl: `.swiper-button-prev-${yearGallery.year}`,
                     nextEl: `.swiper-button-next-${yearGallery.year}`,
                   }}
-                  pagination={{ 
+                  pagination={{
                     clickable: true,
                     dynamicBullets: true,
                   }}
@@ -211,11 +218,11 @@ export const Galeria = () => {
                   breakpoints={{
                     640: {
                       slidesPerView: 2,
-                      effect: 'slide',
+                      effect: "slide",
                     },
                     1024: {
                       slidesPerView: 3,
-                      effect: 'slide',
+                      effect: "slide",
                     },
                   }}
                   className="rounded-2xl"
@@ -312,18 +319,6 @@ export const Galeria = () => {
                 className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-sm flex items-center justify-center transition-all duration-300 z-10"
               >
                 <ChevronRight className="w-6 h-6 text-white" />
-              </button>
-
-              {/* Download button */}
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleDownload();
-                }}
-                className="absolute bottom-4 right-4 px-4 py-2 rounded-full bg-primary hover:bg-primary/90 text-white flex items-center gap-2 transition-all duration-300 shadow-lg hover:shadow-xl z-10"
-              >
-                <Download className="w-4 h-4" />
-                <span className="text-sm font-semibold">Descargar</span>
               </button>
 
               {/* Image */}
