@@ -28,7 +28,7 @@ const AdminNovedades = () => {
     excerpt: "",
     content: "",
     image_url: "",
-    status: "draft" as "draft" | "published" | "archived",
+    status: "published" as "draft" | "published" | "archived",
   });
 
   useEffect(() => {
@@ -88,7 +88,7 @@ const AdminNovedades = () => {
       excerpt: "",
       content: "",
       image_url: "",
-      status: "draft",
+      status: "published",
     });
     setEditingId(null);
     setShowForm(false);
@@ -143,18 +143,18 @@ const AdminNovedades = () => {
           .eq("id", editingId);
 
         if (error) throw error;
-        toast.success("Novedad actualizada");
+        toast.success("Novedad actualizada exitosamente");
       } else {
         const { error } = await supabase
           .from("novedades")
           .insert(dataToSave);
 
         if (error) throw error;
-        toast.success("Novedad creada");
+        toast.success("Novedad creada y publicada exitosamente");
       }
 
       resetForm();
-      loadNovedades();
+      await loadNovedades();
     } catch (error: any) {
       console.error("Error saving novedad:", error);
       toast.error("Error al guardar novedad: " + error.message);

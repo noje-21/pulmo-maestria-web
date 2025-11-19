@@ -98,7 +98,12 @@ const Foro = () => {
 
       const { data, error } = await query;
 
-      if (error) throw error;
+      if (error) {
+        console.error("Error loading posts:", error);
+        throw error;
+      }
+      
+      console.log("Foros cargados:", data?.length || 0);
       setPosts(data as any || []);
     } catch (error: any) {
       console.error("Error loading posts:", error);

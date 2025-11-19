@@ -129,18 +129,18 @@ const AdminForo = () => {
           .eq("id", editingId);
 
         if (error) throw error;
-        toast.success("Publicación actualizada");
+        toast.success("Publicación actualizada exitosamente");
       } else {
         const { error } = await supabase
           .from("forum_posts")
           .insert(dataToSave);
 
         if (error) throw error;
-        toast.success("Publicación creada");
+        toast.success("Publicación creada exitosamente");
       }
 
       resetForm();
-      loadPosts();
+      await loadPosts();
     } catch (error: any) {
       console.error("Error saving post:", error);
       toast.error("Error al guardar publicación: " + error.message);
