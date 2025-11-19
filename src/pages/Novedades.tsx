@@ -11,6 +11,7 @@ import { useNavigate } from "react-router-dom";
 import { Calendar, User, Search, Eye, Filter, Newspaper } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
+import { toast } from "sonner";
 import ImageLazy from "@/components/ImageLazy";
 import ReactionButton from "@/components/ReactionButton";
 import { ListSkeleton } from "@/components/LoadingSkeleton";
@@ -79,10 +80,16 @@ const Novedades = () => {
 
       const { data, error } = await query;
 
-      if (error) throw error;
+      if (error) {
+        console.error("Error loading novedades:", error);
+        throw error;
+      }
+      
+      console.log("Novedades cargadas:", data?.length || 0);
       setNovedades(data as any || []);
     } catch (error: any) {
       console.error("Error loading novedades:", error);
+      toast.error("Error al cargar novedades");
     } finally {
       setLoading(false);
     }
