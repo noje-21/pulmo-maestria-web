@@ -1,209 +1,249 @@
-import { useState } from "react";
+import { useState, useCallback, memo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, ChevronLeft, ChevronRight, Download } from "lucide-react";
+import { X, Download, ChevronLeft, ChevronRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay, Navigation, Pagination, EffectFade } from "swiper/modules";
+import { Autoplay, Navigation, Pagination } from "swiper/modules";
+import type { Swiper as SwiperType } from "swiper";
+
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
-import "swiper/css/effect-fade";
 
+// Optimized image imports
 import gallery1 from "@/assets/secion/maestria1.jpg";
+import gallery2 from "@/assets/secion/maestria2.jpg";
+import gallery3 from "@/assets/secion/maestria3.jpg";
 import gallery12 from "@/assets/secion/maestria12.jpg";
 import gallery13 from "@/assets/secion/maestria13.jpg";
 import gallery14 from "@/assets/secion/maestria14.jpg";
 import gallery15 from "@/assets/secion/maestria15.jpg";
 import gallery16 from "@/assets/secion/maestria16.jpg";
-import gallery2 from "@/assets/secion/maestria2.jpg";
 import gallery22 from "@/assets/secion/maestria22.jpg";
 import gallery23 from "@/assets/secion/maestria23.jpg";
 import gallery24 from "@/assets/secion/maestria24.jpg";
 import gallery25 from "@/assets/secion/maestria25.jpg";
 import gallery26 from "@/assets/secion/maestria26.jpg";
-import gallery3 from "@/assets/secion/maestria3.jpg";
 import gallery32 from "@/assets/secion/maestria32.jpg";
 import gallery33 from "@/assets/secion/maestria33.jpg";
 import gallery34 from "@/assets/secion/maestria34.jpg";
 import gallery35 from "@/assets/secion/maestria35.jpg";
 import gallery36 from "@/assets/secion/maestria36.jpg";
 
+interface ImageData {
+  src: string;
+  alt: string;
+  category?: string;
+}
+
 interface YearGallery {
-  year: string;
-  images: string[];
+  year: number;
   title: string;
   subtitle: string;
   description: string;
+  hero: string;
+  images: ImageData[];
 }
 
 const galeriasPorAño: YearGallery[] = [
   {
-    year: "2024",
-    images: [gallery3, gallery32, gallery33, gallery34, gallery35, gallery36],
-    title: "Sesiones Académicas 2024",
-    subtitle: "Edición Especial",
-    description: "Momentos destacados de nuestras sesiones más recientes",
+    year: 2024,
+    title: "Sesiones 2024",
+    subtitle: "Innovación y Excelencia",
+    description: "Un año de aprendizaje intensivo y casos clínicos destacados",
+    hero: gallery1,
+    images: [
+      { src: gallery1, alt: "Maestría 2024 - Sesión 1", category: "Clases presenciales" },
+      { src: gallery12, alt: "Maestría 2024 - Sesión 2", category: "Workshops" },
+      { src: gallery13, alt: "Maestría 2024 - Sesión 3", category: "Casos clínicos" },
+      { src: gallery14, alt: "Maestría 2024 - Sesión 4", category: "Clases presenciales" },
+      { src: gallery15, alt: "Maestría 2024 - Sesión 5", category: "Workshops" },
+      { src: gallery16, alt: "Maestría 2024 - Sesión 6", category: "Backstage" },
+    ],
   },
   {
-    year: "2023",
-    images: [gallery2, gallery22, gallery23, gallery24, gallery25, gallery26],
-    title: "Sesiones Académicas 2023",
-    subtitle: "Excelencia Académica",
-    description: "Un año de aprendizaje y crecimiento profesional",
+    year: 2023,
+    title: "Sesiones 2023",
+    subtitle: "Crecimiento y Desarrollo",
+    description: "Consolidando conocimientos y experiencias clínicas",
+    hero: gallery2,
+    images: [
+      { src: gallery2, alt: "Maestría 2023 - Sesión 1", category: "Clases presenciales" },
+      { src: gallery22, alt: "Maestría 2023 - Sesión 2", category: "Workshops" },
+      { src: gallery23, alt: "Maestría 2023 - Sesión 3", category: "Casos clínicos" },
+      { src: gallery24, alt: "Maestría 2023 - Sesión 4", category: "Clases presenciales" },
+      { src: gallery25, alt: "Maestría 2023 - Sesión 5", category: "Workshops" },
+      { src: gallery26, alt: "Maestría 2023 - Sesión 6", category: "Backstage" },
+    ],
   },
   {
-    year: "2022",
-    images: [gallery1, gallery12, gallery13, gallery14, gallery15, gallery16],
-    title: "Sesiones Académicas 2022",
-    subtitle: "Inicios Inolvidables",
-    description: "Los primeros pasos de nuestra comunidad académica",
+    year: 2022,
+    title: "Sesiones 2022",
+    subtitle: "Fundamentos y Bases",
+    description: "Comenzando el viaje hacia la excelencia profesional",
+    hero: gallery3,
+    images: [
+      { src: gallery3, alt: "Maestría 2022 - Sesión 1", category: "Clases presenciales" },
+      { src: gallery32, alt: "Maestría 2022 - Sesión 2", category: "Workshops" },
+      { src: gallery33, alt: "Maestría 2022 - Sesión 3", category: "Casos clínicos" },
+      { src: gallery34, alt: "Maestría 2022 - Sesión 4", category: "Clases presenciales" },
+      { src: gallery35, alt: "Maestría 2022 - Sesión 5", category: "Workshops" },
+      { src: gallery36, alt: "Maestría 2022 - Sesión 6", category: "Backstage" },
+    ],
   },
 ];
 
-export const Galeria = () => {
-  const [modalOpen, setModalOpen] = useState(false);
-  const [currentImage, setCurrentImage] = useState<string>("");
-  const [currentImages, setCurrentImages] = useState<string[]>([]);
-  const [currentIndex, setCurrentIndex] = useState(0);
+// Memoized image component for performance
+const GalleryImage = memo(({ 
+  src, 
+  alt, 
+  onClick, 
+  className = "" 
+}: { 
+  src: string; 
+  alt: string; 
+  onClick: () => void; 
+  className?: string;
+}) => (
+  <motion.div
+    whileHover={{ scale: 1.02, y: -4 }}
+    whileTap={{ scale: 0.98 }}
+    className={`relative overflow-hidden rounded-xl shadow-lg cursor-pointer group ${className}`}
+    onClick={onClick}
+  >
+    <img
+      src={src}
+      alt={alt}
+      loading="lazy"
+      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+      draggable={false}
+    />
+    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+  </motion.div>
+));
 
-  const openModal = (image: string, images: string[], index: number) => {
-    setCurrentImage(image);
-    setCurrentImages(images);
-    setCurrentIndex(index);
-    setModalOpen(true);
-  };
+GalleryImage.displayName = "GalleryImage";
 
-  const closeModal = () => {
-    setModalOpen(false);
-  };
+const Galeria = () => {
+  const [selectedImage, setSelectedImage] = useState<ImageData | null>(null);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [currentYear, setCurrentYear] = useState<YearGallery | null>(null);
 
-  const goToNext = () => {
-    const newIndex = (currentIndex + 1) % currentImages.length;
-    setCurrentIndex(newIndex);
-    setCurrentImage(currentImages[newIndex]);
-  };
+  const handleImageClick = useCallback((gallery: YearGallery, index: number) => {
+    setCurrentYear(gallery);
+    setCurrentImageIndex(index);
+    setSelectedImage(gallery.images[index]);
+  }, []);
 
-  const goToPrev = () => {
-    const newIndex = currentIndex === 0 ? currentImages.length - 1 : currentIndex - 1;
-    setCurrentIndex(newIndex);
-    setCurrentImage(currentImages[newIndex]);
-  };
+  const handleClose = useCallback(() => {
+    setSelectedImage(null);
+    setCurrentYear(null);
+  }, []);
 
-  const handleDownload = () => {
+  const handlePrevImage = useCallback(() => {
+    if (!currentYear) return;
+    const newIndex = currentImageIndex > 0 ? currentImageIndex - 1 : currentYear.images.length - 1;
+    setCurrentImageIndex(newIndex);
+    setSelectedImage(currentYear.images[newIndex]);
+  }, [currentImageIndex, currentYear]);
+
+  const handleNextImage = useCallback(() => {
+    if (!currentYear) return;
+    const newIndex = currentImageIndex < currentYear.images.length - 1 ? currentImageIndex + 1 : 0;
+    setCurrentImageIndex(newIndex);
+    setSelectedImage(currentYear.images[newIndex]);
+  }, [currentImageIndex, currentYear]);
+
+  const handleDownload = useCallback(() => {
+    if (!selectedImage) return;
     const link = document.createElement("a");
-    link.href = currentImage;
-    link.download = `sesion-${Date.now()}.jpg`;
+    link.href = selectedImage.src;
+    link.download = selectedImage.alt || "image.jpg";
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-  };
+  }, [selectedImage]);
 
   return (
-    <section
-      id="galeria"
-      className="py-24 bg-gradient-to-b from-background via-muted/20 to-background relative overflow-hidden"
-    >
-      {/* Background decoration */}
-      <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        {/* Header */}
+    <section id="galeria" className="py-24 px-4 md:px-8 bg-gradient-to-b from-background via-muted/30 to-background">
+      <div className="max-w-7xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-20"
+          transition={{ duration: 0.6 }}
+          className="text-center mb-16"
         >
-          <h2 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
+          <h2 className="text-5xl md:text-6xl font-bold mb-4 bg-gradient-to-r from-primary via-primary/80 to-primary bg-clip-text text-transparent">
             Galería de Momentos
           </h2>
-          <div className="w-32 h-1.5 bg-gradient-to-r from-primary to-accent mx-auto mb-6 rounded-full"></div>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Recuerdos inolvidables de nuestras sesiones académicas a lo largo de los años
+            Revive los mejores momentos de cada año de formación
           </p>
         </motion.div>
 
-        {/* Flyers por año */}
-        {galeriasPorAño.map((yearGallery, yearIndex) => (
-          <motion.div
-            key={yearGallery.year}
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: yearIndex * 0.2 }}
-            className="mb-32 last:mb-0"
-          >
-            {/* Flyer Card */}
-            <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-primary/10 via-accent/5 to-background border-2 border-primary/20 shadow-2xl shadow-primary/10 p-8 md:p-12">
-              {/* Background texture */}
-              <div className="absolute inset-0 opacity-5">
-                <div
-                  className="absolute inset-0"
-                  style={{
-                    backgroundImage:
-                      "radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.3) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(255, 87, 87, 0.3) 0%, transparent 50%)",
-                  }}
-                ></div>
+        <div className="space-y-24">
+          {galeriasPorAño.map((gallery, galleryIndex) => (
+            <motion.div
+              key={gallery.year}
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-100px" }}
+              transition={{ duration: 0.7, delay: galleryIndex * 0.1 }}
+              className="relative"
+            >
+              {/* Hero Section */}
+              <div className="relative h-[400px] md:h-[500px] rounded-3xl overflow-hidden mb-12 group">
+                <img
+                  src={gallery.hero}
+                  alt={`Hero ${gallery.year}`}
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  loading="lazy"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+                
+                <div className="absolute inset-0 flex flex-col items-center justify-center text-white p-8">
+                  <motion.div
+                    initial={{ scale: 0.8, opacity: 0 }}
+                    whileInView={{ scale: 1, opacity: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.5, delay: 0.2 }}
+                    className="text-center"
+                  >
+                    <motion.div
+                      className="inline-block mb-6 px-8 py-3 bg-primary/20 backdrop-blur-xl rounded-full border border-white/20"
+                      whileHover={{ scale: 1.05 }}
+                    >
+                      <span className="text-6xl font-black tracking-tight">{gallery.year}</span>
+                    </motion.div>
+                    <h3 className="text-4xl md:text-5xl font-bold mb-4 tracking-tight">
+                      {gallery.title}
+                    </h3>
+                    <p className="text-xl md:text-2xl font-light mb-2 text-white/90">
+                      {gallery.subtitle}
+                    </p>
+                    <p className="text-lg text-white/70 max-w-2xl mx-auto">
+                      {gallery.description}
+                    </p>
+                  </motion.div>
+                </div>
               </div>
 
-              {/* Year Badge */}
-              <motion.div
-                initial={{ scale: 0, rotate: -180 }}
-                whileInView={{ scale: 1, rotate: 0 }}
-                viewport={{ once: true }}
-                transition={{ type: "spring", duration: 0.8, delay: 0.3 }}
-                className="absolute top-8 right-8 z-20"
-              >
-                <div className="relative">
-                  <div className="absolute inset-0 bg-gradient-to-br from-primary to-accent blur-xl opacity-50"></div>
-                  <div className="relative bg-gradient-to-br from-primary to-accent text-white px-8 py-4 rounded-2xl font-bold text-2xl shadow-lg transform rotate-6 hover:rotate-0 transition-transform duration-300">
-                    <div className="absolute inset-0 bg-white/20 rounded-2xl"></div>
-                    <span className="relative">{yearGallery.year}</span>
-                  </div>
-                </div>
-              </motion.div>
-
-              {/* Content */}
-              <div className="relative z-10">
-                {/* Hero Section */}
-                <div className="mb-12">
-                  <motion.h3
-                    initial={{ opacity: 0, x: -30 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true }}
-                    className="text-4xl md:text-5xl font-bold mb-4 text-primary"
-                  >
-                    {yearGallery.title}
-                  </motion.h3>
-                  <motion.p
-                    initial={{ opacity: 0, x: -30 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: 0.1 }}
-                    className="text-xl text-accent font-semibold mb-2"
-                  >
-                    {yearGallery.subtitle}
-                  </motion.p>
-                  <motion.p
-                    initial={{ opacity: 0, x: -30 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: 0.2 }}
-                    className="text-muted-foreground text-lg"
-                  >
-                    {yearGallery.description}
-                  </motion.p>
-                </div>
-
-                {/* Slider */}
+              {/* Optimized Swiper Slider */}
+              <div className="relative px-12">
                 <Swiper
-                  modules={[Autoplay, Navigation, Pagination, EffectFade]}
+                  modules={[Autoplay, Navigation, Pagination]}
                   spaceBetween={20}
                   slidesPerView={1}
-                  navigation={{
-                    prevEl: `.swiper-button-prev-${yearGallery.year}`,
-                    nextEl: `.swiper-button-next-${yearGallery.year}`,
+                  breakpoints={{
+                    640: { slidesPerView: 2, spaceBetween: 20 },
+                    1024: { slidesPerView: 3, spaceBetween: 24 },
                   }}
-                  pagination={{
+                  navigation={{
+                    prevEl: `.swiper-button-prev-${gallery.year}`,
+                    nextEl: `.swiper-button-next-${gallery.year}`,
+                  }}
+                  pagination={{ 
                     clickable: true,
                     dynamicBullets: true,
                   }}
@@ -213,129 +253,133 @@ export const Galeria = () => {
                     pauseOnMouseEnter: true,
                   }}
                   loop={true}
-                  effect="fade"
-                  fadeEffect={{ crossFade: true }}
-                  breakpoints={{
-                    640: {
-                      slidesPerView: 2,
-                      effect: "slide",
-                    },
-                    1024: {
-                      slidesPerView: 3,
-                      effect: "slide",
-                    },
+                  speed={600}
+                  className="pb-12"
+                  onSwiper={(swiper: SwiperType) => {
+                    // Preload next/prev slides
+                    swiper.on('slideChange', () => {
+                      const nextSlide = swiper.slides[swiper.activeIndex + 1];
+                      const prevSlide = swiper.slides[swiper.activeIndex - 1];
+                      [nextSlide, prevSlide].forEach(slide => {
+                        if (slide) {
+                          const img = slide.querySelector('img');
+                          if (img && !img.complete) {
+                            img.loading = 'eager';
+                          }
+                        }
+                      });
+                    });
                   }}
-                  className="rounded-2xl"
                 >
-                  {yearGallery.images.map((image, index) => (
+                  {gallery.images.map((image, index) => (
                     <SwiperSlide key={index}>
-                      <motion.div
-                        whileHover={{ scale: 1.05, rotate: 1 }}
-                        transition={{ duration: 0.3 }}
-                        className="relative aspect-video rounded-2xl overflow-hidden group cursor-pointer shadow-xl hover:shadow-2xl hover:shadow-primary/20"
-                        onClick={() => openModal(image, yearGallery.images, index)}
-                      >
-                        <img
-                          src={image}
-                          alt={`Sesión ${yearGallery.year} - ${index + 1}`}
-                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                          loading="lazy"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-primary/80 via-primary/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center p-6">
-                          <div className="text-white text-center transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
-                            <p className="font-bold text-lg">Sesión Académica</p>
-                            <p className="text-accent text-sm">{yearGallery.year}</p>
-                          </div>
+                      <GalleryImage
+                        src={image.src}
+                        alt={image.alt}
+                        onClick={() => handleImageClick(gallery, index)}
+                        className="h-[300px] md:h-[400px]"
+                      />
+                      {image.category && (
+                        <div className="mt-3 text-center">
+                          <span className="inline-block px-3 py-1 text-xs font-medium bg-primary/10 text-primary rounded-full">
+                            {image.category}
+                          </span>
                         </div>
-                        <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1.5 rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                          <span className="text-primary font-semibold text-sm">Ver más</span>
-                        </div>
-                      </motion.div>
+                      )}
                     </SwiperSlide>
                   ))}
                 </Swiper>
 
                 {/* Custom Navigation Buttons */}
-                <div className="flex justify-center gap-4 mt-8">
-                  <button
-                    className={`swiper-button-prev-${yearGallery.year} w-12 h-12 rounded-full bg-primary text-white hover:bg-primary/90 shadow-lg hover:shadow-xl hover:shadow-primary/30 transition-all duration-300 flex items-center justify-center group`}
-                  >
-                    <ChevronLeft className="w-6 h-6 group-hover:scale-110 transition-transform" />
-                  </button>
-                  <button
-                    className={`swiper-button-next-${yearGallery.year} w-12 h-12 rounded-full bg-primary text-white hover:bg-primary/90 shadow-lg hover:shadow-xl hover:shadow-primary/30 transition-all duration-300 flex items-center justify-center group`}
-                  >
-                    <ChevronRight className="w-6 h-6 group-hover:scale-110 transition-transform" />
-                  </button>
-                </div>
+                <button
+                  className={`swiper-button-prev-${gallery.year} absolute left-0 top-1/2 -translate-y-1/2 z-10 w-12 h-12 flex items-center justify-center bg-background/90 backdrop-blur-sm rounded-full shadow-lg hover:bg-primary hover:text-primary-foreground transition-all duration-300 hover:scale-110`}
+                >
+                  <ChevronLeft className="w-6 h-6" />
+                </button>
+                <button
+                  className={`swiper-button-next-${gallery.year} absolute right-0 top-1/2 -translate-y-1/2 z-10 w-12 h-12 flex items-center justify-center bg-background/90 backdrop-blur-sm rounded-full shadow-lg hover:bg-primary hover:text-primary-foreground transition-all duration-300 hover:scale-110`}
+                >
+                  <ChevronRight className="w-6 h-6" />
+                </button>
               </div>
-            </div>
-          </motion.div>
-        ))}
+            </motion.div>
+          ))}
+        </div>
       </div>
 
-      {/* Modal fullscreen tipo Instagram */}
+      {/* Optimized Modal */}
       <AnimatePresence>
-        {modalOpen && (
+        {selectedImage && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 backdrop-blur-xl p-4"
-            onClick={closeModal}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 bg-black/95 backdrop-blur-xl z-50 flex items-center justify-center p-4"
+            onClick={handleClose}
           >
             <motion.div
-              initial={{ scale: 0.8, opacity: 0 }}
+              initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.8, opacity: 0 }}
-              transition={{ type: "spring", duration: 0.5 }}
-              className="relative max-w-6xl w-full"
+              exit={{ scale: 0.9, opacity: 0 }}
+              transition={{ duration: 0.3, type: "spring", damping: 25 }}
+              className="relative max-w-7xl max-h-[90vh] w-full"
               onClick={(e) => e.stopPropagation()}
             >
-              {/* Close button */}
-              <button
-                onClick={closeModal}
-                className="absolute -top-12 right-0 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-sm flex items-center justify-center transition-all duration-300 z-10"
+              {/* Image Container */}
+              <div className="relative flex items-center justify-center">
+                <img
+                  src={selectedImage.src}
+                  alt={selectedImage.alt}
+                  className="max-w-full max-h-[85vh] object-contain rounded-xl shadow-2xl"
+                  loading="eager"
+                  draggable={false}
+                />
+              </div>
+
+              {/* Controls */}
+              <div className="absolute top-4 right-4 flex gap-2">
+                <Button
+                  onClick={handleDownload}
+                  size="icon"
+                  variant="secondary"
+                  className="rounded-full bg-background/90 backdrop-blur-sm hover:bg-primary hover:text-primary-foreground transition-all"
+                >
+                  <Download className="w-5 h-5" />
+                </Button>
+                <Button
+                  onClick={handleClose}
+                  size="icon"
+                  variant="secondary"
+                  className="rounded-full bg-background/90 backdrop-blur-sm hover:bg-destructive hover:text-destructive-foreground transition-all"
+                >
+                  <X className="w-5 h-5" />
+                </Button>
+              </div>
+
+              {/* Navigation */}
+              <Button
+                onClick={handlePrevImage}
+                size="icon"
+                variant="secondary"
+                className="absolute left-4 top-1/2 -translate-y-1/2 rounded-full bg-background/90 backdrop-blur-sm hover:bg-primary hover:text-primary-foreground transition-all w-14 h-14"
               >
-                <X className="w-6 h-6 text-white" />
-              </button>
-
-              {/* Navigation buttons */}
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  goToPrev();
-                }}
-                className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-sm flex items-center justify-center transition-all duration-300 z-10"
+                <ChevronLeft className="w-7 h-7" />
+              </Button>
+              <Button
+                onClick={handleNextImage}
+                size="icon"
+                variant="secondary"
+                className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full bg-background/90 backdrop-blur-sm hover:bg-primary hover:text-primary-foreground transition-all w-14 h-14"
               >
-                <ChevronLeft className="w-6 h-6 text-white" />
-              </button>
+                <ChevronRight className="w-7 h-7" />
+              </Button>
 
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  goToNext();
-                }}
-                className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-sm flex items-center justify-center transition-all duration-300 z-10"
-              >
-                <ChevronRight className="w-6 h-6 text-white" />
-              </button>
-
-              {/* Image */}
-              <motion.img
-                key={currentImage}
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                transition={{ duration: 0.3 }}
-                src={currentImage}
-                alt="Imagen ampliada"
-                className="w-full h-auto max-h-[85vh] object-contain rounded-2xl shadow-2xl"
-              />
-
-              {/* Image counter */}
-              <div className="absolute bottom-4 left-1/2 -translate-x-1/2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm text-white text-sm font-semibold">
-                {currentIndex + 1} / {currentImages.length}
+              {/* Image Info */}
+              <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-center">
+                <p className="text-white text-lg font-medium bg-black/50 backdrop-blur-sm px-4 py-2 rounded-full">
+                  {selectedImage.alt}
+                </p>
               </div>
             </motion.div>
           </motion.div>
@@ -344,3 +388,5 @@ export const Galeria = () => {
     </section>
   );
 };
+
+export default Galeria;

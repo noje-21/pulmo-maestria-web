@@ -11,6 +11,8 @@ import ReactionButton from "@/components/ReactionButton";
 import { Calendar, User, ArrowLeft, MessageSquare, Send } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
+import DOMPurify from "dompurify";
+import { z } from "zod";
 
 interface ForumPost {
   id: string;
@@ -35,6 +37,13 @@ interface Comment {
   };
 }
 
+const commentSchema = z.object({
+  content: z.string()
+    .trim()
+    .min(1, "El comentario no puede estar vacío")
+    .max(2000, "El comentario es demasiado largo (máximo 2000 caracteres)")
+});
+
 const ForoDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -58,18 +67,8 @@ const ForoDetail = () => {
 
   const incrementViews = async () => {
     try {
-      const { data: post } = await supabase
-        .from("forum_posts")
-        .select("views_count")
-        .eq("id", id)
-        .single();
-      
-      if (post) {
-        await supabase
-          .from("forum_posts")
-          .update({ views_count: (post.views_count || 0) + 1 })
-          .eq("id", id);
-      }
+      // Use atomic increment function
+      await supabase.rpc("increment_post_views", { post_id: id });
     } catch (error) {
       console.error("Error incrementing views:", error);
     }
@@ -122,16 +121,14 @@ const ForoDetail = () => {
       return;
     }
 
-    if (!newComment.trim()) {
-      toast.error("Por favor escribe un comentario");
-      return;
-    }
-
     try {
+      // Validate comment
+      const validated = commentSchema.parse({ content: newComment });
+
       const { error } = await supabase.from("forum_comments").insert({
         post_id: id,
         user_id: user.id,
-        content: newComment,
+        content: validated.content,
       });
 
       if (error) throw error;
@@ -140,7 +137,12 @@ const ForoDetail = () => {
       setNewComment("");
       loadComments();
     } catch (error: any) {
-      toast.error("Error al añadir comentario");
+      if (error instanceof z.ZodError) {
+        toast.error(error.errors[0].message);
+      } else {
+        console.error("Error adding comment:", error);
+        toast.error("Error al añadir comentario");
+      }
     }
   };
 

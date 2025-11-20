@@ -10,6 +10,7 @@ import { Calendar, User, ArrowLeft } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import ImageLazy from "@/components/ImageLazy";
+import DOMPurify from "dompurify";
 
 interface Novedad {
   id: string;
@@ -120,7 +121,7 @@ const NovedadDetail = () => {
 
                 <div
                   className="prose prose-lg max-w-none mb-8"
-                  dangerouslySetInnerHTML={{ __html: novedad.content }}
+                  dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(novedad.content) }}
                 />
 
                 <div className="flex items-center gap-4 pt-6 border-t">
