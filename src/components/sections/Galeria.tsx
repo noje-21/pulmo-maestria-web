@@ -51,7 +51,7 @@ const galeriasPorAño: YearGallery[] = [
     title: "Sesiones 2024",
     subtitle: "Innovación y Excelencia",
     description: "Un año de aprendizaje intensivo y casos clínicos destacados",
-    hero: gallery1,
+    hero: gallery3,
     images: [
       { src: gallery1, alt: "Maestría 2024 - Sesión 1", category: "Clases presenciales" },
       { src: gallery12, alt: "Maestría 2024 - Sesión 2", category: "Workshops" },
@@ -81,7 +81,7 @@ const galeriasPorAño: YearGallery[] = [
     title: "Sesiones 2022",
     subtitle: "Fundamentos y Bases",
     description: "Comenzando el viaje hacia la excelencia profesional",
-    hero: gallery3,
+    hero: gallery1,
     images: [
       { src: gallery3, alt: "Maestría 2022 - Sesión 1", category: "Clases presenciales" },
       { src: gallery32, alt: "Maestría 2022 - Sesión 2", category: "Workshops" },
@@ -94,33 +94,25 @@ const galeriasPorAño: YearGallery[] = [
 ];
 
 // Memoized image component for performance
-const GalleryImage = memo(({ 
-  src, 
-  alt, 
-  onClick, 
-  className = "" 
-}: { 
-  src: string; 
-  alt: string; 
-  onClick: () => void; 
-  className?: string;
-}) => (
-  <motion.div
-    whileHover={{ scale: 1.02, y: -4 }}
-    whileTap={{ scale: 0.98 }}
-    className={`relative overflow-hidden rounded-xl shadow-lg cursor-pointer group ${className}`}
-    onClick={onClick}
-  >
-    <img
-      src={src}
-      alt={alt}
-      loading="lazy"
-      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-      draggable={false}
-    />
-    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-  </motion.div>
-));
+const GalleryImage = memo(
+  ({ src, alt, onClick, className = "" }: { src: string; alt: string; onClick: () => void; className?: string }) => (
+    <motion.div
+      whileHover={{ scale: 1.02, y: -4 }}
+      whileTap={{ scale: 0.98 }}
+      className={`relative overflow-hidden rounded-xl shadow-lg cursor-pointer group ${className}`}
+      onClick={onClick}
+    >
+      <img
+        src={src}
+        alt={alt}
+        loading="lazy"
+        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+        draggable={false}
+      />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+    </motion.div>
+  ),
+);
 
 GalleryImage.displayName = "GalleryImage";
 
@@ -201,7 +193,7 @@ const Galeria = () => {
                   loading="lazy"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
-                
+
                 <div className="absolute inset-0 flex flex-col items-center justify-center text-white p-8">
                   <motion.div
                     initial={{ scale: 0.8, opacity: 0 }}
@@ -216,15 +208,9 @@ const Galeria = () => {
                     >
                       <span className="text-6xl font-black tracking-tight">{gallery.year}</span>
                     </motion.div>
-                    <h3 className="text-4xl md:text-5xl font-bold mb-4 tracking-tight">
-                      {gallery.title}
-                    </h3>
-                    <p className="text-xl md:text-2xl font-light mb-2 text-white/90">
-                      {gallery.subtitle}
-                    </p>
-                    <p className="text-lg text-white/70 max-w-2xl mx-auto">
-                      {gallery.description}
-                    </p>
+                    <h3 className="text-4xl md:text-5xl font-bold mb-4 tracking-tight">{gallery.title}</h3>
+                    <p className="text-xl md:text-2xl font-light mb-2 text-white/90">{gallery.subtitle}</p>
+                    <p className="text-lg text-white/70 max-w-2xl mx-auto">{gallery.description}</p>
                   </motion.div>
                 </div>
               </div>
@@ -243,7 +229,7 @@ const Galeria = () => {
                     prevEl: `.swiper-button-prev-${gallery.year}`,
                     nextEl: `.swiper-button-next-${gallery.year}`,
                   }}
-                  pagination={{ 
+                  pagination={{
                     clickable: true,
                     dynamicBullets: true,
                   }}
@@ -257,14 +243,14 @@ const Galeria = () => {
                   className="pb-12"
                   onSwiper={(swiper: SwiperType) => {
                     // Preload next/prev slides
-                    swiper.on('slideChange', () => {
+                    swiper.on("slideChange", () => {
                       const nextSlide = swiper.slides[swiper.activeIndex + 1];
                       const prevSlide = swiper.slides[swiper.activeIndex - 1];
-                      [nextSlide, prevSlide].forEach(slide => {
+                      [nextSlide, prevSlide].forEach((slide) => {
                         if (slide) {
-                          const img = slide.querySelector('img');
+                          const img = slide.querySelector("img");
                           if (img && !img.complete) {
-                            img.loading = 'eager';
+                            img.loading = "eager";
                           }
                         }
                       });
