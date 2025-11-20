@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import NotificationBell from "@/components/NotificationBell";
 import logoMaestria from "@/assets/logo-maestria.jpg";
+import { useScrollToSection } from "@/hooks/useScrollToSection";
 
 const Navigation = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -14,6 +15,7 @@ const Navigation = () => {
   const [isAdmin, setIsAdmin] = useState(false);
 
   const navigate = useNavigate();
+  const scrollToSection = useScrollToSection();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -102,22 +104,36 @@ const Navigation = () => {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
-            {["maestria", "expertos", "eventos", "foro", "novedades", "galeria", "contacto"].map((item, index) => (
-              <motion.a
+            {["maestria", "expertos", "eventos", "galeria", "contacto"].map((item, index) => (
+              <motion.button
                 key={item}
-                href={`#${item}`}
+                onClick={() => scrollToSection(item)}
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1, duration: 0.5 }}
-                className="text-foreground hover:text-primary transition-all duration-300 font-medium relative group"
+                className="text-foreground hover:text-primary transition-all duration-300 font-medium relative group cursor-pointer"
               >
                 {item
                   .split("-")
                   .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
                   .join(" ")}
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
-              </motion.a>
+              </motion.button>
             ))}
+            <Link
+              to="/foro"
+              className="text-foreground hover:text-primary transition-all duration-300 font-medium relative group"
+            >
+              Foro
+              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
+            </Link>
+            <Link
+              to="/novedades"
+              className="text-foreground hover:text-primary transition-all duration-300 font-medium relative group"
+            >
+              Novedades
+              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
+            </Link>
 
             {isAdmin && (
               <motion.div
@@ -180,22 +196,38 @@ const Navigation = () => {
                 className="py-4 space-y-2 backdrop-blur-xl rounded-2xl mt-4 p-6 shadow-lg shadow-black/10 border border-white/10"
                 style={{ background: "rgba(255, 255, 255, 0.1)" }}
               >
-                {["maestria", "expertos", "eventos", "foro", "novedades", "galeria", "contacto"].map((item, index) => (
-                  <motion.a
+                {["maestria", "expertos", "eventos", "galeria", "contacto"].map((item, index) => (
+                  <motion.button
                     key={item}
-                    href={`#${item}`}
+                    onClick={() => {
+                      scrollToSection(item);
+                      setIsMenuOpen(false);
+                    }}
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: index * 0.1 }}
-                    className="block text-foreground hover:text-primary transition-all duration-300 py-3 px-4 rounded-xl hover:bg-accent font-medium"
-                    onClick={() => setIsMenuOpen(false)}
+                    className="block text-foreground hover:text-primary transition-all duration-300 py-3 px-4 rounded-xl hover:bg-accent font-medium w-full text-left cursor-pointer"
                   >
                     {item
                       .split("-")
                       .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
                       .join(" ")}
-                  </motion.a>
+                  </motion.button>
                 ))}
+                <Link
+                  to="/foro"
+                  className="block text-foreground hover:text-primary transition-all duration-300 py-3 px-4 rounded-xl hover:bg-accent font-medium"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Foro
+                </Link>
+                <Link
+                  to="/novedades"
+                  className="block text-foreground hover:text-primary transition-all duration-300 py-3 px-4 rounded-xl hover:bg-accent font-medium"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Novedades
+                </Link>
 
                 {isAdmin && (
                   <motion.div

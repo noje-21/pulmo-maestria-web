@@ -1,4 +1,9 @@
+import { Link } from "react-router-dom";
+import { useScrollToSection } from "@/hooks/useScrollToSection";
+
 export const Footer = () => {
+  const scrollToSection = useScrollToSection();
+  
   return <footer className="bg-gradient-to-b from-primary to-primary-dark text-white py-16 relative overflow-hidden">
       <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
@@ -24,27 +29,51 @@ export const Footer = () => {
             </div>
             <ul className="space-y-3">
               <li>
-                <a href="#inicio" className="text-white/80 hover:text-accent transition-all duration-300 hover:translate-x-1 inline-block">
+                <button 
+                  onClick={() => scrollToSection("inicio")} 
+                  className="text-white/80 hover:text-accent transition-all duration-300 hover:translate-x-1 inline-block"
+                >
                   → Inicio
-                </a>
+                </button>
               </li>
               <li>
-                <a href="#maestria" className="text-white/80 hover:text-accent transition-all duration-300 hover:translate-x-1 inline-block">
+                <button 
+                  onClick={() => scrollToSection("maestria")} 
+                  className="text-white/80 hover:text-accent transition-all duration-300 hover:translate-x-1 inline-block"
+                >
                   → Maestría
-                </a>
+                </button>
               </li>
               <li>
-                <a href="#expertos" className="text-white/80 hover:text-accent transition-all duration-300 hover:translate-x-1 inline-block">
+                <button 
+                  onClick={() => scrollToSection("expertos")} 
+                  className="text-white/80 hover:text-accent transition-all duration-300 hover:translate-x-1 inline-block"
+                >
                   → Expertos
-                </a>
+                </button>
               </li>
               <li>
-                <a href="#contacto" className="text-white/80 hover:text-accent transition-all duration-300 hover:translate-x-1 inline-block">
+                <button 
+                  onClick={() => scrollToSection("contacto")} 
+                  className="text-white/80 hover:text-accent transition-all duration-300 hover:translate-x-1 inline-block"
+                >
                   → Contacto
-                </a>
+                </button>
               </li>
               <li>
-                <a href="/auth" className="text-white/80 hover:text-accent transition-all duration-300 hover:translate-x-1 inline-block">→ Panel ADM</a>
+                <Link to="/foro" className="text-white/80 hover:text-accent transition-all duration-300 hover:translate-x-1 inline-block">
+                  → Foro
+                </Link>
+              </li>
+              <li>
+                <Link to="/novedades" className="text-white/80 hover:text-accent transition-all duration-300 hover:translate-x-1 inline-block">
+                  → Novedades
+                </Link>
+              </li>
+              <li>
+                <Link to="/auth" className="text-white/80 hover:text-accent transition-all duration-300 hover:translate-x-1 inline-block">
+                  → Panel ADM
+                </Link>
               </li>
             </ul>
           </div>
