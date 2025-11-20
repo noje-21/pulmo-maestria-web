@@ -8,12 +8,21 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
+import { z } from "zod";
 import { motion, AnimatePresence } from "framer-motion";
 import AdminSidebar from "@/components/AdminSidebar";
 import { CardSkeleton } from "@/components/LoadingSkeleton";
 import { ArrowLeft, Plus, Trash2, Edit, Save, X } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
+
+const imageUrlSchema = z.string().url().refine(
+  (url) => url.startsWith('http://') || url.startsWith('https://'),
+  'Solo se permiten URLs HTTP(S)'
+).refine(
+  (url) => !url.includes('localhost') && !url.includes('127.0.0.1'),
+  'No se permiten URLs internas'
+).optional().or(z.literal(''));
 
 const AdminNovedades = () => {
   const [loading, setLoading] = useState(true);
@@ -111,6 +120,15 @@ const AdminNovedades = () => {
     if (!formData.title || !formData.slug || !formData.content) {
       toast.error("Por favor completa los campos obligatorios");
       return;
+    }
+
+    // Validate image URL if provided
+    if (formData.image_url) {
+      const validation = imageUrlSchema.safeParse(formData.image_url);
+      if (!validation.success) {
+        toast.error("URL de imagen inválida");
+        return;
+      }
     }
 
     try {
