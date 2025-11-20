@@ -178,7 +178,7 @@ const Navigation = () => {
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             className="md:hidden p-2 rounded-xl text-foreground hover:bg-accent transition-all duration-300 border-2 border-white"
           >
-            {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            {isMenuOpen ? <X size={30} /> : <Menu size={30} />}
           </motion.button>
         </div>
 
