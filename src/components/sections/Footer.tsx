@@ -3,8 +3,9 @@ import { useScrollToSection } from "@/hooks/useScrollToSection";
 
 export const Footer = () => {
   const scrollToSection = useScrollToSection();
-  
-  return <footer className="bg-gradient-to-b from-primary to-primary-dark text-white py-16 relative overflow-hidden">
+
+  return (
+    <footer className="bg-gradient-to-b from-primary to-primary-dark text-white py-16 relative overflow-hidden">
       <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="grid md:grid-cols-3 gap-12 mb-12">
@@ -19,7 +20,7 @@ export const Footer = () => {
               Formación de excelencia en enfermedades vasculares pulmonares
             </p>
           </div>
-          
+
           <div className="group">
             <div className="flex items-center gap-3 mb-4">
               <div className="p-2 bg-white/10 rounded-lg group-hover:scale-110 transition-transform duration-300">
@@ -29,55 +30,64 @@ export const Footer = () => {
             </div>
             <ul className="space-y-3">
               <li>
-                <button 
-                  onClick={() => scrollToSection("inicio")} 
+                <button
+                  onClick={() => scrollToSection("inicio")}
                   className="text-white/80 hover:text-accent transition-all duration-300 hover:translate-x-1 inline-block"
                 >
                   → Inicio
                 </button>
               </li>
               <li>
-                <button 
-                  onClick={() => scrollToSection("maestria")} 
+                <button
+                  onClick={() => scrollToSection("maestria")}
                   className="text-white/80 hover:text-accent transition-all duration-300 hover:translate-x-1 inline-block"
                 >
                   → Maestría
                 </button>
               </li>
               <li>
-                <button 
-                  onClick={() => scrollToSection("expertos")} 
+                <button
+                  onClick={() => scrollToSection("expertos")}
                   className="text-white/80 hover:text-accent transition-all duration-300 hover:translate-x-1 inline-block"
                 >
                   → Expertos
                 </button>
               </li>
               <li>
-                <button 
-                  onClick={() => scrollToSection("contacto")} 
+                <button
+                  onClick={() => scrollToSection("contacto")}
                   className="text-white/80 hover:text-accent transition-all duration-300 hover:translate-x-1 inline-block"
                 >
                   → Contacto
                 </button>
               </li>
               <li>
-                <Link to="/foro" className="text-white/80 hover:text-accent transition-all duration-300 hover:translate-x-1 inline-block">
+                <Link
+                  to="/foro"
+                  className="text-white/80 hover:text-accent transition-all duration-300 hover:translate-x-1 inline-block"
+                >
                   → Foro
                 </Link>
               </li>
               <li>
-                <Link to="/novedades" className="text-white/80 hover:text-accent transition-all duration-300 hover:translate-x-1 inline-block">
+                <Link
+                  to="/novedades"
+                  className="text-white/80 hover:text-accent transition-all duration-300 hover:translate-x-1 inline-block"
+                >
                   → Novedades
                 </Link>
               </li>
               <li>
-                <Link to="/auth" className="text-white/80 hover:text-accent transition-all duration-300 hover:translate-x-1 inline-block">
+                <Link
+                  to="/auth"
+                  className="text-white/80 hover:text-accent transition-all duration-300 hover:translate-x-1 inline-block"
+                >
                   → Panel ADM
                 </Link>
               </li>
             </ul>
           </div>
-          
+
           <div className="group">
             <div className="flex items-center gap-3 mb-4">
               <div className="p-2 bg-white/10 rounded-lg group-hover:scale-110 transition-transform duration-300">
@@ -93,13 +103,23 @@ export const Footer = () => {
                 </a>
               </li>
               <li className="hover:text-accent transition-colors duration-300">
-                <a href="https://wa.me/573004142568" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2">
+                <a
+                  href="https://wa.me/573004142568"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2"
+                >
                   <span>📱</span>
                   <span>+57 300 414 2568</span>
                 </a>
               </li>
               <li className="hover:text-accent transition-colors duration-300">
-                <a href="https://instagram.com/magisterenhipertensionpulmonar" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2">
+                <a
+                  href="https://instagram.com/magisterenhipertensionpulmonar"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2"
+                >
                   <span>📸</span>
                   <span>@magisterenhipertensionpulmonar</span>
                 </a>
@@ -107,12 +127,13 @@ export const Footer = () => {
             </ul>
           </div>
         </div>
-        
+
         <div className="border-t border-white/20 pt-8">
-          <p className="text-center text-white/80 text-sm">
+          <p className="text-center text-black/80 text-sm">
             © 2025 Maestría Latinoamericana en Circulación Pulmonar – Todos los derechos reservados.
           </p>
         </div>
       </div>
-    </footer>;
+    </footer>
+  );
 };
