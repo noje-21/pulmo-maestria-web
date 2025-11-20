@@ -176,7 +176,7 @@ const Navigation = () => {
           <motion.button
             whileTap={{ scale: 0.95 }}
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="md:hidden p-2 rounded-xl text-foreground hover:bg-accent transition-all duration-300 border border-white"
+            className="md:hidden p-2 rounded-xl text-foreground hover:bg-accent transition-all duration-300 border-2 border-white"
           >
             {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </motion.button>
