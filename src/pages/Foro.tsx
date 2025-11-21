@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { motion, AnimatePresence } from "framer-motion";
 import Navigation from "@/components/Navigation";
+import { SEO } from "@/components/SEO";
 import ReactionButton from "@/components/ReactionButton";
 import { useNavigate } from "react-router-dom";
 import { MessageSquare, Calendar, User, Eye, Plus, Search, Filter, Pin } from "lucide-react";
@@ -152,6 +153,11 @@ const Foro = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-muted/30 to-background">
+      <SEO 
+        title="Foro Comunitario - Maestría en Circulación Pulmonar 2025"
+        description="Participa en discusiones, comparte experiencias y conecta con otros profesionales de la salud en nuestro foro comunitario."
+        keywords="foro, comunidad, discusiones, circulación pulmonar, profesionales de la salud"
+      />
       <Navigation />
       
       <div className="pt-32 pb-20 px-4 sm:px-6 lg:px-8">

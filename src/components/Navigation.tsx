@@ -72,13 +72,13 @@ const Navigation = () => {
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.5, ease: "easeOut" }}
+      role="navigation"
+      aria-label="Navegación principal"
       className={`fixed top-0 w-full z-50 transition-all duration-500 ${
-        isScrolled ? "backdrop-blur-lg shadow-lg shadow-black/10 border-b border-white/10" : ""
+        isScrolled 
+          ? "backdrop-blur-xl bg-background/80 shadow-medium border-b border-border" 
+          : "bg-transparent"
       }`}
-      style={{
-        background: "transparent",
-        backgroundColor: "transparent",
-      }}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
@@ -87,23 +87,20 @@ const Navigation = () => {
             transition={{ type: "spring", stiffness: 400, damping: 10 }}
             className="cursor-pointer"
           >
-            <Link to="/" className="flex items-center space-x-3">
-              <div className="h-14 w-auto flex items-center bg-transparent">
+            <Link to="/" className="flex items-center space-x-3" aria-label="Ir a página principal">
+              <div className="h-12 sm:h-14 w-auto flex items-center">
                 <img
                   src={logoMaestria}
-                  alt="Maestría en Circulación Pulmonar"
-                  className="h-full w-auto object-contain rounded-lg shadow-sm"
-                  style={{
-                    mixBlendMode: "normal",
-                    filter: "none",
-                  }}
+                  alt="Logo Maestría en Circulación Pulmonar - Volver al inicio"
+                  className="h-full w-auto object-contain rounded-lg"
+                  loading="eager"
                 />
               </div>
             </Link>
           </motion.div>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
+          <div className="hidden lg:flex items-center space-x-6 xl:space-x-8">
             {["maestria", "expertos", "eventos", "galeria", "contacto"].map((item, index) => (
               <motion.button
                 key={item}
@@ -176,9 +173,12 @@ const Navigation = () => {
           <motion.button
             whileTap={{ scale: 0.95 }}
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="md:hidden p-2 rounded-xl text-foreground hover:bg-accent transition-all duration-300 border-2 border-white"
+            aria-label={isMenuOpen ? "Cerrar menú" : "Abrir menú"}
+            aria-expanded={isMenuOpen}
+            aria-controls="mobile-menu"
+            className="lg:hidden p-2 rounded-xl text-foreground hover:bg-accent/10 transition-all duration-300 border border-border"
           >
-            {isMenuOpen ? <X size={30} /> : <Menu size={30} />}
+            {isMenuOpen ? <X size={24} aria-hidden="true" /> : <Menu size={24} aria-hidden="true" />}
           </motion.button>
         </div>
 
@@ -186,15 +186,15 @@ const Navigation = () => {
         <AnimatePresence>
           {isMenuOpen && (
             <motion.div
+              id="mobile-menu"
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.3 }}
-              className="md:hidden overflow-hidden"
+              className="lg:hidden overflow-hidden"
             >
               <div
-                className="py-4 space-y-2 backdrop-blur-xl rounded-2xl mt-4 p-6 shadow-lg shadow-black/10 border border-white/10"
-                style={{ background: "rgba(255, 255, 255, 0.1)" }}
+                className="py-4 space-y-2 backdrop-blur-xl bg-card/95 rounded-2xl mt-4 p-4 sm:p-6 shadow-large border border-border"
               >
                 {["maestria", "expertos", "eventos", "galeria", "contacto"].map((item, index) => (
                   <motion.button
