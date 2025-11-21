@@ -1,12 +1,38 @@
-# Welcome to your Lovable project
+# Maestría Latinoamericana en Circulación Pulmonar 2025
 
-## Project info
+Una plataforma moderna, accesible y profesional para la Maestría en Circulación Pulmonar en Buenos Aires, Argentina.
+
+## 🚀 Características
+
+- **Diseño Responsive**: Optimizado para dispositivos desde 320px hasta pantallas grandes
+- **Accesibilidad (WCAG 2.1)**: Navegación por teclado, aria-labels, contraste adecuado
+- **SEO Optimizado**: Meta tags dinámicos, Open Graph, Twitter Cards
+- **Rendimiento**: Lazy loading, code splitting, optimización de imágenes
+- **UX Moderna**: Microinteracciones, transiciones suaves, diseño intuitivo
+- **Backend Integrado**: Supabase para autenticación, base de datos y storage
+
+## 📋 Project Info
 
 **URL**: https://lovable.dev/projects/f314bbce-f9ba-4ff5-920c-3a4b0f21c369
 
-## How can I edit this code?
+## 🛠️ Tecnologías
 
-There are several ways of editing your application.
+- **Frontend**: React 18 + TypeScript
+- **Styling**: Tailwind CSS + shadcn/ui
+- **Animaciones**: Framer Motion
+- **Backend**: Supabase (Auth, Database, Storage)
+- **Routing**: React Router v6
+- **Build Tool**: Vite
+- **Formularios**: React Hook Form + Zod
+
+## 📦 Instalación
+
+### Prerequisitos
+
+- Node.js 18+ - [Instalar con nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+- npm o yarn
+
+### Pasos de Instalación
 
 **Use Lovable**
 
@@ -22,52 +48,145 @@ The only requirement is having Node.js & npm installed - [install with nvm](http
 
 Follow these steps:
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
+```bash
+# 1. Clonar el repositorio
 git clone <YOUR_GIT_URL>
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+# 2. Navegar al directorio
+cd maestria-circulacion-pulmonar
 
-# Step 3: Install the necessary dependencies.
-npm i
+# 3. Instalar dependencias
+npm install
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+# 4. Configurar variables de entorno (si no usas Lovable Cloud)
+cp .env.example .env
+# Edita .env con tus credenciales de Supabase
+
+# 5. Iniciar servidor de desarrollo
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+El proyecto estará disponible en `http://localhost:5173`
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## 📜 Scripts Disponibles
 
-**Use GitHub Codespaces**
+```bash
+# Desarrollo
+npm run dev          # Inicia servidor de desarrollo
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+# Producción
+npm run build        # Construye para producción
+npm run preview      # Preview del build de producción
 
-## What technologies are used for this project?
+# Calidad de Código
+npm run lint         # Ejecuta ESLint
+npm run type-check   # Verifica tipos de TypeScript
+```
 
-This project is built with:
+## 📁 Estructura del Proyecto
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+```
+maestria-circulacion-pulmonar/
+├── public/              # Archivos estáticos
+│   ├── MAESTRIA_CP_2025.pdf
+│   ├── video.mp4
+│   └── ...
+├── src/
+│   ├── assets/         # Imágenes y recursos
+│   ├── components/     # Componentes reutilizables
+│   │   ├── ui/        # Componentes de shadcn/ui
+│   │   ├── sections/  # Secciones de la página principal
+│   │   ├── SEO.tsx    # Componente para meta tags dinámicos
+│   │   └── ...
+│   ├── hooks/         # Custom hooks
+│   ├── integrations/  # Integración con Supabase
+│   ├── lib/           # Utilidades
+│   ├── pages/         # Páginas de la aplicación
+│   ├── styles/        # Estilos globales
+│   ├── App.tsx        # Componente raíz
+│   ├── main.tsx       # Entry point
+│   └── index.css      # Estilos globales y design tokens
+├── supabase/          # Configuración de Supabase
+└── ...
+```
 
-## How can I deploy this project?
+## 🎨 Personalización de UI
 
-Simply open [Lovable](https://lovable.dev/projects/f314bbce-f9ba-4ff5-920c-3a4b0f21c369) and click on Share -> Publish.
+### Design Tokens
 
-## Can I connect a custom domain to my Lovable project?
+Los colores y estilos principales se definen en `src/index.css`:
 
-Yes, you can!
+```css
+:root {
+  --primary: 211 85% 50%;      /* Azul profesional */
+  --accent: 198 88% 48%;       /* Azul claro para CTAs */
+  --background: 210 20% 98%;   /* Fondo claro */
+  --foreground: 215 25% 15%;   /* Texto oscuro */
+  /* ... más tokens */
+}
+```
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+### Componentes shadcn/ui
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+Los componentes UI están en `src/components/ui/` y pueden personalizarse directamente.
+
+### Tailwind Config
+
+Configuración adicional en `tailwind.config.ts` para extender el sistema de diseño.
+
+## 🚀 Deployment
+
+### Deployment con Lovable
+
+1. Abre [Lovable Project](https://lovable.dev/projects/f314bbce-f9ba-4ff5-920c-3a4b0f21c369)
+2. Click en **Share → Publish**
+3. Tu app estará disponible en `*.lovable.app`
+
+### Deployment con Vercel
+
+```bash
+# Instalar Vercel CLI
+npm i -g vercel
+
+# Deploy
+vercel
+```
+
+### Variables de Entorno
+
+Asegúrate de configurar estas variables:
+
+```env
+VITE_SUPABASE_URL=tu_supabase_url
+VITE_SUPABASE_ANON_KEY=tu_supabase_anon_key
+```
+
+## 🔗 Dominio Personalizado
+
+Para conectar un dominio personalizado:
+
+1. Ve a **Project > Settings > Domains** en Lovable
+2. Click en **Connect Domain**
+3. Sigue las instrucciones para configurar DNS
+
+[Más información sobre dominios personalizados](https://docs.lovable.dev/features/custom-domain)
+
+## 🤝 Contribuir
+
+Este proyecto acepta contribuciones. Por favor:
+
+1. Fork el proyecto
+2. Crea una rama para tu feature (`git checkout -b feature/AmazingFeature`)
+3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
+4. Push a la rama (`git push origin feature/AmazingFeature`)
+5. Abre un Pull Request
+
+## 📞 Soporte
+
+Para preguntas o soporte:
+- Email: magisterenhipertensionpulmonar@gmail.com
+- WhatsApp: +57 300 414 2568
+
+## 📄 Licencia
+
+Copyright © 2025 Maestría en Circulación Pulmonar. Todos los derechos reservados.

@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { motion, AnimatePresence } from "framer-motion";
 import Navigation from "@/components/Navigation";
+import { SEO } from "@/components/SEO";
 import { useNavigate } from "react-router-dom";
 import { Calendar, User, Search, Eye, Filter, Newspaper } from "lucide-react";
 import { format } from "date-fns";
@@ -117,6 +118,11 @@ const Novedades = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-muted/30 to-background">
+      <SEO 
+        title="Novedades - Maestría en Circulación Pulmonar 2025"
+        description="Mantente al día con las últimas noticias, artículos y actualizaciones de la Maestría en Circulación Pulmonar."
+        keywords="novedades, noticias, circulación pulmonar, actualizaciones, artículos médicos"
+      />
       <Navigation />
       
       <div className="pt-32 pb-20 px-4 sm:px-6 lg:px-8">
