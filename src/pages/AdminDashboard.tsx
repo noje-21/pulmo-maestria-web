@@ -146,13 +146,13 @@ const AdminDashboard = () => {
     <div className="flex min-h-screen w-full bg-gradient-to-br from-background via-muted/30 to-background">
       <AdminSidebar />
       
-      <div className="flex-1 p-8 overflow-y-auto">
+      <div className="flex-1 p-4 md:p-8 overflow-y-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="max-w-7xl mx-auto"
         >
-          <div className="flex items-center gap-4 mb-8">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 mb-8">
             <Button variant="outline" onClick={() => navigate("/admin")} className="pv-tap-scale">
               <ArrowLeft className="w-4 h-4 mr-2" />
               Volver

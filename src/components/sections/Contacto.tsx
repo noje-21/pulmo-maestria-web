@@ -45,7 +45,10 @@ export const Contacto = () => {
         message: validated.message
       }]);
       if (error) throw error;
-      toast.success("¡Mensaje enviado con éxito!");
+      toast.success("Pronto nos comunicaremos contigo", {
+        duration: 4000,
+        dismissible: true,
+      });
       setFormData({
         name: "",
         email: "",

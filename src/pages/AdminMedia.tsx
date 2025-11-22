@@ -97,13 +97,13 @@ const AdminMedia = () => {
     <div className="flex min-h-screen w-full bg-gradient-to-br from-background via-muted/30 to-background">
       <AdminSidebar />
       
-      <div className="flex-1 p-8 overflow-y-auto">
+      <div className="flex-1 p-4 md:p-8 overflow-y-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="max-w-6xl mx-auto"
         >
-          <div className="flex items-center gap-4 mb-8">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 mb-8">
             <Button variant="outline" onClick={() => navigate("/admin")} className="pv-tap-scale">
               <ArrowLeft className="w-4 h-4 mr-2" />
               Volver
@@ -114,7 +114,7 @@ const AdminMedia = () => {
             </div>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
             {files.map((file, index) => (
               <motion.div
                 key={file.id}
@@ -122,7 +122,7 @@ const AdminMedia = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
               >
-                <Card className="p-6 modern-card pv-glass pv-glow hover:shadow-xl hover:shadow-primary/10 transition-all duration-300">
+                <Card className="p-4 md:p-6 modern-card pv-glass pv-glow hover:shadow-xl hover:shadow-primary/10 transition-all duration-300">
                   <div className="flex items-start gap-4">
                     <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
                       {getFileIcon(file.file_type)}

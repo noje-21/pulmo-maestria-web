@@ -214,14 +214,14 @@ const AdminNovedades = () => {
     <div className="flex min-h-screen w-full bg-gradient-to-br from-background via-muted/30 to-background">
       <AdminSidebar />
       
-      <div className="flex-1 p-8 overflow-y-auto">
+      <div className="flex-1 p-4 md:p-8 overflow-y-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="max-w-6xl mx-auto"
         >
-          <div className="flex items-center justify-between mb-8">
-            <div className="flex items-center gap-4">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
               <Button variant="outline" onClick={() => navigate("/admin")} className="pv-tap-scale">
                 <ArrowLeft className="w-4 h-4 mr-2" />
                 Volver
@@ -307,12 +307,12 @@ const AdminNovedades = () => {
                         </SelectContent>
                       </Select>
                     </div>
-                    <div className="flex gap-3">
-                      <Button onClick={handleSubmit} className="modern-btn pv-tap-scale">
+                    <div className="flex flex-col sm:flex-row gap-3">
+                      <Button onClick={handleSubmit} className="modern-btn pv-tap-scale w-full sm:w-auto">
                         <Save className="w-4 h-4 mr-2" />
                         {editingId ? "Guardar Cambios" : "Crear Novedad"}
                       </Button>
-                      <Button onClick={resetForm} variant="outline" className="pv-tap-scale">
+                      <Button onClick={resetForm} variant="outline" className="pv-tap-scale w-full sm:w-auto">
                         <X className="w-4 h-4 mr-2" />
                         Cancelar
                       </Button>
@@ -331,9 +331,9 @@ const AdminNovedades = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
               >
-                <Card className="p-6 modern-card pv-glass pv-glow hover:shadow-xl hover:shadow-primary/10 transition-all duration-300">
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
+                <Card className="p-4 md:p-6 modern-card pv-glass pv-glow hover:shadow-xl hover:shadow-primary/10 transition-all duration-300">
+                  <div className="flex flex-col sm:flex-row items-start justify-between gap-4">
+                    <div className="flex-1 w-full sm:w-auto">
                       <div className="flex items-center gap-3 mb-2">
                         <span className={`text-xs font-medium px-2 py-1 rounded-full ${
                           novedad.status === "published" ? "bg-green-500/10 text-green-500" :
@@ -353,12 +353,12 @@ const AdminNovedades = () => {
                         <span>{format(new Date(novedad.created_at), "dd MMM yyyy", { locale: es })}</span>
                       </div>
                     </div>
-                    <div className="flex gap-2 ml-4">
+                    <div className="flex gap-2 w-full sm:w-auto sm:ml-4">
                       <Button
                         onClick={() => handleEdit(novedad)}
                         variant="outline"
                         size="sm"
-                        className="pv-tap-scale"
+                        className="pv-tap-scale flex-1 sm:flex-none"
                       >
                         <Edit className="w-4 h-4" />
                       </Button>
@@ -366,7 +366,7 @@ const AdminNovedades = () => {
                         onClick={() => handleDelete(novedad.id)}
                         variant="destructive"
                         size="sm"
-                        className="pv-tap-scale"
+                        className="pv-tap-scale flex-1 sm:flex-none"
                       >
                         <Trash2 className="w-4 h-4" />
                       </Button>

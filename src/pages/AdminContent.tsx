@@ -121,13 +121,13 @@ const AdminContent = () => {
     <div className="flex min-h-screen w-full bg-gradient-to-br from-background via-muted/30 to-background">
       <AdminSidebar />
       
-      <div className="flex-1 p-8 overflow-y-auto">
+      <div className="flex-1 p-4 md:p-8 overflow-y-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="max-w-6xl mx-auto"
         >
-          <div className="flex items-center gap-4 mb-8">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 mb-8">
             <Button variant="outline" onClick={() => navigate("/admin")} className="pv-tap-scale">
               <ArrowLeft className="w-4 h-4 mr-2" />
               Volver
@@ -144,9 +144,9 @@ const AdminContent = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-            >
-              <Card className="p-6 pv-glass pv-glow border-border/50">
-                <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
+              >
+                <Card className="p-4 md:p-6 pv-glass pv-glow border-border/50">
+                  <h2 className="text-xl md:text-2xl font-bold mb-4 flex items-center gap-2">
                   <span className="text-3xl">🎯</span>
                   Sección Hero
                 </h2>
@@ -172,7 +172,7 @@ const AdminContent = () => {
                       onChange={(e) => updateField("hero", "description", e.target.value)}
                     />
                   </div>
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid sm:grid-cols-2 gap-4">
                     <div>
                       <Label>Fechas</Label>
                       <Input
