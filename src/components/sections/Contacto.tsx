@@ -6,7 +6,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { z } from "zod";
-
 const contactSchema = z.object({
   name: z.string().min(1, "El nombre es requerido").max(100),
   email: z.string().email("Email inválido").max(255),
@@ -14,7 +13,6 @@ const contactSchema = z.object({
   specialty: z.string().min(1, "La especialidad es requerida").max(100),
   message: z.string().min(10, "El mensaje debe tener al menos 10 caracteres").max(2000)
 });
-
 export const Contacto = () => {
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -24,11 +22,9 @@ export const Contacto = () => {
     specialty: "",
     message: ""
   });
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-
     try {
       // Trim values before validation
       const trimmedData = {
@@ -38,9 +34,10 @@ export const Contacto = () => {
         specialty: formData.specialty.trim(),
         message: formData.message.trim()
       };
-      
       const validated = contactSchema.parse(trimmedData);
-      const { error } = await supabase.from("contact_submissions").insert([{
+      const {
+        error
+      } = await supabase.from("contact_submissions").insert([{
         name: validated.name,
         email: validated.email,
         country: validated.country,
@@ -48,9 +45,14 @@ export const Contacto = () => {
         message: validated.message
       }]);
       if (error) throw error;
-
       toast.success("¡Mensaje enviado con éxito!");
-      setFormData({ name: "", email: "", country: "", specialty: "", message: "" });
+      setFormData({
+        name: "",
+        email: "",
+        country: "",
+        specialty: "",
+        message: ""
+      });
     } catch (error) {
       if (error instanceof z.ZodError) {
         toast.error(error.errors[0].message);
@@ -61,18 +63,18 @@ export const Contacto = () => {
       setLoading(false);
     }
   };
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
+    setFormData(prev => ({
+      ...prev,
+      [e.target.name]: e.target.value
+    }));
   };
 
   // 🔗 Función para redirigir directamente fuera del sitio
   const redirectTo = (url: string) => {
     window.location.href = url;
   };
-
-  return (
-    <section id="contacto" className="py-20 bg-gradient-to-b from-background to-muted/30 relative overflow-hidden">
+  return <section id="contacto" className="py-20 bg-gradient-to-b from-background to-muted/30 relative overflow-hidden">
       <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <h2 className="text-4xl md:text-5xl font-bold text-primary mb-4 text-center animate-fade-in">
@@ -166,71 +168,25 @@ export const Contacto = () => {
                   <div className="p-2 bg-accent/10 rounded-lg">
                     <span className="text-3xl">📝</span>
                   </div>
-                  <h3 className="text-2xl font-bold text-primary">Envíanos un Mensaje</h3>
+                  <h3 className="text-2xl font-bold text-primary">Inscríbete sin ningún costo                </h3>
                 </div>
                 <form onSubmit={handleSubmit} className="space-y-5">
                   <div>
-                    <Input 
-                      id="name" 
-                      name="name" 
-                      value={formData.name} 
-                      onChange={handleChange} 
-                      placeholder="Tu nombre completo" 
-                      required 
-                      className="border-accent/20 focus:border-accent transition-all duration-300"
-                    />
+                    <Input id="name" name="name" value={formData.name} onChange={handleChange} placeholder="Tu nombre completo" required className="border-accent/20 focus:border-accent transition-all duration-300" />
                   </div>
                   <div>
-                    <Input 
-                      id="email" 
-                      name="email" 
-                      type="email" 
-                      value={formData.email} 
-                      onChange={handleChange} 
-                      placeholder="tu@email.com" 
-                      required 
-                      className="border-accent/20 focus:border-accent transition-all duration-300"
-                    />
+                    <Input id="email" name="email" type="email" value={formData.email} onChange={handleChange} placeholder="tu@email.com" required className="border-accent/20 focus:border-accent transition-all duration-300" />
                   </div>
                   <div>
-                    <Input 
-                      id="country" 
-                      name="country" 
-                      value={formData.country} 
-                      onChange={handleChange} 
-                      placeholder="Tu país" 
-                      required 
-                      className="border-accent/20 focus:border-accent transition-all duration-300"
-                    />
+                    <Input id="country" name="country" value={formData.country} onChange={handleChange} placeholder="Tu país" required className="border-accent/20 focus:border-accent transition-all duration-300" />
                   </div>
                   <div>
-                    <Input 
-                      id="specialty" 
-                      name="specialty" 
-                      value={formData.specialty} 
-                      onChange={handleChange} 
-                      placeholder="Ej: Cardiología" 
-                      required 
-                      className="border-accent/20 focus:border-accent transition-all duration-300"
-                    />
+                    <Input id="specialty" name="specialty" value={formData.specialty} onChange={handleChange} placeholder="Ej: Cardiología" required className="border-accent/20 focus:border-accent transition-all duration-300" />
                   </div>
                   <div>
-                    <Textarea 
-                      id="message" 
-                      name="message" 
-                      value={formData.message} 
-                      onChange={handleChange} 
-                      placeholder="Escribe tu mensaje aquí..." 
-                      rows={5} 
-                      required 
-                      className="border-accent/20 focus:border-accent transition-all duration-300 resize-none"
-                    />
+                    <Textarea id="message" name="message" value={formData.message} onChange={handleChange} placeholder="Escribe tu mensaje aquí..." rows={5} required className="border-accent/20 focus:border-accent transition-all duration-300 resize-none" />
                   </div>
-                  <Button 
-                    type="submit" 
-                    className="w-full bg-accent hover:bg-accent/90 text-white font-bold py-6 rounded-full hover:scale-105 transition-all duration-300 shadow-lg" 
-                    disabled={loading}
-                  >
+                  <Button type="submit" className="w-full bg-accent hover:bg-accent/90 text-white font-bold py-6 rounded-full hover:scale-105 transition-all duration-300 shadow-lg" disabled={loading}>
                     {loading ? "Enviando..." : "✉️ Enviar Mensaje"}
                   </Button>
                 </form>
@@ -239,6 +195,5 @@ export const Contacto = () => {
           </div>
         </div>
       </div>
-    </section>
-  );
+    </section>;
 };
