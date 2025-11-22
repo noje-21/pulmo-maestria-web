@@ -101,13 +101,13 @@ const AdminContactos = () => {
     <div className="flex min-h-screen w-full bg-gradient-to-br from-background via-muted/30 to-background">
       <AdminSidebar />
       
-      <div className="flex-1 p-8 overflow-y-auto">
+      <div className="flex-1 p-4 md:p-8 overflow-y-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="max-w-6xl mx-auto"
         >
-          <div className="flex justify-between items-center mb-8">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
             <div>
               <h1 className="text-4xl font-bold text-primary pv-appear">Envíos de Contacto</h1>
               <p className="text-muted-foreground mt-2">Gestiona las consultas recibidas</p>
@@ -141,8 +141,8 @@ const AdminContactos = () => {
                   whileHover={{ y: -2 }}
                 >
                   <Card className="border-accent/20 pv-glass pv-glow hover:shadow-xl transition-all duration-300">
-                    <CardContent className="pt-6">
-                      <div className="grid md:grid-cols-2 gap-4 mb-4">
+                    <CardContent className="p-4 md:p-6">
+                      <div className="grid sm:grid-cols-2 gap-4 mb-4">
                         <div className="flex items-center gap-2">
                           <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
                             <Mail className="w-5 h-5 text-primary" />
@@ -184,7 +184,7 @@ const AdminContactos = () => {
                         <p className="text-sm text-muted-foreground mb-1">Mensaje</p>
                         <p className="text-foreground">{submission.message}</p>
                       </div>
-                      <div className="flex justify-between items-center">
+                      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
                         <p className="text-xs text-muted-foreground">
                           {new Date(submission.created_at).toLocaleString('es-AR')}
                         </p>
@@ -192,7 +192,7 @@ const AdminContactos = () => {
                           variant="destructive"
                           size="sm"
                           onClick={() => handleDelete(submission.id)}
-                          className="pv-tap-scale"
+                          className="pv-tap-scale w-full sm:w-auto"
                         >
                           <Trash2 className="w-4 h-4 mr-2" />
                           Eliminar
