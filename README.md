@@ -78,10 +78,80 @@ npm run dev          # Inicia servidor de desarrollo
 npm run build        # Construye para producción
 npm run preview      # Preview del build de producción
 
+# Testing
+npm run test         # Ejecuta los tests con Vitest
+npm run test:watch   # Ejecuta tests en modo watch
+npm run test:coverage # Genera reporte de cobertura
+
 # Calidad de Código
 npm run lint         # Ejecuta ESLint
 npm run type-check   # Verifica tipos de TypeScript
 ```
+
+## 🧪 Testing
+
+El proyecto utiliza Vitest y React Testing Library para testing:
+
+```bash
+# Ejecutar todos los tests
+npm run test
+
+# Ejecutar tests en modo watch
+npm run test:watch
+
+# Generar reporte de cobertura
+npm run test:coverage
+```
+
+### Tests incluidos
+
+- **Navigation**: Verifica funcionamiento del menú móvil y scroll a secciones
+- **Contacto**: Valida formulario de contacto y mensaje de éxito accesible
+
+## 🔐 Seguridad
+
+### Variables de Entorno
+
+⚠️ **IMPORTANTE**: Este proyecto usa **Lovable Cloud**, que gestiona automáticamente las variables de entorno de Supabase. El archivo `.env` es gestionado automáticamente y NO debe editarse manualmente.
+
+Si clonas este proyecto para desarrollo local:
+
+1. **NO** subas el archivo `.env` al repositorio
+2. El `.gitignore` ya está configurado para ignorar archivos `.env`
+3. Las variables de Supabase se gestionan automáticamente en Lovable Cloud
+4. Para despliegues externos (Vercel, etc.), configura las variables en el panel de tu proveedor
+
+### Claves Públicas vs Privadas
+
+- ✅ `VITE_SUPABASE_URL` - Segura para el cliente
+- ✅ `VITE_SUPABASE_PUBLISHABLE_KEY` - Segura para el cliente (anon key)
+- ❌ `SUPABASE_SERVICE_ROLE_KEY` - **NUNCA** incluir en el cliente
+
+## 🔄 CI/CD
+
+El proyecto incluye GitHub Actions para integración continua:
+
+```yaml
+.github/workflows/ci.yml
+```
+
+### Pipeline de CI
+
+Cada push y pull request ejecuta:
+
+1. ✅ Instalación de dependencias
+2. ✅ Linting (ESLint)
+3. ✅ Type checking (TypeScript)
+4. ✅ Tests (Vitest)
+5. ✅ Build de producción
+
+### Variables de Entorno en CI
+
+Configura estos secrets en GitHub:
+
+- `VITE_SUPABASE_URL`
+- `VITE_SUPABASE_PUBLISHABLE_KEY`
+- `VITE_SUPABASE_PROJECT_ID`
 
 ## 📁 Estructura del Proyecto
 
@@ -177,9 +247,27 @@ Este proyecto acepta contribuciones. Por favor:
 
 1. Fork el proyecto
 2. Crea una rama para tu feature (`git checkout -b feature/AmazingFeature`)
-3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
-4. Push a la rama (`git push origin feature/AmazingFeature`)
-5. Abre un Pull Request
+3. Commit tus cambios con mensajes descriptivos:
+   - `feat(component): add new feature`
+   - `fix(bug): correct navigation scroll`
+   - `style(ui): improve responsive design`
+   - `test(unit): add tests for Contact form`
+4. Asegúrate de que pasen todos los tests: `npm run test`
+5. Verifica el linting: `npm run lint`
+6. Push a la rama (`git push origin feature/AmazingFeature`)
+7. Abre un Pull Request
+
+### Commits Convencionales
+
+Usamos [Conventional Commits](https://www.conventionalcommits.org/):
+
+- `feat`: Nueva característica
+- `fix`: Corrección de bug
+- `docs`: Cambios en documentación
+- `style`: Cambios de formato (no afectan código)
+- `refactor`: Refactorización de código
+- `test`: Agregar o modificar tests
+- `chore`: Tareas de mantenimiento
 
 ## 📞 Soporte
 

@@ -199,10 +199,10 @@ const Navigation = () => {
                 {["maestria", "expertos", "eventos", "galeria", "contacto"].map((item, index) => (
                   <motion.button
                     key={item}
-                    onClick={() => {
-                      scrollToSection(item);
-                      setIsMenuOpen(false);
-                    }}
+                onClick={() => {
+                  setIsMenuOpen(false);
+                  scrollToSection(item);
+                }}
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: index * 0.1 }}
