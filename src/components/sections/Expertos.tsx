@@ -93,6 +93,7 @@ export const Expertos = () => {
                     <img
                       src={experto.imagen}
                       alt={experto.nombre}
+                      loading="lazy"
                       className="relative w-32 h-32 object-cover rounded-full border-4 border-primary/30 shadow-lg group-hover:scale-110 transition-transform duration-300"
                     />
                   </div>

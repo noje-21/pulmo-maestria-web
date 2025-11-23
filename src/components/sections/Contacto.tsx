@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -6,6 +6,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { z } from "zod";
+import { X } from "lucide-react";
+
 const contactSchema = z.object({
   name: z.string().min(1, "El nombre es requerido").max(100),
   email: z.string().email("Email inválido").max(255),
@@ -13,8 +15,10 @@ const contactSchema = z.object({
   specialty: z.string().min(1, "La especialidad es requerida").max(100),
   message: z.string().min(10, "El mensaje debe tener al menos 10 caracteres").max(2000)
 });
+
 export const Contacto = () => {
   const [loading, setLoading] = useState(false);
+  const [successMsg, setSuccessMsg] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -22,6 +26,14 @@ export const Contacto = () => {
     specialty: "",
     message: ""
   });
+
+  useEffect(() => {
+    if (successMsg) {
+      const timer = setTimeout(() => setSuccessMsg(false), 4000);
+      return () => clearTimeout(timer);
+    }
+  }, [successMsg]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -45,10 +57,8 @@ export const Contacto = () => {
         message: validated.message
       }]);
       if (error) throw error;
-      toast.success("Pronto nos comunicaremos contigo", {
-        duration: 4000,
-        dismissible: true,
-      });
+      
+      setSuccessMsg(true);
       setFormData({
         name: "",
         email: "",
@@ -66,6 +76,7 @@ export const Contacto = () => {
       setLoading(false);
     }
   };
+  
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData(prev => ({
       ...prev,
@@ -77,7 +88,9 @@ export const Contacto = () => {
   const redirectTo = (url: string) => {
     window.location.href = url;
   };
-  return <section id="contacto" className="py-20 bg-gradient-to-b from-background to-muted/30 relative overflow-hidden">
+
+  return (
+    <section id="contacto" className="py-20 bg-gradient-to-b from-background to-muted/30 relative overflow-hidden">
       <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <h2 className="text-4xl md:text-5xl font-bold text-primary mb-4 text-center animate-fade-in">
@@ -171,8 +184,26 @@ export const Contacto = () => {
                   <div className="p-2 bg-accent/10 rounded-lg">
                     <span className="text-3xl">📝</span>
                   </div>
-                  <h3 className="text-2xl font-bold text-primary">Inscríbete sin ningún costo                </h3>
+                  <h3 className="text-2xl font-bold text-primary">Inscríbete sin ningún costo</h3>
                 </div>
+
+                {/* Mensaje de éxito accesible */}
+                <div aria-live="polite" className="min-h-[1.5rem] mb-4">
+                  {successMsg && (
+                    <div className="p-4 rounded-xl bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 text-green-800 dark:text-green-200 flex items-center justify-between gap-3 animate-fade-in shadow-sm">
+                      <span className="font-medium">Pronto nos comunicaremos contigo</span>
+                      <button
+                        type="button"
+                        aria-label="Cerrar mensaje"
+                        onClick={() => setSuccessMsg(false)}
+                        className="p-1 hover:bg-green-100 dark:hover:bg-green-900/40 rounded-lg transition-colors"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    </div>
+                  )}
+                </div>
+
                 <form onSubmit={handleSubmit} className="space-y-5">
                   <div>
                     <Input id="name" name="name" value={formData.name} onChange={handleChange} placeholder="Tu nombre completo" required className="border-accent/20 focus:border-accent transition-all duration-300" />
@@ -198,5 +229,6 @@ export const Contacto = () => {
           </div>
         </div>
       </div>
-    </section>;
+    </section>
+  );
 };
