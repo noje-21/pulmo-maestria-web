@@ -90,7 +90,7 @@ const NovedadDetail = () => {
 
             <Card className="overflow-hidden modern-card pv-glass pv-glow">
               {novedad.image_url && (
-                <div className="relative h-96 overflow-hidden">
+                <div className="relative h-64 sm:h-80 md:h-96 overflow-hidden">
                   <ImageLazy
                     src={novedad.image_url}
                     alt={novedad.title}
@@ -99,10 +99,10 @@ const NovedadDetail = () => {
                 </div>
               )}
               
-              <div className="p-8 md:p-12">
-                <div className="flex items-center gap-6 text-sm text-muted-foreground mb-6">
+              <div className="p-6 sm:p-8 md:p-12">
+                <div className="flex items-center gap-4 sm:gap-6 text-xs sm:text-sm text-muted-foreground mb-4 sm:mb-6 flex-wrap">
                   <div className="flex items-center gap-2">
-                    <Calendar className="w-4 h-4" />
+                    <Calendar className="w-3 sm:w-4 h-3 sm:h-4" />
                     <span>
                       {format(new Date(novedad.published_at), "dd 'de' MMMM, yyyy", {
                         locale: es,
@@ -110,21 +110,21 @@ const NovedadDetail = () => {
                     </span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <User className="w-4 h-4" />
+                    <User className="w-3 sm:w-4 h-3 sm:h-4" />
                     <span>{novedad.profiles?.full_name || "Admin"}</span>
                   </div>
                 </div>
 
-                <h1 className="text-4xl md:text-5xl font-bold mb-8">
+                <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6 sm:mb-8">
                   {novedad.title}
                 </h1>
 
                 <div
-                  className="prose prose-lg max-w-none mb-8"
+                  className="prose prose-sm sm:prose-base lg:prose-lg max-w-none mb-6 sm:mb-8"
                   dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(novedad.content) }}
                 />
 
-                <div className="flex items-center gap-4 pt-6 border-t">
+                <div className="flex items-center gap-4 pt-4 sm:pt-6 border-t">
                   <ReactionButton 
                     postType="novedad" 
                     postId={novedad.id} 

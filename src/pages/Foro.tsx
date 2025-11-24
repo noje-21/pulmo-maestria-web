@@ -301,11 +301,12 @@ const Foro = () => {
                         </div>
 
                         {post.image_url && (
-                          <div className="rounded-xl overflow-hidden max-h-48">
+                          <div className="rounded-xl overflow-hidden max-h-48 sm:max-h-64">
                             <img 
                               src={post.image_url} 
                               alt={post.title}
                               className="w-full h-full object-cover"
+                              loading="lazy"
                             />
                           </div>
                         )}

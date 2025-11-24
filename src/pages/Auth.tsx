@@ -45,7 +45,7 @@ const Auth = () => {
           navigate("/admin");
         } else {
           toast.success("¡Inicio de sesión exitoso!");
-          navigate("/profile");
+          navigate("/foro");
         }
       }
     } catch (error: any) {

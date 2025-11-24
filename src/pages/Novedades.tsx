@@ -197,57 +197,57 @@ const Novedades = () => {
                   onClick={() => navigate(`/novedades/${featuredNovedad.slug}`)}
                   className="overflow-hidden modern-card pv-glass pv-glow hover:shadow-2xl cursor-pointer transition-all duration-300 group"
                 >
-                  <div className="grid md:grid-cols-2 gap-6">
-                    {featuredNovedad.image_url && (
-                      <div className="relative h-96 overflow-hidden rounded-l-2xl">
-                        <ImageLazy
-                          src={featuredNovedad.image_url}
-                          alt={featuredNovedad.title}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                        />
-                        <div className="absolute top-4 left-4">
-                          <Badge className="bg-primary text-primary-foreground">
-                            Destacado
-                          </Badge>
-                        </div>
-                      </div>
-                    )}
-                    <div className="p-8 flex flex-col justify-center">
-                      <h2 className="text-4xl font-bold mb-4 group-hover:text-primary transition-colors">
-                        {featuredNovedad.title}
-                      </h2>
-                      <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground mb-4">
-                        <div className="flex items-center gap-2">
-                          <Calendar className="w-4 h-4" />
-                          <span>
-                            {format(
-                              new Date(featuredNovedad.published_at || featuredNovedad.created_at),
-                              "dd 'de' MMMM, yyyy",
-                              { locale: es }
-                            )}
-                          </span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <User className="w-4 h-4" />
-                          <span>{featuredNovedad.profiles?.full_name || "Admin"}</span>
-                        </div>
-                      </div>
-                      <p className="text-muted-foreground mb-6 line-clamp-3">
-                        {featuredNovedad.excerpt || featuredNovedad.content.substring(0, 200)}
-                      </p>
-                      <div onClick={(e) => e.stopPropagation()} className="flex items-center gap-4">
-                        <ReactionButton 
-                          postType="novedad" 
-                          postId={featuredNovedad.id} 
-                          initialCount={featuredNovedad.reactions_count || 0}
-                        />
-                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                          <Eye className="w-4 h-4" />
-                          <span>Leer más</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+                     {featuredNovedad.image_url && (
+                       <div className="relative h-64 sm:h-80 md:h-96 overflow-hidden rounded-t-2xl md:rounded-l-2xl md:rounded-tr-none">
+                         <ImageLazy
+                           src={featuredNovedad.image_url}
+                           alt={featuredNovedad.title}
+                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                         />
+                         <div className="absolute top-4 left-4">
+                           <Badge className="bg-primary text-primary-foreground text-xs sm:text-sm">
+                             Destacado
+                           </Badge>
+                         </div>
+                       </div>
+                     )}
+                     <div className="p-6 sm:p-8 flex flex-col justify-center">
+                       <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4 group-hover:text-primary transition-colors">
+                         {featuredNovedad.title}
+                       </h2>
+                       <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-xs sm:text-sm text-muted-foreground mb-3 sm:mb-4">
+                         <div className="flex items-center gap-2">
+                           <Calendar className="w-3 sm:w-4 h-3 sm:h-4" />
+                           <span>
+                             {format(
+                               new Date(featuredNovedad.published_at || featuredNovedad.created_at),
+                               "dd 'de' MMMM, yyyy",
+                               { locale: es }
+                             )}
+                           </span>
+                         </div>
+                         <div className="flex items-center gap-2">
+                           <User className="w-3 sm:w-4 h-3 sm:h-4" />
+                           <span>{featuredNovedad.profiles?.full_name || "Admin"}</span>
+                         </div>
+                       </div>
+                       <p className="text-sm sm:text-base text-muted-foreground mb-4 sm:mb-6 line-clamp-3">
+                         {featuredNovedad.excerpt || featuredNovedad.content.substring(0, 200)}
+                       </p>
+                       <div onClick={(e) => e.stopPropagation()} className="flex items-center gap-4">
+                         <ReactionButton 
+                           postType="novedad" 
+                           postId={featuredNovedad.id} 
+                           initialCount={featuredNovedad.reactions_count || 0}
+                         />
+                         <div className="flex items-center gap-2 text-xs sm:text-sm text-muted-foreground">
+                           <Eye className="w-3 sm:w-4 h-3 sm:h-4" />
+                           <span>Leer más</span>
+                         </div>
+                       </div>
+                     </div>
+                   </div>
                 </Card>
               </motion.div>
             )}
