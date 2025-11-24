@@ -177,12 +177,12 @@ const ForoDetail = () => {
               Volver al Foro
             </Button>
 
-            <Card className="p-8 md:p-12 modern-card pv-glass pv-glow mb-8">
-              <h1 className="text-4xl md:text-5xl font-bold mb-6">
+            <Card className="p-6 sm:p-8 md:p-12 modern-card pv-glass pv-glow mb-8">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 sm:mb-6">
                 {post.title}
               </h1>
 
-              <div className="flex items-center gap-6 text-sm text-muted-foreground mb-6">
+              <div className="flex items-center gap-4 sm:gap-6 text-xs sm:text-sm text-muted-foreground mb-4 sm:mb-6 flex-wrap">
                 <div className="flex items-center gap-2">
                   <User className="w-4 h-4" />
                   <span>{post.profiles?.full_name || "Usuario"}</span>
@@ -197,7 +197,7 @@ const ForoDetail = () => {
                 </div>
               </div>
 
-              <div className="prose prose-lg max-w-none mb-8">
+              <div className="prose prose-sm sm:prose-base lg:prose-lg max-w-none mb-6 sm:mb-8">
                 <p className="whitespace-pre-wrap">{post.content}</p>
               </div>
 
@@ -222,11 +222,11 @@ const ForoDetail = () => {
                     value={newComment}
                     onChange={(e) => setNewComment(e.target.value)}
                     placeholder="Escribe tu comentario..."
-                    className="modern-input min-h-[120px] mb-4"
+                    className="modern-input min-h-[100px] sm:min-h-[120px] mb-4"
                   />
                   <Button
                     onClick={handleAddComment}
-                    className="modern-btn pv-tap-scale"
+                    className="modern-btn pv-tap-scale w-full sm:w-auto"
                   >
                     <Send className="w-4 h-4 mr-2" />
                     Publicar Comentario
@@ -235,48 +235,48 @@ const ForoDetail = () => {
               )}
 
               {!user && (
-                <div className="mb-8 p-6 bg-muted rounded-xl text-center">
-                  <p className="text-muted-foreground mb-4">
+                <div className="mb-8 p-4 sm:p-6 bg-muted rounded-xl text-center">
+                  <p className="text-sm sm:text-base text-muted-foreground mb-4">
                     Debes iniciar sesión para comentar
                   </p>
                   <Button
                     onClick={() => navigate("/auth")}
                     variant="outline"
-                    className="pv-tap-scale"
+                    className="pv-tap-scale w-full sm:w-auto"
                   >
                     Iniciar Sesión
                   </Button>
                 </div>
               )}
 
-              <div className="space-y-6">
+              <div className="space-y-4 sm:space-y-6">
                 {comments.map((comment, index) => (
                   <motion.div
                     key={comment.id}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.1 }}
-                    className="p-6 rounded-xl bg-muted/50"
+                    className="p-4 sm:p-6 rounded-xl bg-muted/50"
                   >
-                    <div className="flex items-center gap-3 mb-3">
-                      <User className="w-5 h-5 text-primary" />
-                      <span className="font-medium">
+                    <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3 flex-wrap">
+                      <User className="w-4 sm:w-5 h-4 sm:h-5 text-primary" />
+                      <span className="font-medium text-sm sm:text-base">
                         {comment.profiles?.full_name || "Usuario"}
                       </span>
-                      <span className="text-sm text-muted-foreground">
+                      <span className="text-xs sm:text-sm text-muted-foreground">
                         {format(new Date(comment.created_at), "dd MMM, yyyy", {
                           locale: es,
                         })}
                       </span>
                     </div>
-                    <p className="text-muted-foreground whitespace-pre-wrap">
+                    <p className="text-sm sm:text-base text-muted-foreground whitespace-pre-wrap">
                       {comment.content}
                     </p>
                   </motion.div>
                 ))}
 
                 {comments.length === 0 && (
-                  <p className="text-center text-muted-foreground py-8">
+                  <p className="text-center text-sm sm:text-base text-muted-foreground py-6 sm:py-8">
                     No hay comentarios aún. ¡Sé el primero en comentar!
                   </p>
                 )}

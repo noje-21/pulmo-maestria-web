@@ -15,6 +15,7 @@ import { CardSkeleton } from "@/components/LoadingSkeleton";
 import { ArrowLeft, Plus, Trash2, Edit, Save, X } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
+import ImageUpload from "@/components/ImageUpload";
 
 const imageUrlSchema = z.string().url().refine(
   (url) => url.startsWith('http://') || url.startsWith('https://'),
@@ -284,11 +285,17 @@ const AdminNovedades = () => {
                       />
                     </div>
                     <div>
-                      <Label>URL de Imagen</Label>
-                      <Input
-                        value={formData.image_url}
-                        onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
-                        className="modern-input"
+                      <Label>Imagen (opcional)</Label>
+                      <ImageUpload
+                        currentImage={formData.image_url}
+                        onImageUploaded={(url) => setFormData({ ...formData, image_url: url })}
+                        onImageRemoved={() => setFormData({ ...formData, image_url: "" })}
+                        generateTitle={!formData.title}
+                        onTitleGenerated={(title) => {
+                          if (!formData.title) {
+                            setFormData({ ...formData, title });
+                          }
+                        }}
                       />
                     </div>
                     <div>

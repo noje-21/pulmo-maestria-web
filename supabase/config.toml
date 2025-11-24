@@ -1,1 +1,4 @@
 project_id = "tvgkinrbtnbtseooaiex"
+
+[functions.generate-cardiology-title]
+verify_jwt = true
