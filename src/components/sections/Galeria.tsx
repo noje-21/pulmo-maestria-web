@@ -3,12 +3,13 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X, Download, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay, Navigation, Pagination } from "swiper/modules";
+import { Autoplay, Navigation, Pagination, EffectFade } from "swiper/modules";
 import type { Swiper as SwiperType } from "swiper";
 
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
+import "swiper/css/effect-fade";
 
 // Optimized image imports
 import gallery1 from "@/assets/secion/maestria1.jpg";
@@ -93,7 +94,7 @@ const galeriasPorAño: YearGallery[] = [
   },
 ];
 
-// Memoized image component with professional medical aesthetic
+// Memoized image component with subtle Ken Burns on hover
 const GalleryImage = memo(
   ({ src, alt, onClick, className = "" }: { src: string; alt: string; onClick: () => void; className?: string }) => (
     <motion.div
@@ -105,17 +106,32 @@ const GalleryImage = memo(
       className={`relative overflow-hidden rounded-2xl shadow-xl cursor-pointer group ${className}`}
       onClick={onClick}
     >
-      <img
+      <motion.img
         src={src}
         alt={alt}
         loading="lazy"
-        className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105 group-hover:brightness-110"
+        className="w-full h-full object-cover will-change-transform"
         draggable={false}
+        whileHover={{ 
+          scale: 1.08,
+          x: -5,
+          y: -5,
+          filter: "brightness(1.1)"
+        }}
+        transition={{ 
+          duration: 0.8, 
+          ease: "easeOut" 
+        }}
       />
       <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-      <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-500">
-        <p className="text-white font-semibold text-sm md:text-base line-clamp-2">{alt}</p>
-      </div>
+      <motion.div 
+        className="absolute bottom-0 left-0 right-0 p-4"
+        initial={{ y: "100%" }}
+        whileHover={{ y: 0 }}
+        transition={{ duration: 0.5, ease: "easeOut" }}
+      >
+        <p className="text-white font-semibold text-sm md:text-base line-clamp-2 drop-shadow-lg">{alt}</p>
+      </motion.div>
     </motion.div>
   ),
 );
@@ -190,46 +206,99 @@ const Galeria = () => {
               transition={{ duration: 0.7, delay: galleryIndex * 0.1 }}
               className="relative"
             >
-              {/* Hero Section - Professional Medical Style */}
+              {/* Hero Section - Ken Burns Cinematic Effect */}
               <div className="relative h-[350px] sm:h-[450px] md:h-[550px] rounded-3xl overflow-hidden mb-12 group">
                 <motion.img
                   src={gallery.hero}
                   alt={`Hero ${gallery.year}`}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover will-change-transform"
                   loading="lazy"
-                  initial={{ scale: 1.1 }}
-                  whileInView={{ scale: 1 }}
-                  transition={{ duration: 1.2, ease: "easeOut" }}
-                  viewport={{ once: true }}
+                  initial={{ scale: 1, x: 0, y: 0 }}
+                  animate={{ 
+                    scale: [1, 1.12, 1],
+                    x: [0, -15, 0],
+                    y: [0, -10, 0],
+                  }}
+                  transition={{ 
+                    duration: 12,
+                    ease: "easeInOut",
+                    repeat: Infinity,
+                    repeatType: "reverse"
+                  }}
+                  style={{
+                    filter: "brightness(0.95)",
+                  }}
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent" />
+                <motion.div 
+                  className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent"
+                  initial={{ opacity: 0.9 }}
+                  animate={{ opacity: [0.9, 0.85, 0.9] }}
+                  transition={{ 
+                    duration: 12,
+                    ease: "easeInOut",
+                    repeat: Infinity,
+                    repeatType: "reverse"
+                  }}
+                />
 
-                <div className="absolute inset-0 flex flex-col items-center justify-center text-white p-4 sm:p-6 md:p-8">
+                <motion.div 
+                  className="absolute inset-0 flex flex-col items-center justify-center text-white p-4 sm:p-6 md:p-8"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 1.5, delay: 0.3 }}
+                >
                   <motion.div
                     initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
-                    transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
+                    transition={{ duration: 0.8, delay: 0.5, ease: "easeOut" }}
                     className="text-center max-w-4xl"
                   >
                     <motion.div
                       className="inline-block mb-4 sm:mb-6 px-6 sm:px-8 py-2 sm:py-3 bg-primary/20 backdrop-blur-xl rounded-full border border-white/20 shadow-2xl"
                       whileHover={{ scale: 1.05, backgroundColor: "rgba(var(--primary), 0.3)" }}
-                      transition={{ duration: 0.3 }}
+                      animate={{ 
+                        boxShadow: [
+                          "0 0 20px rgba(255,255,255,0.1)",
+                          "0 0 30px rgba(255,255,255,0.2)",
+                          "0 0 20px rgba(255,255,255,0.1)"
+                        ]
+                      }}
+                      transition={{ 
+                        duration: 4,
+                        repeat: Infinity,
+                        ease: "easeInOut"
+                      }}
                     >
                       <span className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tight">{gallery.year}</span>
                     </motion.div>
-                    <h3 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-2 sm:mb-4 tracking-tight leading-tight">{gallery.title}</h3>
+                    <motion.h3 
+                      className="text-3xl sm:text-4xl md:text-5xl font-bold mb-2 sm:mb-4 tracking-tight leading-tight"
+                      animate={{ 
+                        textShadow: [
+                          "0 0 10px rgba(0,0,0,0.5)",
+                          "0 0 20px rgba(0,0,0,0.7)",
+                          "0 0 10px rgba(0,0,0,0.5)"
+                        ]
+                      }}
+                      transition={{ 
+                        duration: 6,
+                        repeat: Infinity,
+                        ease: "easeInOut"
+                      }}
+                    >
+                      {gallery.title}
+                    </motion.h3>
                     <p className="text-lg sm:text-xl md:text-2xl font-light mb-2 text-white/90">{gallery.subtitle}</p>
                     <p className="text-sm sm:text-base md:text-lg text-white/70 max-w-2xl mx-auto px-4">{gallery.description}</p>
                   </motion.div>
-                </div>
+                </motion.div>
               </div>
 
               {/* Professional Carousel with Fade + Zoom Animation */}
               <div className="relative px-4 sm:px-8 md:px-12">
                 <Swiper
-                  modules={[Autoplay, Navigation, Pagination]}
+                  modules={[Autoplay, Navigation, Pagination, EffectFade]}
                   spaceBetween={16}
                   slidesPerView={1}
                   breakpoints={{
@@ -247,13 +316,16 @@ const Galeria = () => {
                     el: `.swiper-pagination-${gallery.year}`,
                   }}
                   autoplay={{
-                    delay: 5000,
+                    delay: 6000,
                     disableOnInteraction: false,
                     pauseOnMouseEnter: true,
                   }}
                   loop={true}
-                  speed={800}
-                  effect="slide"
+                  speed={1200}
+                  effect="fade"
+                  fadeEffect={{
+                    crossFade: true
+                  }}
                   className="pb-16"
                   onSwiper={(swiper: SwiperType) => {
                     swiper.on("slideChange", () => {
