@@ -48,68 +48,74 @@ interface YearGallery {
 const galeriasPorAño: YearGallery[] = [
   {
     year: 2024,
-    title: "Sesiones 2024",
-    subtitle: "Innovación y Excelencia",
-    description: "Un año de aprendizaje intensivo y casos clínicos destacados",
+    title: "Programa Académico 2024",
+    subtitle: "Innovación en Circulación Pulmonar",
+    description: "Avances en hemodinamia y cateterismo cardiaco derecho",
     hero: gallery3,
     images: [
-      { src: gallery1, alt: "Maestría 2024 - Sesión 1", category: "Clases presenciales" },
-      { src: gallery12, alt: "Maestría 2024 - Sesión 2", category: "Workshops" },
-      { src: gallery13, alt: "Maestría 2024 - Sesión 3", category: "Casos clínicos" },
-      { src: gallery14, alt: "Maestría 2024 - Sesión 4", category: "Clases presenciales" },
-      { src: gallery15, alt: "Maestría 2024 - Sesión 5", category: "Workshops" },
-      { src: gallery16, alt: "Maestría 2024 - Sesión 6", category: "Backstage" },
+      { src: gallery1, alt: "Evaluación Hemodinámica Avanzada", category: "Hemodinamia" },
+      { src: gallery12, alt: "Técnicas de Cateterismo Derecho", category: "Procedimientos" },
+      { src: gallery13, alt: "Análisis de Casos Complejos", category: "Casos Clínicos" },
+      { src: gallery14, alt: "Fisiopatología de la Circulación Pulmonar", category: "Bases Teóricas" },
+      { src: gallery15, alt: "Interpretación de Estudios Hemodinámicos", category: "Diagnóstico" },
+      { src: gallery16, alt: "Actualización en Hipertensión Pulmonar", category: "Formación Continua" },
     ],
   },
   {
     year: 2023,
-    title: "Sesiones 2023",
-    subtitle: "Crecimiento y Desarrollo",
-    description: "Consolidando conocimientos y experiencias clínicas",
+    title: "Programa Académico 2023",
+    subtitle: "Consolidación del Conocimiento",
+    description: "Diagnóstico y manejo de patologías cardiopulmonares",
     hero: gallery2,
     images: [
-      { src: gallery2, alt: "Maestría 2023 - Sesión 1", category: "Clases presenciales" },
-      { src: gallery22, alt: "Maestría 2023 - Sesión 2", category: "Workshops" },
-      { src: gallery23, alt: "Maestría 2023 - Sesión 3", category: "Casos clínicos" },
-      { src: gallery24, alt: "Maestría 2023 - Sesión 4", category: "Clases presenciales" },
-      { src: gallery25, alt: "Maestría 2023 - Sesión 5", category: "Workshops" },
-      { src: gallery26, alt: "Maestría 2023 - Sesión 6", category: "Backstage" },
+      { src: gallery2, alt: "Monitorización Cardiorrespiratoria en UCI", category: "Cuidados Críticos" },
+      { src: gallery22, alt: "Ecocardiografía Transesofágica", category: "Imagenología" },
+      { src: gallery23, alt: "Manejo Invasivo del Shock Cardiogénico", category: "Emergencias" },
+      { src: gallery24, alt: "Valoración del Ventrículo Derecho", category: "Función Ventricular" },
+      { src: gallery25, alt: "Estratificación de Riesgo Cardiovascular", category: "Evaluación Clínica" },
+      { src: gallery26, alt: "Simposio de Cardiología Intervencionista", category: "Congresos" },
     ],
   },
   {
     year: 2022,
-    title: "Sesiones 2022",
-    subtitle: "Fundamentos y Bases",
-    description: "Comenzando el viaje hacia la excelencia profesional",
+    title: "Programa Académico 2022",
+    subtitle: "Bases en Cardiología Avanzada",
+    description: "Fundamentos de la circulación pulmonar y hemodinámica",
     hero: gallery1,
     images: [
-      { src: gallery3, alt: "Maestría 2022 - Sesión 1", category: "Clases presenciales" },
-      { src: gallery32, alt: "Maestría 2022 - Sesión 2", category: "Workshops" },
-      { src: gallery33, alt: "Maestría 2022 - Sesión 3", category: "Casos clínicos" },
-      { src: gallery34, alt: "Maestría 2022 - Sesión 4", category: "Clases presenciales" },
-      { src: gallery35, alt: "Maestría 2022 - Sesión 5", category: "Workshops" },
-      { src: gallery36, alt: "Maestría 2022 - Sesión 6", category: "Backstage" },
+      { src: gallery3, alt: "Introducción a la Hemodinamia", category: "Fundamentos" },
+      { src: gallery32, alt: "Anatomía y Fisiología del Corazón Derecho", category: "Bases Anatómicas" },
+      { src: gallery33, alt: "Electrocardiografía en Patología Pulmonar", category: "Electrocardiografía" },
+      { src: gallery34, alt: "Pruebas de Función Respiratoria", category: "Diagnóstico Funcional" },
+      { src: gallery35, alt: "Metodología de Investigación Clínica", category: "Investigación" },
+      { src: gallery36, alt: "Ceremonia de Apertura Académica", category: "Eventos Institucionales" },
     ],
   },
 ];
 
-// Memoized image component for performance
+// Memoized image component with professional medical aesthetic
 const GalleryImage = memo(
   ({ src, alt, onClick, className = "" }: { src: string; alt: string; onClick: () => void; className?: string }) => (
     <motion.div
-      whileHover={{ scale: 1.02, y: -4 }}
-      whileTap={{ scale: 0.98 }}
-      className={`relative overflow-hidden rounded-xl shadow-lg cursor-pointer group ${className}`}
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      whileHover={{ scale: 1.03, y: -6 }}
+      whileTap={{ scale: 0.97 }}
+      transition={{ duration: 0.4, ease: "easeOut" }}
+      className={`relative overflow-hidden rounded-2xl shadow-xl cursor-pointer group ${className}`}
       onClick={onClick}
     >
       <img
         src={src}
         alt={alt}
         loading="lazy"
-        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+        className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105 group-hover:brightness-110"
         draggable={false}
       />
-      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+      <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-500">
+        <p className="text-white font-semibold text-sm md:text-base line-clamp-2">{alt}</p>
+      </div>
     </motion.div>
   ),
 );
@@ -184,46 +190,52 @@ const Galeria = () => {
               transition={{ duration: 0.7, delay: galleryIndex * 0.1 }}
               className="relative"
             >
-              {/* Hero Section */}
-              <div className="relative h-[400px] md:h-[500px] rounded-3xl overflow-hidden mb-12 group">
-                <img
+              {/* Hero Section - Professional Medical Style */}
+              <div className="relative h-[350px] sm:h-[450px] md:h-[550px] rounded-3xl overflow-hidden mb-12 group">
+                <motion.img
                   src={gallery.hero}
                   alt={`Hero ${gallery.year}`}
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  className="w-full h-full object-cover"
                   loading="lazy"
+                  initial={{ scale: 1.1 }}
+                  whileInView={{ scale: 1 }}
+                  transition={{ duration: 1.2, ease: "easeOut" }}
+                  viewport={{ once: true }}
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent" />
 
-                <div className="absolute inset-0 flex flex-col items-center justify-center text-white p-8">
+                <div className="absolute inset-0 flex flex-col items-center justify-center text-white p-4 sm:p-6 md:p-8">
                   <motion.div
-                    initial={{ scale: 0.8, opacity: 0 }}
-                    whileInView={{ scale: 1, opacity: 1 }}
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
-                    transition={{ duration: 0.5, delay: 0.2 }}
-                    className="text-center"
+                    transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
+                    className="text-center max-w-4xl"
                   >
                     <motion.div
-                      className="inline-block mb-6 px-8 py-3 bg-primary/20 backdrop-blur-xl rounded-full border border-white/20"
-                      whileHover={{ scale: 1.05 }}
+                      className="inline-block mb-4 sm:mb-6 px-6 sm:px-8 py-2 sm:py-3 bg-primary/20 backdrop-blur-xl rounded-full border border-white/20 shadow-2xl"
+                      whileHover={{ scale: 1.05, backgroundColor: "rgba(var(--primary), 0.3)" }}
+                      transition={{ duration: 0.3 }}
                     >
-                      <span className="text-6xl font-black tracking-tight">{gallery.year}</span>
+                      <span className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tight">{gallery.year}</span>
                     </motion.div>
-                    <h3 className="text-4xl md:text-5xl font-bold mb-4 tracking-tight">{gallery.title}</h3>
-                    <p className="text-xl md:text-2xl font-light mb-2 text-white/90">{gallery.subtitle}</p>
-                    <p className="text-lg text-white/70 max-w-2xl mx-auto">{gallery.description}</p>
+                    <h3 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-2 sm:mb-4 tracking-tight leading-tight">{gallery.title}</h3>
+                    <p className="text-lg sm:text-xl md:text-2xl font-light mb-2 text-white/90">{gallery.subtitle}</p>
+                    <p className="text-sm sm:text-base md:text-lg text-white/70 max-w-2xl mx-auto px-4">{gallery.description}</p>
                   </motion.div>
                 </div>
               </div>
 
-              {/* Optimized Swiper Slider */}
-              <div className="relative px-12">
+              {/* Professional Carousel with Fade + Zoom Animation */}
+              <div className="relative px-4 sm:px-8 md:px-12">
                 <Swiper
                   modules={[Autoplay, Navigation, Pagination]}
-                  spaceBetween={20}
+                  spaceBetween={16}
                   slidesPerView={1}
                   breakpoints={{
                     640: { slidesPerView: 2, spaceBetween: 20 },
                     1024: { slidesPerView: 3, spaceBetween: 24 },
+                    1280: { slidesPerView: 3, spaceBetween: 28 },
                   }}
                   navigation={{
                     prevEl: `.swiper-button-prev-${gallery.year}`,
@@ -232,17 +244,18 @@ const Galeria = () => {
                   pagination={{
                     clickable: true,
                     dynamicBullets: true,
+                    el: `.swiper-pagination-${gallery.year}`,
                   }}
                   autoplay={{
-                    delay: 4000,
+                    delay: 5000,
                     disableOnInteraction: false,
                     pauseOnMouseEnter: true,
                   }}
                   loop={true}
-                  speed={600}
-                  className="pb-12"
+                  speed={800}
+                  effect="slide"
+                  className="pb-16"
                   onSwiper={(swiper: SwiperType) => {
-                    // Preload next/prev slides
                     swiper.on("slideChange", () => {
                       const nextSlide = swiper.slides[swiper.activeIndex + 1];
                       const prevSlide = swiper.slides[swiper.activeIndex - 1];
@@ -258,115 +271,144 @@ const Galeria = () => {
                   }}
                 >
                   {gallery.images.map((image, index) => (
-                    <SwiperSlide key={index}>
+                    <SwiperSlide key={index} className="transition-opacity duration-500">
                       <GalleryImage
                         src={image.src}
                         alt={image.alt}
                         onClick={() => handleImageClick(gallery, index)}
-                        className="h-[300px] md:h-[400px]"
+                        className="h-[280px] sm:h-[340px] md:h-[400px]"
                       />
                       {image.category && (
-                        <div className="mt-3 text-center">
-                          <span className="inline-block px-3 py-1 text-xs font-medium bg-primary/10 text-primary rounded-full">
+                        <motion.div
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: 0.2 }}
+                          className="mt-4 text-center"
+                        >
+                          <span className="inline-block px-4 py-1.5 text-xs sm:text-sm font-semibold bg-primary/15 text-primary rounded-full border border-primary/20 shadow-sm">
                             {image.category}
                           </span>
-                        </div>
+                        </motion.div>
                       )}
                     </SwiperSlide>
                   ))}
                 </Swiper>
 
-                {/* Custom Navigation Buttons */}
+                {/* Professional Navigation Controls */}
                 <button
-                  className={`swiper-button-prev-${gallery.year} absolute left-0 top-1/2 -translate-y-1/2 z-10 w-12 h-12 flex items-center justify-center bg-background/90 backdrop-blur-sm rounded-full shadow-lg hover:bg-primary hover:text-primary-foreground transition-all duration-300 hover:scale-110`}
+                  className={`swiper-button-prev-${gallery.year} absolute left-0 sm:left-2 top-[40%] sm:top-1/2 -translate-y-1/2 z-20 w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 flex items-center justify-center bg-background/95 backdrop-blur-md rounded-full shadow-xl hover:shadow-2xl hover:bg-primary hover:text-primary-foreground transition-all duration-300 hover:scale-110 active:scale-95 border border-border/50`}
+                  aria-label="Anterior"
                 >
-                  <ChevronLeft className="w-6 h-6" />
+                  <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7" />
                 </button>
                 <button
-                  className={`swiper-button-next-${gallery.year} absolute right-0 top-1/2 -translate-y-1/2 z-10 w-12 h-12 flex items-center justify-center bg-background/90 backdrop-blur-sm rounded-full shadow-lg hover:bg-primary hover:text-primary-foreground transition-all duration-300 hover:scale-110`}
+                  className={`swiper-button-next-${gallery.year} absolute right-0 sm:right-2 top-[40%] sm:top-1/2 -translate-y-1/2 z-20 w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 flex items-center justify-center bg-background/95 backdrop-blur-md rounded-full shadow-xl hover:shadow-2xl hover:bg-primary hover:text-primary-foreground transition-all duration-300 hover:scale-110 active:scale-95 border border-border/50`}
+                  aria-label="Siguiente"
                 >
-                  <ChevronRight className="w-6 h-6" />
+                  <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7" />
                 </button>
+
+                {/* Custom Pagination Dots */}
+                <div className={`swiper-pagination-${gallery.year} flex justify-center gap-2 mt-2`} />
               </div>
             </motion.div>
           ))}
         </div>
       </div>
 
-      {/* Optimized Modal */}
-      <AnimatePresence>
+      {/* Professional Medical Modal with Smooth Animations */}
+      <AnimatePresence mode="wait">
         {selectedImage && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="fixed inset-0 bg-black/95 backdrop-blur-xl z-50 flex items-center justify-center p-4"
+            transition={{ duration: 0.3, ease: "easeInOut" }}
+            className="fixed inset-0 bg-black/96 backdrop-blur-2xl z-50 flex items-center justify-center p-2 sm:p-4"
             onClick={handleClose}
           >
             <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              transition={{ duration: 0.3, type: "spring", damping: 25 }}
-              className="relative max-w-7xl max-h-[90vh] w-full"
+              initial={{ scale: 0.92, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.92, opacity: 0, y: 20 }}
+              transition={{ duration: 0.4, type: "spring", damping: 28, stiffness: 300 }}
+              className="relative max-w-7xl max-h-[95vh] w-full"
               onClick={(e) => e.stopPropagation()}
             >
-              {/* Image Container */}
-              <div className="relative flex items-center justify-center">
+              {/* Image Container with Fade + Zoom */}
+              <motion.div
+                className="relative flex items-center justify-center"
+                initial={{ scale: 0.95 }}
+                animate={{ scale: 1 }}
+                transition={{ duration: 0.5, ease: "easeOut" }}
+              >
                 <img
                   src={selectedImage.src}
                   alt={selectedImage.alt}
-                  className="max-w-full max-h-[85vh] object-contain rounded-xl shadow-2xl"
+                  className="max-w-full max-h-[85vh] object-contain rounded-2xl shadow-2xl border border-white/10"
                   loading="eager"
                   draggable={false}
                 />
-              </div>
+              </motion.div>
 
-              {/* Controls */}
-              <div className="absolute top-4 right-4 flex gap-2">
+              {/* Professional Controls */}
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                className="absolute top-2 sm:top-4 right-2 sm:right-4 flex gap-2"
+              >
                 <Button
                   onClick={handleDownload}
                   size="icon"
                   variant="secondary"
-                  className="rounded-full bg-background/90 backdrop-blur-sm hover:bg-primary hover:text-primary-foreground transition-all"
+                  className="rounded-full bg-background/95 backdrop-blur-md hover:bg-primary hover:text-primary-foreground transition-all duration-300 hover:scale-110 shadow-xl w-10 h-10 sm:w-12 sm:h-12"
+                  aria-label="Descargar imagen"
                 >
-                  <Download className="w-5 h-5" />
+                  <Download className="w-4 h-4 sm:w-5 sm:h-5" />
                 </Button>
                 <Button
                   onClick={handleClose}
                   size="icon"
                   variant="secondary"
-                  className="rounded-full bg-background/90 backdrop-blur-sm hover:bg-destructive hover:text-destructive-foreground transition-all"
+                  className="rounded-full bg-background/95 backdrop-blur-md hover:bg-destructive hover:text-destructive-foreground transition-all duration-300 hover:scale-110 shadow-xl w-10 h-10 sm:w-12 sm:h-12"
+                  aria-label="Cerrar"
                 >
-                  <X className="w-5 h-5" />
+                  <X className="w-4 h-4 sm:w-5 sm:h-5" />
                 </Button>
-              </div>
+              </motion.div>
 
-              {/* Navigation */}
+              {/* Smooth Navigation */}
               <Button
                 onClick={handlePrevImage}
                 size="icon"
                 variant="secondary"
-                className="absolute left-4 top-1/2 -translate-y-1/2 rounded-full bg-background/90 backdrop-blur-sm hover:bg-primary hover:text-primary-foreground transition-all w-14 h-14"
+                className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 rounded-full bg-background/95 backdrop-blur-md hover:bg-primary hover:text-primary-foreground transition-all duration-300 hover:scale-110 active:scale-95 shadow-xl w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16"
+                aria-label="Imagen anterior"
               >
-                <ChevronLeft className="w-7 h-7" />
+                <ChevronLeft className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8" />
               </Button>
               <Button
                 onClick={handleNextImage}
                 size="icon"
                 variant="secondary"
-                className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full bg-background/90 backdrop-blur-sm hover:bg-primary hover:text-primary-foreground transition-all w-14 h-14"
+                className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 rounded-full bg-background/95 backdrop-blur-md hover:bg-primary hover:text-primary-foreground transition-all duration-300 hover:scale-110 active:scale-95 shadow-xl w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16"
+                aria-label="Imagen siguiente"
               >
-                <ChevronRight className="w-7 h-7" />
+                <ChevronRight className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8" />
               </Button>
 
-              {/* Image Info */}
-              <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-center">
-                <p className="text-white text-lg font-medium bg-black/50 backdrop-blur-sm px-4 py-2 rounded-full">
+              {/* Professional Image Info */}
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+                className="absolute bottom-2 sm:bottom-4 left-1/2 -translate-x-1/2 text-center max-w-[90%] sm:max-w-2xl"
+              >
+                <p className="text-white text-sm sm:text-base md:text-lg font-semibold bg-black/70 backdrop-blur-md px-4 sm:px-6 py-2 sm:py-3 rounded-full border border-white/10 shadow-2xl">
                   {selectedImage.alt}
                 </p>
-              </div>
+              </motion.div>
             </motion.div>
           </motion.div>
         )}
