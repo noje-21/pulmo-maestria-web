@@ -219,9 +219,13 @@ const Galeria = () => {
                     >
                       <span className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tight">{gallery.year}</span>
                     </motion.div>
-                    <h3 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-2 sm:mb-4 tracking-tight leading-tight">{gallery.title}</h3>
+                    <h3 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-2 sm:mb-4 tracking-tight leading-tight">
+                      {gallery.title}
+                    </h3>
                     <p className="text-lg sm:text-xl md:text-2xl font-light mb-2 text-white/90">{gallery.subtitle}</p>
-                    <p className="text-sm sm:text-base md:text-lg text-white/70 max-w-2xl mx-auto px-4">{gallery.description}</p>
+                    <p className="text-sm sm:text-base md:text-lg text-white/70 max-w-2xl mx-auto px-4">
+                      {gallery.description}
+                    </p>
                   </motion.div>
                 </div>
               </div>
@@ -285,9 +289,9 @@ const Galeria = () => {
                           transition={{ delay: 0.2 }}
                           className="mt-4 text-center"
                         >
-                          <span className="inline-block px-4 py-1.5 text-xs sm:text-sm font-semibold bg-primary/15 text-primary rounded-full border border-primary/20 shadow-sm">
+                          {/* <span className="inline-block px-4 py-1.5 text-xs sm:text-sm font-semibold bg-primary/15 text-primary rounded-full border border-primary/20 shadow-sm">
                             {image.category}
-                          </span>
+                          </span>*/}
                         </motion.div>
                       )}
                     </SwiperSlide>
