@@ -20,16 +20,20 @@ interface ForumPost {
   id: string;
   title: string;
   content: string;
+  excerpt?: string;
   category: string;
   image_url?: string;
   created_at: string;
   views_count: number;
   reactions_count?: number;
   is_pinned: boolean;
+  featured?: boolean;
+  status?: string;
   user_id: string;
   profiles?: {
     full_name: string;
   };
+  forum_comments?: any[];
 }
 
 const Foro = () => {
@@ -40,6 +44,7 @@ const Foro = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [categoryFilter, setCategoryFilter] = useState<string>("all");
   const [authorFilter, setAuthorFilter] = useState<string>("all");
+  const [sortBy, setSortBy] = useState<'recent' | 'popular' | 'commented'>('recent');
   const [authors, setAuthors] = useState<{ id: string; name: string }[]>([]);
 
   useEffect(() => {
@@ -80,10 +85,10 @@ const Foro = () => {
         .from("forum_posts")
         .select(`
           *,
-          profiles!forum_posts_user_id_fkey(full_name)
+          profiles!forum_posts_user_id_fkey(full_name),
+          forum_comments(count)
         `)
-        .order("is_pinned", { ascending: false })
-        .order("created_at", { ascending: false });
+        .eq("status", "published");
 
       if (searchQuery) {
         query = query.or(`title.ilike.%${searchQuery}%,content.ilike.%${searchQuery}%`);
@@ -95,6 +100,17 @@ const Foro = () => {
 
       if (authorFilter !== "all") {
         query = query.eq("user_id", authorFilter);
+      }
+
+      // Ordering mejorado
+      if (sortBy === 'popular') {
+        query = query.order("views_count", { ascending: false });
+      } else if (sortBy === 'commented') {
+        query = query.order("reactions_count", { ascending: false });
+      } else {
+        query = query.order("featured", { ascending: false })
+          .order("is_pinned", { ascending: false })
+          .order("created_at", { ascending: false });
       }
 
       const { data, error } = await query;
@@ -116,7 +132,7 @@ const Foro = () => {
 
   useEffect(() => {
     loadPosts();
-  }, [searchQuery, categoryFilter, authorFilter]);
+  }, [searchQuery, categoryFilter, authorFilter, sortBy]);
 
   const getCategoryLabel = (category: string) => {
     const labels: Record<string, string> = {
@@ -231,6 +247,17 @@ const Foro = () => {
                 </SelectContent>
               </Select>
 
+              <Select value={sortBy} onValueChange={(value: any) => setSortBy(value)}>
+                <SelectTrigger className="w-[180px] modern-input">
+                  <SelectValue placeholder="Ordenar" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="recent">Más recientes</SelectItem>
+                  <SelectItem value="popular">Más vistos</SelectItem>
+                  <SelectItem value="commented">Más comentados</SelectItem>
+                </SelectContent>
+              </Select>
+
               {(categoryFilter !== "all" || authorFilter !== "all") && (
                 <Button
                   variant="ghost"
@@ -263,70 +290,80 @@ const Foro = () => {
                 >
                   <Card
                     onClick={() => navigate(`/foro/${post.id}`)}
-                    className="p-6 modern-card pv-glass pv-glow hover:shadow-2xl cursor-pointer transition-all duration-300 hover:scale-[1.01] group"
+                    className="modern-card pv-glass pv-glow hover:shadow-2xl cursor-pointer transition-all duration-300 hover:scale-[1.01] group overflow-hidden"
                   >
-                    <div className="flex items-start gap-4">
-                      <div className="flex-1 space-y-4">
-                        <div className="flex items-start justify-between gap-4">
-                          <div className="flex items-center gap-3 flex-1">
-                            {post.is_pinned && (
-                              <Pin className="w-5 h-5 text-primary" />
-                            )}
+                    {(post.is_pinned || post.featured) && (
+                      <div className="bg-gradient-to-r from-primary/10 to-primary/5 px-4 py-2 border-b border-primary/20 flex gap-2">
+                        {post.is_pinned && (
+                          <span className="text-xs font-medium text-primary flex items-center gap-2">
+                            📌 Fijado
+                          </span>
+                        )}
+                        {post.featured && (
+                          <span className="text-xs font-medium text-amber-600 flex items-center gap-2">
+                            ⭐ Destacado
+                          </span>
+                        )}
+                      </div>
+                    )}
+                    <div className="p-6">
+                      <div className="flex items-start gap-4">
+                        {post.image_url && (
+                          <img
+                            src={post.image_url}
+                            alt={post.title}
+                            className="w-24 h-24 rounded-xl object-cover flex-shrink-0 group-hover:scale-105 transition-transform"
+                            loading="lazy"
+                          />
+                        )}
+                        <div className="flex-1 space-y-3">
+                          <div className="flex items-start justify-between gap-4">
                             <h3 className="text-2xl font-bold group-hover:text-primary transition-colors line-clamp-2 flex-1">
                               {post.title}
                             </h3>
+                            <Badge className={getCategoryColor(post.category)}>
+                              {getCategoryLabel(post.category)}
+                            </Badge>
                           </div>
-                          <Badge className={getCategoryColor(post.category)}>
-                            {getCategoryLabel(post.category)}
-                          </Badge>
+
+                          {post.excerpt && (
+                            <p className="text-sm text-muted-foreground line-clamp-2">
+                              {post.excerpt}
+                            </p>
+                          )}
+
+                          <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
+                            <div className="flex items-center gap-2">
+                              <User className="w-4 h-4" />
+                              <span>{post.profiles?.full_name || "Usuario"}</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <Calendar className="w-4 h-4" />
+                              <span>
+                                {format(new Date(post.created_at), "dd MMM, yyyy", {
+                                  locale: es,
+                                })}
+                              </span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <Eye className="w-4 h-4" />
+                              <span>{post.views_count} vistas</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <MessageSquare className="w-4 h-4" />
+                              <span>{Array.isArray(post.forum_comments) ? post.forum_comments.length : 0} comentarios</span>
+                            </div>
+                          </div>
                         </div>
+                      </div>
 
-                        <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
-                          <div className="flex items-center gap-2">
-                            <User className="w-4 h-4" />
-                            <span>{post.profiles?.full_name || "Usuario"}</span>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <Calendar className="w-4 h-4" />
-                            <span>
-                              {format(new Date(post.created_at), "dd MMM, yyyy", {
-                                locale: es,
-                              })}
-                            </span>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <Eye className="w-4 h-4" />
-                            <span>{post.views_count} vistas</span>
-                          </div>
-                        </div>
-
-                        {post.image_url && (
-                          <div className="rounded-xl overflow-hidden max-h-48 sm:max-h-64">
-                            <img 
-                              src={post.image_url} 
-                              alt={post.title}
-                              className="w-full h-full object-cover"
-                              loading="lazy"
-                            />
-                          </div>
-                        )}
-
-                        <p className="text-muted-foreground line-clamp-3">
-                          {post.content}
-                        </p>
-
-                        <div className="flex items-center gap-3 pt-2 border-t">
-                          <div onClick={(e) => e.stopPropagation()}>
-                            <ReactionButton 
-                              postType="forum" 
-                              postId={post.id} 
-                              initialCount={post.reactions_count || 0}
-                            />
-                          </div>
-                          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                            <MessageSquare className="w-4 h-4" />
-                            <span>Comentarios</span>
-                          </div>
+                      <div className="flex items-center justify-between pt-4 border-t border-border/50 mt-4">
+                        <div onClick={(e) => e.stopPropagation()}>
+                          <ReactionButton 
+                            postType="forum" 
+                            postId={post.id} 
+                            initialCount={post.reactions_count || 0}
+                          />
                         </div>
                       </div>
                     </div>

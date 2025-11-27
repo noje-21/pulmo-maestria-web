@@ -49,6 +49,7 @@ export type Database = {
           content: string
           created_at: string
           id: string
+          parent_id: string | null
           post_id: string
           updated_at: string
           user_id: string
@@ -57,6 +58,7 @@ export type Database = {
           content: string
           created_at?: string
           id?: string
+          parent_id?: string | null
           post_id: string
           updated_at?: string
           user_id: string
@@ -65,11 +67,19 @@ export type Database = {
           content?: string
           created_at?: string
           id?: string
+          parent_id?: string | null
           post_id?: string
           updated_at?: string
           user_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "forum_comments_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "forum_comments"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "forum_comments_post_id_fkey"
             columns: ["post_id"]
@@ -127,10 +137,13 @@ export type Database = {
           category: Database["public"]["Enums"]["forum_category"]
           content: string
           created_at: string
+          excerpt: string | null
+          featured: boolean | null
           id: string
           image_url: string | null
           is_pinned: boolean
           reactions_count: number | null
+          status: string | null
           title: string
           updated_at: string
           user_id: string
@@ -140,10 +153,13 @@ export type Database = {
           category?: Database["public"]["Enums"]["forum_category"]
           content: string
           created_at?: string
+          excerpt?: string | null
+          featured?: boolean | null
           id?: string
           image_url?: string | null
           is_pinned?: boolean
           reactions_count?: number | null
+          status?: string | null
           title: string
           updated_at?: string
           user_id: string
@@ -153,10 +169,13 @@ export type Database = {
           category?: Database["public"]["Enums"]["forum_category"]
           content?: string
           created_at?: string
+          excerpt?: string | null
+          featured?: boolean | null
           id?: string
           image_url?: string | null
           is_pinned?: boolean
           reactions_count?: number | null
+          status?: string | null
           title?: string
           updated_at?: string
           user_id?: string
