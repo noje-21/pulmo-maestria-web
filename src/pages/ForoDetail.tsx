@@ -32,9 +32,11 @@ interface Comment {
   content: string;
   created_at: string;
   user_id: string;
+  parent_id: string | null;
   profiles?: {
     full_name: string;
   };
+  replies?: Comment[];
 }
 
 const commentSchema = z.object({
@@ -49,6 +51,7 @@ const ForoDetail = () => {
   const navigate = useNavigate();
   const [post, setPost] = useState<ForumPost | null>(null);
   const [comments, setComments] = useState<Comment[]>([]);
+  const [replyingTo, setReplyingTo] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<any>(null);
   const [newComment, setNewComment] = useState("");
@@ -108,13 +111,34 @@ const ForoDetail = () => {
         .order("created_at", { ascending: true });
 
       if (error) throw error;
-      setComments(data as any || []);
+      
+      // Organizar comentarios en estructura de árbol
+      const commentMap = new Map<string, Comment>();
+      const rootComments: Comment[] = [];
+      
+      (data || []).forEach((comment: any) => {
+        commentMap.set(comment.id, { ...comment, replies: [] });
+      });
+      
+      commentMap.forEach((comment) => {
+        if (comment.parent_id) {
+          const parent = commentMap.get(comment.parent_id);
+          if (parent) {
+            parent.replies = parent.replies || [];
+            parent.replies.push(comment);
+          }
+        } else {
+          rootComments.push(comment);
+        }
+      });
+      
+      setComments(rootComments);
     } catch (error: any) {
       console.error("Error loading comments:", error);
     }
   };
 
-  const handleAddComment = async () => {
+  const handleAddComment = async (parentId: string | null = null) => {
     if (!user) {
       toast.error("Debes iniciar sesión para comentar");
       navigate("/auth");
@@ -122,19 +146,20 @@ const ForoDetail = () => {
     }
 
     try {
-      // Validate comment
       const validated = commentSchema.parse({ content: newComment });
 
       const { error } = await supabase.from("forum_comments").insert({
         post_id: id,
         user_id: user.id,
         content: validated.content,
+        parent_id: parentId,
       });
 
       if (error) throw error;
 
-      toast.success("Comentario añadido");
+      toast.success(parentId ? "Respuesta agregada" : "Comentario añadido");
       setNewComment("");
+      setReplyingTo(null);
       loadComments();
     } catch (error: any) {
       if (error instanceof z.ZodError) {
@@ -145,6 +170,62 @@ const ForoDetail = () => {
       }
     }
   };
+
+  const CommentItem = ({ comment, depth = 0 }: { comment: Comment; depth?: number }) => (
+    <div className={`${depth > 0 ? 'ml-8 mt-4 border-l-2 border-primary/20 pl-4' : 'mt-4'}`}>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="bg-muted/30 rounded-xl p-4 backdrop-blur-sm"
+      >
+        <div className="flex items-start justify-between mb-2">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+              <User className="w-4 h-4 text-primary" />
+            </div>
+            <div>
+              <p className="font-medium text-sm">{comment.profiles?.full_name || "Usuario"}</p>
+              <p className="text-xs text-muted-foreground">
+                {format(new Date(comment.created_at), "dd MMM yyyy HH:mm", { locale: es })}
+              </p>
+            </div>
+          </div>
+        </div>
+        <p className="text-sm leading-relaxed mb-3 whitespace-pre-wrap">{comment.content}</p>
+        {user && (
+          <button
+            onClick={() => setReplyingTo(replyingTo === comment.id ? null : comment.id)}
+            className="text-xs text-primary hover:underline font-medium"
+          >
+            {replyingTo === comment.id ? "Cancelar" : "Responder"}
+          </button>
+        )}
+        
+        {replyingTo === comment.id && (
+          <div className="mt-3 space-y-3">
+            <Textarea
+              value={newComment}
+              onChange={(e) => setNewComment(e.target.value)}
+              placeholder="Escribe tu respuesta..."
+              className="modern-input resize-none h-20"
+            />
+            <Button onClick={() => handleAddComment(comment.id)} size="sm" className="modern-btn pv-tap-scale">
+              <Send className="w-4 h-4 mr-2" />
+              Enviar respuesta
+            </Button>
+          </div>
+        )}
+      </motion.div>
+      
+      {comment.replies && comment.replies.length > 0 && (
+        <div className="space-y-2">
+          {comment.replies.map((reply) => (
+            <CommentItem key={reply.id} comment={reply} depth={depth + 1} />
+          ))}
+        </div>
+      )}
+    </div>
+  );
 
   if (loading) {
     return (
@@ -225,7 +306,7 @@ const ForoDetail = () => {
                     className="modern-input min-h-[100px] sm:min-h-[120px] mb-4"
                   />
                   <Button
-                    onClick={handleAddComment}
+                    onClick={() => handleAddComment(null)}
                     className="modern-btn pv-tap-scale w-full sm:w-auto"
                   >
                     <Send className="w-4 h-4 mr-2" />
@@ -250,29 +331,8 @@ const ForoDetail = () => {
               )}
 
               <div className="space-y-4 sm:space-y-6">
-                {comments.map((comment, index) => (
-                  <motion.div
-                    key={comment.id}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.1 }}
-                    className="p-4 sm:p-6 rounded-xl bg-muted/50"
-                  >
-                    <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3 flex-wrap">
-                      <User className="w-4 sm:w-5 h-4 sm:h-5 text-primary" />
-                      <span className="font-medium text-sm sm:text-base">
-                        {comment.profiles?.full_name || "Usuario"}
-                      </span>
-                      <span className="text-xs sm:text-sm text-muted-foreground">
-                        {format(new Date(comment.created_at), "dd MMM, yyyy", {
-                          locale: es,
-                        })}
-                      </span>
-                    </div>
-                    <p className="text-sm sm:text-base text-muted-foreground whitespace-pre-wrap">
-                      {comment.content}
-                    </p>
-                  </motion.div>
+                {comments.map((comment) => (
+                  <CommentItem key={comment.id} comment={comment} />
                 ))}
 
                 {comments.length === 0 && (
