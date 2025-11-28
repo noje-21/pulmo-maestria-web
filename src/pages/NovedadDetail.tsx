@@ -4,12 +4,12 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { motion } from "framer-motion";
-import Navigation from "@/components/Navigation";
-import ReactionButton from "@/components/ReactionButton";
+import Navigation from "@/components/common/Navigation";
+import ReactionButton from "@/features/forum/ReactionButton";
 import { Calendar, User, ArrowLeft } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
-import ImageLazy from "@/components/ImageLazy";
+import ImageLazy from "@/components/common/ImageLazy";
 import DOMPurify from "dompurify";
 
 interface Novedad {

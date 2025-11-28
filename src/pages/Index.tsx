@@ -1,6 +1,6 @@
-import Navigation from "@/components/Navigation";
-import AnimatedOnView from "@/components/AnimatedOnView";
-import { SEO } from "@/components/SEO";
+import Navigation from "@/components/common/Navigation";
+import AnimatedOnView from "@/components/common/AnimatedOnView";
+import { SEO } from "@/components/common/SEO";
 import { Hero } from "@/components/sections/Hero";
 import { Maestria } from "@/components/sections/Maestria";
 import { Expertos } from "@/components/sections/Expertos";

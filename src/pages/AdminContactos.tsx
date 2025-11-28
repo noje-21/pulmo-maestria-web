@@ -5,8 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
-import AdminSidebar from "@/components/AdminSidebar";
-import { TableSkeleton } from "@/components/LoadingSkeleton";
+import AdminSidebar from "@/features/admin/AdminSidebar";
+import { TableSkeleton } from "@/components/common/LoadingSkeleton";
 import { ArrowLeft, Trash2, Mail, MapPin, Briefcase } from "lucide-react";
 
 interface ContactSubmission {

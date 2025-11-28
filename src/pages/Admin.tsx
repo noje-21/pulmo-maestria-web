@@ -5,8 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
-import { CardSkeleton } from "@/components/LoadingSkeleton";
-import AdminSidebar from "@/components/AdminSidebar";
+import { CardSkeleton } from "@/components/common/LoadingSkeleton";
+import AdminSidebar from "@/features/admin/AdminSidebar";
 import { MessageSquare, FileText, FolderOpen, LogOut } from "lucide-react";
 
 const Admin = () => {

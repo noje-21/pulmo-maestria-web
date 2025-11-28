@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import Navigation from "@/components/Navigation";
+import Navigation from "@/components/common/Navigation";
 import { motion } from "framer-motion";
 import { 
   TrendingUp, 

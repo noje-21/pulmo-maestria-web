@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
-import Navigation from '../Navigation';
+import Navigation from '../common/Navigation';
 
 // Mock Supabase
 vi.mock('@/integrations/supabase/client', () => ({
