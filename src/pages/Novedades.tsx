@@ -6,16 +6,16 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { motion, AnimatePresence } from "framer-motion";
-import Navigation from "@/components/Navigation";
-import { SEO } from "@/components/SEO";
+import Navigation from "@/components/common/Navigation";
+import { SEO } from "@/components/common/SEO";
 import { useNavigate } from "react-router-dom";
 import { Calendar, User, Search, Eye, Filter, Newspaper } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { toast } from "sonner";
-import ImageLazy from "@/components/ImageLazy";
-import ReactionButton from "@/components/ReactionButton";
-import { ListSkeleton } from "@/components/LoadingSkeleton";
+import ImageLazy from "@/components/common/ImageLazy";
+import ReactionButton from "@/features/forum/ReactionButton";
+import { ListSkeleton } from "@/components/common/LoadingSkeleton";
 
 interface Novedad {
   id: string;

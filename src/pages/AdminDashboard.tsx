@@ -4,8 +4,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
-import AdminSidebar from "@/components/AdminSidebar";
-import { CardSkeleton } from "@/components/LoadingSkeleton";
+import AdminSidebar from "@/features/admin/AdminSidebar";
+import { CardSkeleton } from "@/components/common/LoadingSkeleton";
 import { ArrowLeft, TrendingUp, Users, MessageSquare, Eye, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 

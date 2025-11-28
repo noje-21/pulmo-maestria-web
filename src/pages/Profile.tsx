@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
-import Navigation from "@/components/Navigation";
+import Navigation from "@/components/common/Navigation";
 import { MessageSquare, FileText } from "lucide-react";
 
 const Profile = () => {

@@ -9,8 +9,8 @@ import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { ArrowLeft, Save } from "lucide-react";
 import { motion } from "framer-motion";
-import AdminSidebar from "@/components/AdminSidebar";
-import { CardSkeleton } from "@/components/LoadingSkeleton";
+import AdminSidebar from "@/features/admin/AdminSidebar";
+import { CardSkeleton } from "@/components/common/LoadingSkeleton";
 
 interface SiteContent {
   section: string;

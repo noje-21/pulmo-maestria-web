@@ -6,15 +6,15 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { motion, AnimatePresence } from "framer-motion";
-import Navigation from "@/components/Navigation";
-import { SEO } from "@/components/SEO";
-import ReactionButton from "@/components/ReactionButton";
+import Navigation from "@/components/common/Navigation";
+import { SEO } from "@/components/common/SEO";
+import ReactionButton from "@/features/forum/ReactionButton";
 import { useNavigate } from "react-router-dom";
 import { MessageSquare, Calendar, User, Eye, Plus, Search, Filter, Pin } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { toast } from "sonner";
-import { ListSkeleton } from "@/components/LoadingSkeleton";
+import { ListSkeleton } from "@/components/common/LoadingSkeleton";
 
 interface ForumPost {
   id: string;

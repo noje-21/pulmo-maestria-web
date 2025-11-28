@@ -10,14 +10,14 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { toast } from "sonner";
 import { z } from "zod";
 import { motion, AnimatePresence } from "framer-motion";
-import AdminSidebar from "@/components/AdminSidebar";
-import { CardSkeleton } from "@/components/LoadingSkeleton";
+import AdminSidebar from "@/features/admin/AdminSidebar";
+import { CardSkeleton } from "@/components/common/LoadingSkeleton";
 import { ArrowLeft, Trash2, Pin, Eye, Plus, Save, X, Edit } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
-import ImageUpload from "@/components/ImageUpload";
-import TagInput from "@/components/TagInput";
-import RichTextEditor from "@/components/RichTextEditor";
+import ImageUpload from "@/components/common/ImageUpload";
+import TagInput from "@/features/forum/TagInput";
+import RichTextEditor from "@/components/common/RichTextEditor";
 
 const imageUrlSchema = z.string().url().refine(
   (url) => url.startsWith('http://') || url.startsWith('https://'),
