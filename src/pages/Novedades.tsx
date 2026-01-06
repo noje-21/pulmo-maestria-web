@@ -269,7 +269,24 @@ const Novedades = () => {
                   ))}
                 </div>
               </motion.div>
-            ) : novedades.length > 0 ? (
+            ) : novedades.length === 0 ? (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="text-center py-20"
+              >
+                <div className="relative mb-6 mx-auto w-fit">
+                  <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-accent/20 rounded-full blur-xl scale-150" />
+                  <div className="relative p-5 bg-gradient-to-br from-muted to-muted/50 rounded-2xl border border-border/50">
+                    <Newspaper className="w-12 h-12 text-muted-foreground" />
+                  </div>
+                </div>
+                <h3 className="text-xl font-bold text-foreground mb-2">No hay novedades aún</h3>
+                <p className="text-muted-foreground max-w-sm mx-auto">
+                  Las últimas noticias y artículos aparecerán aquí. ¡Vuelve pronto!
+                </p>
+              </motion.div>
+            ) : (
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -426,24 +443,6 @@ const Novedades = () => {
                     </div>
                   </div>
                 )}
-              </motion.div>
-            ) : (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="text-center py-16 sm:py-24"
-              >
-                <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-muted flex items-center justify-center">
-                  <Newspaper className="w-10 h-10 text-muted-foreground" />
-                </div>
-                <h3 className="text-xl sm:text-2xl font-semibold mb-2">
-                  No se encontraron novedades
-                </h3>
-                <p className="text-muted-foreground max-w-md mx-auto">
-                  {searchQuery || authorFilter !== "all"
-                    ? "Intenta ajustar los filtros de búsqueda"
-                    : "Aún no hay novedades publicadas"}
-                </p>
               </motion.div>
             )}
           </AnimatePresence>

@@ -2,6 +2,40 @@
 
 Plataforma web profesional y moderna para la Maestría en Circulación Pulmonar, desarrollada con tecnologías de última generación y enfocada en la excelencia académica.
 
+## 🆕 Mejoras Recientes (v2.0)
+
+### 🎨 Identidad Visual Premium
+- Sistema de design tokens centralizado en `index.css`
+- Paleta premium: Deep Navy + Vibrant Coral
+- Cards reutilizables con variantes (featured, accent, glass)
+- Botones unificados con estados hover/focus/active
+- Patrones visuales sutiles (mesh, dots, grid)
+
+### 💬 Foro Vivo (Comunidad Real)
+- **Indicadores de actividad**: "Activo hoy", "Hace X días"
+- Estados visuales: hot (naranja), recent (verde), active (azul)
+- Contador de respuestas destacado
+- Badge "Popular" para posts con +5 comentarios
+- Empty states con mensajes humanos y amigables
+
+### 🏠 Landing con Storytelling Médico
+- Problem statement en el Hero
+- Propuesta de valor clara: "Transforma tu práctica clínica en 12 días"
+- CTA Final con beneficios, social proof (+50 profesionales)
+- Cards de evento con información clara
+
+### ✨ Pulido Premium
+- Microinteracciones refinadas
+- Skeleton loaders profesionales
+- Empty states con mensajes cercanos
+- Transiciones suaves entre páginas
+
+### 📱 Mobile UX Avanzado
+- Navegación con drawer limpio
+- Cards apiladas responsivas
+- Touch targets optimizados (44px mínimo)
+- Scroll cómodo sin elementos comprimidos
+
 ## 🌟 Características Principales
 
 ### UI/UX Premium
