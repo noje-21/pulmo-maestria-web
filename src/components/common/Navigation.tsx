@@ -116,41 +116,39 @@ const Navigation = () => {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center gap-1 xl:gap-3 2xl:gap-4">
+          <div className="hidden lg:flex items-center gap-1 xl:gap-2">
             {navItems.map((item) => (
               <button
                 key={item.section}
                 onClick={() => handleNavClick(item.section)}
-                className={`relative nav-link px-3 xl:px-4 2xl:px-5 py-2 text-sm xl:text-base font-medium group transition-colors duration-200 ${
-                  isScrolled ? 'text-foreground hover:text-primary' : 'text-white/90 hover:text-white'
+                className={`relative nav-link px-3 xl:px-4 py-2 text-sm group ${
+                  isScrolled ? 'text-foreground' : 'text-white hover:text-white/80'
                 }`}
               >
                 {item.label}
-                <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-gradient-to-r from-accent to-accent-light group-hover:w-full transition-all duration-200 rounded-full" />
+                <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-gradient-to-r from-accent to-accent-light group-hover:w-full transition-all duration-300 rounded-full" />
               </button>
             ))}
             
             <Link
               to="/foro"
-              className={`relative nav-link px-3 xl:px-4 2xl:px-5 py-2 text-sm xl:text-base font-medium group transition-colors duration-200 ${
-                isScrolled ? 'text-foreground hover:text-primary' : 'text-white/90 hover:text-white'
+              className={`nav-link px-3 xl:px-4 py-2 text-sm ${
+                isScrolled ? 'text-foreground' : 'text-white hover:text-white/80'
               }`}
             >
               Foro
-              <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-gradient-to-r from-accent to-accent-light group-hover:w-full transition-all duration-200 rounded-full" />
             </Link>
             
             <Link
               to="/novedades"
-              className={`relative nav-link px-3 xl:px-4 2xl:px-5 py-2 text-sm xl:text-base font-medium group transition-colors duration-200 ${
-                isScrolled ? 'text-foreground hover:text-primary' : 'text-white/90 hover:text-white'
+              className={`nav-link px-3 xl:px-4 py-2 text-sm ${
+                isScrolled ? 'text-foreground' : 'text-white hover:text-white/80'
               }`}
             >
               Novedades
-              <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-gradient-to-r from-accent to-accent-light group-hover:w-full transition-all duration-200 rounded-full" />
             </Link>
 
-            <div className="w-px h-6 bg-border/50 mx-3 xl:mx-4" />
+            <div className="w-px h-6 bg-border/50 mx-2" />
 
             {isAdmin && (
               <Button

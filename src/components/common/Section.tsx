@@ -25,9 +25,9 @@ const patternStyles = {
 };
 
 const paddingStyles = {
-  default: "py-16 md:py-24 lg:py-28 xl:py-32",
-  large: "py-20 md:py-28 lg:py-32 xl:py-36",
-  small: "py-12 md:py-16 lg:py-20",
+  default: "py-16 md:py-24",
+  large: "py-20 md:py-28",
+  small: "py-12 md:py-16",
   none: ""
 };
 
@@ -53,7 +53,7 @@ export const Section = ({
       {pattern !== "none" && (
         <div className={cn("absolute inset-0", patternStyles[pattern])} aria-hidden="true" />
       )}
-      <div className={cn("relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-16", containerClassName)}>
+      <div className={cn("relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8", containerClassName)}>
         {children}
       </div>
     </section>
