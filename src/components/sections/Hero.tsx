@@ -151,8 +151,8 @@ export const Hero = () => {
         >
           <Button 
             size="lg" 
-            onClick={() => window.open("https://www.maestriacp.com/", "_blank")}
-            aria-label="Acceder al Campus Virtual (abre en nueva ventana)"
+            onClick={() => window.location.href = "https://www.maestriacp.com/"}
+            aria-label="Acceder al Campus Virtual"
             className="btn-hero group w-full sm:w-auto min-h-[56px]"
           >
             <span>Ver Campus Virtual</span>
