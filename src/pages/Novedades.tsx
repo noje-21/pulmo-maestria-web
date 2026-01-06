@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
@@ -9,13 +8,23 @@ import { motion, AnimatePresence } from "framer-motion";
 import Navigation from "@/components/common/Navigation";
 import { SEO } from "@/components/common/SEO";
 import { useNavigate } from "react-router-dom";
-import { Calendar, User, Search, Eye, Filter, Newspaper } from "lucide-react";
-import { format } from "date-fns";
+import { 
+  Calendar, User, Search, ArrowRight, Filter, 
+  Newspaper, Clock, Sparkles
+} from "lucide-react";
+import { format, formatDistanceToNow } from "date-fns";
 import { es } from "date-fns/locale";
 import { toast } from "sonner";
 import ImageLazy from "@/components/common/ImageLazy";
 import ReactionButton from "@/features/forum/ReactionButton";
-import { ListSkeleton } from "@/components/common/LoadingSkeleton";
+import { Skeleton } from "@/components/ui/skeleton";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 
 interface Novedad {
   id: string;
@@ -33,6 +42,37 @@ interface Novedad {
   };
 }
 
+const FeaturedSkeleton = () => (
+  <div className="grid lg:grid-cols-2 gap-6 lg:gap-0 bg-card rounded-3xl border border-border/50 overflow-hidden">
+    <Skeleton className="aspect-[16/10] lg:aspect-auto" />
+    <div className="p-6 lg:p-10 space-y-4">
+      <Skeleton className="h-6 w-24" />
+      <Skeleton className="h-10 w-full" />
+      <Skeleton className="h-10 w-3/4" />
+      <Skeleton className="h-20 w-full" />
+      <div className="flex gap-4">
+        <Skeleton className="h-5 w-32" />
+        <Skeleton className="h-5 w-28" />
+      </div>
+    </div>
+  </div>
+);
+
+const CardSkeleton = () => (
+  <div className="bg-card rounded-2xl border border-border/50 overflow-hidden">
+    <Skeleton className="aspect-[16/9]" />
+    <div className="p-5 space-y-3">
+      <Skeleton className="h-6 w-full" />
+      <Skeleton className="h-4 w-full" />
+      <Skeleton className="h-4 w-2/3" />
+      <div className="flex gap-4 pt-2">
+        <Skeleton className="h-4 w-24" />
+        <Skeleton className="h-4 w-20" />
+      </div>
+    </div>
+  </div>
+);
+
 const Novedades = () => {
   const navigate = useNavigate();
   const [novedades, setNovedades] = useState<Novedad[]>([]);
@@ -40,6 +80,7 @@ const Novedades = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [authorFilter, setAuthorFilter] = useState<string>("all");
   const [authors, setAuthors] = useState<{ id: string; name: string }[]>([]);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
 
   useEffect(() => {
     loadNovedades();
@@ -86,7 +127,6 @@ const Novedades = () => {
         throw error;
       }
       
-      console.log("Novedades cargadas:", data?.length || 0);
       setNovedades(data as any || []);
     } catch (error: any) {
       console.error("Error loading novedades:", error);
@@ -102,22 +142,10 @@ const Novedades = () => {
 
   const featuredNovedad = novedades[0];
   const gridNovedades = novedades.slice(1);
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-muted/30 to-background">
-        <Navigation />
-        <div className="pt-32 pb-20 px-4 sm:px-6 lg:px-8">
-          <div className="max-w-7xl mx-auto">
-            <ListSkeleton items={6} />
-          </div>
-        </div>
-      </div>
-    );
-  }
+  const hasActiveFilter = authorFilter !== "all";
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-muted/30 to-background">
+    <div className="min-h-screen bg-gradient-to-b from-background via-muted/20 to-background">
       <SEO 
         title="Novedades - Maestría en Circulación Pulmonar 2025"
         description="Mantente al día con las últimas noticias, artículos y actualizaciones de la Maestría en Circulación Pulmonar."
@@ -125,216 +153,302 @@ const Novedades = () => {
       />
       <Navigation />
       
-      <div className="pt-32 pb-20 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
-          <motion.div
+      <main className="pt-24 sm:pt-28 pb-16 sm:pb-20 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-6xl mx-auto">
+          {/* Header */}
+          <motion.header
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mb-8 text-center"
+            className="mb-8 sm:mb-12"
           >
-            <h1 className="text-5xl md:text-6xl font-bold mb-4">
-              Novedades
-            </h1>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              Mantente al día con las últimas noticias y actualizaciones
-            </p>
-          </motion.div>
-
-          <div className="space-y-6 mb-12">
-            <div className="relative max-w-2xl mx-auto">
-              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
-              <Input
-                type="text"
-                placeholder="Buscar por título, contenido o extracto..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-12 modern-input"
-              />
+            <div className="text-center mb-8">
+              <Badge variant="outline" className="mb-4 gap-1.5 px-4 py-1.5">
+                <Sparkles className="w-3.5 h-3.5" />
+                Noticias y Actualizaciones
+              </Badge>
+              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight mb-3">
+                Novedades
+              </h1>
+              <p className="text-muted-foreground text-base sm:text-lg max-w-2xl mx-auto">
+                Mantente informado sobre los últimos avances, eventos y publicaciones
+              </p>
             </div>
 
-            <div className="flex flex-wrap gap-4 items-center justify-center">
-              <div className="flex items-center gap-2">
-                <Filter className="w-4 h-4 text-muted-foreground" />
-                <span className="text-sm font-medium">Filtros:</span>
+            {/* Search & Filters */}
+            <div className="flex flex-col sm:flex-row gap-3 max-w-2xl mx-auto">
+              <div className="relative flex-1">
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                <Input
+                  type="text"
+                  placeholder="Buscar novedades..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-12 h-12 text-base rounded-xl border-border/50 bg-card/50 backdrop-blur-sm"
+                />
               </div>
 
-              <Select value={authorFilter} onValueChange={setAuthorFilter}>
-                <SelectTrigger className="w-[200px] modern-input">
-                  <SelectValue placeholder="Autor" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">Todos los autores</SelectItem>
-                  {authors.map(author => (
-                    <SelectItem key={author.id} value={author.id}>
-                      {author.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              {/* Desktop Filter */}
+              <div className="hidden sm:flex items-center gap-3">
+                <Select value={authorFilter} onValueChange={setAuthorFilter}>
+                  <SelectTrigger className="w-[180px] h-12 rounded-xl">
+                    <SelectValue placeholder="Autor" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Todos los autores</SelectItem>
+                    {authors.map(author => (
+                      <SelectItem key={author.id} value={author.id}>
+                        {author.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {hasActiveFilter && (
+                  <Button variant="ghost" size="sm" onClick={() => setAuthorFilter("all")}>
+                    Limpiar
+                  </Button>
+                )}
+              </div>
 
-              {authorFilter !== "all" && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setAuthorFilter("all")}
-                  className="text-sm"
-                >
-                  Limpiar filtros
-                </Button>
-              )}
-            </div>
-          </div>
-
-          <AnimatePresence mode="wait">
-            {featuredNovedad && (
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                className="mb-12"
-              >
-                <Card
-                  onClick={() => navigate(`/novedades/${featuredNovedad.slug}`)}
-                  className="overflow-hidden modern-card pv-glass pv-glow hover:shadow-2xl cursor-pointer transition-all duration-300 group"
-                >
-                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
-                     {featuredNovedad.image_url && (
-                       <div className="relative h-64 sm:h-80 md:h-96 overflow-hidden rounded-t-2xl md:rounded-l-2xl md:rounded-tr-none">
-                         <ImageLazy
-                           src={featuredNovedad.image_url}
-                           alt={featuredNovedad.title}
-                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                         />
-                         <div className="absolute top-4 left-4">
-                           <Badge className="bg-primary text-primary-foreground text-xs sm:text-sm">
-                             Destacado
-                           </Badge>
-                         </div>
-                       </div>
-                     )}
-                     <div className="p-6 sm:p-8 flex flex-col justify-center">
-                       <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4 group-hover:text-primary transition-colors">
-                         {featuredNovedad.title}
-                       </h2>
-                       <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-xs sm:text-sm text-muted-foreground mb-3 sm:mb-4">
-                         <div className="flex items-center gap-2">
-                           <Calendar className="w-3 sm:w-4 h-3 sm:h-4" />
-                           <span>
-                             {format(
-                               new Date(featuredNovedad.published_at || featuredNovedad.created_at),
-                               "dd 'de' MMMM, yyyy",
-                               { locale: es }
-                             )}
-                           </span>
-                         </div>
-                         <div className="flex items-center gap-2">
-                           <User className="w-3 sm:w-4 h-3 sm:h-4" />
-                           <span>{featuredNovedad.profiles?.full_name || "Admin"}</span>
-                         </div>
-                       </div>
-                       <p className="text-sm sm:text-base text-muted-foreground mb-4 sm:mb-6 line-clamp-3">
-                         {featuredNovedad.excerpt || featuredNovedad.content.substring(0, 200)}
-                       </p>
-                       <div onClick={(e) => e.stopPropagation()} className="flex items-center gap-4">
-                         <ReactionButton 
-                           postType="novedad" 
-                           postId={featuredNovedad.id} 
-                           initialCount={featuredNovedad.reactions_count || 0}
-                         />
-                         <div className="flex items-center gap-2 text-xs sm:text-sm text-muted-foreground">
-                           <Eye className="w-3 sm:w-4 h-3 sm:h-4" />
-                           <span>Leer más</span>
-                         </div>
-                       </div>
-                     </div>
-                   </div>
-                </Card>
-              </motion.div>
-            )}
-          </AnimatePresence>
-
-          <AnimatePresence mode="wait">
-            <motion.div 
-              className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-            >
-              {gridNovedades.map((novedad, index) => (
-                <motion.div
-                  key={novedad.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.05 }}
-                >
-                  <Card
-                    onClick={() => navigate(`/novedades/${novedad.slug}`)}
-                    className="overflow-hidden modern-card pv-glass pv-glow hover:shadow-2xl cursor-pointer transition-all duration-300 h-full flex flex-col group"
-                  >
-                    {novedad.image_url && (
-                      <div className="relative h-56 overflow-hidden">
-                        <ImageLazy
-                          src={novedad.image_url}
-                          alt={novedad.title}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                        />
-                      </div>
+              {/* Mobile Filter */}
+              <Sheet open={isFilterOpen} onOpenChange={setIsFilterOpen}>
+                <SheetTrigger asChild className="sm:hidden">
+                  <Button variant="outline" size="lg" className="h-12 gap-2 rounded-xl relative">
+                    <Filter className="w-5 h-5" />
+                    Filtros
+                    {hasActiveFilter && (
+                      <span className="absolute -top-1 -right-1 w-5 h-5 bg-primary text-primary-foreground text-xs rounded-full flex items-center justify-center">
+                        1
+                      </span>
                     )}
-                    <div className="p-6 flex-1 flex flex-col">
-                      <h3 className="text-2xl font-bold mb-3 group-hover:text-primary transition-colors line-clamp-2">
-                        {novedad.title}
-                      </h3>
-                      <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground mb-4">
-                        <div className="flex items-center gap-2">
-                          <Calendar className="w-4 h-4" />
-                          <span>
-                            {format(
-                              new Date(novedad.published_at || novedad.created_at),
-                              "dd MMM, yyyy",
-                              { locale: es }
-                            )}
-                          </span>
+                  </Button>
+                </SheetTrigger>
+                <SheetContent side="bottom" className="rounded-t-3xl h-auto">
+                  <SheetHeader className="mb-6">
+                    <SheetTitle>Filtros</SheetTitle>
+                  </SheetHeader>
+                  <div className="space-y-4 pb-8">
+                    <div className="space-y-3">
+                      <label className="text-sm font-medium">Autor</label>
+                      <Select value={authorFilter} onValueChange={setAuthorFilter}>
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="Todos los autores" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">Todos los autores</SelectItem>
+                          {authors.map(author => (
+                            <SelectItem key={author.id} value={author.id}>
+                              {author.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    {hasActiveFilter && (
+                      <Button variant="outline" onClick={() => setAuthorFilter("all")} className="w-full">
+                        Limpiar filtros
+                      </Button>
+                    )}
+                  </div>
+                </SheetContent>
+              </Sheet>
+            </div>
+          </motion.header>
+
+          <AnimatePresence mode="wait">
+            {loading ? (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="space-y-8"
+              >
+                <FeaturedSkeleton />
+                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {[...Array(3)].map((_, i) => (
+                    <CardSkeleton key={i} />
+                  ))}
+                </div>
+              </motion.div>
+            ) : novedades.length > 0 ? (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="space-y-10 sm:space-y-14"
+              >
+                {/* Featured Article */}
+                {featuredNovedad && (
+                  <motion.article
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5 }}
+                    onClick={() => navigate(`/novedades/${featuredNovedad.slug}`)}
+                    className="group cursor-pointer"
+                  >
+                    <div className="relative bg-card rounded-3xl border border-border/50 overflow-hidden hover:shadow-xl hover:shadow-primary/5 transition-all duration-500">
+                      <div className="grid lg:grid-cols-2 gap-0">
+                        {/* Image */}
+                        <div className="relative aspect-[16/10] lg:aspect-auto overflow-hidden">
+                          {featuredNovedad.image_url ? (
+                            <ImageLazy
+                              src={featuredNovedad.image_url}
+                              alt={featuredNovedad.title}
+                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                            />
+                          ) : (
+                            <div className="w-full h-full bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center">
+                              <Newspaper className="w-20 h-20 text-primary/30" />
+                            </div>
+                          )}
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent lg:hidden" />
+                          <Badge className="absolute top-4 left-4 bg-primary text-primary-foreground gap-1.5 shadow-lg">
+                            <Sparkles className="w-3 h-3" />
+                            Destacado
+                          </Badge>
                         </div>
-                        <div className="flex items-center gap-2">
-                          <User className="w-4 h-4" />
-                          <span>{novedad.profiles?.full_name || "Admin"}</span>
+
+                        {/* Content */}
+                        <div className="p-6 sm:p-8 lg:p-10 flex flex-col justify-center">
+                          <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground mb-4">
+                            <div className="flex items-center gap-1.5">
+                              <Calendar className="w-4 h-4" />
+                              <time>
+                                {format(
+                                  new Date(featuredNovedad.published_at || featuredNovedad.created_at),
+                                  "dd 'de' MMMM, yyyy",
+                                  { locale: es }
+                                )}
+                              </time>
+                            </div>
+                            <span className="text-border">•</span>
+                            <div className="flex items-center gap-1.5">
+                              <User className="w-4 h-4" />
+                              <span>{featuredNovedad.profiles?.full_name || "Admin"}</span>
+                            </div>
+                          </div>
+
+                          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4 group-hover:text-primary transition-colors leading-tight">
+                            {featuredNovedad.title}
+                          </h2>
+
+                          <p className="text-muted-foreground text-base sm:text-lg mb-6 line-clamp-3">
+                            {featuredNovedad.excerpt || featuredNovedad.content.substring(0, 200)}
+                          </p>
+
+                          <div className="flex items-center justify-between">
+                            <div onClick={(e) => e.stopPropagation()}>
+                              <ReactionButton 
+                                postType="novedad" 
+                                postId={featuredNovedad.id} 
+                                initialCount={featuredNovedad.reactions_count || 0}
+                              />
+                            </div>
+                            <span className="inline-flex items-center gap-2 text-primary font-semibold group-hover:gap-3 transition-all">
+                              Leer artículo
+                              <ArrowRight className="w-5 h-5" />
+                            </span>
+                          </div>
                         </div>
-                      </div>
-                      <p className="text-muted-foreground mb-4 line-clamp-3 flex-1">
-                        {novedad.excerpt || novedad.content.substring(0, 150)}
-                      </p>
-                      <div onClick={(e) => e.stopPropagation()} className="pt-3 border-t">
-                        <ReactionButton 
-                          postType="novedad" 
-                          postId={novedad.id} 
-                          initialCount={novedad.reactions_count || 0}
-                        />
                       </div>
                     </div>
-                  </Card>
-                </motion.div>
-              ))}
-            </motion.div>
-          </AnimatePresence>
+                  </motion.article>
+                )}
 
-          {novedades.length === 0 && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-            >
-              <Card className="p-12 text-center modern-card pv-glass pv-glow">
-                <Newspaper className="w-16 h-16 mx-auto mb-4 text-muted-foreground opacity-50" />
-                <h3 className="text-2xl font-bold mb-2">No se encontraron novedades</h3>
-                <p className="text-muted-foreground">
+                {/* Grid of Articles */}
+                {gridNovedades.length > 0 && (
+                  <div>
+                    <h3 className="text-xl font-semibold mb-6">Más noticias</h3>
+                    <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                      {gridNovedades.map((novedad, index) => (
+                        <motion.article
+                          key={novedad.id}
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: index * 0.08, duration: 0.4 }}
+                          onClick={() => navigate(`/novedades/${novedad.slug}`)}
+                          className="group cursor-pointer"
+                        >
+                          <div className="h-full bg-card rounded-2xl border border-border/50 overflow-hidden hover:shadow-lg hover:shadow-primary/5 hover:border-primary/20 transition-all duration-300 flex flex-col">
+                            {/* Image */}
+                            <div className="relative aspect-[16/9] overflow-hidden">
+                              {novedad.image_url ? (
+                                <ImageLazy
+                                  src={novedad.image_url}
+                                  alt={novedad.title}
+                                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                />
+                              ) : (
+                                <div className="w-full h-full bg-gradient-to-br from-muted to-muted/50 flex items-center justify-center">
+                                  <Newspaper className="w-12 h-12 text-muted-foreground/30" />
+                                </div>
+                              )}
+                            </div>
+
+                            {/* Content */}
+                            <div className="p-5 flex-1 flex flex-col">
+                              <div className="flex items-center gap-2 text-xs text-muted-foreground mb-3">
+                                <Clock className="w-3.5 h-3.5" />
+                                <span>
+                                  {formatDistanceToNow(
+                                    new Date(novedad.published_at || novedad.created_at),
+                                    { addSuffix: true, locale: es }
+                                  )}
+                                </span>
+                              </div>
+
+                              <h3 className="text-lg font-semibold mb-2 group-hover:text-primary transition-colors line-clamp-2 flex-shrink-0">
+                                {novedad.title}
+                              </h3>
+
+                              <p className="text-muted-foreground text-sm line-clamp-2 mb-4 flex-1">
+                                {novedad.excerpt || novedad.content.substring(0, 120)}
+                              </p>
+
+                              <div className="flex items-center justify-between pt-4 border-t border-border/30 mt-auto">
+                                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                  <User className="w-4 h-4" />
+                                  <span className="truncate max-w-[100px]">
+                                    {novedad.profiles?.full_name || "Admin"}
+                                  </span>
+                                </div>
+                                <div onClick={(e) => e.stopPropagation()}>
+                                  <ReactionButton 
+                                    postType="novedad" 
+                                    postId={novedad.id} 
+                                    initialCount={novedad.reactions_count || 0}
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </motion.article>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </motion.div>
+            ) : (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="text-center py-16 sm:py-24"
+              >
+                <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-muted flex items-center justify-center">
+                  <Newspaper className="w-10 h-10 text-muted-foreground" />
+                </div>
+                <h3 className="text-xl sm:text-2xl font-semibold mb-2">
+                  No se encontraron novedades
+                </h3>
+                <p className="text-muted-foreground max-w-md mx-auto">
                   {searchQuery || authorFilter !== "all"
                     ? "Intenta ajustar los filtros de búsqueda"
                     : "Aún no hay novedades publicadas"}
                 </p>
-              </Card>
-            </motion.div>
-          )}
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
-      </div>
+      </main>
     </div>
   );
 };
