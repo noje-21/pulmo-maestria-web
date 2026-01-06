@@ -16,11 +16,11 @@ interface EmptyStateProps {
 }
 
 const friendlyMessages = [
-  "¡Sé el primero en participar!",
-  "Esta comunidad te espera",
-  "Tu voz importa aquí",
-  "¡Inicia la conversación!",
-  "El primer paso es tuyo"
+  "¡Tu opinión puede inspirar a otros!",
+  "Cada gran conversación empieza con alguien como tú",
+  "Este espacio cobra vida con tu participación",
+  "¿Tienes algo que compartir? Te leemos",
+  "La comunidad te espera con los brazos abiertos"
 ];
 
 export const EmptyState = ({ 

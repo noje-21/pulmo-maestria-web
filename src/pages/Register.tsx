@@ -52,13 +52,13 @@ const Register = () => {
 
       if (error) throw error;
 
-      toast.success("¡Registro exitoso! Puedes iniciar sesión ahora.");
+      toast.success("¡Bienvenido a la comunidad! Ya puedes iniciar sesión.");
       setTimeout(() => navigate("/auth"), 2000);
     } catch (error: any) {
       if (error instanceof z.ZodError) {
         toast.error(error.errors[0].message);
       } else {
-        toast.error(error.message || "Error al registrarse");
+        toast.error(error.message || "Algo salió mal. Por favor, intenta de nuevo.");
       }
     } finally {
       setLoading(false);
@@ -101,10 +101,10 @@ const Register = () => {
             </motion.div>
             
             <CardTitle className="text-2xl sm:text-3xl font-bold text-foreground">
-              Crear Cuenta
+              Crea tu cuenta
             </CardTitle>
             <CardDescription className="text-muted-foreground mt-2">
-              Únete a la comunidad de especialistas
+              Únete a una comunidad de profesionales como tú
             </CardDescription>
           </CardHeader>
 
@@ -173,11 +173,11 @@ const Register = () => {
                 {loading ? (
                   <>
                     <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                    Registrando...
+                    Creando tu cuenta...
                   </>
                 ) : (
                   <>
-                    Crear Cuenta
+                    Unirme ahora
                     <ArrowRight className="w-5 h-5" />
                   </>
                 )}

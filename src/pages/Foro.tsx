@@ -174,7 +174,7 @@ const Foro = () => {
       setPosts(data as any || []);
     } catch (error: any) {
       console.error("Error loading posts:", error);
-      toast.error("Error al cargar las publicaciones");
+      toast.error("No pudimos cargar las publicaciones. Intenta refrescar.");
     } finally {
       setLoading(false);
     }
@@ -279,7 +279,7 @@ const Foro = () => {
                   Foro Profesional
                 </h1>
                 <p className="text-muted-foreground text-base sm:text-lg">
-                  Discusiones, casos clínicos y recursos compartidos
+                  Un espacio para aprender, compartir y conectar con colegas
                 </p>
               </div>
               {isAdmin && (
