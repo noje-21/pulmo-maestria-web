@@ -107,7 +107,7 @@ export const Expertos = () => {
       <div className="absolute inset-0 bg-dots-pattern opacity-30" />
       
       <div className="section-container relative z-10">
-        {/* Section Header */}
+        {/* Section Header with Purpose */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -115,9 +115,10 @@ export const Expertos = () => {
           transition={{ duration: 0.5 }}
           className="section-header"
         >
-          <h2 className="section-title brand-section-signature-center">Nuestros Expertos</h2>
-          <p className="section-subtitle mt-8">
-            Docentes de reconocimiento internacional en circulación pulmonar
+          <h2 className="section-title brand-section-signature-center">Aprende de los mejores</h2>
+          <p className="section-subtitle mt-8 max-w-3xl mx-auto">
+            No solo son expertos en circulación pulmonar. Son profesionales que entienden 
+            los retos de la práctica clínica y saben cómo transmitir ese conocimiento.
           </p>
         </motion.div>
 

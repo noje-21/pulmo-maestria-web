@@ -169,8 +169,8 @@ const Novedades = () => {
               <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight mb-3">
                 Novedades
               </h1>
-              <p className="text-muted-foreground text-base sm:text-lg max-w-2xl mx-auto">
-                Lo más reciente en avances, eventos y contenido de valor para ti
+              <p className="text-muted-foreground text-base sm:text-lg max-w-2xl mx-auto leading-relaxed">
+                Lo más reciente en avances, eventos y contenido que puede marcar la diferencia en tu práctica clínica
               </p>
             </div>
 
@@ -282,9 +282,18 @@ const Novedades = () => {
                   </div>
                 </div>
                 <h3 className="text-xl font-bold text-foreground mb-2">Pronto habrá novedades</h3>
-                <p className="text-muted-foreground max-w-sm mx-auto">
-                  Estamos preparando contenido valioso para ti. ¡Vuelve pronto!
+                <p className="text-muted-foreground max-w-sm mx-auto leading-relaxed">
+                  Estamos preparando contenido valioso para ti. Mientras tanto, 
+                  <span className="text-primary font-medium"> ¿por qué no exploras el foro?</span>
                 </p>
+                <Button 
+                  variant="outline" 
+                  className="mt-6 gap-2"
+                  onClick={() => navigate('/foro')}
+                >
+                  Ir al Foro
+                  <ArrowRight className="w-4 h-4" />
+                </Button>
               </motion.div>
             ) : (
               <motion.div
@@ -385,7 +394,11 @@ const Novedades = () => {
                           onClick={() => navigate(`/novedades/${novedad.slug}`)}
                           className="group cursor-pointer"
                         >
-                          <div className="h-full card-base card-hover overflow-hidden flex flex-col transition-all duration-400 brand-card-signature">
+                          <div className="h-full card-base card-hover overflow-hidden flex flex-col transition-all duration-400 relative group">
+                            {/* Brand Corner Signature */}
+                            <div className="absolute top-0 left-0 w-10 h-10 bg-gradient-to-br from-accent/10 to-transparent pointer-events-none z-10" />
+                            <div className="absolute top-0 left-0 w-0.5 h-5 bg-accent rounded-br-sm z-10" />
+                            
                             {/* Image */}
                             <div className="relative aspect-[16/9] overflow-hidden">
                               {novedad.image_url ? (
@@ -399,6 +412,10 @@ const Novedades = () => {
                                   <Newspaper className="w-12 h-12 text-muted-foreground/30" />
                                 </div>
                               )}
+                              {/* Reading time indicator */}
+                              <div className="absolute bottom-2 right-2 bg-black/60 backdrop-blur-sm text-white text-xs px-2 py-1 rounded-full">
+                                ~3 min
+                              </div>
                             </div>
 
                             {/* Content */}
