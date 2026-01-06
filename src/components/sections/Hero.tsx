@@ -62,19 +62,6 @@ export const Hero = () => {
 
       {/* Main Content */}
       <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-16 text-center">
-        {/* Badge */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="mb-6 sm:mb-8"
-        >
-          <span className="inline-flex items-center gap-2 px-4 sm:px-5 py-2 sm:py-2.5 rounded-full bg-white/10 backdrop-blur-md text-white text-xs sm:text-sm font-semibold border border-white/20 shadow-lg">
-            <span className="brand-dot" />
-            Inscripciones Abiertas 2025
-          </span>
-        </motion.div>
-
         {/* Problem Statement - Storytelling */}
         <motion.p
           initial={{ opacity: 0, y: 20 }}
