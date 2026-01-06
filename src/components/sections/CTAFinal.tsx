@@ -141,7 +141,7 @@ export const CTAFinal = () => {
                 <Button
                   variant="outline"
                   size="lg"
-                  onClick={() => window.open("https://www.maestriacp.com/", "_blank")}
+                  onClick={() => window.location.href = "https://www.maestriacp.com/"}
                   className="bg-transparent border-2 border-white/30 text-white hover:bg-white/10 hover:border-white/50 font-semibold px-8 py-5 rounded-full transition-all duration-400 min-h-[52px] w-full"
                 >
                   Ver Campus Virtual
