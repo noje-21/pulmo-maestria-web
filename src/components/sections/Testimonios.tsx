@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
-import { Card, CardContent } from "@/components/ui/card";
 import { Section, SectionHeader } from "@/components/common/Section";
+import { Avatar } from "@/components/common/Avatar";
 import { Quote, Star } from "lucide-react";
 
 const testimonios = [
@@ -35,13 +35,13 @@ const containerVariants = {
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.15
+      staggerChildren: 0.12
     }
   }
 };
 
 const cardVariants = {
-  hidden: { opacity: 0, y: 20, scale: 0.95 },
+  hidden: { opacity: 0, y: 24, scale: 0.97 },
   visible: { 
     opacity: 1, 
     y: 0,
@@ -52,7 +52,7 @@ const cardVariants = {
 
 export const Testimonios = () => {
   return (
-    <Section id="testimonios" background="default" pattern="dots" padding="large">
+    <Section id="testimonios" background="default" pattern="none" padding="large">
       <SectionHeader
         badge="Testimonios"
         title="Lo Que Dicen Nuestros Egresados"
@@ -63,46 +63,42 @@ export const Testimonios = () => {
         variants={containerVariants}
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true }}
+        viewport={{ once: true, margin: "-50px" }}
         className="grid md:grid-cols-2 lg:grid-cols-3 gap-6"
       >
         {testimonios.map((testimonio, index) => (
           <motion.div key={index} variants={cardVariants}>
-            <Card className="card-base card-hover h-full group bg-card relative overflow-hidden">
+            <div className="card-base card-hover h-full group relative overflow-hidden p-6 md:p-7">
               {/* Quote decoration */}
-              <div className="absolute top-4 right-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                <Quote className="w-16 h-16 text-primary" />
+              <div className="absolute top-4 right-4 opacity-5 group-hover:opacity-10 transition-opacity duration-400">
+                <Quote className="w-20 h-20 text-primary" />
               </div>
 
-              <CardContent className="p-6 h-full flex flex-col relative z-10">
-                {/* Rating */}
-                <div className="flex gap-1 mb-4">
-                  {[...Array(testimonio.rating)].map((_, i) => (
-                    <Star key={i} className="w-4 h-4 text-amber-500 fill-amber-500" />
-                  ))}
-                </div>
+              {/* Rating */}
+              <div className="flex gap-1 mb-5">
+                {[...Array(testimonio.rating)].map((_, i) => (
+                  <Star key={i} className="w-4 h-4 text-amber-500 fill-amber-500" />
+                ))}
+              </div>
 
-                {/* Texto */}
-                <p className="text-muted-foreground leading-relaxed mb-6 flex-1 italic">
-                  "{testimonio.texto}"
-                </p>
+              {/* Texto */}
+              <p className="text-muted-foreground leading-relaxed mb-6 flex-1 relative z-10">
+                "{testimonio.texto}"
+              </p>
 
-                {/* Author */}
-                <div className="flex items-center gap-4 pt-4 border-t border-border/50">
-                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center text-primary font-semibold">
-                    {testimonio.nombre.split(' ').map(n => n[0]).join('').slice(0, 2)}
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-foreground group-hover:text-primary transition-colors">
-                      {testimonio.nombre}
-                    </h4>
-                    <p className="text-sm text-muted-foreground">
-                      {testimonio.cargo} · {testimonio.pais}
-                    </p>
-                  </div>
+              {/* Author */}
+              <div className="flex items-center gap-4 pt-5 border-t border-border/40">
+                <Avatar name={testimonio.nombre} size="lg" />
+                <div>
+                  <h4 className="font-semibold text-foreground group-hover:text-primary transition-colors">
+                    {testimonio.nombre}
+                  </h4>
+                  <p className="text-sm text-muted-foreground">
+                    {testimonio.cargo} · {testimonio.pais}
+                  </p>
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           </motion.div>
         ))}
       </motion.div>
