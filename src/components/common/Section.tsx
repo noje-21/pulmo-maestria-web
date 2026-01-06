@@ -88,9 +88,11 @@ export const SectionHeader = ({
       )}
     >
       {badge && (
-        <span className="brand-badge mb-4">
-          {badge}
-        </span>
+        <div className={cn("mb-4", centered && "flex justify-center")}>
+          <span className="brand-badge">
+            {badge}
+          </span>
+        </div>
       )}
       <h2 className={cn(
         "text-3xl sm:text-4xl md:text-5xl font-bold text-primary mb-6",
