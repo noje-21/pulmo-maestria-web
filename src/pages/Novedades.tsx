@@ -3,10 +3,10 @@ import { supabase } from "@/integrations/supabase/client";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { motion, AnimatePresence } from "framer-motion";
 import Navigation from "@/components/common/Navigation";
 import { SEO } from "@/components/common/SEO";
+import { Avatar } from "@/components/common/Avatar";
 import { useNavigate } from "react-router-dom";
 import { 
   Calendar, User, Search, ArrowRight, Filter, 
@@ -43,7 +43,7 @@ interface Novedad {
 }
 
 const FeaturedSkeleton = () => (
-  <div className="grid lg:grid-cols-2 gap-6 lg:gap-0 bg-card rounded-3xl border border-border/50 overflow-hidden">
+  <div className="grid lg:grid-cols-2 gap-6 lg:gap-0 card-base overflow-hidden">
     <Skeleton className="aspect-[16/10] lg:aspect-auto" />
     <div className="p-6 lg:p-10 space-y-4">
       <Skeleton className="h-6 w-24" />
@@ -59,7 +59,7 @@ const FeaturedSkeleton = () => (
 );
 
 const CardSkeleton = () => (
-  <div className="bg-card rounded-2xl border border-border/50 overflow-hidden">
+  <div className="card-base overflow-hidden">
     <Skeleton className="aspect-[16/9]" />
     <div className="p-5 space-y-3">
       <Skeleton className="h-6 w-full" />
@@ -145,7 +145,7 @@ const Novedades = () => {
   const hasActiveFilter = authorFilter !== "all";
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background via-muted/20 to-background">
+    <div className="min-h-screen bg-background">
       <SEO 
         title="Novedades - Maestría en Circulación Pulmonar 2025"
         description="Mantente al día con las últimas noticias, artículos y actualizaciones de la Maestría en Circulación Pulmonar."
@@ -162,10 +162,10 @@ const Novedades = () => {
             className="mb-8 sm:mb-12"
           >
             <div className="text-center mb-8">
-              <Badge variant="outline" className="mb-4 gap-1.5 px-4 py-1.5">
+              <span className="brand-badge-accent mb-4 inline-flex">
                 <Sparkles className="w-3.5 h-3.5" />
                 Noticias y Actualizaciones
-              </Badge>
+              </span>
               <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight mb-3">
                 Novedades
               </h1>
@@ -183,7 +183,7 @@ const Novedades = () => {
                   placeholder="Buscar novedades..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-12 h-12 text-base rounded-xl border-border/50 bg-card/50 backdrop-blur-sm"
+                  className="pl-12 h-12 text-base rounded-xl border-border/50 bg-card"
                 />
               </div>
 
@@ -285,7 +285,7 @@ const Novedades = () => {
                     onClick={() => navigate(`/novedades/${featuredNovedad.slug}`)}
                     className="group cursor-pointer"
                   >
-                    <div className="relative bg-card rounded-3xl border border-border/50 overflow-hidden hover:shadow-xl hover:shadow-primary/5 transition-all duration-500">
+                    <div className="relative card-base card-hover overflow-hidden transition-all duration-400">
                       <div className="grid lg:grid-cols-2 gap-0">
                         {/* Image */}
                         <div className="relative aspect-[16/10] lg:aspect-auto overflow-hidden">
@@ -300,11 +300,11 @@ const Novedades = () => {
                               <Newspaper className="w-20 h-20 text-primary/30" />
                             </div>
                           )}
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent lg:hidden" />
-                          <Badge className="absolute top-4 left-4 bg-primary text-primary-foreground gap-1.5 shadow-lg">
-                            <Sparkles className="w-3 h-3" />
-                            Destacado
-                          </Badge>
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent lg:hidden" />
+                        <span className="absolute top-4 left-4 brand-badge-accent shadow-lg">
+                          <Sparkles className="w-3 h-3" />
+                          Destacado
+                        </span>
                         </div>
 
                         {/* Content */}
@@ -320,9 +320,9 @@ const Novedades = () => {
                                 )}
                               </time>
                             </div>
-                            <span className="text-border">•</span>
+                            <span className="w-1 h-1 rounded-full bg-border" />
                             <div className="flex items-center gap-1.5">
-                              <User className="w-4 h-4" />
+                              <Avatar name={featuredNovedad.profiles?.full_name || "Admin"} size="sm" />
                               <span>{featuredNovedad.profiles?.full_name || "Admin"}</span>
                             </div>
                           </div>
@@ -364,11 +364,11 @@ const Novedades = () => {
                           key={novedad.id}
                           initial={{ opacity: 0, y: 20 }}
                           animate={{ opacity: 1, y: 0 }}
-                          transition={{ delay: index * 0.08, duration: 0.4 }}
+                          transition={{ delay: index * 0.06, duration: 0.4 }}
                           onClick={() => navigate(`/novedades/${novedad.slug}`)}
                           className="group cursor-pointer"
                         >
-                          <div className="h-full bg-card rounded-2xl border border-border/50 overflow-hidden hover:shadow-lg hover:shadow-primary/5 hover:border-primary/20 transition-all duration-300 flex flex-col">
+                          <div className="h-full card-base card-hover overflow-hidden flex flex-col transition-all duration-400">
                             {/* Image */}
                             <div className="relative aspect-[16/9] overflow-hidden">
                               {novedad.image_url ? (

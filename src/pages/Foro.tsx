@@ -3,18 +3,18 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
 import { motion, AnimatePresence } from "framer-motion";
 import Navigation from "@/components/common/Navigation";
 import { SEO } from "@/components/common/SEO";
+import { Avatar } from "@/components/common/Avatar";
+import { CategoryBadge, getCategoryLabel } from "@/components/common/CategoryBadge";
 import ReactionButton from "@/features/forum/ReactionButton";
 import { useNavigate } from "react-router-dom";
 import { 
-  MessageSquare, Calendar, User, Eye, Plus, Search, 
-  Filter, Pin, Star, ChevronRight, Clock, TrendingUp,
-  Users, Sparkles
+  MessageSquare, User, Eye, Plus, Search, 
+  Filter, Pin, Star, ChevronRight, Clock, Sparkles
 } from "lucide-react";
-import { format, formatDistanceToNow } from "date-fns";
+import { formatDistanceToNow } from "date-fns";
 import { es } from "date-fns/locale";
 import { toast } from "sonner";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -47,9 +47,9 @@ interface ForumPost {
 }
 
 const ForumCardSkeleton = () => (
-  <div className="bg-card rounded-2xl border border-border/50 p-5 sm:p-6 space-y-4">
+  <div className="card-base p-5 sm:p-6 space-y-4">
     <div className="flex items-start gap-4">
-      <Skeleton className="w-12 h-12 rounded-full flex-shrink-0" />
+      <Skeleton className="w-11 h-11 rounded-full flex-shrink-0" />
       <div className="flex-1 space-y-3">
         <Skeleton className="h-6 w-3/4" />
         <Skeleton className="h-4 w-full" />
@@ -161,40 +161,6 @@ const Foro = () => {
     loadPosts();
   }, [searchQuery, categoryFilter, authorFilter, sortBy]);
 
-  const getCategoryLabel = (category: string) => {
-    const labels: Record<string, string> = {
-      general: "General",
-      clinical_questions: "Preguntas Clínicas",
-      case_discussions: "Casos Clínicos",
-      shared_resources: "Recursos"
-    };
-    return labels[category] || category;
-  };
-
-  const getCategoryIcon = (category: string) => {
-    const icons: Record<string, React.ReactNode> = {
-      general: <MessageSquare className="w-3 h-3" />,
-      clinical_questions: <Users className="w-3 h-3" />,
-      case_discussions: <TrendingUp className="w-3 h-3" />,
-      shared_resources: <Sparkles className="w-3 h-3" />
-    };
-    return icons[category] || <MessageSquare className="w-3 h-3" />;
-  };
-
-  const getCategoryStyles = (category: string) => {
-    const styles: Record<string, string> = {
-      general: "bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20",
-      clinical_questions: "bg-violet-500/10 text-violet-600 dark:text-violet-400 border-violet-500/20",
-      case_discussions: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20",
-      shared_resources: "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20"
-    };
-    return styles[category] || "bg-muted text-muted-foreground";
-  };
-
-  const getInitials = (name: string) => {
-    return name?.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) || 'U';
-  };
-
   const activeFiltersCount = [
     categoryFilter !== "all",
     authorFilter !== "all"
@@ -211,7 +177,7 @@ const Foro = () => {
       <div className="space-y-3">
         <label className="text-sm font-medium text-foreground">Categoría</label>
         <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-          <SelectTrigger className="w-full">
+          <SelectTrigger className="w-full rounded-xl">
             <SelectValue placeholder="Todas las categorías" />
           </SelectTrigger>
           <SelectContent>
@@ -227,7 +193,7 @@ const Foro = () => {
       <div className="space-y-3">
         <label className="text-sm font-medium text-foreground">Autor</label>
         <Select value={authorFilter} onValueChange={setAuthorFilter}>
-          <SelectTrigger className="w-full">
+          <SelectTrigger className="w-full rounded-xl">
             <SelectValue placeholder="Todos los autores" />
           </SelectTrigger>
           <SelectContent>
@@ -244,7 +210,7 @@ const Foro = () => {
       <div className="space-y-3">
         <label className="text-sm font-medium text-foreground">Ordenar por</label>
         <Select value={sortBy} onValueChange={(value: any) => setSortBy(value)}>
-          <SelectTrigger className="w-full">
+          <SelectTrigger className="w-full rounded-xl">
             <SelectValue placeholder="Ordenar por" />
           </SelectTrigger>
           <SelectContent>
@@ -256,7 +222,7 @@ const Foro = () => {
       </div>
 
       {activeFiltersCount > 0 && (
-        <Button variant="outline" onClick={clearFilters} className="w-full">
+        <Button variant="outline" onClick={clearFilters} className="w-full rounded-xl">
           Limpiar filtros ({activeFiltersCount})
         </Button>
       )}
@@ -264,7 +230,7 @@ const Foro = () => {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background via-muted/20 to-background">
+    <div className="min-h-screen bg-background">
       <SEO 
         title="Foro Comunitario - Maestría en Circulación Pulmonar 2025"
         description="Participa en discusiones, comparte experiencias y conecta con otros profesionales de la salud en nuestro foro comunitario."
@@ -282,8 +248,12 @@ const Foro = () => {
           >
             <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-6">
               <div>
+                <span className="brand-badge mb-3 inline-flex">
+                  <Sparkles className="w-3.5 h-3.5" />
+                  Comunidad
+                </span>
                 <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight mb-2">
-                  Foro Comunitario
+                  Foro Profesional
                 </h1>
                 <p className="text-muted-foreground text-base sm:text-lg">
                   Discusiones, casos clínicos y recursos compartidos
@@ -293,7 +263,7 @@ const Foro = () => {
                 <Button
                   onClick={() => navigate("/admin/foro")}
                   size="lg"
-                  className="gap-2 shadow-lg hover:shadow-xl transition-shadow"
+                  className="btn-accent gap-2 min-h-[48px]"
                 >
                   <Plus className="w-5 h-5" />
                   Nueva Publicación
@@ -310,7 +280,7 @@ const Foro = () => {
                   placeholder="Buscar publicaciones..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-12 h-12 text-base rounded-xl border-border/50 bg-card/50 backdrop-blur-sm"
+                  className="pl-12 h-12 text-base rounded-xl border-border/50 bg-card"
                 />
               </div>
               
@@ -341,7 +311,7 @@ const Foro = () => {
                 </Select>
 
                 {activeFiltersCount > 0 && (
-                  <Button variant="ghost" size="sm" onClick={clearFilters}>
+                  <Button variant="ghost" size="sm" onClick={clearFilters} className="text-muted-foreground">
                     Limpiar
                   </Button>
                 )}
@@ -354,7 +324,7 @@ const Foro = () => {
                     <Filter className="w-5 h-5" />
                     Filtros
                     {activeFiltersCount > 0 && (
-                      <span className="absolute -top-1 -right-1 w-5 h-5 bg-primary text-primary-foreground text-xs rounded-full flex items-center justify-center">
+                      <span className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-accent text-accent-foreground text-xs rounded-full flex items-center justify-center font-semibold">
                         {activeFiltersCount}
                       </span>
                     )}
@@ -393,115 +363,109 @@ const Foro = () => {
                     key={post.id}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.05, duration: 0.3 }}
+                    transition={{ delay: index * 0.04, duration: 0.3 }}
                     onClick={() => navigate(`/foro/${post.id}`)}
                     className="group cursor-pointer"
                   >
                     <div className={`
-                      relative bg-card rounded-2xl border transition-all duration-300
-                      hover:shadow-lg hover:shadow-primary/5 hover:border-primary/20
-                      ${post.featured ? 'border-amber-500/30 bg-gradient-to-r from-amber-500/5 to-transparent' : 'border-border/50'}
-                      ${post.is_pinned ? 'border-primary/30 bg-gradient-to-r from-primary/5 to-transparent' : ''}
+                      card-base card-hover p-5 sm:p-6 transition-all duration-400
+                      ${post.featured ? 'card-featured border-accent/30' : ''}
+                      ${post.is_pinned ? 'border-primary/30 bg-primary/[0.02]' : ''}
                     `}>
                       {/* Status Badges */}
                       {(post.is_pinned || post.featured) && (
-                        <div className="absolute top-0 left-0 right-0 px-4 py-2 flex gap-2 border-b border-border/30">
+                        <div className="flex gap-2 mb-4">
                           {post.is_pinned && (
-                            <span className="inline-flex items-center gap-1.5 text-xs font-medium text-primary">
-                              <Pin className="w-3 h-3" />
-                              Fijado
-                            </span>
+                            <CategoryBadge category="pinned" size="sm" />
                           )}
                           {post.featured && (
-                            <span className="inline-flex items-center gap-1.5 text-xs font-medium text-amber-600 dark:text-amber-400">
-                              <Star className="w-3 h-3 fill-current" />
-                              Destacado
-                            </span>
+                            <CategoryBadge category="featured" size="sm" />
                           )}
                         </div>
                       )}
 
-                      <div className={`p-5 sm:p-6 ${(post.is_pinned || post.featured) ? 'pt-12' : ''}`}>
-                        <div className="flex gap-4">
-                          {/* Author Avatar */}
-                          <div className="flex-shrink-0 hidden sm:block">
-                            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center text-primary font-semibold text-sm">
-                              {getInitials(post.profiles?.full_name || '')}
-                            </div>
+                      <div className="flex gap-4">
+                        {/* Author Avatar */}
+                        <div className="flex-shrink-0 hidden sm:block">
+                          <Avatar 
+                            name={post.profiles?.full_name || 'Usuario'} 
+                            size="lg"
+                          />
+                        </div>
+
+                        <div className="flex-1 min-w-0">
+                          {/* Title & Category */}
+                          <div className="flex flex-wrap items-start gap-2 mb-2">
+                            <h2 className="text-lg sm:text-xl font-semibold text-foreground group-hover:text-primary transition-colors line-clamp-2 flex-1">
+                              {post.title}
+                            </h2>
+                            <CategoryBadge 
+                              category={post.category as any} 
+                              showLabel={false}
+                              className="sm:hidden"
+                            />
+                            <CategoryBadge 
+                              category={post.category as any}
+                              className="hidden sm:inline-flex"
+                            />
                           </div>
 
-                          <div className="flex-1 min-w-0">
-                            {/* Title & Category */}
-                            <div className="flex flex-wrap items-start gap-2 mb-2">
-                              <h2 className="text-lg sm:text-xl font-semibold text-foreground group-hover:text-primary transition-colors line-clamp-2 flex-1">
-                                {post.title}
-                              </h2>
-                              <Badge 
-                                variant="outline" 
-                                className={`flex-shrink-0 gap-1 ${getCategoryStyles(post.category)}`}
-                              >
-                                {getCategoryIcon(post.category)}
-                                <span className="hidden sm:inline">{getCategoryLabel(post.category)}</span>
-                              </Badge>
+                          {/* Excerpt */}
+                          {post.excerpt && (
+                            <p className="text-muted-foreground text-sm sm:text-base line-clamp-2 mb-4">
+                              {post.excerpt}
+                            </p>
+                          )}
+
+                          {/* Meta Info */}
+                          <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-muted-foreground">
+                            <div className="flex items-center gap-1.5">
+                              <User className="w-4 h-4" />
+                              <span className="truncate max-w-[120px]">{post.profiles?.full_name || "Usuario"}</span>
                             </div>
-
-                            {/* Excerpt */}
-                            {post.excerpt && (
-                              <p className="text-muted-foreground text-sm sm:text-base line-clamp-2 mb-4">
-                                {post.excerpt}
-                              </p>
-                            )}
-
-                            {/* Meta Info */}
-                            <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-muted-foreground">
-                              <div className="flex items-center gap-1.5">
-                                <User className="w-4 h-4" />
-                                <span className="truncate max-w-[120px]">{post.profiles?.full_name || "Usuario"}</span>
-                              </div>
-                              <div className="flex items-center gap-1.5">
-                                <Clock className="w-4 h-4" />
-                                <span>
-                                  {formatDistanceToNow(new Date(post.created_at), { addSuffix: true, locale: es })}
-                                </span>
-                              </div>
-                              <div className="flex items-center gap-1.5">
-                                <Eye className="w-4 h-4" />
-                                <span>{post.views_count}</span>
-                              </div>
-                              <div className="flex items-center gap-1.5">
-                                <MessageSquare className="w-4 h-4" />
-                                <span>{Array.isArray(post.forum_comments) ? post.forum_comments.length : 0}</span>
-                              </div>
-                            </div>
-
-                            {/* Actions Row */}
-                            <div className="flex items-center justify-between mt-4 pt-4 border-t border-border/30">
-                              <div onClick={(e) => e.stopPropagation()}>
-                                <ReactionButton 
-                                  postType="forum" 
-                                  postId={post.id} 
-                                  initialCount={post.reactions_count || 0}
-                                />
-                              </div>
-                              <span className="text-sm text-primary font-medium flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                Leer más
-                                <ChevronRight className="w-4 h-4" />
+                            <div className="flex items-center gap-1.5">
+                              <Clock className="w-4 h-4" />
+                              <span>
+                                {formatDistanceToNow(new Date(post.created_at), { addSuffix: true, locale: es })}
                               </span>
                             </div>
+                            <div className="flex items-center gap-1.5">
+                              <Eye className="w-4 h-4" />
+                              <span>{post.views_count}</span>
+                            </div>
+                            <div className="flex items-center gap-1.5">
+                              <MessageSquare className="w-4 h-4" />
+                              <span>{Array.isArray(post.forum_comments) ? post.forum_comments.length : 0}</span>
+                            </div>
                           </div>
 
-                          {/* Image Thumbnail */}
-                          {post.image_url && (
-                            <div className="flex-shrink-0 hidden md:block">
-                              <img
-                                src={post.image_url}
-                                alt=""
-                                className="w-28 h-28 rounded-xl object-cover group-hover:scale-105 transition-transform duration-300"
-                                loading="lazy"
+                          {/* Actions Row */}
+                          <div className="flex items-center justify-between mt-4 pt-4 border-t border-border/30">
+                            <div onClick={(e) => e.stopPropagation()}>
+                              <ReactionButton 
+                                postType="forum" 
+                                postId={post.id} 
+                                initialCount={post.reactions_count || 0}
                               />
                             </div>
-                          )}
+                            <span className="text-sm text-primary font-medium flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                              Leer más
+                              <ChevronRight className="w-4 h-4" />
+                            </span>
+                          </div>
                         </div>
+
+                        {/* Image Thumbnail */}
+                        {post.image_url && (
+                          <div className="flex-shrink-0 hidden md:block">
+                            <img
+                              src={post.image_url}
+                              alt=""
+                              className="w-28 h-28 rounded-xl object-cover group-hover:scale-105 transition-transform duration-400"
+                              loading="lazy"
+                            />
+                          </div>
+                        )}
                       </div>
                     </div>
                   </motion.article>
