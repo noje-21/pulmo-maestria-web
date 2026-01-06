@@ -32,12 +32,12 @@ export const PageHeader = ({
       {centered ? (
         <div className="text-center mb-8">
           {badge && (
-            <Badge variant="outline" className="mb-4 gap-1.5 px-4 py-1.5">
+            <span className="brand-badge mb-4">
               {badge.icon && <badge.icon className="w-3.5 h-3.5" />}
               {badge.text}
-            </Badge>
+            </span>
           )}
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight mb-3">
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight mb-3 brand-section-signature-center">
             {title}
           </h1>
           {description && (
@@ -51,12 +51,12 @@ export const PageHeader = ({
         <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-6">
           <div>
             {badge && (
-              <Badge variant="outline" className="mb-3 gap-1.5">
+              <span className="brand-badge mb-3">
                 {badge.icon && <badge.icon className="w-3.5 h-3.5" />}
                 {badge.text}
-              </Badge>
+              </span>
             )}
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight mb-2">
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight mb-2 brand-section-signature">
               {title}
             </h1>
             {description && (

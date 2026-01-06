@@ -396,14 +396,14 @@ const Foro = () => {
                     className="group cursor-pointer"
                   >
                     <div className={`
-                      card-base card-hover p-5 sm:p-6 transition-all duration-400 relative
+                      card-base card-hover p-5 sm:p-6 transition-all duration-400 relative brand-card-signature
                       ${post.featured ? 'card-featured border-accent/30' : ''}
                       ${post.is_pinned ? 'border-primary/30 bg-primary/[0.02]' : ''}
                       ${activity.status === 'hot' ? 'ring-1 ring-orange-500/20' : ''}
                     `}>
-                      {/* Activity Indicator Line */}
+                      {/* Activity Indicator - Accent Bar for active posts */}
                       {activity.status === 'hot' && (
-                        <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-orange-500 to-orange-400 rounded-l-2xl" />
+                        <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-accent to-accent-dark rounded-l-2xl" />
                       )}
                       
                       {/* Status Badges */}

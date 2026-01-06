@@ -115,9 +115,8 @@ export const Expertos = () => {
           transition={{ duration: 0.5 }}
           className="section-header"
         >
-          <h2 className="section-title">Nuestros Expertos</h2>
-          <div className="section-divider" />
-          <p className="section-subtitle">
+          <h2 className="section-title brand-section-signature-center">Nuestros Expertos</h2>
+          <p className="section-subtitle mt-8">
             Docentes de reconocimiento internacional en circulación pulmonar
           </p>
         </motion.div>
@@ -131,7 +130,7 @@ export const Expertos = () => {
             transition={{ duration: 0.6 }}
             className="mb-12"
           >
-            <Card className="card-base overflow-hidden bg-gradient-to-r from-primary/5 to-accent/5 border-primary/20">
+            <Card className="card-base overflow-hidden bg-gradient-to-r from-primary/5 to-accent/5 border-primary/20 brand-accent-bar">
               <CardContent className="p-0">
                 <div className="flex flex-col md:flex-row items-center gap-6 md:gap-10 p-6 md:p-8">
                   {/* Photo */}
@@ -179,7 +178,7 @@ export const Expertos = () => {
         >
           {otrosExpertos.map((experto, index) => (
             <motion.div key={index} variants={cardVariants}>
-              <Card className="card-base card-hover h-full group bg-card">
+              <Card className="card-base card-hover h-full group bg-card brand-card-signature">
                 <CardContent className="p-5 flex flex-col items-center text-center h-full">
                   {/* Photo */}
                   <div className="relative mb-4">

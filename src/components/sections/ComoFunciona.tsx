@@ -43,7 +43,7 @@ export const ComoFunciona = () => {
 
       <div className="relative max-w-5xl mx-auto">
         {/* Línea conectora - Desktop */}
-        <div className="hidden lg:block absolute top-1/2 left-0 right-0 h-0.5 bg-gradient-to-r from-primary via-accent to-primary -translate-y-1/2 z-0" />
+        <div className="hidden lg:block absolute top-1/2 left-0 right-0 h-0.5 bg-gradient-to-r from-accent via-primary to-accent -translate-y-1/2 z-0" />
 
         <div className="grid lg:grid-cols-3 gap-6 lg:gap-8">
           {pasos.map((paso, index) => (
@@ -55,7 +55,7 @@ export const ComoFunciona = () => {
               transition={{ duration: 0.5, delay: index * 0.15 }}
               className="relative"
             >
-              <Card className="card-base card-hover h-full group bg-card relative z-10">
+              <Card className="card-base card-hover h-full group bg-card relative z-10 brand-card-signature">
                 <CardContent className="p-6 md:p-8 text-center">
                   {/* Número */}
                   <div className={`inline-flex items-center justify-center w-16 h-16 rounded-2xl mb-6 mx-auto transition-transform duration-300 group-hover:scale-110 ${

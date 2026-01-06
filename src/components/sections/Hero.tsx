@@ -31,7 +31,6 @@ export const Hero = () => {
           alt="Maestría en Circulación Pulmonar - Formación médica especializada" 
           className="w-full h-full object-cover scale-105"
           loading="eager"
-          fetchPriority="high"
         />
         {/* Multi-layer gradient for depth */}
         <div className="absolute inset-0 bg-gradient-to-b from-primary/95 via-primary/85 to-primary-dark/95" />
@@ -140,7 +139,7 @@ export const Hero = () => {
             size="lg" 
             onClick={() => window.location.href = "https://www.maestriacp.com/"}
             aria-label="Acceder al Campus Virtual"
-            className="btn-hero group w-full sm:w-auto min-h-[56px]"
+            className="btn-hero group w-full sm:w-auto min-h-[56px] brand-cta-glow"
           >
             <span>Ver Campus Virtual</span>
             <ExternalLink className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" aria-hidden="true" />
