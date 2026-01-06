@@ -176,14 +176,34 @@
     color: hsl(var(--primary));
   }
 
-  /* Focus visible for accessibility */
+  /* Focus visible for accessibility - Enhanced */
   :focus-visible {
-    @apply outline-none ring-2 ring-primary ring-offset-2 ring-offset-background;
+    @apply outline-none ring-2 ring-primary ring-offset-2 ring-offset-background transition-shadow duration-200;
+  }
+
+  /* Specific focus styles for interactive elements */
+  button:focus-visible,
+  a:focus-visible,
+  input:focus-visible,
+  textarea:focus-visible,
+  select:focus-visible {
+    @apply ring-2 ring-primary ring-offset-2 ring-offset-background;
   }
 
   /* Remove focus ring for mouse users */
   :focus:not(:focus-visible) {
     @apply outline-none ring-0;
+  }
+
+  /* Improved touch targets for mobile */
+  @media (max-width: 640px) {
+    button, 
+    a, 
+    input, 
+    select, 
+    textarea {
+      min-height: 44px;
+    }
   }
 }
 

@@ -23,23 +23,28 @@ export const EmptyState = ({
 }: EmptyStateProps) => {
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.95 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.3 }}
+      initial={{ opacity: 0, scale: 0.95, y: 10 }}
+      animate={{ opacity: 1, scale: 1, y: 0 }}
+      transition={{ duration: 0.4 }}
       className={cn(
         "flex flex-col items-center justify-center py-16 px-4 text-center",
         className
       )}
     >
-      <div className="w-20 h-20 rounded-full bg-muted flex items-center justify-center mb-6">
+      <motion.div 
+        initial={{ scale: 0.8 }}
+        animate={{ scale: 1 }}
+        transition={{ delay: 0.1, type: "spring", stiffness: 200 }}
+        className="w-20 h-20 rounded-2xl bg-gradient-to-br from-muted to-muted/50 flex items-center justify-center mb-6 shadow-sm"
+      >
         <Icon className="w-10 h-10 text-muted-foreground" />
-      </div>
-      <h3 className="text-xl font-semibold text-foreground mb-2">{title}</h3>
+      </motion.div>
+      <h3 className="text-xl font-bold text-foreground mb-2">{title}</h3>
       {description && (
-        <p className="text-muted-foreground max-w-sm mb-6">{description}</p>
+        <p className="text-muted-foreground max-w-sm mb-6 leading-relaxed">{description}</p>
       )}
       {action && (
-        <Button onClick={action.onClick} className="rounded-xl">
+        <Button onClick={action.onClick} className="rounded-xl btn-primary shadow-md hover:shadow-lg transition-shadow">
           {action.label}
         </Button>
       )}

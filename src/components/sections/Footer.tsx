@@ -96,13 +96,19 @@ export const Footer = () => {
               <ul className="space-y-2">
                 {quickLinks.map((link, index) => (
                   <li key={index}>
-                    <button
-                      onClick={() => scrollToSection(link.section)}
+                    <Link
+                      to={`/#${link.section}`}
+                      onClick={(e) => {
+                        if (window.location.pathname === '/') {
+                          e.preventDefault();
+                          scrollToSection(link.section);
+                        }
+                      }}
                       className="flex items-center gap-2 text-primary-foreground/80 hover:text-accent transition-all duration-300 hover:translate-x-1 group text-sm"
                     >
                       <ArrowUpRight className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" aria-hidden="true" />
                       <span>{link.label}</span>
-                    </button>
+                    </Link>
                   </li>
                 ))}
               </ul>
