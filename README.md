@@ -1,29 +1,51 @@
 # Maestría Latinoamericana en Circulación Pulmonar 2025
 
-Una plataforma moderna, accesible y profesional para la Maestría en Circulación Pulmonar en Buenos Aires, Argentina.
+Plataforma web profesional y moderna para la Maestría en Circulación Pulmonar, desarrollada con tecnologías de última generación y enfocada en la excelencia académica.
 
-## 🚀 Características
+## 🌟 Características Principales
 
-- **Diseño Responsive**: Optimizado para dispositivos desde 320px hasta pantallas grandes
-- **Accesibilidad (WCAG 2.1)**: Navegación por teclado, aria-labels, contraste adecuado
-- **SEO Optimizado**: Meta tags dinámicos, Open Graph, Twitter Cards
-- **Rendimiento**: Lazy loading, code splitting, optimización de imágenes
-- **UX Moderna**: Microinteracciones, transiciones suaves, diseño intuitivo
-- **Backend Integrado**: Supabase para autenticación, base de datos y storage
+### UI/UX Premium
+- **Diseño Profesional**: Estética académica moderna con jerarquía visual clara
+- **Mobile-First**: Optimizado para dispositivos desde 320px hasta 4K
+- **Animaciones Fluidas**: Micro-interacciones con Framer Motion
+- **Dark Mode**: Soporte completo para tema oscuro
 
-## 📋 Project Info
+### Accesibilidad (WCAG 2.1)
+- Skip links para navegación por teclado
+- Aria labels en todos los elementos interactivos
+- Contraste de colores optimizado
+- Focus states visibles
+- Navegación completa con teclado
 
-**URL**: https://lovable.dev/projects/f314bbce-f9ba-4ff5-920c-3a4b0f21c369
+### Rendimiento
+- Lazy loading de imágenes y componentes
+- Skeleton loaders para estados de carga
+- Code splitting automático
+- Optimización de assets
 
-## 🛠️ Tecnologías
+### Backend Integrado (Lovable Cloud)
+- Autenticación de usuarios
+- Base de datos para foro y novedades
+- Almacenamiento de archivos
+- Edge Functions para lógica personalizada
 
-- **Frontend**: React 18 + TypeScript
-- **Styling**: Tailwind CSS + shadcn/ui
-- **Animaciones**: Framer Motion
-- **Backend**: Supabase (Auth, Database, Storage)
-- **Routing**: React Router v6
-- **Build Tool**: Vite
-- **Formularios**: React Hook Form + Zod
+## 📋 URLs del Proyecto
+
+- **Editor**: https://lovable.dev/projects/f314bbce-f9ba-4ff5-920c-3a4b0f21c369
+- **Preview**: Disponible en el panel derecho del editor
+
+## 🛠️ Stack Tecnológico
+
+| Categoría | Tecnología |
+|-----------|------------|
+| Frontend | React 18 + TypeScript |
+| Estilos | Tailwind CSS + shadcn/ui |
+| Animaciones | Framer Motion |
+| Backend | Lovable Cloud (Supabase) |
+| Routing | React Router v6 |
+| Build | Vite |
+| Formularios | React Hook Form + Zod |
+| Testing | Vitest + Testing Library |
 
 ## 📦 Instalación
 

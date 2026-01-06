@@ -13,8 +13,9 @@ export const Hero = () => {
   return (
     <section 
       id="inicio" 
-      className="relative min-h-screen flex items-center justify-center overflow-hidden"
-      aria-label="Sección principal"
+      className="relative min-h-[100svh] flex items-center justify-center overflow-hidden"
+      aria-label="Sección principal - Maestría en Circulación Pulmonar"
+      role="banner"
     >
       {/* Background Image with Overlay */}
       <div className="absolute inset-0 z-0">
@@ -49,10 +50,10 @@ export const Hero = () => {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.1 }}
-          className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-white mb-6 leading-tight text-balance"
+          className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-white mb-4 sm:mb-6 leading-tight text-balance px-2"
         >
           Maestría Latinoamericana en
-          <br className="hidden sm:block" />
+          <br className="hidden xs:block" />
           <span className="text-accent">Circulación Pulmonar</span>
         </motion.h1>
 
@@ -61,7 +62,7 @@ export const Hero = () => {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="text-base sm:text-lg md:text-xl lg:text-2xl text-white/90 mb-8 max-w-3xl mx-auto leading-relaxed"
+          className="text-sm xs:text-base sm:text-lg md:text-xl lg:text-2xl text-white/90 mb-6 sm:mb-8 max-w-3xl mx-auto leading-relaxed px-2"
         >
           Formación intensiva de excelencia dirigida a internistas, cardiólogos, 
           reumatólogos y neumonólogos de Latinoamérica
@@ -72,28 +73,28 @@ export const Hero = () => {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.3 }}
-          className="flex flex-col sm:flex-row gap-3 sm:gap-4 items-center justify-center mb-10"
+          className="flex flex-col xs:flex-row gap-2 xs:gap-3 sm:gap-4 items-center justify-center mb-8 sm:mb-10 px-2"
         >
           <div 
-            className="flex items-center gap-3 bg-white/10 backdrop-blur-sm px-5 py-3 rounded-2xl border border-white/20 hover:bg-white/15 transition-all duration-300 group"
+            className="flex items-center gap-2 sm:gap-3 bg-white/10 backdrop-blur-sm px-3 sm:px-5 py-2 sm:py-3 rounded-xl sm:rounded-2xl border border-white/20 hover:bg-white/15 transition-all duration-300 group"
             role="text" 
             aria-label="Fecha del evento"
           >
-            <div className="p-2 rounded-lg bg-accent/20 group-hover:bg-accent/30 transition-colors">
-              <Calendar className="w-5 h-5 text-accent" />
+            <div className="p-1.5 sm:p-2 rounded-lg bg-accent/20 group-hover:bg-accent/30 transition-colors">
+              <Calendar className="w-4 h-4 sm:w-5 sm:h-5 text-accent" aria-hidden="true" />
             </div>
-            <span className="font-semibold text-white text-sm sm:text-base">3 - 15 de noviembre 2025</span>
+            <span className="font-semibold text-white text-xs sm:text-sm md:text-base">3 - 15 de noviembre 2025</span>
           </div>
           
           <div 
-            className="flex items-center gap-3 bg-white/10 backdrop-blur-sm px-5 py-3 rounded-2xl border border-white/20 hover:bg-white/15 transition-all duration-300 group"
+            className="flex items-center gap-2 sm:gap-3 bg-white/10 backdrop-blur-sm px-3 sm:px-5 py-2 sm:py-3 rounded-xl sm:rounded-2xl border border-white/20 hover:bg-white/15 transition-all duration-300 group"
             role="text" 
             aria-label="Ubicación del evento"
           >
-            <div className="p-2 rounded-lg bg-accent/20 group-hover:bg-accent/30 transition-colors">
-              <MapPin className="w-5 h-5 text-accent" />
+            <div className="p-1.5 sm:p-2 rounded-lg bg-accent/20 group-hover:bg-accent/30 transition-colors">
+              <MapPin className="w-4 h-4 sm:w-5 sm:h-5 text-accent" aria-hidden="true" />
             </div>
-            <span className="font-semibold text-white text-sm sm:text-base">Buenos Aires, Argentina</span>
+            <span className="font-semibold text-white text-xs sm:text-sm md:text-base">Buenos Aires, Argentina</span>
           </div>
         </motion.div>
 
@@ -102,23 +103,24 @@ export const Hero = () => {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.4 }}
-          className="flex flex-col sm:flex-row gap-4 items-center justify-center"
+          className="flex flex-col sm:flex-row gap-3 sm:gap-4 items-center justify-center px-2"
         >
           <Button 
             size="lg" 
             onClick={() => window.open("https://www.maestriacp.com/", "_blank")}
-            aria-label="Acceder al Campus Virtual"
-            className="btn-hero group"
+            aria-label="Acceder al Campus Virtual (abre en nueva ventana)"
+            className="btn-hero group w-full sm:w-auto text-sm sm:text-base"
           >
             <span>Ver Campus Virtual</span>
-            <ExternalLink className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
+            <ExternalLink className="w-4 h-4 sm:w-5 sm:h-5 ml-2 group-hover:translate-x-1 transition-transform" aria-hidden="true" />
           </Button>
           
           <Button
             variant="outline"
             size="lg"
             onClick={() => scrollToSection("contacto")}
-            className="bg-white/10 backdrop-blur-sm border-2 border-white/30 text-white hover:bg-white/20 hover:border-white/50 font-semibold px-8 py-5 rounded-full transition-all duration-300"
+            aria-label="Ir a sección de contacto"
+            className="bg-white/10 backdrop-blur-sm border-2 border-white/30 text-white hover:bg-white/20 hover:border-white/50 font-semibold px-6 sm:px-8 py-4 sm:py-5 rounded-full transition-all duration-300 w-full sm:w-auto text-sm sm:text-base"
           >
             Solicitar Información
           </Button>
@@ -129,7 +131,7 @@ export const Hero = () => {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.5 }}
-          className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 max-w-4xl mx-auto"
+          className="mt-10 sm:mt-16 grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 md:gap-6 max-w-4xl mx-auto px-2"
         >
           {[
             { value: "9+", label: "Expertos Internacionales" },
@@ -139,12 +141,14 @@ export const Hero = () => {
           ].map((stat, index) => (
             <div 
               key={index}
-              className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 sm:p-5 border border-white/20 hover:bg-white/15 transition-all duration-300"
+              className="bg-white/10 backdrop-blur-sm rounded-xl sm:rounded-2xl p-3 sm:p-4 md:p-5 border border-white/20 hover:bg-white/15 transition-all duration-300"
+              role="figure"
+              aria-label={`${stat.value} ${stat.label}`}
             >
-              <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-accent mb-1">
+              <div className="text-xl xs:text-2xl sm:text-3xl md:text-4xl font-bold text-accent mb-0.5 sm:mb-1">
                 {stat.value}
               </div>
-              <div className="text-xs sm:text-sm text-white/80">
+              <div className="text-[10px] xs:text-xs sm:text-sm text-white/80 leading-tight">
                 {stat.label}
               </div>
             </div>

@@ -140,6 +140,7 @@
 
   html {
     scroll-behavior: smooth;
+    scroll-padding-top: 5rem;
   }
 
   body {
@@ -150,6 +151,7 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     overflow-x: hidden;
+    min-width: 320px;
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -157,21 +159,31 @@
   }
 
   h1 {
-    @apply text-3xl sm:text-4xl md:text-5xl lg:text-6xl;
+    @apply text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl;
   }
 
   h2 {
-    @apply text-2xl sm:text-3xl md:text-4xl lg:text-5xl;
+    @apply text-xl xs:text-2xl sm:text-3xl md:text-4xl lg:text-5xl;
   }
 
   h3 {
-    @apply text-xl sm:text-2xl md:text-3xl;
+    @apply text-lg xs:text-xl sm:text-2xl md:text-3xl;
   }
 
   /* Selection Styling */
   ::selection {
     background: hsl(var(--primary) / 0.2);
     color: hsl(var(--primary));
+  }
+
+  /* Focus visible for accessibility */
+  :focus-visible {
+    @apply outline-none ring-2 ring-primary ring-offset-2 ring-offset-background;
+  }
+
+  /* Remove focus ring for mouse users */
+  :focus:not(:focus-visible) {
+    @apply outline-none ring-0;
   }
 }
 
