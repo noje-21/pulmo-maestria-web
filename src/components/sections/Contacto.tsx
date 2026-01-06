@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -6,7 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { z } from "zod";
-import { X } from "lucide-react";
+import { X, Mail, Phone, Linkedin, Facebook, Instagram, Globe, Send, CheckCircle } from "lucide-react";
 
 const contactSchema = z.object({
   name: z.string().min(1, "El nombre es requerido").max(100),
@@ -15,6 +16,15 @@ const contactSchema = z.object({
   specialty: z.string().min(1, "La especialidad es requerida").max(100),
   message: z.string().min(10, "El mensaje debe tener al menos 10 caracteres").max(2000)
 });
+
+const contactInfo = [
+  { icon: Mail, label: "Email", value: "magisterenhipertensionpulmonar@gmail.com", href: "mailto:magisterenhipertensionpulmonar@gmail.com" },
+  { icon: Phone, label: "WhatsApp", value: "+57 300 414 2568", href: "https://wa.me/573004142568" },
+  { icon: Linkedin, label: "LinkedIn", value: "Hipertensión Pulmonar", href: "https://www.linkedin.com/in/hipertension-pulmonar-655a43253" },
+  { icon: Facebook, label: "Facebook", value: "Hipertensión Pulmonar", href: "https://www.facebook.com/share/16s5MUKG3C/?mibextid=wwXIfr" },
+  { icon: Instagram, label: "Instagram", value: "@magisterenhipertensionpulmonar", href: "https://instagram.com/magisterenhipertensionpulmonar" },
+  { icon: Globe, label: "Campus Virtual", value: "www.maestriacp.com", href: "https://www.maestriacp.com/" }
+];
 
 export const Contacto = () => {
   const [loading, setLoading] = useState(false);
@@ -29,7 +39,7 @@ export const Contacto = () => {
 
   useEffect(() => {
     if (successMsg) {
-      const timer = setTimeout(() => setSuccessMsg(false), 4000);
+      const timer = setTimeout(() => setSuccessMsg(false), 5000);
       return () => clearTimeout(timer);
     }
   }, [successMsg]);
@@ -38,7 +48,6 @@ export const Contacto = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      // Trim values before validation
       const trimmedData = {
         name: formData.name.trim(),
         email: formData.email.trim(),
@@ -47,9 +56,7 @@ export const Contacto = () => {
         message: formData.message.trim()
       };
       const validated = contactSchema.parse(trimmedData);
-      const {
-        error
-      } = await supabase.from("contact_submissions").insert([{
+      const { error } = await supabase.from("contact_submissions").insert([{
         name: validated.name,
         email: validated.email,
         country: validated.country,
@@ -59,13 +66,7 @@ export const Contacto = () => {
       if (error) throw error;
       
       setSuccessMsg(true);
-      setFormData({
-        name: "",
-        email: "",
-        country: "",
-        specialty: "",
-        message: ""
-      });
+      setFormData({ name: "", email: "", country: "", specialty: "", message: "" });
     } catch (error) {
       if (error instanceof z.ZodError) {
         toast.error(error.errors[0].message);
@@ -78,155 +79,190 @@ export const Contacto = () => {
   };
   
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData(prev => ({
-      ...prev,
-      [e.target.name]: e.target.value
-    }));
-  };
-
-  // 🔗 Función para redirigir directamente fuera del sitio
-  const redirectTo = (url: string) => {
-    window.location.href = url;
+    setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
   return (
-    <section id="contacto" className="py-20 bg-gradient-to-b from-background to-muted/30 relative overflow-hidden">
-      <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <h2 className="text-4xl md:text-5xl font-bold text-primary mb-4 text-center animate-fade-in">
-          Contáctanos
-        </h2>
-        <div className="w-24 h-1 bg-gradient-to-r from-primary to-accent mx-auto mb-4 rounded-full"></div>
-        <p className="text-xl text-muted-foreground mb-12 text-center">
-          ¿Tienes preguntas? Estamos aquí para ayudarte
-        </p>
+    <section id="contacto" className="py-20 md:py-28 bg-gradient-to-b from-muted/50 to-background relative overflow-hidden">
+      <div className="absolute inset-0 bg-grid-pattern opacity-50" />
+      
+      <div className="section-container relative z-10">
+        {/* Section Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+          className="section-header"
+        >
+          <h2 className="section-title">Contáctanos</h2>
+          <div className="section-divider" />
+          <p className="section-subtitle">
+            ¿Tienes preguntas? Estamos aquí para ayudarte
+          </p>
+        </motion.div>
 
-        <div className="grid md:grid-cols-2 gap-12">
-          <div>
-            <Card className="border-accent/20 hover:shadow-2xl transition-all duration-300 bg-gradient-to-br from-card to-card/50">
-              <CardContent className="pt-8">
+        <div className="grid lg:grid-cols-2 gap-8 lg:gap-12">
+          {/* Contact Info */}
+          <motion.div
+            initial={{ opacity: 0, x: -30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            <Card className="card-base h-full bg-card">
+              <CardContent className="p-6 md:p-8">
                 <div className="flex items-center gap-3 mb-6">
-                  <div className="p-2 bg-primary/10 rounded-lg">
-                    <span className="text-3xl">📞</span>
+                  <div className="p-2.5 bg-primary/10 rounded-xl">
+                    <Phone className="w-5 h-5 text-primary" />
                   </div>
-                  <h3 className="text-2xl font-bold text-primary">Información de Contacto</h3>
+                  <h3 className="text-xl font-bold text-foreground">
+                    Información de Contacto
+                  </h3>
                 </div>
 
-                <div className="space-y-5">
-                  <div className="flex items-start gap-4 cursor-pointer group p-3 rounded-lg hover:bg-primary/5 transition-all duration-300" onClick={() => redirectTo("mailto:magisterenhipertensionpulmonar@gmail.com")}>
-                    <div className="p-2 bg-accent/10 rounded-lg group-hover:scale-110 transition-transform duration-300">
-                      <span className="text-2xl">✉️</span>
-                    </div>
-                    <div>
-                      <p className="font-bold text-foreground mb-1">Email</p>
-                      <p className="text-accent hover:underline text-sm">magisterenhipertensionpulmonar@gmail.com</p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-start gap-4 cursor-pointer group p-3 rounded-lg hover:bg-primary/5 transition-all duration-300" onClick={() => redirectTo("https://wa.me/573004142568")}>
-                    <div className="p-2 bg-accent/10 rounded-lg group-hover:scale-110 transition-transform duration-300">
-                      <span className="text-2xl">📱</span>
-                    </div>
-                    <div>
-                      <p className="font-bold text-foreground mb-1">WhatsApp</p>
-                      <p className="text-accent hover:underline text-sm">+57 300 414 2568</p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-start gap-4 cursor-pointer group p-3 rounded-lg hover:bg-primary/5 transition-all duration-300" onClick={() => redirectTo("https://www.linkedin.com/in/hipertension-pulmonar-655a43253")}>
-                    <div className="p-2 bg-accent/10 rounded-lg group-hover:scale-110 transition-transform duration-300">
-                      <span className="text-2xl">🔗</span>
-                    </div>
-                    <div>
-                      <p className="font-bold text-foreground mb-1">LinkedIn</p>
-                      <p className="text-accent hover:underline text-sm">linkedin.com/in/hipertension-pulmonar</p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-start gap-4 cursor-pointer group p-3 rounded-lg hover:bg-primary/5 transition-all duration-300" onClick={() => redirectTo("https://www.facebook.com/share/16s5MUKG3C/?mibextid=wwXIfr")}>
-                    <div className="p-2 bg-accent/10 rounded-lg group-hover:scale-110 transition-transform duration-300">
-                      <span className="text-2xl">📘</span>
-                    </div>
-                    <div>
-                      <p className="font-bold text-foreground mb-1">Facebook</p>
-                      <p className="text-accent hover:underline text-sm">facebook.com/hipertensionpulmonar</p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-start gap-4 cursor-pointer group p-3 rounded-lg hover:bg-primary/5 transition-all duration-300" onClick={() => redirectTo("https://instagram.com/magisterenhipertensionpulmonar")}>
-                    <div className="p-2 bg-accent/10 rounded-lg group-hover:scale-110 transition-transform duration-300">
-                      <span className="text-2xl">📸</span>
-                    </div>
-                    <div>
-                      <p className="font-bold text-foreground mb-1">Instagram</p>
-                      <p className="text-accent hover:underline text-sm">@magisterenhipertensionpulmonar</p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-start gap-4 cursor-pointer group p-3 rounded-lg hover:bg-primary/5 transition-all duration-300" onClick={() => redirectTo("https://www.maestriacp.com/")}>
-                    <div className="p-2 bg-accent/10 rounded-lg group-hover:scale-110 transition-transform duration-300">
-                      <span className="text-2xl">🌐</span>
-                    </div>
-                    <div>
-                      <p className="font-bold text-foreground mb-1">Campus Virtual</p>
-                      <p className="text-accent hover:underline text-sm">www.maestriacp.com</p>
-                    </div>
-                  </div>
+                <div className="space-y-3">
+                  {contactInfo.map((item, index) => (
+                    <motion.a
+                      key={index}
+                      href={item.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      initial={{ opacity: 0, x: -10 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.3, delay: index * 0.05 }}
+                      className="flex items-center gap-4 p-3 rounded-xl hover:bg-muted/50 transition-all duration-300 group"
+                    >
+                      <div className="p-2.5 bg-accent/10 rounded-xl group-hover:bg-accent/20 group-hover:scale-110 transition-all duration-300">
+                        <item.icon className="w-5 h-5 text-accent" />
+                      </div>
+                      <div className="min-w-0">
+                        <p className="font-semibold text-foreground text-sm">
+                          {item.label}
+                        </p>
+                        <p className="text-accent text-sm truncate group-hover:text-accent/80 transition-colors">
+                          {item.value}
+                        </p>
+                      </div>
+                    </motion.a>
+                  ))}
                 </div>
               </CardContent>
             </Card>
-          </div>
+          </motion.div>
 
-          <div>
-            <Card className="border-accent/20 hover:shadow-2xl transition-all duration-300 bg-gradient-to-br from-card to-card/50">
-              <CardContent className="pt-8">
+          {/* Contact Form */}
+          <motion.div
+            initial={{ opacity: 0, x: 30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            <Card className="card-base bg-card">
+              <CardContent className="p-6 md:p-8">
                 <div className="flex items-center gap-3 mb-6">
-                  <div className="p-2 bg-accent/10 rounded-lg">
-                    <span className="text-3xl">📝</span>
+                  <div className="p-2.5 bg-accent/10 rounded-xl">
+                    <Send className="w-5 h-5 text-accent" />
                   </div>
-                  <h3 className="text-2xl font-bold text-primary">Inscríbete sin ningún costo</h3>
+                  <h3 className="text-xl font-bold text-foreground">
+                    Inscríbete sin costo
+                  </h3>
                 </div>
 
-                {/* Mensaje de éxito accesible */}
-                <div aria-live="polite" className="min-h-[1.5rem] mb-4">
+                {/* Success Message */}
+                <div aria-live="polite" className="min-h-[1rem] mb-4">
                   {successMsg && (
-                    <div className="p-4 rounded-xl bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 text-green-800 dark:text-green-200 flex items-center justify-between gap-3 animate-fade-in shadow-sm">
-                      <span className="font-medium">Pronto nos comunicaremos contigo</span>
+                    <motion.div
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0 }}
+                      className="p-4 rounded-xl bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 text-green-800 dark:text-green-200 flex items-center justify-between gap-3"
+                    >
+                      <div className="flex items-center gap-2">
+                        <CheckCircle className="w-5 h-5" />
+                        <span className="font-medium">¡Mensaje enviado! Pronto nos comunicaremos contigo.</span>
+                      </div>
                       <button
                         type="button"
                         aria-label="Cerrar mensaje"
                         onClick={() => setSuccessMsg(false)}
-                        className="p-1 hover:bg-green-100 dark:hover:bg-green-900/40 rounded-lg transition-colors"
+                        className="p-1.5 hover:bg-green-100 dark:hover:bg-green-900/40 rounded-lg transition-colors"
                       >
                         <X className="w-4 h-4" />
                       </button>
-                    </div>
+                    </motion.div>
                   )}
                 </div>
 
-                <form onSubmit={handleSubmit} className="space-y-5">
-                  <div>
-                    <Input id="name" name="name" value={formData.name} onChange={handleChange} placeholder="Tu nombre completo" required className="border-accent/20 focus:border-accent transition-all duration-300" />
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  <div className="grid sm:grid-cols-2 gap-4">
+                    <Input 
+                      name="name" 
+                      value={formData.name} 
+                      onChange={handleChange} 
+                      placeholder="Nombre completo" 
+                      required 
+                      className="input-modern"
+                    />
+                    <Input 
+                      name="email" 
+                      type="email" 
+                      value={formData.email} 
+                      onChange={handleChange} 
+                      placeholder="Email" 
+                      required 
+                      className="input-modern"
+                    />
                   </div>
-                  <div>
-                    <Input id="email" name="email" type="email" value={formData.email} onChange={handleChange} placeholder="tu@email.com" required className="border-accent/20 focus:border-accent transition-all duration-300" />
+                  <div className="grid sm:grid-cols-2 gap-4">
+                    <Input 
+                      name="country" 
+                      value={formData.country} 
+                      onChange={handleChange} 
+                      placeholder="País" 
+                      required 
+                      className="input-modern"
+                    />
+                    <Input 
+                      name="specialty" 
+                      value={formData.specialty} 
+                      onChange={handleChange} 
+                      placeholder="Especialidad (Ej: Cardiología)" 
+                      required 
+                      className="input-modern"
+                    />
                   </div>
-                  <div>
-                    <Input id="country" name="country" value={formData.country} onChange={handleChange} placeholder="Tu país" required className="border-accent/20 focus:border-accent transition-all duration-300" />
-                  </div>
-                  <div>
-                    <Input id="specialty" name="specialty" value={formData.specialty} onChange={handleChange} placeholder="Ej: Cardiología" required className="border-accent/20 focus:border-accent transition-all duration-300" />
-                  </div>
-                  <div>
-                    <Textarea id="message" name="message" value={formData.message} onChange={handleChange} placeholder="Escribe tu mensaje aquí..." rows={5} required className="border-accent/20 focus:border-accent transition-all duration-300 resize-none" />
-                  </div>
-                  <Button type="submit" className="w-full bg-accent hover:bg-accent/90 text-white font-bold py-6 rounded-full hover:scale-105 transition-all duration-300 shadow-lg" disabled={loading}>
-                    {loading ? "Enviando..." : "✉️ Enviar Mensaje"}
+                  <Textarea 
+                    name="message" 
+                    value={formData.message} 
+                    onChange={handleChange} 
+                    placeholder="Escribe tu mensaje aquí..." 
+                    rows={4} 
+                    required 
+                    className="input-modern resize-none"
+                  />
+                  <Button 
+                    type="submit" 
+                    className="w-full btn-accent py-6 text-base font-semibold" 
+                    disabled={loading}
+                  >
+                    {loading ? (
+                      <span className="flex items-center gap-2">
+                        <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                        Enviando...
+                      </span>
+                    ) : (
+                      <span className="flex items-center gap-2">
+                        <Send className="w-5 h-5" />
+                        Enviar Mensaje
+                      </span>
+                    )}
                   </Button>
                 </form>
               </CardContent>
             </Card>
-          </div>
+          </motion.div>
         </div>
       </div>
     </section>

@@ -1,141 +1,121 @@
 import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
 import { useScrollToSection } from "@/hooks/useScrollToSection";
+import { GraduationCap, ArrowUpRight, Heart } from "lucide-react";
+
+const quickLinks = [
+  { label: "Inicio", section: "inicio" },
+  { label: "Maestría", section: "maestria" },
+  { label: "Expertos", section: "expertos" },
+  { label: "Eventos", section: "eventos" },
+  { label: "Contacto", section: "contacto" }
+];
+
+const pageLinks = [
+  { label: "Foro", to: "/foro" },
+  { label: "Novedades", to: "/novedades" },
+  { label: "Iniciar Sesión", to: "/auth" }
+];
 
 export const Footer = () => {
   const scrollToSection = useScrollToSection();
 
   return (
-    <footer className="bg-gradient-to-b from-primary to-primary-dark text-white py-16 relative overflow-hidden">
-      <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="grid md:grid-cols-3 gap-12 mb-12">
-          <div className="group">
+    <footer className="bg-primary text-primary-foreground relative overflow-hidden">
+      {/* Background Pattern */}
+      <div className="absolute inset-0 bg-grid-pattern opacity-5" />
+      
+      {/* Main Footer Content */}
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10 lg:gap-16">
+          {/* Brand */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+          >
             <div className="flex items-center gap-3 mb-4">
-              <div className="p-2 bg-white/10 rounded-lg group-hover:scale-110 transition-transform duration-300">
-                <span className="text-2xl">🎓</span>
+              <div className="p-2.5 bg-white/10 rounded-xl">
+                <GraduationCap className="w-6 h-6" />
               </div>
-              <h3 className="text-xl font-bold">Maestría en Circulación Pulmonar</h3>
+              <h3 className="text-lg font-bold">
+                Maestría en Circulación Pulmonar
+              </h3>
             </div>
-            <p className="text-white/80 leading-relaxed">
-              Formación de excelencia en enfermedades vasculares pulmonares
+            <p className="text-primary-foreground/80 leading-relaxed text-sm mb-6">
+              Formación de excelencia en enfermedades vasculares pulmonares. 
+              Programa intensivo para profesionales de la salud de Latinoamérica.
+            </p>
+            <div className="flex items-center gap-2 text-sm text-primary-foreground/70">
+              <span>📍</span>
+              <span>Buenos Aires, Argentina</span>
+            </div>
+          </motion.div>
+
+          {/* Quick Links */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+          >
+            <h3 className="text-lg font-bold mb-4">
+              Enlaces Rápidos
+            </h3>
+            <ul className="space-y-2">
+              {quickLinks.map((link, index) => (
+                <li key={index}>
+                  <button
+                    onClick={() => scrollToSection(link.section)}
+                    className="flex items-center gap-2 text-primary-foreground/80 hover:text-accent transition-all duration-300 hover:translate-x-1 group text-sm"
+                  >
+                    <ArrowUpRight className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" />
+                    <span>{link.label}</span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </motion.div>
+
+          {/* Page Links */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+          >
+            <h3 className="text-lg font-bold mb-4">
+              Plataforma
+            </h3>
+            <ul className="space-y-2">
+              {pageLinks.map((link, index) => (
+                <li key={index}>
+                  <Link
+                    to={link.to}
+                    className="flex items-center gap-2 text-primary-foreground/80 hover:text-accent transition-all duration-300 hover:translate-x-1 group text-sm"
+                  >
+                    <ArrowUpRight className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" />
+                    <span>{link.label}</span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </motion.div>
+        </div>
+      </div>
+
+      {/* Bottom Bar */}
+      <div className="relative z-10 border-t border-primary-foreground/10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+            <p className="text-primary-foreground/70 text-sm text-center sm:text-left">
+              © {new Date().getFullYear()} Maestría Latinoamericana en Circulación Pulmonar
+            </p>
+            <p className="flex items-center gap-1 text-primary-foreground/70 text-sm">
+              Hecho con <Heart className="w-4 h-4 text-accent fill-accent" /> en Latinoamérica
             </p>
           </div>
-
-          <div className="group">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="p-2 bg-white/10 rounded-lg group-hover:scale-110 transition-transform duration-300">
-                <span className="text-2xl">🔗</span>
-              </div>
-              <h3 className="text-xl font-bold">Enlaces Rápidos</h3>
-            </div>
-            <ul className="space-y-3">
-              <li>
-                <button
-                  onClick={() => scrollToSection("inicio")}
-                  className="text-white/80 hover:text-accent transition-all duration-300 hover:translate-x-1 inline-block"
-                >
-                  → Inicio
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => scrollToSection("maestria")}
-                  className="text-white/80 hover:text-accent transition-all duration-300 hover:translate-x-1 inline-block"
-                >
-                  → Maestría
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => scrollToSection("expertos")}
-                  className="text-white/80 hover:text-accent transition-all duration-300 hover:translate-x-1 inline-block"
-                >
-                  → Expertos
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => scrollToSection("contacto")}
-                  className="text-white/80 hover:text-accent transition-all duration-300 hover:translate-x-1 inline-block"
-                >
-                  → Contacto
-                </button>
-              </li>
-              <li>
-                <Link
-                  to="/foro"
-                  className="text-white/80 hover:text-accent transition-all duration-300 hover:translate-x-1 inline-block"
-                >
-                  → Foro
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/novedades"
-                  className="text-white/80 hover:text-accent transition-all duration-300 hover:translate-x-1 inline-block"
-                >
-                  → Novedades
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/auth"
-                  className="text-white/80 hover:text-accent transition-all duration-300 hover:translate-x-1 inline-block"
-                >
-                  → Panel ADM
-                </Link>
-              </li>
-            </ul>
-          </div>
-          {/* 
-          <div className="group">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="p-2 bg-white/10 rounded-lg group-hover:scale-110 transition-transform duration-300">
-                <span className="text-2xl">📞</span>
-              </div>
-              <h3 className="text-xl font-bold">Contacto</h3>
-            </div>
-          
-            <ul className="space-y-3 text-white/80">
-              <li className="hover:text-accent transition-colors duration-300">
-                <a href="mailto:magisterenhipertensionpulmonar@gmail.com" className="flex items-center gap-2">
-                  <span>✉️</span>
-                  <span className="text-sm">magisterenhipertensionpulmonar@gmail.com</span>
-                </a>
-              </li>
-          
-              <li className="hover:text-accent transition-colors duration-300">
-                <a
-                  href="https://wa.me/573004142568"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2"
-                >
-                  <span>📱</span>
-                  <span>+57 300 414 2568</span>
-                </a>
-              </li>
-          
-              <li className="hover:text-accent transition-colors duration-300">
-                <a
-                  href="https://instagram.com/magisterenhipertensionpulmonar"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2"
-                >
-                  <span>📸</span>
-                  <span>@magisterenhipertensionpulmonar</span>
-                </a>
-              </li>
-            </ul>
-          </div>
-          */}
-        </div>
-
-        <div className="border-t border-white/20 pt-8">
-          <p className="text-center text-black/80 text-sm">
-            © 2025 Maestría Latinoamericana en Circulación Pulmonar – Todos los derechos reservados.
-          </p>
         </div>
       </div>
     </footer>
