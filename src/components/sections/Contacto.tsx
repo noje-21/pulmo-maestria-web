@@ -111,17 +111,17 @@ export const Contacto = () => {
             transition={{ duration: 0.6 }}
           >
             <Card className="card-base h-full bg-card">
-              <CardContent className="p-6 md:p-8">
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="p-2.5 bg-primary/10 rounded-xl">
-                    <Phone className="w-5 h-5 text-primary" />
+              <CardContent className="p-4 sm:p-6 md:p-8">
+                <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
+                  <div className="p-2 sm:p-2.5 bg-primary/10 rounded-xl flex-shrink-0">
+                    <Phone className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
                   </div>
-                  <h3 className="text-xl font-bold text-foreground">
+                  <h3 className="text-lg sm:text-xl font-bold text-foreground">
                     Información de Contacto
                   </h3>
                 </div>
 
-                <div className="space-y-3">
+                <div className="space-y-2 sm:space-y-3">
                   {contactInfo.map((item, index) => (
                     <motion.a
                       key={index}
@@ -132,16 +132,16 @@ export const Contacto = () => {
                       whileInView={{ opacity: 1, x: 0 }}
                       viewport={{ once: true }}
                       transition={{ duration: 0.3, delay: index * 0.05 }}
-                      className="flex items-center gap-4 p-3 rounded-xl hover:bg-muted/50 transition-all duration-300 group"
+                      className="flex items-center gap-3 sm:gap-4 p-2.5 sm:p-3 rounded-xl hover:bg-muted/50 transition-all duration-300 group"
                     >
-                      <div className="p-2.5 bg-accent/10 rounded-xl group-hover:bg-accent/20 group-hover:scale-110 transition-all duration-300">
-                        <item.icon className="w-5 h-5 text-accent" />
+                      <div className="p-2 sm:p-2.5 bg-accent/10 rounded-xl group-hover:bg-accent/20 group-hover:scale-110 transition-all duration-300 flex-shrink-0">
+                        <item.icon className="w-4 h-4 sm:w-5 sm:h-5 text-accent" />
                       </div>
-                      <div className="min-w-0">
-                        <p className="font-semibold text-foreground text-sm">
+                      <div className="min-w-0 flex-1 overflow-hidden">
+                        <p className="font-semibold text-foreground text-xs sm:text-sm">
                           {item.label}
                         </p>
-                        <p className="text-accent text-sm truncate group-hover:text-accent/80 transition-colors">
+                        <p className="text-accent text-xs sm:text-sm truncate group-hover:text-accent/80 transition-colors">
                           {item.value}
                         </p>
                       </div>
@@ -160,12 +160,12 @@ export const Contacto = () => {
             transition={{ duration: 0.6 }}
           >
             <Card className="card-base bg-card">
-              <CardContent className="p-6 md:p-8">
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="p-2.5 bg-accent/10 rounded-xl">
-                    <Send className="w-5 h-5 text-accent" />
+              <CardContent className="p-4 sm:p-6 md:p-8">
+                <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
+                  <div className="p-2 sm:p-2.5 bg-accent/10 rounded-xl flex-shrink-0">
+                    <Send className="w-4 h-4 sm:w-5 sm:h-5 text-accent" />
                   </div>
-                  <h3 className="text-xl font-bold text-foreground">
+                  <h3 className="text-lg sm:text-xl font-bold text-foreground">
                     Inscríbete sin costo
                   </h3>
                 </div>
@@ -177,17 +177,17 @@ export const Contacto = () => {
                       initial={{ opacity: 0, y: -10 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0 }}
-                      className="p-4 rounded-xl bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 text-green-800 dark:text-green-200 flex items-center justify-between gap-3"
+                      className="p-3 sm:p-4 rounded-xl bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 text-green-800 dark:text-green-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-3"
                     >
                       <div className="flex items-center gap-2">
-                        <CheckCircle className="w-5 h-5" />
-                        <span className="font-medium">¡Recibimos tu mensaje! Te contactaremos pronto.</span>
+                        <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" />
+                        <span className="font-medium text-sm sm:text-base">¡Recibimos tu mensaje! Te contactaremos pronto.</span>
                       </div>
                       <button
                         type="button"
                         aria-label="Cerrar mensaje"
                         onClick={() => setSuccessMsg(false)}
-                        className="p-1.5 hover:bg-green-100 dark:hover:bg-green-900/40 rounded-lg transition-colors"
+                        className="p-1.5 hover:bg-green-100 dark:hover:bg-green-900/40 rounded-lg transition-colors self-end sm:self-auto"
                       >
                         <X className="w-4 h-4" />
                       </button>
