@@ -302,7 +302,7 @@ const Novedades = () => {
                     onClick={() => navigate(`/novedades/${featuredNovedad.slug}`)}
                     className="group cursor-pointer"
                   >
-                    <div className="relative card-base card-hover overflow-hidden transition-all duration-400">
+                    <div className="relative card-base card-hover overflow-hidden transition-all duration-400 brand-accent-bar-top">
                       <div className="grid lg:grid-cols-2 gap-0">
                         {/* Image */}
                         <div className="relative aspect-[16/10] lg:aspect-auto overflow-hidden">
@@ -385,7 +385,7 @@ const Novedades = () => {
                           onClick={() => navigate(`/novedades/${novedad.slug}`)}
                           className="group cursor-pointer"
                         >
-                          <div className="h-full card-base card-hover overflow-hidden flex flex-col transition-all duration-400">
+                          <div className="h-full card-base card-hover overflow-hidden flex flex-col transition-all duration-400 brand-card-signature">
                             {/* Image */}
                             <div className="relative aspect-[16/9] overflow-hidden">
                               {novedad.image_url ? (

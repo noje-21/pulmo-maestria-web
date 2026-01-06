@@ -3,9 +3,10 @@ import { cn } from "@/lib/utils";
 import { forwardRef } from "react";
 
 interface PremiumCardProps extends Omit<HTMLMotionProps<"div">, "ref"> {
-  variant?: "default" | "featured" | "accent" | "glass" | "interactive";
+  variant?: "default" | "featured" | "accent" | "glass" | "interactive" | "signature";
   hover?: boolean;
   padding?: "none" | "sm" | "md" | "lg";
+  signature?: boolean;
   children: React.ReactNode;
 }
 
@@ -21,7 +22,8 @@ const variantClasses = {
   featured: "card-base card-featured bg-card",
   accent: "card-base card-accent",
   glass: "card-glass",
-  interactive: "card-base card-interactive bg-card"
+  interactive: "card-base card-interactive bg-card",
+  signature: "card-base bg-card brand-card-signature"
 };
 
 export const PremiumCard = forwardRef<HTMLDivElement, PremiumCardProps>(
@@ -29,6 +31,7 @@ export const PremiumCard = forwardRef<HTMLDivElement, PremiumCardProps>(
     variant = "default", 
     hover = true, 
     padding = "md",
+    signature = false,
     className, 
     children,
     ...props 
@@ -40,6 +43,7 @@ export const PremiumCard = forwardRef<HTMLDivElement, PremiumCardProps>(
           variantClasses[variant],
           hover && "card-hover",
           paddingClasses[padding],
+          signature && "brand-card-signature",
           className
         )}
         {...props}

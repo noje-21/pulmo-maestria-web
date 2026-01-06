@@ -97,7 +97,7 @@ export const CTAFinal = () => {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="bg-white/10 backdrop-blur-xl rounded-3xl p-8 md:p-10 border border-white/20 shadow-2xl"
+            className="bg-white/10 backdrop-blur-xl rounded-3xl p-8 md:p-10 border border-white/20 shadow-2xl brand-accent-bar"
           >
             <div className="text-center">
               <div className="inline-flex items-center gap-2 text-accent-light font-semibold mb-4">
@@ -132,7 +132,7 @@ export const CTAFinal = () => {
                 <Button 
                   size="lg" 
                   onClick={scrollToContact}
-                  className="btn-hero group min-h-[56px] w-full"
+                  className="btn-hero group min-h-[56px] w-full brand-cta-glow"
                 >
                   <span>Inscribirme Ahora</span>
                   <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />

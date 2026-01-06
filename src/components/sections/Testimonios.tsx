@@ -68,7 +68,7 @@ export const Testimonios = () => {
       >
         {testimonios.map((testimonio, index) => (
           <motion.div key={index} variants={cardVariants}>
-            <div className="card-base card-hover h-full group relative overflow-hidden p-6 md:p-7">
+            <div className="card-base card-hover h-full group relative overflow-hidden p-6 md:p-7 brand-card-signature">
               {/* Quote decoration */}
               <div className="absolute top-4 right-4 opacity-5 group-hover:opacity-10 transition-opacity duration-400">
                 <Quote className="w-20 h-20 text-primary" />

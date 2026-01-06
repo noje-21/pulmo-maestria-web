@@ -361,22 +361,203 @@
   }
 
   /* ============================================
-     VISUAL IDENTITY ELEMENTS
+     VISUAL IDENTITY ELEMENTS - DETALLE FIRMA
+     Patrón único: Barra diagonal coral con degradado
+     Se repite en cards, headers, secciones, CTAs
      ============================================ */
+  
+  /* === FIRMA PRINCIPAL: Accent Bar === */
+  .brand-accent-bar {
+    @apply relative;
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      background: linear-gradient(180deg, hsl(var(--accent)) 0%, hsl(var(--accent-dark)) 100%);
+      border-radius: 4px 0 0 4px;
+    }
+  }
+
+  .brand-accent-bar-top {
+    @apply relative;
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: linear-gradient(90deg, hsl(var(--accent)) 0%, hsl(var(--accent-light)) 50%, transparent 100%);
+      border-radius: 4px 4px 0 0;
+    }
+  }
+
+  .brand-accent-corner {
+    @apply relative overflow-hidden;
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 60px;
+      height: 60px;
+      background: linear-gradient(135deg, hsl(var(--accent) / 0.15) 0%, transparent 50%);
+      border-radius: 0 0 100% 0;
+    }
+    &::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 3px;
+      height: 24px;
+      background: hsl(var(--accent));
+      border-radius: 0 0 4px 0;
+    }
+  }
+
+  /* === FIRMA SECUNDARIA: Línea con gradiente === */
   .brand-line {
-    @apply h-1 w-16 bg-gradient-to-r from-primary via-accent to-primary rounded-full;
+    @apply h-1 w-16 rounded-full;
+    background: linear-gradient(90deg, hsl(var(--accent)) 0%, hsl(var(--primary)) 100%);
   }
 
+  .brand-line-left {
+    @apply h-1 w-12 rounded-full;
+    background: linear-gradient(90deg, hsl(var(--accent)) 0%, transparent 100%);
+  }
+
+  /* === FIRMA: Dot indicador === */
   .brand-dot {
-    @apply w-2 h-2 rounded-full bg-accent animate-pulse;
+    @apply w-2.5 h-2.5 rounded-full;
+    background: linear-gradient(135deg, hsl(var(--accent)) 0%, hsl(var(--accent-dark)) 100%);
+    box-shadow: 0 0 8px hsl(var(--accent) / 0.4);
+    animation: brandPulse 2s ease-in-out infinite;
   }
 
+  @keyframes brandPulse {
+    0%, 100% { 
+      box-shadow: 0 0 8px hsl(var(--accent) / 0.4);
+      transform: scale(1);
+    }
+    50% { 
+      box-shadow: 0 0 16px hsl(var(--accent) / 0.6);
+      transform: scale(1.1);
+    }
+  }
+
+  /* === FIRMA: Badges distintivos === */
   .brand-badge {
-    @apply inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 text-primary text-sm font-semibold border border-primary/20;
+    @apply inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-semibold;
+    background: linear-gradient(135deg, hsl(var(--primary) / 0.1) 0%, hsl(var(--primary) / 0.05) 100%);
+    color: hsl(var(--primary));
+    border: 1px solid hsl(var(--primary) / 0.2);
+    position: relative;
+    &::before {
+      content: '';
+      @apply w-2 h-2 rounded-full;
+      background: hsl(var(--accent));
+      box-shadow: 0 0 6px hsl(var(--accent) / 0.5);
+    }
   }
 
   .brand-badge-accent {
-    @apply inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-accent/10 text-accent text-sm font-semibold border border-accent/20;
+    @apply inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-semibold;
+    background: linear-gradient(135deg, hsl(var(--accent) / 0.15) 0%, hsl(var(--accent) / 0.05) 100%);
+    color: hsl(var(--accent));
+    border: 1px solid hsl(var(--accent) / 0.25);
+  }
+
+  /* === FIRMA: Section Header Signature === */
+  .brand-section-signature {
+    @apply relative inline-block;
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 0;
+      width: 40px;
+      height: 3px;
+      background: linear-gradient(90deg, hsl(var(--accent)) 0%, transparent 100%);
+      border-radius: 3px;
+    }
+  }
+
+  .brand-section-signature-center {
+    @apply relative inline-block;
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 3px;
+      background: linear-gradient(90deg, transparent 0%, hsl(var(--accent)) 50%, transparent 100%);
+      border-radius: 3px;
+    }
+  }
+
+  /* === FIRMA: Card Signature (esquina coral) === */
+  .brand-card-signature {
+    @apply relative overflow-hidden;
+    &::before {
+      content: '';
+      position: absolute;
+      top: -1px;
+      left: -1px;
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, hsl(var(--accent) / 0.12) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    &::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 3px;
+      height: 20px;
+      background: hsl(var(--accent));
+      border-radius: 0 0 3px 0;
+    }
+  }
+
+  /* === FIRMA: Active State Indicator === */
+  .brand-active-indicator {
+    @apply relative;
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, hsl(var(--accent)) 0%, hsl(var(--accent-light)) 100%);
+      border-radius: 2px;
+    }
+  }
+
+  /* === FIRMA: CTA Glow Effect === */
+  .brand-cta-glow {
+    position: relative;
+    &::before {
+      content: '';
+      position: absolute;
+      inset: -2px;
+      background: linear-gradient(135deg, hsl(var(--accent)) 0%, hsl(var(--accent-dark)) 100%);
+      border-radius: inherit;
+      z-index: -1;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    &:hover::before {
+      opacity: 0.3;
+      filter: blur(8px);
+    }
   }
 
   /* ============================================

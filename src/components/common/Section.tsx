@@ -88,16 +88,18 @@ export const SectionHeader = ({
       )}
     >
       {badge && (
-        <span className="inline-block px-4 py-1.5 rounded-full bg-primary/10 text-primary text-sm font-semibold mb-4">
+        <span className="brand-badge mb-4">
           {badge}
         </span>
       )}
-      <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-primary mb-4">
+      <h2 className={cn(
+        "text-3xl sm:text-4xl md:text-5xl font-bold text-primary mb-6",
+        centered ? "brand-section-signature-center" : "brand-section-signature"
+      )}>
         {title}
       </h2>
-      <div className={cn("w-20 md:w-24 h-1 bg-gradient-to-r from-primary to-accent rounded-full mb-4", centered && "mx-auto")} />
       {subtitle && (
-        <p className={cn("text-lg md:text-xl text-muted-foreground", centered && "max-w-2xl mx-auto")}>
+        <p className={cn("text-lg md:text-xl text-muted-foreground mt-8", centered && "max-w-2xl mx-auto")}>
           {subtitle}
         </p>
       )}

@@ -121,11 +121,12 @@ const Navigation = () => {
               <button
                 key={item.section}
                 onClick={() => handleNavClick(item.section)}
-                className={`nav-link px-3 xl:px-4 py-2 text-sm ${
+                className={`relative nav-link px-3 xl:px-4 py-2 text-sm group ${
                   isScrolled ? 'text-foreground' : 'text-white hover:text-white/80'
                 }`}
               >
                 {item.label}
+                <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-gradient-to-r from-accent to-accent-light group-hover:w-full transition-all duration-300 rounded-full" />
               </button>
             ))}
             

@@ -89,7 +89,7 @@ export const Diferenciales = () => {
             variants={cardVariants}
             className="group"
           >
-            <div className="card-base card-hover h-full p-6 md:p-7">
+            <div className="card-base card-hover h-full p-6 md:p-7 brand-card-signature">
               {/* Icon with gradient background */}
               <div className={`inline-flex p-3.5 rounded-2xl mb-5 transition-all duration-400 group-hover:scale-110 ${
                 item.color === 'primary' 
@@ -102,14 +102,9 @@ export const Diferenciales = () => {
               </div>
               
               {/* Title */}
-              <h3 className="text-lg md:text-xl font-bold text-foreground mb-2 group-hover:text-primary transition-colors">
+              <h3 className="text-lg md:text-xl font-bold text-foreground mb-3 group-hover:text-primary transition-colors">
                 {item.title}
               </h3>
-              
-              {/* Accent line */}
-              <div className={`w-10 h-0.5 rounded-full mb-3 transition-all duration-300 group-hover:w-14 ${
-                item.color === 'primary' ? 'bg-primary/30' : 'bg-accent/30'
-              }`} />
               
               {/* Description */}
               <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
