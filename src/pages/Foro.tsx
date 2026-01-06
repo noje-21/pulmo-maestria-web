@@ -263,7 +263,7 @@ const Foro = () => {
       
       <main className="pt-24 sm:pt-28 pb-16 sm:pb-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-5xl mx-auto">
-          {/* Header */}
+          {/* Header with Story */}
           <motion.header
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -278,17 +278,18 @@ const Foro = () => {
                 <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight mb-2">
                   Foro Profesional
                 </h1>
-                <p className="text-muted-foreground text-base sm:text-lg">
-                  Un espacio para aprender, compartir y conectar con colegas
+                <p className="text-muted-foreground text-base sm:text-lg max-w-lg">
+                  Donde las preguntas difíciles encuentran respuestas. Comparte, aprende y crece con colegas de toda Latinoamérica.
                 </p>
               </div>
               {isAdmin && (
                 <Button
                   onClick={() => navigate("/admin/foro")}
                   size="lg"
-                  className="btn-accent gap-2 min-h-[48px]"
+                  className="btn-accent gap-2 min-h-[48px] group"
+                  aria-label="Crear nueva publicación"
                 >
-                  <Plus className="w-5 h-5" />
+                  <Plus className="w-5 h-5 group-hover:rotate-90 transition-transform duration-300" />
                   Nueva Publicación
                 </Button>
               )}
@@ -394,16 +395,27 @@ const Foro = () => {
                     transition={{ delay: index * 0.04, duration: 0.3 }}
                     onClick={() => navigate(`/foro/${post.id}`)}
                     className="group cursor-pointer"
+                    role="article"
+                    aria-label={`Publicación: ${post.title}`}
                   >
                     <div className={`
-                      card-base card-hover p-5 sm:p-6 transition-all duration-400 relative brand-card-signature
-                      ${post.featured ? 'card-featured border-accent/30' : ''}
-                      ${post.is_pinned ? 'border-primary/30 bg-primary/[0.02]' : ''}
-                      ${activity.status === 'hot' ? 'ring-1 ring-orange-500/20' : ''}
+                      card-base card-hover p-5 sm:p-6 transition-all duration-400 relative overflow-hidden
+                      ${post.featured ? 'ring-2 ring-accent/30 bg-gradient-to-br from-accent/[0.03] to-transparent' : ''}
+                      ${post.is_pinned ? 'ring-2 ring-primary/30 bg-gradient-to-br from-primary/[0.03] to-transparent' : ''}
+                      ${activity.status === 'hot' ? 'ring-1 ring-orange-500/30' : ''}
                     `}>
-                      {/* Activity Indicator - Accent Bar for active posts */}
+                      {/* Brand Signature Corner */}
+                      <div className="absolute top-0 left-0 w-12 h-12 bg-gradient-to-br from-accent/10 to-transparent pointer-events-none" />
+                      <div className="absolute top-0 left-0 w-1 h-6 bg-accent rounded-br-sm" />
+                      
+                      {/* Activity Pulse Indicator for hot posts */}
                       {activity.status === 'hot' && (
-                        <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-accent to-accent-dark rounded-l-2xl" />
+                        <div className="absolute top-4 right-4">
+                          <span className="relative flex h-3 w-3">
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-75"></span>
+                            <span className="relative inline-flex rounded-full h-3 w-3 bg-orange-500"></span>
+                          </span>
+                        </div>
                       )}
                       
                       {/* Status Badges */}
@@ -415,7 +427,7 @@ const Foro = () => {
                           <CategoryBadge category="featured" size="sm" />
                         )}
                         {/* Activity Badge */}
-                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${activity.bgColor} ${activity.color}`}>
+                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${activity.bgColor} ${activity.color} transition-all duration-300 group-hover:scale-105`}>
                           <ActivityIcon className="w-3 h-3" />
                           {activity.label}
                         </span>
