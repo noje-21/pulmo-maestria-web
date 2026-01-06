@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
@@ -10,11 +9,22 @@ import Navigation from "@/components/common/Navigation";
 import { SEO } from "@/components/common/SEO";
 import ReactionButton from "@/features/forum/ReactionButton";
 import { useNavigate } from "react-router-dom";
-import { MessageSquare, Calendar, User, Eye, Plus, Search, Filter, Pin } from "lucide-react";
-import { format } from "date-fns";
+import { 
+  MessageSquare, Calendar, User, Eye, Plus, Search, 
+  Filter, Pin, Star, ChevronRight, Clock, TrendingUp,
+  Users, Sparkles
+} from "lucide-react";
+import { format, formatDistanceToNow } from "date-fns";
 import { es } from "date-fns/locale";
 import { toast } from "sonner";
-import { ListSkeleton } from "@/components/common/LoadingSkeleton";
+import { Skeleton } from "@/components/ui/skeleton";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 
 interface ForumPost {
   id: string;
@@ -36,6 +46,24 @@ interface ForumPost {
   forum_comments?: any[];
 }
 
+const ForumCardSkeleton = () => (
+  <div className="bg-card rounded-2xl border border-border/50 p-5 sm:p-6 space-y-4">
+    <div className="flex items-start gap-4">
+      <Skeleton className="w-12 h-12 rounded-full flex-shrink-0" />
+      <div className="flex-1 space-y-3">
+        <Skeleton className="h-6 w-3/4" />
+        <Skeleton className="h-4 w-full" />
+        <Skeleton className="h-4 w-2/3" />
+        <div className="flex gap-4 pt-2">
+          <Skeleton className="h-4 w-20" />
+          <Skeleton className="h-4 w-24" />
+          <Skeleton className="h-4 w-16" />
+        </div>
+      </div>
+    </div>
+  </div>
+);
+
 const Foro = () => {
   const navigate = useNavigate();
   const [posts, setPosts] = useState<ForumPost[]>([]);
@@ -46,6 +74,7 @@ const Foro = () => {
   const [authorFilter, setAuthorFilter] = useState<string>("all");
   const [sortBy, setSortBy] = useState<'recent' | 'popular' | 'commented'>('recent');
   const [authors, setAuthors] = useState<{ id: string; name: string }[]>([]);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
 
   useEffect(() => {
     checkAdmin();
@@ -102,7 +131,6 @@ const Foro = () => {
         query = query.eq("user_id", authorFilter);
       }
 
-      // Ordering mejorado
       if (sortBy === 'popular') {
         query = query.order("views_count", { ascending: false });
       } else if (sortBy === 'commented') {
@@ -120,7 +148,6 @@ const Foro = () => {
         throw error;
       }
       
-      console.log("Foros cargados:", data?.length || 0);
       setPosts(data as any || []);
     } catch (error: any) {
       console.error("Error loading posts:", error);
@@ -138,37 +165,106 @@ const Foro = () => {
     const labels: Record<string, string> = {
       general: "General",
       clinical_questions: "Preguntas Clínicas",
-      case_discussions: "Casos Discutidos",
-      shared_resources: "Recursos Compartidos"
+      case_discussions: "Casos Clínicos",
+      shared_resources: "Recursos"
     };
     return labels[category] || category;
   };
 
-  const getCategoryColor = (category: string) => {
-    const colors: Record<string, string> = {
-      general: "bg-blue-500/10 text-blue-700 dark:text-blue-300",
-      clinical_questions: "bg-purple-500/10 text-purple-700 dark:text-purple-300",
-      case_discussions: "bg-green-500/10 text-green-700 dark:text-green-300",
-      shared_resources: "bg-orange-500/10 text-orange-700 dark:text-orange-300"
+  const getCategoryIcon = (category: string) => {
+    const icons: Record<string, React.ReactNode> = {
+      general: <MessageSquare className="w-3 h-3" />,
+      clinical_questions: <Users className="w-3 h-3" />,
+      case_discussions: <TrendingUp className="w-3 h-3" />,
+      shared_resources: <Sparkles className="w-3 h-3" />
     };
-    return colors[category] || "bg-gray-500/10 text-gray-700";
+    return icons[category] || <MessageSquare className="w-3 h-3" />;
   };
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-muted/30 to-background">
-        <Navigation />
-        <div className="pt-32 pb-20 px-4 sm:px-6 lg:px-8">
-          <div className="max-w-7xl mx-auto">
-            <ListSkeleton items={6} />
-          </div>
-        </div>
+  const getCategoryStyles = (category: string) => {
+    const styles: Record<string, string> = {
+      general: "bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20",
+      clinical_questions: "bg-violet-500/10 text-violet-600 dark:text-violet-400 border-violet-500/20",
+      case_discussions: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20",
+      shared_resources: "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20"
+    };
+    return styles[category] || "bg-muted text-muted-foreground";
+  };
+
+  const getInitials = (name: string) => {
+    return name?.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) || 'U';
+  };
+
+  const activeFiltersCount = [
+    categoryFilter !== "all",
+    authorFilter !== "all"
+  ].filter(Boolean).length;
+
+  const clearFilters = () => {
+    setCategoryFilter("all");
+    setAuthorFilter("all");
+    setSortBy("recent");
+  };
+
+  const FilterContent = () => (
+    <div className="space-y-6">
+      <div className="space-y-3">
+        <label className="text-sm font-medium text-foreground">Categoría</label>
+        <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+          <SelectTrigger className="w-full">
+            <SelectValue placeholder="Todas las categorías" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">Todas las categorías</SelectItem>
+            <SelectItem value="general">General</SelectItem>
+            <SelectItem value="clinical_questions">Preguntas Clínicas</SelectItem>
+            <SelectItem value="case_discussions">Casos Clínicos</SelectItem>
+            <SelectItem value="shared_resources">Recursos</SelectItem>
+          </SelectContent>
+        </Select>
       </div>
-    );
-  }
+
+      <div className="space-y-3">
+        <label className="text-sm font-medium text-foreground">Autor</label>
+        <Select value={authorFilter} onValueChange={setAuthorFilter}>
+          <SelectTrigger className="w-full">
+            <SelectValue placeholder="Todos los autores" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">Todos los autores</SelectItem>
+            {authors.map(author => (
+              <SelectItem key={author.id} value={author.id}>
+                {author.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+
+      <div className="space-y-3">
+        <label className="text-sm font-medium text-foreground">Ordenar por</label>
+        <Select value={sortBy} onValueChange={(value: any) => setSortBy(value)}>
+          <SelectTrigger className="w-full">
+            <SelectValue placeholder="Ordenar por" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="recent">Más recientes</SelectItem>
+            <SelectItem value="popular">Más vistos</SelectItem>
+            <SelectItem value="commented">Más activos</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+
+      {activeFiltersCount > 0 && (
+        <Button variant="outline" onClick={clearFilters} className="w-full">
+          Limpiar filtros ({activeFiltersCount})
+        </Button>
+      )}
+    </div>
+  );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-muted/30 to-background">
+    <div className="min-h-screen bg-gradient-to-b from-background via-muted/20 to-background">
       <SEO 
         title="Foro Comunitario - Maestría en Circulación Pulmonar 2025"
         description="Participa en discusiones, comparte experiencias y conecta con otros profesionales de la salud en nuestro foro comunitario."
@@ -176,230 +272,269 @@ const Foro = () => {
       />
       <Navigation />
       
-      <div className="pt-32 pb-20 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
-          <motion.div
+      <main className="pt-24 sm:pt-28 pb-16 sm:pb-20 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-5xl mx-auto">
+          {/* Header */}
+          <motion.header
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mb-12 text-center"
+            className="mb-8 sm:mb-10"
           >
-            <h1 className="text-5xl md:text-6xl font-bold mb-4">
-              Foro Comunitario
-            </h1>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              Participa en discusiones, comparte experiencias y conecta con otros profesionales
-            </p>
-          </motion.div>
-
-          <div className="space-y-6 mb-8">
-            <div className="flex flex-col lg:flex-row gap-4">
-              <div className="relative flex-1">
-                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
-                <Input
-                  type="text"
-                  placeholder="Buscar publicaciones por título o contenido..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-12 modern-input"
-                />
+            <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-6">
+              <div>
+                <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight mb-2">
+                  Foro Comunitario
+                </h1>
+                <p className="text-muted-foreground text-base sm:text-lg">
+                  Discusiones, casos clínicos y recursos compartidos
+                </p>
               </div>
               {isAdmin && (
                 <Button
                   onClick={() => navigate("/admin/foro")}
-                  className="modern-btn pv-tap-scale whitespace-nowrap"
+                  size="lg"
+                  className="gap-2 shadow-lg hover:shadow-xl transition-shadow"
                 >
-                  <Plus className="w-4 h-4 mr-2" />
-                  Crear Publicación
+                  <Plus className="w-5 h-5" />
+                  Nueva Publicación
                 </Button>
               )}
             </div>
 
-            <div className="flex flex-wrap gap-4 items-center">
-              <div className="flex items-center gap-2">
-                <Filter className="w-4 h-4 text-muted-foreground" />
-                <span className="text-sm font-medium">Filtros:</span>
+            {/* Search & Filters Bar */}
+            <div className="flex flex-col sm:flex-row gap-3">
+              <div className="relative flex-1">
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                <Input
+                  type="text"
+                  placeholder="Buscar publicaciones..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-12 h-12 text-base rounded-xl border-border/50 bg-card/50 backdrop-blur-sm"
+                />
               </div>
               
-              <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-                <SelectTrigger className="w-[200px] modern-input">
-                  <SelectValue placeholder="Categoría" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">Todas las categorías</SelectItem>
-                  <SelectItem value="general">General</SelectItem>
-                  <SelectItem value="clinical_questions">Preguntas Clínicas</SelectItem>
-                  <SelectItem value="case_discussions">Casos Discutidos</SelectItem>
-                  <SelectItem value="shared_resources">Recursos Compartidos</SelectItem>
-                </SelectContent>
-              </Select>
+              {/* Desktop Filters */}
+              <div className="hidden lg:flex items-center gap-3">
+                <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+                  <SelectTrigger className="w-[180px] h-12 rounded-xl">
+                    <SelectValue placeholder="Categoría" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Todas</SelectItem>
+                    <SelectItem value="general">General</SelectItem>
+                    <SelectItem value="clinical_questions">Preguntas Clínicas</SelectItem>
+                    <SelectItem value="case_discussions">Casos Clínicos</SelectItem>
+                    <SelectItem value="shared_resources">Recursos</SelectItem>
+                  </SelectContent>
+                </Select>
 
-              <Select value={authorFilter} onValueChange={setAuthorFilter}>
-                <SelectTrigger className="w-[200px] modern-input">
-                  <SelectValue placeholder="Autor" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">Todos los autores</SelectItem>
-                  {authors.map(author => (
-                    <SelectItem key={author.id} value={author.id}>
-                      {author.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+                <Select value={sortBy} onValueChange={(value: any) => setSortBy(value)}>
+                  <SelectTrigger className="w-[160px] h-12 rounded-xl">
+                    <SelectValue placeholder="Ordenar" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="recent">Recientes</SelectItem>
+                    <SelectItem value="popular">Más vistos</SelectItem>
+                    <SelectItem value="commented">Más activos</SelectItem>
+                  </SelectContent>
+                </Select>
 
-              <Select value={sortBy} onValueChange={(value: any) => setSortBy(value)}>
-                <SelectTrigger className="w-[180px] modern-input">
-                  <SelectValue placeholder="Ordenar" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="recent">Más recientes</SelectItem>
-                  <SelectItem value="popular">Más vistos</SelectItem>
-                  <SelectItem value="commented">Más comentados</SelectItem>
-                </SelectContent>
-              </Select>
+                {activeFiltersCount > 0 && (
+                  <Button variant="ghost" size="sm" onClick={clearFilters}>
+                    Limpiar
+                  </Button>
+                )}
+              </div>
 
-              {(categoryFilter !== "all" || authorFilter !== "all") && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => {
-                    setCategoryFilter("all");
-                    setAuthorFilter("all");
-                  }}
-                  className="text-sm"
-                >
-                  Limpiar filtros
-                </Button>
-              )}
-            </div>
-          </div>
-
-          <AnimatePresence mode="wait">
-            <motion.div 
-              className="grid gap-6"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-            >
-              {posts.map((post, index) => (
-                <motion.div
-                  key={post.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.05 }}
-                >
-                  <Card
-                    onClick={() => navigate(`/foro/${post.id}`)}
-                    className="modern-card pv-glass pv-glow hover:shadow-2xl cursor-pointer transition-all duration-300 hover:scale-[1.01] group overflow-hidden"
-                  >
-                    {(post.is_pinned || post.featured) && (
-                      <div className="bg-gradient-to-r from-primary/10 to-primary/5 px-4 py-2 border-b border-primary/20 flex gap-2">
-                        {post.is_pinned && (
-                          <span className="text-xs font-medium text-primary flex items-center gap-2">
-                            📌 Fijado
-                          </span>
-                        )}
-                        {post.featured && (
-                          <span className="text-xs font-medium text-amber-600 flex items-center gap-2">
-                            ⭐ Destacado
-                          </span>
-                        )}
-                      </div>
+              {/* Mobile Filter Button */}
+              <Sheet open={isFilterOpen} onOpenChange={setIsFilterOpen}>
+                <SheetTrigger asChild className="lg:hidden">
+                  <Button variant="outline" size="lg" className="h-12 gap-2 rounded-xl relative">
+                    <Filter className="w-5 h-5" />
+                    Filtros
+                    {activeFiltersCount > 0 && (
+                      <span className="absolute -top-1 -right-1 w-5 h-5 bg-primary text-primary-foreground text-xs rounded-full flex items-center justify-center">
+                        {activeFiltersCount}
+                      </span>
                     )}
-                    <div className="p-6">
-                      <div className="flex items-start gap-4">
-                        {post.image_url && (
-                          <img
-                            src={post.image_url}
-                            alt={post.title}
-                            className="w-24 h-24 rounded-xl object-cover flex-shrink-0 group-hover:scale-105 transition-transform"
-                            loading="lazy"
-                          />
-                        )}
-                        <div className="flex-1 space-y-3">
-                          <div className="flex items-start justify-between gap-4">
-                            <h3 className="text-2xl font-bold group-hover:text-primary transition-colors line-clamp-2 flex-1">
-                              {post.title}
-                            </h3>
-                            <Badge className={getCategoryColor(post.category)}>
-                              {getCategoryLabel(post.category)}
-                            </Badge>
+                  </Button>
+                </SheetTrigger>
+                <SheetContent side="bottom" className="rounded-t-3xl h-auto max-h-[80vh]">
+                  <SheetHeader className="mb-6">
+                    <SheetTitle>Filtros</SheetTitle>
+                  </SheetHeader>
+                  <FilterContent />
+                </SheetContent>
+              </Sheet>
+            </div>
+          </motion.header>
+
+          {/* Posts Grid */}
+          <AnimatePresence mode="wait">
+            {loading ? (
+              <motion.div 
+                className="space-y-4"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+              >
+                {[...Array(4)].map((_, i) => (
+                  <ForumCardSkeleton key={i} />
+                ))}
+              </motion.div>
+            ) : posts.length > 0 ? (
+              <motion.div 
+                className="space-y-4"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+              >
+                {posts.map((post, index) => (
+                  <motion.article
+                    key={post.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.05, duration: 0.3 }}
+                    onClick={() => navigate(`/foro/${post.id}`)}
+                    className="group cursor-pointer"
+                  >
+                    <div className={`
+                      relative bg-card rounded-2xl border transition-all duration-300
+                      hover:shadow-lg hover:shadow-primary/5 hover:border-primary/20
+                      ${post.featured ? 'border-amber-500/30 bg-gradient-to-r from-amber-500/5 to-transparent' : 'border-border/50'}
+                      ${post.is_pinned ? 'border-primary/30 bg-gradient-to-r from-primary/5 to-transparent' : ''}
+                    `}>
+                      {/* Status Badges */}
+                      {(post.is_pinned || post.featured) && (
+                        <div className="absolute top-0 left-0 right-0 px-4 py-2 flex gap-2 border-b border-border/30">
+                          {post.is_pinned && (
+                            <span className="inline-flex items-center gap-1.5 text-xs font-medium text-primary">
+                              <Pin className="w-3 h-3" />
+                              Fijado
+                            </span>
+                          )}
+                          {post.featured && (
+                            <span className="inline-flex items-center gap-1.5 text-xs font-medium text-amber-600 dark:text-amber-400">
+                              <Star className="w-3 h-3 fill-current" />
+                              Destacado
+                            </span>
+                          )}
+                        </div>
+                      )}
+
+                      <div className={`p-5 sm:p-6 ${(post.is_pinned || post.featured) ? 'pt-12' : ''}`}>
+                        <div className="flex gap-4">
+                          {/* Author Avatar */}
+                          <div className="flex-shrink-0 hidden sm:block">
+                            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center text-primary font-semibold text-sm">
+                              {getInitials(post.profiles?.full_name || '')}
+                            </div>
                           </div>
 
-                          {post.excerpt && (
-                            <p className="text-sm text-muted-foreground line-clamp-2">
-                              {post.excerpt}
-                            </p>
-                          )}
-
-                          <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
-                            <div className="flex items-center gap-2">
-                              <User className="w-4 h-4" />
-                              <span>{post.profiles?.full_name || "Usuario"}</span>
+                          <div className="flex-1 min-w-0">
+                            {/* Title & Category */}
+                            <div className="flex flex-wrap items-start gap-2 mb-2">
+                              <h2 className="text-lg sm:text-xl font-semibold text-foreground group-hover:text-primary transition-colors line-clamp-2 flex-1">
+                                {post.title}
+                              </h2>
+                              <Badge 
+                                variant="outline" 
+                                className={`flex-shrink-0 gap-1 ${getCategoryStyles(post.category)}`}
+                              >
+                                {getCategoryIcon(post.category)}
+                                <span className="hidden sm:inline">{getCategoryLabel(post.category)}</span>
+                              </Badge>
                             </div>
-                            <div className="flex items-center gap-2">
-                              <Calendar className="w-4 h-4" />
-                              <span>
-                                {format(new Date(post.created_at), "dd MMM, yyyy", {
-                                  locale: es,
-                                })}
+
+                            {/* Excerpt */}
+                            {post.excerpt && (
+                              <p className="text-muted-foreground text-sm sm:text-base line-clamp-2 mb-4">
+                                {post.excerpt}
+                              </p>
+                            )}
+
+                            {/* Meta Info */}
+                            <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-muted-foreground">
+                              <div className="flex items-center gap-1.5">
+                                <User className="w-4 h-4" />
+                                <span className="truncate max-w-[120px]">{post.profiles?.full_name || "Usuario"}</span>
+                              </div>
+                              <div className="flex items-center gap-1.5">
+                                <Clock className="w-4 h-4" />
+                                <span>
+                                  {formatDistanceToNow(new Date(post.created_at), { addSuffix: true, locale: es })}
+                                </span>
+                              </div>
+                              <div className="flex items-center gap-1.5">
+                                <Eye className="w-4 h-4" />
+                                <span>{post.views_count}</span>
+                              </div>
+                              <div className="flex items-center gap-1.5">
+                                <MessageSquare className="w-4 h-4" />
+                                <span>{Array.isArray(post.forum_comments) ? post.forum_comments.length : 0}</span>
+                              </div>
+                            </div>
+
+                            {/* Actions Row */}
+                            <div className="flex items-center justify-between mt-4 pt-4 border-t border-border/30">
+                              <div onClick={(e) => e.stopPropagation()}>
+                                <ReactionButton 
+                                  postType="forum" 
+                                  postId={post.id} 
+                                  initialCount={post.reactions_count || 0}
+                                />
+                              </div>
+                              <span className="text-sm text-primary font-medium flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                Leer más
+                                <ChevronRight className="w-4 h-4" />
                               </span>
                             </div>
-                            <div className="flex items-center gap-2">
-                              <Eye className="w-4 h-4" />
-                              <span>{post.views_count} vistas</span>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <MessageSquare className="w-4 h-4" />
-                              <span>{Array.isArray(post.forum_comments) ? post.forum_comments.length : 0} comentarios</span>
-                            </div>
                           </div>
-                        </div>
-                      </div>
 
-                      <div className="flex items-center justify-between pt-4 border-t border-border/50 mt-4">
-                        <div onClick={(e) => e.stopPropagation()}>
-                          <ReactionButton 
-                            postType="forum" 
-                            postId={post.id} 
-                            initialCount={post.reactions_count || 0}
-                          />
+                          {/* Image Thumbnail */}
+                          {post.image_url && (
+                            <div className="flex-shrink-0 hidden md:block">
+                              <img
+                                src={post.image_url}
+                                alt=""
+                                className="w-28 h-28 rounded-xl object-cover group-hover:scale-105 transition-transform duration-300"
+                                loading="lazy"
+                              />
+                            </div>
+                          )}
                         </div>
                       </div>
                     </div>
-                  </Card>
-                </motion.div>
-              ))}
-
-              {posts.length === 0 && (
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                >
-                  <Card className="p-12 text-center modern-card pv-glass pv-glow">
-                    <MessageSquare className="w-16 h-16 mx-auto mb-4 text-muted-foreground opacity-50" />
-                    <h3 className="text-2xl font-bold mb-2">No se encontraron publicaciones</h3>
-                    <p className="text-muted-foreground mb-6">
-                      {searchQuery || categoryFilter !== "all" || authorFilter !== "all"
-                        ? "Intenta ajustar los filtros de búsqueda"
-                        : "Sé el primero en iniciar una conversación"}
-                    </p>
-                    {isAdmin && !searchQuery && categoryFilter === "all" && authorFilter === "all" && (
-                      <Button
-                        onClick={() => navigate("/admin/foro")}
-                        className="modern-btn pv-tap-scale"
-                      >
-                        <Plus className="w-4 h-4 mr-2" />
-                        Crear Primera Publicación
-                      </Button>
-                    )}
-                  </Card>
-                </motion.div>
-              )}
-            </motion.div>
+                  </motion.article>
+                ))}
+              </motion.div>
+            ) : (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="text-center py-16 sm:py-20"
+              >
+                <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-muted flex items-center justify-center">
+                  <MessageSquare className="w-10 h-10 text-muted-foreground" />
+                </div>
+                <h3 className="text-xl sm:text-2xl font-semibold mb-2">
+                  No se encontraron publicaciones
+                </h3>
+                <p className="text-muted-foreground mb-6 max-w-md mx-auto">
+                  {searchQuery || categoryFilter !== "all" || authorFilter !== "all"
+                    ? "Intenta ajustar los filtros de búsqueda"
+                    : "Sé el primero en iniciar una conversación"}
+                </p>
+                {isAdmin && !searchQuery && categoryFilter === "all" && authorFilter === "all" && (
+                  <Button onClick={() => navigate("/admin/foro")} size="lg" className="gap-2">
+                    <Plus className="w-5 h-5" />
+                    Crear Primera Publicación
+                  </Button>
+                )}
+              </motion.div>
+            )}
           </AnimatePresence>
         </div>
-      </div>
+      </main>
     </div>
   );
 };
