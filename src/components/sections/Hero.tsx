@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { ChevronDown, Calendar, MapPin, ExternalLink, Award, Users, Clock, Globe } from "lucide-react";
+import { ChevronDown, Calendar, MapPin, ExternalLink, Award, Users, Clock, Globe, Heart, Stethoscope } from "lucide-react";
 import heroImage from "@/assets/hero-banner.jpg";
 
 export const Hero = () => {
@@ -34,13 +34,31 @@ export const Hero = () => {
           fetchPriority="high"
         />
         {/* Multi-layer gradient for depth */}
-        <div className="absolute inset-0 bg-gradient-to-b from-primary/95 via-primary/80 to-primary-dark/95" />
+        <div className="absolute inset-0 bg-gradient-to-b from-primary/95 via-primary/85 to-primary-dark/95" />
         <div className="absolute inset-0 bg-mesh-pattern" />
+        {/* Animated medical icons background */}
+        <div className="absolute inset-0 overflow-hidden opacity-[0.03]">
+          <motion.div 
+            animate={{ rotate: 360 }}
+            transition={{ duration: 120, repeat: Infinity, ease: "linear" }}
+            className="absolute -top-1/4 -right-1/4 w-full h-full"
+          >
+            <Stethoscope className="absolute top-1/4 right-1/4 w-96 h-96 text-white" />
+          </motion.div>
+          <motion.div 
+            animate={{ rotate: -360 }}
+            transition={{ duration: 150, repeat: Infinity, ease: "linear" }}
+            className="absolute -bottom-1/4 -left-1/4 w-full h-full"
+          >
+            <Heart className="absolute bottom-1/4 left-1/4 w-72 h-72 text-white" />
+          </motion.div>
+        </div>
       </div>
 
       {/* Decorative Elements */}
       <div className="absolute top-20 left-10 w-72 h-72 bg-accent/20 rounded-full blur-[100px] animate-pulse-subtle" />
       <div className="absolute bottom-20 right-10 w-96 h-96 bg-accent/15 rounded-full blur-[120px]" />
+      <div className="absolute top-1/3 right-1/4 w-48 h-48 bg-white/5 rounded-full blur-[80px]" />
 
       {/* Main Content */}
       <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-16 text-center">
@@ -57,6 +75,17 @@ export const Hero = () => {
           </span>
         </motion.div>
 
+        {/* Problem Statement - Storytelling */}
+        <motion.p
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.05 }}
+          className="text-white/70 text-sm sm:text-base mb-4 max-w-2xl mx-auto px-4"
+        >
+          La hipertensión pulmonar afecta a millones en Latinoamérica. 
+          La formación especializada marca la diferencia.
+        </motion.p>
+
         {/* Title */}
         <motion.h1
           initial={{ opacity: 0, y: 30 }}
@@ -69,15 +98,18 @@ export const Hero = () => {
           <span className="text-accent-light">Circulación Pulmonar</span>
         </motion.h1>
 
-        {/* Subtitle */}
+        {/* Subtitle - Solution Statement */}
         <motion.p
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
           className="text-sm xs:text-base sm:text-lg md:text-xl lg:text-2xl text-white/90 mb-8 sm:mb-10 max-w-3xl mx-auto leading-relaxed px-2"
         >
-          Formación intensiva de excelencia dirigida a internistas, cardiólogos, 
-          reumatólogos y neumonólogos de Latinoamérica
+          <span className="font-semibold">Formación intensiva de excelencia</span> dirigida a internistas, cardiólogos, 
+          reumatólogos y neumonólogos de Latinoamérica. 
+          <span className="block mt-2 text-accent-light font-medium">
+            Transforma tu práctica clínica en 12 días.
+          </span>
         </motion.p>
 
         {/* Event Info Cards */}

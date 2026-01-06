@@ -1,6 +1,13 @@
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Calendar, MapPin, ExternalLink, Sparkles } from "lucide-react";
+import { ArrowRight, Calendar, MapPin, ExternalLink, Sparkles, CheckCircle, Users, Award } from "lucide-react";
+
+const benefits = [
+  "Certificación internacional reconocida",
+  "Red de contactos profesionales",
+  "Casos clínicos reales",
+  "Actualización continua"
+];
 
 export const CTAFinal = () => {
   const scrollToContact = () => {
@@ -20,71 +27,134 @@ export const CTAFinal = () => {
       <div className="absolute bottom-0 right-0 w-[600px] h-[600px] bg-accent/10 rounded-full blur-[180px] translate-x-1/2 translate-y-1/2" />
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-dots-pattern opacity-5" />
 
-      <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-        >
-          {/* Badge */}
-          <span className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/10 backdrop-blur-md text-white text-sm font-semibold border border-white/20 mb-8 shadow-lg">
-            <Sparkles className="w-4 h-4 text-accent-light" />
-            Cupos Limitados
-          </span>
+      <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+          {/* Left - Content */}
+          <motion.div
+            initial={{ opacity: 0, x: -30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="text-center lg:text-left"
+          >
+            {/* Badge */}
+            <span className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/10 backdrop-blur-md text-white text-sm font-semibold border border-white/20 mb-6 shadow-lg">
+              <Sparkles className="w-4 h-4 text-accent-light" />
+              Cupos Limitados 2025
+            </span>
 
-          {/* Title */}
-          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
-            Transforma tu Carrera en
-            <br />
-            <span className="text-accent-light">Circulación Pulmonar</span>
-          </h2>
+            {/* Title */}
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4 leading-tight">
+              El momento de especializarte es 
+              <span className="text-accent-light"> ahora</span>
+            </h2>
 
-          {/* Description */}
-          <p className="text-lg md:text-xl text-white/85 mb-10 max-w-2xl mx-auto leading-relaxed">
-            Únete a la próxima generación de especialistas en hipertensión pulmonar. 
-            Inscríbete ahora y asegura tu lugar en esta formación de excelencia.
-          </p>
+            {/* Storytelling description */}
+            <p className="text-base md:text-lg text-white/85 mb-6 leading-relaxed">
+              Miles de pacientes en Latinoamérica esperan profesionales capacitados 
+              en circulación pulmonar. Sé parte de la solución y transforma tu carrera.
+            </p>
 
-          {/* Event info */}
-          <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 items-center justify-center mb-12">
-            <div className="flex items-center gap-2.5 text-white/85">
-              <div className="p-2 rounded-lg bg-white/10">
-                <Calendar className="w-5 h-5 text-accent-light" />
+            {/* Benefits list */}
+            <ul className="space-y-3 mb-8">
+              {benefits.map((benefit, index) => (
+                <motion.li
+                  key={index}
+                  initial={{ opacity: 0, x: -20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.2 + index * 0.1 }}
+                  className="flex items-center gap-3 text-white/90"
+                >
+                  <CheckCircle className="w-5 h-5 text-accent-light flex-shrink-0" />
+                  <span>{benefit}</span>
+                </motion.li>
+              ))}
+            </ul>
+
+            {/* Social proof */}
+            <div className="flex items-center gap-4 mb-8 justify-center lg:justify-start">
+              <div className="flex -space-x-2">
+                {[...Array(4)].map((_, i) => (
+                  <div 
+                    key={i} 
+                    className="w-10 h-10 rounded-full bg-gradient-to-br from-accent to-accent-light border-2 border-white/20 flex items-center justify-center text-white text-xs font-bold"
+                  >
+                    {['AL', 'MR', 'JC', 'DP'][i]}
+                  </div>
+                ))}
               </div>
-              <span className="font-medium">3 - 15 de noviembre 2025</span>
-            </div>
-            <span className="hidden sm:block w-1.5 h-1.5 rounded-full bg-white/40" />
-            <div className="flex items-center gap-2.5 text-white/85">
-              <div className="p-2 rounded-lg bg-white/10">
-                <MapPin className="w-5 h-5 text-accent-light" />
+              <div className="text-white/80 text-sm">
+                <span className="font-semibold text-white">+50 profesionales</span>
+                <br />formados en 2024
               </div>
-              <span className="font-medium">Buenos Aires, Argentina</span>
             </div>
-          </div>
+          </motion.div>
 
-          {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 items-center justify-center">
-            <Button 
-              size="lg" 
-              onClick={scrollToContact}
-              className="btn-hero group min-h-[56px] w-full sm:w-auto"
-            >
-              <span>Inscribirme Ahora</span>
-              <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
-            </Button>
-            
-            <Button
-              variant="outline"
-              size="lg"
-              onClick={() => window.open("https://www.maestriacp.com/", "_blank")}
-              className="bg-white/10 backdrop-blur-md border-2 border-white/30 text-white hover:bg-white/20 hover:border-white/50 font-semibold px-8 py-5 rounded-full transition-all duration-400 min-h-[56px] w-full sm:w-auto"
-            >
-              Ver Campus Virtual
-              <ExternalLink className="w-4 h-4 ml-2" />
-            </Button>
-          </div>
-        </motion.div>
+          {/* Right - CTA Card */}
+          <motion.div
+            initial={{ opacity: 0, x: 30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="bg-white/10 backdrop-blur-xl rounded-3xl p-8 md:p-10 border border-white/20 shadow-2xl"
+          >
+            <div className="text-center">
+              <div className="inline-flex items-center gap-2 text-accent-light font-semibold mb-4">
+                <Award className="w-5 h-5" />
+                Próxima Edición
+              </div>
+
+              {/* Event info */}
+              <div className="space-y-4 mb-8">
+                <div className="flex items-center justify-center gap-3 text-white">
+                  <div className="p-2.5 rounded-xl bg-white/10">
+                    <Calendar className="w-5 h-5 text-accent-light" />
+                  </div>
+                  <span className="font-semibold text-lg">3 - 15 de noviembre 2025</span>
+                </div>
+                <div className="flex items-center justify-center gap-3 text-white">
+                  <div className="p-2.5 rounded-xl bg-white/10">
+                    <MapPin className="w-5 h-5 text-accent-light" />
+                  </div>
+                  <span className="font-semibold text-lg">Buenos Aires, Argentina</span>
+                </div>
+                <div className="flex items-center justify-center gap-3 text-white/80">
+                  <div className="p-2.5 rounded-xl bg-white/10">
+                    <Users className="w-5 h-5 text-accent-light" />
+                  </div>
+                  <span>12 días presenciales intensivos</span>
+                </div>
+              </div>
+
+              {/* CTA Buttons */}
+              <div className="space-y-3">
+                <Button 
+                  size="lg" 
+                  onClick={scrollToContact}
+                  className="btn-hero group min-h-[56px] w-full"
+                >
+                  <span>Inscribirme Ahora</span>
+                  <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
+                </Button>
+                
+                <Button
+                  variant="outline"
+                  size="lg"
+                  onClick={() => window.open("https://www.maestriacp.com/", "_blank")}
+                  className="bg-transparent border-2 border-white/30 text-white hover:bg-white/10 hover:border-white/50 font-semibold px-8 py-5 rounded-full transition-all duration-400 min-h-[52px] w-full"
+                >
+                  Ver Campus Virtual
+                  <ExternalLink className="w-4 h-4 ml-2" />
+                </Button>
+              </div>
+
+              <p className="text-white/60 text-sm mt-6">
+                Sin compromiso · Respuesta en 24h
+              </p>
+            </div>
+          </motion.div>
+        </div>
       </div>
     </section>
   );

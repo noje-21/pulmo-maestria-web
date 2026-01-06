@@ -12,9 +12,10 @@ import ReactionButton from "@/features/forum/ReactionButton";
 import { useNavigate } from "react-router-dom";
 import { 
   MessageSquare, User, Eye, Plus, Search, 
-  Filter, Pin, Star, ChevronRight, Clock, Sparkles
+  Filter, Pin, Star, ChevronRight, Clock, Sparkles,
+  Activity, TrendingUp, Flame, Zap
 } from "lucide-react";
-import { formatDistanceToNow } from "date-fns";
+import { formatDistanceToNow, differenceInHours, differenceInDays } from "date-fns";
 import { es } from "date-fns/locale";
 import { toast } from "sonner";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -34,6 +35,7 @@ interface ForumPost {
   category: string;
   image_url?: string;
   created_at: string;
+  updated_at?: string;
   views_count: number;
   reactions_count?: number;
   is_pinned: boolean;
@@ -46,11 +48,32 @@ interface ForumPost {
   forum_comments?: any[];
 }
 
+// Determina el estado de actividad del post
+const getActivityStatus = (post: ForumPost) => {
+  const now = new Date();
+  const lastActivity = post.updated_at ? new Date(post.updated_at) : new Date(post.created_at);
+  const hoursAgo = differenceInHours(now, lastActivity);
+  const daysAgo = differenceInDays(now, lastActivity);
+  
+  if (hoursAgo < 24) {
+    return { status: 'hot', label: 'Activo hoy', color: 'text-orange-500', bgColor: 'bg-orange-500/10', icon: Flame };
+  } else if (daysAgo <= 3) {
+    return { status: 'recent', label: `Hace ${daysAgo} día${daysAgo > 1 ? 's' : ''}`, color: 'text-green-500', bgColor: 'bg-green-500/10', icon: Zap };
+  } else if (daysAgo <= 7) {
+    return { status: 'active', label: 'Esta semana', color: 'text-blue-500', bgColor: 'bg-blue-500/10', icon: Activity };
+  }
+  return { status: 'inactive', label: `Hace ${daysAgo} días`, color: 'text-muted-foreground', bgColor: 'bg-muted', icon: Clock };
+};
+
 const ForumCardSkeleton = () => (
   <div className="card-base p-5 sm:p-6 space-y-4">
     <div className="flex items-start gap-4">
-      <Skeleton className="w-11 h-11 rounded-full flex-shrink-0" />
+      <Skeleton className="w-12 h-12 rounded-full flex-shrink-0" />
       <div className="flex-1 space-y-3">
+        <div className="flex items-center gap-2">
+          <Skeleton className="h-5 w-20 rounded-full" />
+          <Skeleton className="h-5 w-16 rounded-full" />
+        </div>
         <Skeleton className="h-6 w-3/4" />
         <Skeleton className="h-4 w-full" />
         <Skeleton className="h-4 w-2/3" />
@@ -358,7 +381,12 @@ const Foro = () => {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
               >
-                {posts.map((post, index) => (
+                {posts.map((post, index) => {
+                  const activity = getActivityStatus(post);
+                  const ActivityIcon = activity.icon;
+                  const commentsCount = Array.isArray(post.forum_comments) ? post.forum_comments.length : 0;
+                  
+                  return (
                   <motion.article
                     key={post.id}
                     initial={{ opacity: 0, y: 20 }}
@@ -368,21 +396,36 @@ const Foro = () => {
                     className="group cursor-pointer"
                   >
                     <div className={`
-                      card-base card-hover p-5 sm:p-6 transition-all duration-400
+                      card-base card-hover p-5 sm:p-6 transition-all duration-400 relative
                       ${post.featured ? 'card-featured border-accent/30' : ''}
                       ${post.is_pinned ? 'border-primary/30 bg-primary/[0.02]' : ''}
+                      ${activity.status === 'hot' ? 'ring-1 ring-orange-500/20' : ''}
                     `}>
-                      {/* Status Badges */}
-                      {(post.is_pinned || post.featured) && (
-                        <div className="flex gap-2 mb-4">
-                          {post.is_pinned && (
-                            <CategoryBadge category="pinned" size="sm" />
-                          )}
-                          {post.featured && (
-                            <CategoryBadge category="featured" size="sm" />
-                          )}
-                        </div>
+                      {/* Activity Indicator Line */}
+                      {activity.status === 'hot' && (
+                        <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-orange-500 to-orange-400 rounded-l-2xl" />
                       )}
+                      
+                      {/* Status Badges */}
+                      <div className="flex flex-wrap items-center gap-2 mb-4">
+                        {post.is_pinned && (
+                          <CategoryBadge category="pinned" size="sm" />
+                        )}
+                        {post.featured && (
+                          <CategoryBadge category="featured" size="sm" />
+                        )}
+                        {/* Activity Badge */}
+                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${activity.bgColor} ${activity.color}`}>
+                          <ActivityIcon className="w-3 h-3" />
+                          {activity.label}
+                        </span>
+                        {commentsCount >= 5 && (
+                          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-purple-500/10 text-purple-500">
+                            <TrendingUp className="w-3 h-3" />
+                            Popular
+                          </span>
+                        )}
+                      </div>
 
                       <div className="flex gap-4">
                         {/* Author Avatar */}
@@ -433,9 +476,9 @@ const Foro = () => {
                               <Eye className="w-4 h-4" />
                               <span>{post.views_count}</span>
                             </div>
-                            <div className="flex items-center gap-1.5">
+                            <div className={`flex items-center gap-1.5 ${commentsCount > 0 ? 'text-primary font-medium' : ''}`}>
                               <MessageSquare className="w-4 h-4" />
-                              <span>{Array.isArray(post.forum_comments) ? post.forum_comments.length : 0}</span>
+                              <span>{commentsCount} {commentsCount === 1 ? 'respuesta' : 'respuestas'}</span>
                             </div>
                           </div>
 
@@ -448,28 +491,17 @@ const Foro = () => {
                                 initialCount={post.reactions_count || 0}
                               />
                             </div>
-                            <span className="text-sm text-primary font-medium flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                              Leer más
+                            <span className="inline-flex items-center gap-2 text-primary font-medium text-sm group-hover:gap-3 transition-all">
+                              Ver discusión
                               <ChevronRight className="w-4 h-4" />
                             </span>
                           </div>
                         </div>
-
-                        {/* Image Thumbnail */}
-                        {post.image_url && (
-                          <div className="flex-shrink-0 hidden md:block">
-                            <img
-                              src={post.image_url}
-                              alt=""
-                              className="w-28 h-28 rounded-xl object-cover group-hover:scale-105 transition-transform duration-400"
-                              loading="lazy"
-                            />
-                          </div>
-                        )}
                       </div>
                     </div>
                   </motion.article>
-                ))}
+                  );
+                })}
               </motion.div>
             ) : (
               <motion.div
@@ -477,19 +509,30 @@ const Foro = () => {
                 animate={{ opacity: 1, scale: 1 }}
                 className="text-center py-16 sm:py-20"
               >
-                <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-muted flex items-center justify-center">
-                  <MessageSquare className="w-10 h-10 text-muted-foreground" />
+                <div className="relative mb-6 mx-auto w-fit">
+                  <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-accent/20 rounded-full blur-xl scale-150" />
+                  <div className="relative p-5 bg-gradient-to-br from-muted to-muted/50 rounded-2xl border border-border/50">
+                    <MessageSquare className="w-12 h-12 text-muted-foreground" />
+                  </div>
                 </div>
-                <h3 className="text-xl sm:text-2xl font-semibold mb-2">
-                  No se encontraron publicaciones
+                <h3 className="text-xl sm:text-2xl font-bold mb-2">
+                  {searchQuery || categoryFilter !== "all" || authorFilter !== "all"
+                    ? "No se encontraron publicaciones"
+                    : "¡Bienvenido al Foro!"}
                 </h3>
-                <p className="text-muted-foreground mb-6 max-w-md mx-auto">
+                <p className="text-muted-foreground mb-2 max-w-md mx-auto">
                   {searchQuery || categoryFilter !== "all" || authorFilter !== "all"
                     ? "Intenta ajustar los filtros de búsqueda"
-                    : "Sé el primero en iniciar una conversación"}
+                    : "Aquí podrás discutir casos clínicos, compartir recursos y conectar con otros profesionales."}
                 </p>
+                {!searchQuery && categoryFilter === "all" && authorFilter === "all" && (
+                  <p className="text-sm text-accent font-medium mb-6 flex items-center justify-center gap-2">
+                    <Sparkles className="w-4 h-4" />
+                    ¡Sé el primero en iniciar la conversación!
+                  </p>
+                )}
                 {isAdmin && !searchQuery && categoryFilter === "all" && authorFilter === "all" && (
-                  <Button onClick={() => navigate("/admin/foro")} size="lg" className="gap-2">
+                  <Button onClick={() => navigate("/admin/foro")} size="lg" className="btn-accent gap-2 mt-4">
                     <Plus className="w-5 h-5" />
                     Crear Primera Publicación
                   </Button>
