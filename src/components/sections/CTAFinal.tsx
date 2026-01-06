@@ -27,14 +27,14 @@ export const CTAFinal = () => {
       <div className="absolute bottom-0 right-0 w-[600px] h-[600px] bg-accent/10 rounded-full blur-[180px] translate-x-1/2 translate-y-1/2" />
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-dots-pattern opacity-5" />
 
-      <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+      <div className="relative z-10 max-w-6xl xl:max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12">
+        <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 xl:gap-20 items-center">
           {/* Left - Content */}
           <motion.div
-            initial={{ opacity: 0, x: -30 }}
+            initial={{ opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
+            transition={{ duration: 0.4 }}
             className="text-center lg:text-left"
           >
             {/* Badge */}
@@ -61,10 +61,10 @@ export const CTAFinal = () => {
               {benefits.map((benefit, index) => (
                 <motion.li
                   key={index}
-                  initial={{ opacity: 0, x: -20 }}
+                  initial={{ opacity: 0, x: -15 }}
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
-                  transition={{ delay: 0.2 + index * 0.1 }}
+                  transition={{ delay: 0.15 + index * 0.06 }}
                   className="flex items-center gap-3 text-white/90"
                 >
                   <CheckCircle className="w-5 h-5 text-accent-light flex-shrink-0" />
@@ -94,11 +94,11 @@ export const CTAFinal = () => {
 
           {/* Right - CTA Card */}
           <motion.div
-            initial={{ opacity: 0, x: 30 }}
+            initial={{ opacity: 0, x: 20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="bg-white/10 backdrop-blur-xl rounded-3xl p-8 md:p-10 border border-white/20 shadow-2xl brand-accent-bar"
+            transition={{ duration: 0.4, delay: 0.1 }}
+            className="bg-white/10 backdrop-blur-xl rounded-3xl p-8 md:p-10 lg:p-12 border border-white/20 shadow-2xl brand-accent-bar lg:hover:scale-[1.01] transition-transform duration-200"
           >
             <div className="text-center">
               <div className="inline-flex items-center gap-2 text-accent-light font-semibold mb-4">
@@ -143,7 +143,7 @@ export const CTAFinal = () => {
                   variant="outline"
                   size="lg"
                   onClick={() => window.location.href = "https://www.maestriacp.com/"}
-                  className="bg-transparent border-2 border-white/30 text-white hover:bg-white/10 hover:border-white/50 font-semibold px-8 py-5 rounded-full transition-all duration-400 min-h-[52px] w-full"
+                  className="bg-transparent border-2 border-white/30 text-white hover:bg-white/10 hover:border-white/50 font-semibold px-8 py-5 rounded-full transition-all duration-200 min-h-[52px] w-full"
                 >
                   Ver Campus Virtual
                   <ExternalLink className="w-4 h-4 ml-2" />

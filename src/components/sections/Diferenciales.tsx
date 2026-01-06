@@ -53,17 +53,17 @@ const containerVariants = {
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.08
+      staggerChildren: 0.06
     }
   }
 };
 
 const cardVariants = {
-  hidden: { opacity: 0, y: 24 },
+  hidden: { opacity: 0, y: 20 },
   visible: { 
     opacity: 1, 
     y: 0,
-    transition: { duration: 0.5 }
+    transition: { duration: 0.35 }
   }
 };
 
@@ -81,7 +81,7 @@ export const Diferenciales = () => {
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, margin: "-50px" }}
-        className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6"
+        className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 lg:gap-8"
       >
         {diferenciales.map((item, index) => (
           <motion.div 
@@ -89,7 +89,7 @@ export const Diferenciales = () => {
             variants={cardVariants}
             className="group"
           >
-            <div className="card-base card-hover h-full p-6 md:p-7 brand-card-signature">
+            <div className="card-base card-hover h-full p-6 md:p-7 lg:p-8 brand-card-signature lg:hover:scale-[1.02] transition-transform duration-200">
               {/* Icon with gradient background */}
               <div className={`inline-flex p-3.5 rounded-2xl mb-5 transition-all duration-400 group-hover:scale-110 ${
                 item.color === 'primary' 

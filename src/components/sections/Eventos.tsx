@@ -62,7 +62,7 @@ export const Eventos = () => {
         </motion.div>
 
         {/* Timeline */}
-        <div className="relative max-w-4xl mx-auto">
+        <div className="relative max-w-5xl xl:max-w-6xl mx-auto">
           {/* Center Line - Desktop only */}
           <div className="hidden md:block absolute left-1/2 top-0 bottom-0 w-0.5 bg-gradient-to-b from-primary via-accent to-primary/30 -translate-x-1/2" />
           
@@ -71,17 +71,17 @@ export const Eventos = () => {
             {eventos.map((evento, index) => (
               <motion.div
                 key={index}
-                initial={{ opacity: 0, x: index % 2 === 0 ? -30 : 30 }}
+                initial={{ opacity: 0, x: index % 2 === 0 ? -20 : 20 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
+                transition={{ duration: 0.35, delay: index * 0.08 }}
                 className={`relative md:flex items-center ${
                   index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'
                 }`}
               >
                 {/* Card */}
-                <div className={`md:w-[calc(50%-2rem)] ${index % 2 === 0 ? 'md:pr-0' : 'md:pl-0'}`}>
-                  <Card className="card-base card-hover group bg-card overflow-hidden">
+                <div className={`md:w-[calc(50%-2.5rem)] lg:w-[calc(50%-3rem)] ${index % 2 === 0 ? 'md:pr-0' : 'md:pl-0'}`}>
+                  <Card className="card-base card-hover group bg-card overflow-hidden lg:hover:scale-[1.02] transition-transform duration-200">
                     <CardContent className="p-0">
                       <div className="flex items-stretch">
                         {/* Date Badge */}
