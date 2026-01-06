@@ -61,40 +61,40 @@ export const Hero = () => {
 
       {/* Main Content */}
       <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-16 text-center">
-        {/* Problem Statement - Storytelling */}
+        {/* Problem Statement - Emotional Hook */}
         <motion.p
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.05 }}
-          className="text-white/70 text-sm sm:text-base mb-4 max-w-2xl mx-auto px-4"
+          className="text-white/80 text-sm sm:text-base mb-6 max-w-2xl mx-auto px-4 leading-relaxed"
         >
-          La hipertensión pulmonar afecta a millones en Latinoamérica. 
-          La formación especializada marca la diferencia.
+          Cada día, miles de pacientes con hipertensión pulmonar en Latinoamérica 
+          necesitan médicos que entiendan su complejidad. <span className="text-accent-light font-medium">Tú puedes ser ese profesional.</span>
         </motion.p>
 
-        {/* Title */}
+        {/* Title - Purpose-driven */}
         <motion.h1
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.1 }}
           className="text-3xl xs:text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-4 sm:mb-6 leading-[1.1] text-balance px-2"
         >
-          Maestría Latinoamericana en
+          Forma parte del cambio en
           <br className="hidden xs:block" />
           <span className="text-accent-light">Circulación Pulmonar</span>
         </motion.h1>
 
-        {/* Subtitle - Solution Statement */}
+        {/* Subtitle - Connection & Purpose */}
         <motion.p
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
           className="text-sm xs:text-base sm:text-lg md:text-xl lg:text-2xl text-white/90 mb-8 sm:mb-10 max-w-3xl mx-auto leading-relaxed px-2"
         >
-          <span className="font-semibold">Formación intensiva de excelencia</span> dirigida a internistas, cardiólogos, 
-          reumatólogos y neumonólogos de Latinoamérica. 
-          <span className="block mt-2 text-accent-light font-medium">
-            Transforma tu práctica clínica en 12 días.
+          <span className="font-semibold">Una formación diseñada para quienes creen</span> que la 
+          excelencia clínica transforma vidas.
+          <span className="block mt-3 text-accent-light font-medium">
+            12 días que marcarán tu carrera y la vida de tus pacientes.
           </span>
         </motion.p>
 
@@ -137,22 +137,22 @@ export const Hero = () => {
         >
           <Button 
             size="lg" 
-            onClick={() => window.location.href = "https://www.maestriacp.com/"}
-            aria-label="Acceder al Campus Virtual"
+            onClick={() => scrollToSection("contacto")}
+            aria-label="Quiero transformar mi práctica clínica"
             className="btn-hero group w-full sm:w-auto min-h-[56px] brand-cta-glow"
           >
-            <span>Ver Campus Virtual</span>
+            <span>Quiero ser parte</span>
             <ExternalLink className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" aria-hidden="true" />
           </Button>
           
           <Button
             variant="outline"
             size="lg"
-            onClick={() => scrollToSection("contacto")}
-            aria-label="Ir a sección de contacto"
+            onClick={() => window.location.href = "https://www.maestriacp.com/"}
+            aria-label="Conocer el programa completo"
             className="bg-white/10 backdrop-blur-md border-2 border-white/30 text-white hover:bg-white/20 hover:border-white/50 font-semibold px-8 py-5 rounded-full transition-all duration-400 w-full sm:w-auto min-h-[56px]"
           >
-            Solicitar Información
+            Conocer el programa
           </Button>
         </motion.div>
 

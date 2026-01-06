@@ -13,14 +13,14 @@ const instituciones = [
 const valores = [
   {
     icon: Target,
-    titulo: "Nuestra Misión",
-    descripcion: "Formar especialistas de excelencia en el diagnóstico y tratamiento de enfermedades vasculares pulmonares, un campo en constante evolución que requiere actualización continua y conocimientos multidisciplinarios.",
+    titulo: "Nuestro Propósito",
+    descripcion: "Sabemos que detrás de cada diagnóstico hay una persona que confía en ti. Por eso formamos médicos que no solo tratan enfermedades, sino que transforman vidas con conocimiento de vanguardia y criterio clínico sólido.",
     color: "primary"
   },
   {
     icon: Handshake,
-    titulo: "Nuestro Compromiso",
-    descripcion: "Ofrecer formación de alta calidad basada en evidencia científica actualizada, combinando teoría y práctica para capacitar profesionales capaces de impactar positivamente en la salud cardiovascular de la región.",
+    titulo: "Nuestro Compromiso Contigo",
+    descripcion: "No solo compartimos conocimiento: te acompañamos en tu crecimiento profesional. Aquí encontrarás mentores que entienden los desafíos de la práctica clínica real y una comunidad que te respalda.",
     color: "accent"
   }
 ];
@@ -31,7 +31,7 @@ export const QuienesSomos = () => {
       <div className="absolute inset-0 bg-dots-pattern opacity-30" />
       
       <div className="section-container relative z-10">
-        {/* Section Header */}
+        {/* Section Header with Story */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -39,10 +39,11 @@ export const QuienesSomos = () => {
           transition={{ duration: 0.5 }}
           className="section-header"
         >
-          <h2 className="section-title">Quiénes Somos</h2>
+          <h2 className="section-title">El equipo detrás de tu formación</h2>
           <div className="section-divider" />
-          <p className="section-subtitle">
-            Excelencia académica respaldada por instituciones líderes
+          <p className="section-subtitle max-w-3xl mx-auto">
+            Somos un grupo de especialistas que vivimos los mismos desafíos que tú enfrentas. 
+            Por eso creamos el programa que hubiéramos querido tener.
           </p>
         </motion.div>
 

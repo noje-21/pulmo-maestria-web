@@ -12,38 +12,38 @@ import {
 const diferenciales = [
   {
     icon: GraduationCap,
-    title: "Formación de Excelencia",
-    description: "Programa académico riguroso diseñado por expertos internacionales en circulación pulmonar.",
+    title: "Formación que transforma",
+    description: "No es solo teoría. Cada módulo está diseñado para que al día siguiente tengas nuevas herramientas en tu consulta.",
     color: "primary" as const
   },
   {
     icon: Globe,
-    title: "Enfoque Latinoamericano",
-    description: "Contenido adaptado a la realidad clínica y epidemiológica de nuestra región.",
+    title: "Pensado para Latinoamérica",
+    description: "Entendemos los desafíos de nuestra región: recursos limitados, casos complejos, pacientes que llegan tarde. Formamos para esa realidad.",
     color: "accent" as const
   },
   {
     icon: Users,
-    title: "Networking Profesional",
-    description: "Conecta con especialistas de toda Latinoamérica y construye relaciones duraderas.",
+    title: "Una comunidad que acompaña",
+    description: "Aquí no termina cuando acaban las clases. Construyes conexiones con colegas que enfrentan los mismos retos.",
     color: "primary" as const
   },
   {
     icon: Award,
-    title: "Certificación Reconocida",
-    description: "Título avalado por instituciones médicas de prestigio internacional.",
+    title: "Respaldo institucional",
+    description: "Certificación avalada por instituciones que conocen el valor de la formación seria y comprometida.",
     color: "accent" as const
   },
   {
     icon: BookOpen,
-    title: "Metodología Práctica",
-    description: "Combinación de teoría y práctica con casos clínicos reales y simulaciones.",
+    title: "Aprender haciendo",
+    description: "Casos clínicos reales, discusiones que desafían tu criterio, simulaciones que te preparan para lo inesperado.",
     color: "primary" as const
   },
   {
     icon: HeartPulse,
-    title: "Actualización Continua",
-    description: "Acceso a las últimas investigaciones y avances en hipertensión pulmonar.",
+    title: "Siempre actualizado",
+    description: "La circulación pulmonar evoluciona rápido. Nosotros también. Acceso a lo último en investigación y práctica clínica.",
     color: "accent" as const
   }
 ];
@@ -71,9 +71,9 @@ export const Diferenciales = () => {
   return (
     <Section id="diferenciales" background="gradient" pattern="dots" padding="large">
       <SectionHeader
-        badge="¿Por qué elegirnos?"
-        title="Nuestros Diferenciales"
-        subtitle="Descubre qué hace única a nuestra maestría en Latinoamérica"
+        badge="Lo que nos hace diferentes"
+        title="¿Por qué esta Maestría?"
+        subtitle="Porque sabemos lo que significa buscar formación de verdad útil. Esto es lo que encontrarás aquí."
       />
 
       <motion.div

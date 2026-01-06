@@ -87,7 +87,7 @@ export const Maestria = () => {
       <div className="absolute inset-0 bg-grid-pattern opacity-50" />
       
       <div className="section-container relative z-10">
-        {/* Section Header */}
+        {/* Section Header with Purpose */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -95,10 +95,11 @@ export const Maestria = () => {
           transition={{ duration: 0.5 }}
           className="section-header"
         >
-          <h2 className="section-title">Sobre la Maestría</h2>
+          <h2 className="section-title">¿Por qué esta Maestría?</h2>
           <div className="section-divider" />
-          <p className="section-subtitle">
-            Una experiencia educativa única diseñada para profesionales de la salud
+          <p className="section-subtitle max-w-3xl mx-auto">
+            Porque la circulación pulmonar requiere un enfoque integral que pocos programas ofrecen. 
+            Aquí encontrarás la profundidad clínica que tus pacientes merecen.
           </p>
         </motion.div>
 
