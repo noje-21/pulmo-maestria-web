@@ -1,12 +1,20 @@
 import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { Menu, X } from "lucide-react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Menu, X, ChevronDown } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import NotificationBell from "@/components/common/NotificationBell";
 import logoMaestria from "@/assets/logo-maestria.jpg";
 import { useScrollToSection } from "@/hooks/useScrollToSection";
+
+const navItems = [
+  { label: "Maestría", section: "maestria" },
+  { label: "Expertos", section: "expertos" },
+  { label: "Eventos", section: "eventos" },
+  { label: "Galería", section: "galeria" },
+  { label: "Contacto", section: "contacto" }
+];
 
 const Navigation = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -15,14 +23,16 @@ const Navigation = () => {
   const [isAdmin, setIsAdmin] = useState(false);
 
   const navigate = useNavigate();
+  const location = useLocation();
   const scrollToSection = useScrollToSection();
+  const isHomePage = location.pathname === "/";
 
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
     };
 
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
@@ -41,9 +51,7 @@ const Navigation = () => {
       }
     });
 
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
       if (session?.user) {
         supabase
@@ -67,6 +75,15 @@ const Navigation = () => {
     navigate("/");
   };
 
+  const handleNavClick = (section: string) => {
+    setIsMenuOpen(false);
+    if (isHomePage) {
+      scrollToSection(section);
+    } else {
+      navigate(`/#${section}`);
+    }
+  };
+
   return (
     <motion.nav
       initial={{ y: -100 }}
@@ -74,112 +91,115 @@ const Navigation = () => {
       transition={{ duration: 0.5, ease: "easeOut" }}
       role="navigation"
       aria-label="Navegación principal"
-      className={`fixed top-0 w-full z-50 transition-all duration-500 ${
+      className={`fixed top-0 w-full z-50 transition-all duration-300 ${
         isScrolled 
-          ? "backdrop-blur-xl bg-background/80 shadow-medium border-b border-border" 
+          ? "bg-background/95 backdrop-blur-xl shadow-md border-b border-border/50" 
           : "bg-transparent"
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-20">
-          <motion.div
-            whileHover={{ scale: 1.05 }}
-            transition={{ type: "spring", stiffness: 400, damping: 10 }}
-            className="cursor-pointer"
+        <div className="flex justify-between items-center h-16 md:h-20">
+          {/* Logo */}
+          <Link 
+            to="/" 
+            className="flex items-center gap-3 group" 
+            aria-label="Ir a página principal"
           >
-            <Link to="/" className="flex items-center space-x-3" aria-label="Ir a página principal">
-              <div className="h-12 sm:h-14 w-auto flex items-center">
-                <img
-                  src={logoMaestria}
-                  alt="Logo Maestría en Circulación Pulmonar - Volver al inicio"
-                  className="h-full w-auto object-contain rounded-lg"
-                  loading="eager"
-                />
-              </div>
-            </Link>
-          </motion.div>
+            <div className="h-10 md:h-12 w-auto flex items-center">
+              <img
+                src={logoMaestria}
+                alt="Logo Maestría en Circulación Pulmonar"
+                className="h-full w-auto object-contain rounded-lg group-hover:scale-105 transition-transform duration-300"
+                loading="eager"
+              />
+            </div>
+          </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center space-x-6 xl:space-x-8">
-            {["maestria", "expertos", "eventos", "galeria", "contacto"].map((item, index) => (
-              <motion.button
-                key={item}
-                onClick={() => scrollToSection(item)}
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1, duration: 0.5 }}
-                className="text-foreground hover:text-primary transition-all duration-300 font-medium relative group cursor-pointer"
+          <div className="hidden lg:flex items-center gap-1 xl:gap-2">
+            {navItems.map((item) => (
+              <button
+                key={item.section}
+                onClick={() => handleNavClick(item.section)}
+                className={`nav-link px-3 xl:px-4 py-2 text-sm ${
+                  isScrolled ? 'text-foreground' : 'text-white hover:text-white/80'
+                }`}
               >
-                {item
-                  .split("-")
-                  .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-                  .join(" ")}
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
-              </motion.button>
+                {item.label}
+              </button>
             ))}
+            
             <Link
               to="/foro"
-              className="text-foreground hover:text-primary transition-all duration-300 font-medium relative group"
+              className={`nav-link px-3 xl:px-4 py-2 text-sm ${
+                isScrolled ? 'text-foreground' : 'text-white hover:text-white/80'
+              }`}
             >
               Foro
-              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
             </Link>
+            
             <Link
               to="/novedades"
-              className="text-foreground hover:text-primary transition-all duration-300 font-medium relative group"
+              className={`nav-link px-3 xl:px-4 py-2 text-sm ${
+                isScrolled ? 'text-foreground' : 'text-white hover:text-white/80'
+              }`}
             >
               Novedades
-              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
             </Link>
 
+            <div className="w-px h-6 bg-border/50 mx-2" />
+
             {isAdmin && (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.7 }}
+              <Button
+                onClick={() => navigate("/admin")}
+                variant="outline"
+                size="sm"
+                className={`rounded-xl text-sm ${
+                  !isScrolled && 'border-white/30 text-white hover:bg-white/10'
+                }`}
               >
-                <Button
-                  onClick={() => navigate("/admin")}
-                  variant="outline"
-                  size="sm"
-                  className="ml-4 rounded-xl hover:scale-105 transition-all duration-300"
-                >
-                  Admin
-                </Button>
-              </motion.div>
+                Admin
+              </Button>
             )}
 
             <NotificationBell />
 
-            {user && (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.8 }}
+            {user ? (
+              <Button
+                onClick={handleLogout}
+                variant="ghost"
+                size="sm"
+                className={`rounded-xl text-sm ${
+                  !isScrolled && 'text-white hover:bg-white/10'
+                }`}
               >
-                <Button
-                  onClick={handleLogout}
-                  variant="ghost"
-                  size="sm"
-                  className="rounded-xl hover:scale-105 transition-all duration-300"
-                >
-                  Cerrar sesión
-                </Button>
-              </motion.div>
+                Cerrar sesión
+              </Button>
+            ) : (
+              <Button
+                onClick={() => navigate("/auth")}
+                size="sm"
+                className="btn-accent rounded-xl text-sm px-4"
+              >
+                Iniciar Sesión
+              </Button>
             )}
           </div>
 
-          {/* Mobile Button */}
-          <motion.button
-            whileTap={{ scale: 0.95 }}
+          {/* Mobile Menu Button */}
+          <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             aria-label={isMenuOpen ? "Cerrar menú" : "Abrir menú"}
             aria-expanded={isMenuOpen}
             aria-controls="mobile-menu"
-            className="lg:hidden p-2 rounded-xl text-foreground hover:bg-accent/10 transition-all duration-300 border border-border"
+            className={`lg:hidden p-2 rounded-xl transition-all duration-300 ${
+              isScrolled 
+                ? 'text-foreground hover:bg-muted border border-border' 
+                : 'text-white hover:bg-white/10 border border-white/20'
+            }`}
           >
-            {isMenuOpen ? <X size={24} aria-hidden="true" /> : <Menu size={24} aria-hidden="true" />}
-          </motion.button>
+            {isMenuOpen ? <X size={22} /> : <Menu size={22} />}
+          </button>
         </div>
 
         {/* Mobile Navigation */}
@@ -190,75 +210,76 @@ const Navigation = () => {
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.3 }}
+              transition={{ duration: 0.25 }}
               className="lg:hidden overflow-hidden"
             >
-              <div
-                className="py-4 space-y-2 backdrop-blur-xl bg-card/95 rounded-2xl mt-4 p-4 sm:p-6 shadow-large border border-border"
-              >
-                {["maestria", "expertos", "eventos", "galeria", "contacto"].map((item, index) => (
+              <div className="py-4 space-y-1 bg-card/95 backdrop-blur-xl rounded-2xl mt-2 p-4 shadow-xl border border-border/50">
+                {navItems.map((item, index) => (
                   <motion.button
-                    key={item}
-                onClick={() => {
-                  setIsMenuOpen(false);
-                  scrollToSection(item);
-                }}
-                    initial={{ opacity: 0, x: -20 }}
+                    key={item.section}
+                    onClick={() => handleNavClick(item.section)}
+                    initial={{ opacity: 0, x: -15 }}
                     animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: index * 0.1 }}
-                    className="block text-foreground hover:text-primary transition-all duration-300 py-3 px-4 rounded-xl hover:bg-accent font-medium w-full text-left cursor-pointer"
+                    transition={{ delay: index * 0.05 }}
+                    className="w-full text-left text-foreground hover:text-primary hover:bg-muted py-3 px-4 rounded-xl font-medium transition-all duration-200"
                   >
-                    {item
-                      .split("-")
-                      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-                      .join(" ")}
+                    {item.label}
                   </motion.button>
                 ))}
+                
+                <div className="w-full h-px bg-border my-2" />
+                
                 <Link
                   to="/foro"
-                  className="block text-foreground hover:text-primary transition-all duration-300 py-3 px-4 rounded-xl hover:bg-accent font-medium"
+                  className="block text-foreground hover:text-primary hover:bg-muted py-3 px-4 rounded-xl font-medium transition-all duration-200"
                   onClick={() => setIsMenuOpen(false)}
                 >
                   Foro
                 </Link>
+                
                 <Link
                   to="/novedades"
-                  className="block text-foreground hover:text-primary transition-all duration-300 py-3 px-4 rounded-xl hover:bg-accent font-medium"
+                  className="block text-foreground hover:text-primary hover:bg-muted py-3 px-4 rounded-xl font-medium transition-all duration-200"
                   onClick={() => setIsMenuOpen(false)}
                 >
                   Novedades
                 </Link>
 
+                <div className="w-full h-px bg-border my-2" />
+
                 {isAdmin && (
-                  <motion.div
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.6 }}
+                  <Button
+                    onClick={() => {
+                      navigate("/admin");
+                      setIsMenuOpen(false);
+                    }}
+                    variant="outline"
+                    size="sm"
+                    className="w-full rounded-xl"
                   >
-                    <Button
-                      onClick={() => {
-                        navigate("/admin");
-                        setIsMenuOpen(false);
-                      }}
-                      variant="outline"
-                      size="sm"
-                      className="w-full rounded-xl mt-2"
-                    >
-                      Admin
-                    </Button>
-                  </motion.div>
+                    Admin
+                  </Button>
                 )}
 
-                {user && (
-                  <motion.div
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.7 }}
+                {user ? (
+                  <Button 
+                    onClick={handleLogout} 
+                    variant="ghost" 
+                    size="sm" 
+                    className="w-full rounded-xl mt-2"
                   >
-                    <Button onClick={handleLogout} variant="ghost" size="sm" className="w-full rounded-xl mt-2">
-                      Cerrar sesión
-                    </Button>
-                  </motion.div>
+                    Cerrar sesión
+                  </Button>
+                ) : (
+                  <Button
+                    onClick={() => {
+                      navigate("/auth");
+                      setIsMenuOpen(false);
+                    }}
+                    className="w-full btn-accent rounded-xl mt-2"
+                  >
+                    Iniciar Sesión
+                  </Button>
                 )}
               </div>
             </motion.div>
