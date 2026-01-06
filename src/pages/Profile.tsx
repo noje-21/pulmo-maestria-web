@@ -47,7 +47,7 @@ const Profile = () => {
         if (newProfile) setProfile(newProfile);
       }
     } catch (error) {
-      toast.error("Error al cargar el perfil");
+      toast.error("No pudimos cargar tu perfil. Intenta refrescar la página.");
     } finally {
       setLoading(false);
     }
@@ -58,7 +58,7 @@ const Profile = () => {
     navigate("/");
   };
 
-  if (loading) return <div className="min-h-screen flex items-center justify-center">Cargando...</div>;
+  if (loading) return <div className="min-h-screen flex items-center justify-center text-muted-foreground">Preparando tu perfil...</div>;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-muted/30 to-background">
@@ -73,7 +73,7 @@ const Profile = () => {
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
               <div>
                 <h1 className="text-4xl md:text-5xl font-bold mb-2">Mi Perfil</h1>
-                <p className="text-muted-foreground">Gestiona tu información personal</p>
+                <p className="text-muted-foreground">Aquí puedes ver y gestionar tu información</p>
               </div>
               <Button onClick={handleLogout} variant="outline" className="pv-tap-scale w-full sm:w-auto">
                 Cerrar Sesión
@@ -86,7 +86,7 @@ const Profile = () => {
                 <div className="space-y-4">
                   <div>
                     <p className="text-sm text-muted-foreground mb-1">Nombre Completo</p>
-                    <p className="text-lg font-semibold">{profile?.full_name || "Sin nombre"}</p>
+                    <p className="text-lg font-semibold">{profile?.full_name || "Aún no has agregado tu nombre"}</p>
                   </div>
                   <div>
                     <p className="text-sm text-muted-foreground mb-1">Estado de Cuenta</p>
@@ -104,10 +104,10 @@ const Profile = () => {
                     className="modern-btn pv-tap-scale h-auto py-4 justify-start"
                   >
                     <MessageSquare className="w-5 h-5 mr-3" />
-                    <div className="text-left">
-                      <div className="font-semibold">Foro Comunitario</div>
-                      <div className="text-xs text-muted-foreground">Participa en discusiones</div>
-                    </div>
+                      <div className="text-left">
+                        <div className="font-semibold">Foro Comunitario</div>
+                        <div className="text-xs text-muted-foreground">Comparte ideas con colegas</div>
+                      </div>
                   </Button>
                   <Button
                     onClick={() => navigate("/novedades")}
@@ -115,10 +115,10 @@ const Profile = () => {
                     className="modern-btn pv-tap-scale h-auto py-4 justify-start"
                   >
                     <FileText className="w-5 h-5 mr-3" />
-                    <div className="text-left">
-                      <div className="font-semibold">Novedades</div>
-                      <div className="text-xs text-muted-foreground">Lee las últimas noticias</div>
-                    </div>
+                      <div className="text-left">
+                        <div className="font-semibold">Novedades</div>
+                        <div className="text-xs text-muted-foreground">Mantente al día con lo último</div>
+                      </div>
                   </Button>
                 </div>
               </Card>

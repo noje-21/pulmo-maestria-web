@@ -110,7 +110,7 @@ const ForoDetail = () => {
       setPost(data as any);
     } catch (error: any) {
       console.error("Error loading post:", error);
-      toast.error("Error al cargar la publicación");
+      toast.error("No encontramos esta publicación. Puede que haya sido eliminada.");
       navigate("/foro");
     } finally {
       setLoading(false);
@@ -157,7 +157,7 @@ const ForoDetail = () => {
 
   const handleAddComment = async (parentId: string | null = null) => {
     if (!user) {
-      toast.error("Debes iniciar sesión para comentar");
+      toast.error("Inicia sesión para unirte a la conversación");
       navigate("/auth");
       return;
     }
@@ -175,7 +175,7 @@ const ForoDetail = () => {
 
       if (error) throw error;
 
-      toast.success(parentId ? "Respuesta agregada" : "Comentario añadido");
+      toast.success(parentId ? "¡Respuesta publicada!" : "¡Gracias por tu aporte!");
       setNewComment("");
       setReplyingTo(null);
       loadComments();
@@ -184,7 +184,7 @@ const ForoDetail = () => {
         toast.error(error.errors[0].message);
       } else {
         console.error("Error adding comment:", error);
-        toast.error("Error al añadir comentario");
+        toast.error("No pudimos publicar tu comentario. Intenta de nuevo.");
       }
     } finally {
       setSubmitting(false);
@@ -309,7 +309,7 @@ const ForoDetail = () => {
                     <Textarea
                       value={newComment}
                       onChange={(e) => setNewComment(e.target.value)}
-                      placeholder="Escribe tu respuesta..."
+                      placeholder="¿Qué opinas sobre esto?"
                       className="min-h-[80px] resize-none rounded-xl"
                     />
                     <Button 
@@ -319,7 +319,7 @@ const ForoDetail = () => {
                       className="gap-2"
                     >
                       <Send className="w-4 h-4" />
-                      {submitting ? "Enviando..." : "Enviar respuesta"}
+                      {submitting ? "Publicando..." : "Responder"}
                     </Button>
                   </motion.div>
                 )}
@@ -463,7 +463,7 @@ const ForoDetail = () => {
                       <Textarea
                         value={newComment}
                         onChange={(e) => setNewComment(e.target.value)}
-                        placeholder="Escribe tu comentario..."
+                        placeholder="Comparte tu opinión o experiencia..."
                         className="min-h-[100px] resize-none rounded-xl bg-background"
                       />
                       <Button
@@ -472,7 +472,7 @@ const ForoDetail = () => {
                         className="gap-2"
                       >
                         <Send className="w-4 h-4" />
-                        {submitting ? "Publicando..." : "Publicar Comentario"}
+                        {submitting ? "Publicando..." : "Compartir comentario"}
                       </Button>
                     </div>
                   </div>
@@ -480,10 +480,10 @@ const ForoDetail = () => {
               ) : (
                 <div className="mb-8 p-6 bg-muted/50 rounded-xl text-center">
                   <p className="text-muted-foreground mb-4">
-                    Inicia sesión para participar en la conversación
+                    ¿Quieres ser parte de esta conversación? Inicia sesión para comentar.
                   </p>
                   <Button onClick={() => navigate("/auth")} variant="outline">
-                    Iniciar Sesión
+                    Iniciar sesión
                   </Button>
                 </div>
               )}

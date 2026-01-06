@@ -71,7 +71,7 @@ export const Contacto = () => {
       if (error instanceof z.ZodError) {
         toast.error(error.errors[0].message);
       } else {
-        toast.error("Hubo un error al enviar el mensaje. Intenta nuevamente.");
+        toast.error("No pudimos enviar tu mensaje. Por favor, intenta de nuevo.");
       }
     } finally {
       setLoading(false);
@@ -98,7 +98,7 @@ export const Contacto = () => {
           <h2 className="section-title">Contáctanos</h2>
           <div className="section-divider" />
           <p className="section-subtitle">
-            ¿Tienes preguntas? Estamos aquí para ayudarte
+            ¿Tienes dudas? Escríbenos y te respondemos personalmente
           </p>
         </motion.div>
 
@@ -181,7 +181,7 @@ export const Contacto = () => {
                     >
                       <div className="flex items-center gap-2">
                         <CheckCircle className="w-5 h-5" />
-                        <span className="font-medium">¡Mensaje enviado! Pronto nos comunicaremos contigo.</span>
+                        <span className="font-medium">¡Recibimos tu mensaje! Te contactaremos pronto.</span>
                       </div>
                       <button
                         type="button"
@@ -237,7 +237,7 @@ export const Contacto = () => {
                     name="message" 
                     value={formData.message} 
                     onChange={handleChange} 
-                    placeholder="Escribe tu mensaje aquí..." 
+                    placeholder="Cuéntanos qué te gustaría saber..." 
                     rows={4} 
                     required 
                     className="input-modern resize-none"
@@ -250,12 +250,12 @@ export const Contacto = () => {
                     {loading ? (
                       <span className="flex items-center gap-2">
                         <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                        Enviando...
+                        Enviando tu mensaje...
                       </span>
                     ) : (
                       <span className="flex items-center gap-2">
                         <Send className="w-5 h-5" />
-                        Enviar Mensaje
+                        Quiero más información
                       </span>
                     )}
                   </Button>

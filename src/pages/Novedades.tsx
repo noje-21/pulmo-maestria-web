@@ -130,7 +130,7 @@ const Novedades = () => {
       setNovedades(data as any || []);
     } catch (error: any) {
       console.error("Error loading novedades:", error);
-      toast.error("Error al cargar novedades");
+      toast.error("No pudimos cargar las novedades. Intenta de nuevo.");
     } finally {
       setLoading(false);
     }
@@ -170,7 +170,7 @@ const Novedades = () => {
                 Novedades
               </h1>
               <p className="text-muted-foreground text-base sm:text-lg max-w-2xl mx-auto">
-                Mantente informado sobre los últimos avances, eventos y publicaciones
+                Lo más reciente en avances, eventos y contenido de valor para ti
               </p>
             </div>
 
@@ -281,9 +281,9 @@ const Novedades = () => {
                     <Newspaper className="w-12 h-12 text-muted-foreground" />
                   </div>
                 </div>
-                <h3 className="text-xl font-bold text-foreground mb-2">No hay novedades aún</h3>
+                <h3 className="text-xl font-bold text-foreground mb-2">Pronto habrá novedades</h3>
                 <p className="text-muted-foreground max-w-sm mx-auto">
-                  Las últimas noticias y artículos aparecerán aquí. ¡Vuelve pronto!
+                  Estamos preparando contenido valioso para ti. ¡Vuelve pronto!
                 </p>
               </motion.div>
             ) : (

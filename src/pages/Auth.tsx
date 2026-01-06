@@ -43,15 +43,15 @@ const Auth = () => {
         });
         
         if (isAdminData) {
-          toast.success("¡Bienvenido Admin!");
+          toast.success("¡Qué gusto verte de nuevo!");
           navigate("/admin");
         } else {
-          toast.success("¡Inicio de sesión exitoso!");
+          toast.success("¡Bienvenido! Ya puedes explorar la plataforma");
           navigate("/foro");
         }
       }
     } catch (error: any) {
-      toast.error(error.message || "Error al iniciar sesión");
+      toast.error(error.message || "No pudimos iniciar sesión. ¿Verificaste tus datos?");
     } finally {
       setLoading(false);
     }
@@ -93,10 +93,10 @@ const Auth = () => {
             </motion.div>
             
             <CardTitle className="text-2xl sm:text-3xl font-bold text-foreground">
-              Bienvenido
+              ¡Hola de nuevo!
             </CardTitle>
             <CardDescription className="text-muted-foreground mt-2">
-              Accede a la plataforma de la Maestría
+              Ingresa tus datos para continuar donde lo dejaste
             </CardDescription>
           </CardHeader>
 
@@ -146,11 +146,11 @@ const Auth = () => {
                 {loading ? (
                   <>
                     <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                    Iniciando...
+                    Un momento...
                   </>
                 ) : (
                   <>
-                    Iniciar Sesión
+                    Entrar a mi cuenta
                     <ArrowRight className="w-5 h-5" />
                   </>
                 )}
