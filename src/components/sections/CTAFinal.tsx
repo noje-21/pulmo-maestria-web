@@ -3,10 +3,10 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, Calendar, MapPin, ExternalLink, Sparkles, CheckCircle, Users, Award } from "lucide-react";
 
 const benefits = [
-  "Certificación internacional reconocida",
-  "Red de contactos profesionales",
-  "Casos clínicos reales",
-  "Actualización continua"
+  "Criterio clínico que marca la diferencia",
+  "Comunidad de colegas que te respaldan",
+  "Casos reales que preparan para lo inesperado",
+  "Conocimiento que tus pacientes necesitan"
 ];
 
 export const CTAFinal = () => {
@@ -40,19 +40,20 @@ export const CTAFinal = () => {
             {/* Badge */}
             <span className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/10 backdrop-blur-md text-white text-sm font-semibold border border-white/20 mb-6 shadow-lg">
               <Sparkles className="w-4 h-4 text-accent-light" />
-              Cupos Limitados 2025
+              Edición 2025
             </span>
 
-            {/* Title */}
+            {/* Title - Emotional */}
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4 leading-tight">
-              El momento de especializarte es 
-              <span className="text-accent-light"> ahora</span>
+              Tu próximo paciente 
+              <span className="text-accent-light"> te necesita preparado</span>
             </h2>
 
-            {/* Storytelling description */}
+            {/* Storytelling description - Purpose */}
             <p className="text-base md:text-lg text-white/85 mb-6 leading-relaxed">
-              Miles de pacientes en Latinoamérica esperan profesionales capacitados 
-              en circulación pulmonar. Sé parte de la solución y transforma tu carrera.
+              La hipertensión pulmonar no espera. Cada día de formación es un día más 
+              cerca de ofrecer respuestas donde antes solo había preguntas. 
+              <span className="block mt-2 font-medium text-white">Toma la decisión que cambiará tu práctica.</span>
             </p>
 
             {/* Benefits list */}
