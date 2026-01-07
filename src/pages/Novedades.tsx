@@ -159,31 +159,31 @@ const Novedades = () => {
           <motion.header
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mb-8 sm:mb-12"
+            className="mb-6 sm:mb-10 lg:mb-12"
           >
-            <div className="text-center mb-8">
-              <span className="brand-badge-accent mb-4 inline-flex">
-                <Sparkles className="w-3.5 h-3.5" />
+            <div className="text-center mb-6 sm:mb-8">
+              <span className="brand-badge-accent mb-3 sm:mb-4 inline-flex text-xs sm:text-sm">
+                <Sparkles className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
                 Noticias y Actualizaciones
               </span>
-              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight mb-3">
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold tracking-tight mb-2 sm:mb-3">
                 Novedades
               </h1>
-              <p className="text-muted-foreground text-base sm:text-lg max-w-2xl mx-auto leading-relaxed">
-                Lo más reciente en avances, eventos y contenido que puede marcar la diferencia en tu práctica clínica
+              <p className="text-muted-foreground text-sm sm:text-base lg:text-lg max-w-2xl mx-auto leading-relaxed px-2">
+                Lo más reciente en avances, eventos y contenido que puede marcar la diferencia en tu práctica
               </p>
             </div>
 
             {/* Search & Filters */}
-            <div className="flex flex-col sm:flex-row gap-3 max-w-2xl mx-auto">
+            <div className="flex flex-col sm:flex-row gap-2.5 sm:gap-3 max-w-2xl mx-auto">
               <div className="relative flex-1">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                <Search className="absolute left-3.5 sm:left-4 top-1/2 -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-muted-foreground" />
                 <Input
                   type="text"
                   placeholder="Buscar novedades..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-12 h-12 text-base rounded-xl border-border/50 bg-card"
+                  className="pl-10 sm:pl-12 h-11 sm:h-12 text-sm sm:text-base rounded-xl border-border/50 bg-card"
                 />
               </div>
 
@@ -273,20 +273,20 @@ const Novedades = () => {
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="text-center py-20"
+                className="text-center py-16 sm:py-20"
               >
-                <div className="relative mb-6 mx-auto w-fit">
+                <div className="relative mb-5 sm:mb-6 mx-auto w-fit">
                   <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-accent/20 rounded-full blur-xl scale-150" />
-                  <div className="relative p-5 bg-gradient-to-br from-muted to-muted/50 rounded-2xl border border-border/50">
-                    <Newspaper className="w-12 h-12 text-muted-foreground" />
+                  <div className="relative p-4 sm:p-5 bg-gradient-to-br from-muted to-muted/50 rounded-2xl border border-border/50">
+                    <Newspaper className="w-10 h-10 sm:w-12 sm:h-12 text-muted-foreground" />
                   </div>
                 </div>
-                <h3 className="text-xl font-bold text-foreground mb-2">Pronto habrá novedades</h3>
-                <p className="text-muted-foreground max-w-sm mx-auto leading-relaxed">
+                <h3 className="text-lg sm:text-xl font-bold text-foreground mb-2">Pronto habrá novedades</h3>
+                <p className="text-muted-foreground max-w-sm mx-auto leading-relaxed text-sm sm:text-base px-4">
                   Estamos preparando contenido valioso para ti. Mientras tanto, 
                   <span className="text-primary font-medium"> ¿por qué no exploras el foro?</span>
                 </p>
-                <Button 
+                <Button
                   variant="outline" 
                   className="mt-6 gap-2"
                   onClick={() => navigate('/foro')}

@@ -71,9 +71,9 @@ export const Diferenciales = () => {
   return (
     <Section id="diferenciales" background="gradient" pattern="dots" padding="large">
       <SectionHeader
-        badge="Lo que nos hace diferentes"
-        title="¿Por qué esta Maestría?"
-        subtitle="Porque sabemos lo que significa buscar formación de verdad útil. Esto es lo que encontrarás aquí."
+        badge="No es solo un curso más"
+        title="Esto es lo que buscabas"
+        subtitle="Entendemos la frustración de formaciones genéricas. Por eso creamos algo diferente, pensado por y para profesionales como tú."
       />
 
       <motion.div

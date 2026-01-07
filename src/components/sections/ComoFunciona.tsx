@@ -12,22 +12,22 @@ const pasos = [
   {
     numero: "01",
     icon: ClipboardCheck,
-    titulo: "Inscripción",
-    descripcion: "Completa el formulario de inscripción y envía tu documentación. Nuestro equipo evaluará tu perfil profesional.",
+    titulo: "Inscríbete",
+    descripcion: "Solo necesitas completar el formulario. Nos encargamos del resto y te guiamos en cada paso.",
     color: "primary"
   },
   {
     numero: "02",
     icon: GraduationCap,
-    titulo: "Formación Intensiva",
-    descripcion: "Participa en 12 días de formación presencial con clases teóricas, talleres prácticos y discusión de casos clínicos.",
+    titulo: "Vive la experiencia",
+    descripcion: "12 días intensivos donde cada clase te acerca más a convertirte en el especialista que tus pacientes necesitan.",
     color: "accent"
   },
   {
     numero: "03",
     icon: Award,
-    titulo: "Certificación",
-    descripcion: "Aprueba la evaluación final y recibe tu certificación oficial como especialista en circulación pulmonar.",
+    titulo: "Transforma tu práctica",
+    descripcion: "Regresa con nuevas herramientas, una comunidad de apoyo y la confianza de quien domina su especialidad.",
     color: "primary"
   }
 ];
@@ -36,9 +36,9 @@ export const ComoFunciona = () => {
   return (
     <Section id="como-funciona" background="muted" pattern="grid" padding="large">
       <SectionHeader
-        badge="Proceso de Inscripción"
-        title="¿Cómo Funciona?"
-        subtitle="Tres simples pasos para transformar tu carrera profesional"
+        badge="Proceso claro y sencillo"
+        title="Tu camino hacia la especialización"
+        subtitle="Sin complicaciones. Tres pasos para comenzar una nueva etapa en tu carrera."
       />
 
       <div className="relative max-w-5xl mx-auto">
