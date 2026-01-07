@@ -97,15 +97,15 @@ const Navigation = () => {
           : "bg-transparent"
       }`}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16 md:h-20">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
+        <div className="flex justify-between items-center h-14 sm:h-16 md:h-20">
           {/* Logo */}
           <Link 
             to="/" 
-            className="flex items-center gap-3 group" 
+            className="flex items-center gap-2 sm:gap-3 group" 
             aria-label="Ir a página principal"
           >
-            <div className="h-10 md:h-12 w-auto flex items-center">
+            <div className="h-9 sm:h-10 md:h-12 w-auto flex items-center">
               <img
                 src={logoMaestria}
                 alt="Logo Maestría en Circulación Pulmonar"
@@ -193,13 +193,13 @@ const Navigation = () => {
             aria-label={isMenuOpen ? "Cerrar menú" : "Abrir menú"}
             aria-expanded={isMenuOpen}
             aria-controls="mobile-menu"
-            className={`lg:hidden p-2 rounded-xl transition-all duration-300 ${
+            className={`lg:hidden p-2.5 rounded-xl transition-all duration-300 min-h-[44px] min-w-[44px] flex items-center justify-center ${
               isScrolled 
                 ? 'text-foreground hover:bg-muted border border-border' 
                 : 'text-white hover:bg-white/10 border border-white/20'
             }`}
           >
-            {isMenuOpen ? <X size={22} /> : <Menu size={22} />}
+            {isMenuOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
         </div>
 
@@ -214,7 +214,7 @@ const Navigation = () => {
               transition={{ duration: 0.25 }}
               className="lg:hidden overflow-hidden"
             >
-              <div className="py-4 space-y-1 bg-card/95 backdrop-blur-xl rounded-2xl mt-2 p-4 shadow-xl border border-border/50">
+              <div className="py-3 space-y-0.5 bg-card/95 backdrop-blur-xl rounded-2xl mt-2 p-3 sm:p-4 shadow-xl border border-border/50">
                 {navItems.map((item, index) => (
                   <motion.button
                     key={item.section}
@@ -222,7 +222,7 @@ const Navigation = () => {
                     initial={{ opacity: 0, x: -15 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: index * 0.05 }}
-                    className="w-full text-left text-foreground hover:text-primary hover:bg-muted py-3 px-4 rounded-xl font-medium transition-all duration-200"
+                    className="w-full text-left text-foreground hover:text-primary hover:bg-muted py-3.5 px-4 rounded-xl font-medium transition-all duration-200 text-base min-h-[48px] flex items-center"
                   >
                     {item.label}
                   </motion.button>
@@ -232,7 +232,7 @@ const Navigation = () => {
                 
                 <Link
                   to="/foro"
-                  className="block text-foreground hover:text-primary hover:bg-muted py-3 px-4 rounded-xl font-medium transition-all duration-200"
+                  className="flex items-center text-foreground hover:text-primary hover:bg-muted py-3.5 px-4 rounded-xl font-medium transition-all duration-200 min-h-[48px]"
                   onClick={() => setIsMenuOpen(false)}
                 >
                   Foro
@@ -240,7 +240,7 @@ const Navigation = () => {
                 
                 <Link
                   to="/novedades"
-                  className="block text-foreground hover:text-primary hover:bg-muted py-3 px-4 rounded-xl font-medium transition-all duration-200"
+                  className="flex items-center text-foreground hover:text-primary hover:bg-muted py-3.5 px-4 rounded-xl font-medium transition-all duration-200 min-h-[48px]"
                   onClick={() => setIsMenuOpen(false)}
                 >
                   Novedades
@@ -266,8 +266,8 @@ const Navigation = () => {
                   <Button 
                     onClick={handleLogout} 
                     variant="ghost" 
-                    size="sm" 
-                    className="w-full rounded-xl mt-2"
+                    size="lg" 
+                    className="w-full rounded-xl mt-2 min-h-[48px]"
                   >
                     Cerrar sesión
                   </Button>
@@ -277,7 +277,7 @@ const Navigation = () => {
                       navigate("/auth");
                       setIsMenuOpen(false);
                     }}
-                    className="w-full btn-accent rounded-xl mt-2"
+                    className="w-full btn-accent rounded-xl mt-2 min-h-[48px]"
                   >
                     Iniciar Sesión
                   </Button>

@@ -3,10 +3,10 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, Calendar, MapPin, ExternalLink, Sparkles, CheckCircle, Users, Award } from "lucide-react";
 
 const benefits = [
-  "Criterio clínico que marca la diferencia",
-  "Comunidad de colegas que te respaldan",
-  "Casos reales que preparan para lo inesperado",
-  "Conocimiento que tus pacientes necesitan"
+  "El criterio clínico que siempre quisiste tener",
+  "Una comunidad que te respalda cuando lo necesitas",
+  "Casos reales que te preparan para cualquier situación",
+  "El conocimiento que tus pacientes merecen"
 ];
 
 export const CTAFinal = () => {
@@ -44,16 +44,16 @@ export const CTAFinal = () => {
             </span>
 
             {/* Title - Emotional */}
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4 leading-tight">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4 leading-tight">
               Tu próximo paciente 
-              <span className="text-accent-light"> te necesita preparado</span>
+              <span className="text-accent-light block sm:inline"> te necesita preparado</span>
             </h2>
 
             {/* Storytelling description - Purpose */}
-            <p className="text-base md:text-lg text-white/85 mb-6 leading-relaxed">
+            <p className="text-sm sm:text-base md:text-lg text-white/85 mb-6 leading-relaxed">
               La hipertensión pulmonar no espera. Cada día de formación es un día más 
               cerca de ofrecer respuestas donde antes solo había preguntas. 
-              <span className="block mt-2 font-medium text-white">Toma la decisión que cambiará tu práctica.</span>
+              <span className="block mt-2 font-medium text-white text-sm sm:text-base">Toma la decisión que cambiará tu práctica.</span>
             </p>
 
             {/* Benefits list */}

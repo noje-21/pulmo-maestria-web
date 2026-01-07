@@ -54,10 +54,11 @@ export const Eventos = () => {
           transition={{ duration: 0.5 }}
           className="section-header"
         >
-          <h2 className="section-title">Calendario Académico</h2>
+          <span className="brand-badge mb-4 inline-flex">12 días de transformación</span>
+          <h2 className="section-title">Tu agenda está lista</h2>
           <div className="section-divider" />
           <p className="section-subtitle">
-            Programa intensivo del 3 al 15 de noviembre 2025
+            Cada módulo está diseñado para maximizar tu aprendizaje. Sin relleno, solo lo que importa.
           </p>
         </motion.div>
 
@@ -137,14 +138,14 @@ export const Eventos = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5, delay: 0.4 }}
-          className="text-center mt-12"
+          className="text-center mt-10 sm:mt-12"
         >
-          <p className="text-muted-foreground mb-4">
-            12 días de formación intensiva con certificación oficial
+          <p className="text-muted-foreground mb-4 text-sm sm:text-base">
+            Formación intensiva con certificación oficial
           </p>
-          <div className="inline-flex items-center gap-2 px-6 py-3 bg-primary/10 text-primary rounded-full font-semibold">
-            <Calendar className="w-5 h-5" />
-            <span>Buenos Aires, Argentina · Noviembre 2025</span>
+          <div className="inline-flex items-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 bg-primary/10 text-primary rounded-full font-semibold text-sm sm:text-base">
+            <Calendar className="w-4 h-4 sm:w-5 sm:h-5" />
+            <span>Buenos Aires · Noviembre 2025</span>
           </div>
         </motion.div>
       </div>

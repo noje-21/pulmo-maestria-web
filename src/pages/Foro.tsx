@@ -267,19 +267,19 @@ const Foro = () => {
           <motion.header
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mb-8 sm:mb-10"
+            className="mb-6 sm:mb-10"
           >
-            <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-6">
+            <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-5 sm:mb-6">
               <div>
-                <span className="brand-badge mb-3 inline-flex">
-                  <Sparkles className="w-3.5 h-3.5" />
+                <span className="brand-badge mb-2.5 sm:mb-3 inline-flex text-xs sm:text-sm">
+                  <Sparkles className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
                   Comunidad
                 </span>
-                <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight mb-2">
+                <h1 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold tracking-tight mb-1.5 sm:mb-2">
                   Foro Profesional
                 </h1>
-                <p className="text-muted-foreground text-base sm:text-lg max-w-lg">
-                  Donde las preguntas difíciles encuentran respuestas. Comparte, aprende y crece con colegas de toda Latinoamérica.
+                <p className="text-muted-foreground text-sm sm:text-base lg:text-lg max-w-lg leading-relaxed">
+                  Donde las preguntas difíciles encuentran respuestas. Comparte, aprende y crece con colegas.
                 </p>
               </div>
               {isAdmin && (
@@ -296,15 +296,15 @@ const Foro = () => {
             </div>
 
             {/* Search & Filters Bar */}
-            <div className="flex flex-col sm:flex-row gap-3">
+            <div className="flex flex-col sm:flex-row gap-2.5 sm:gap-3">
               <div className="relative flex-1">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                <Search className="absolute left-3.5 sm:left-4 top-1/2 -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-muted-foreground" />
                 <Input
                   type="text"
                   placeholder="Buscar publicaciones..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-12 h-12 text-base rounded-xl border-border/50 bg-card"
+                  className="pl-10 sm:pl-12 h-11 sm:h-12 text-sm sm:text-base rounded-xl border-border/50 bg-card"
                 />
               </div>
               
@@ -399,14 +399,14 @@ const Foro = () => {
                     aria-label={`Publicación: ${post.title}`}
                   >
                     <div className={`
-                      card-base card-hover p-5 sm:p-6 transition-all duration-400 relative overflow-hidden
+                      card-base card-hover p-4 sm:p-5 md:p-6 transition-all duration-400 relative overflow-hidden
                       ${post.featured ? 'ring-2 ring-accent/30 bg-gradient-to-br from-accent/[0.03] to-transparent' : ''}
                       ${post.is_pinned ? 'ring-2 ring-primary/30 bg-gradient-to-br from-primary/[0.03] to-transparent' : ''}
                       ${activity.status === 'hot' ? 'ring-1 ring-orange-500/30' : ''}
                     `}>
                       {/* Brand Signature Corner */}
-                      <div className="absolute top-0 left-0 w-12 h-12 bg-gradient-to-br from-accent/10 to-transparent pointer-events-none" />
-                      <div className="absolute top-0 left-0 w-1 h-6 bg-accent rounded-br-sm" />
+                      <div className="absolute top-0 left-0 w-10 sm:w-12 h-10 sm:h-12 bg-gradient-to-br from-accent/10 to-transparent pointer-events-none" />
+                      <div className="absolute top-0 left-0 w-0.5 sm:w-1 h-5 sm:h-6 bg-accent rounded-br-sm" />
                       
                       {/* Activity Pulse Indicator for hot posts */}
                       {activity.status === 'hot' && (
@@ -419,7 +419,7 @@ const Foro = () => {
                       )}
                       
                       {/* Status Badges */}
-                      <div className="flex flex-wrap items-center gap-2 mb-4">
+                      <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 mb-3 sm:mb-4">
                         {post.is_pinned && (
                           <CategoryBadge category="pinned" size="sm" />
                         )}
@@ -427,9 +427,9 @@ const Foro = () => {
                           <CategoryBadge category="featured" size="sm" />
                         )}
                         {/* Activity Badge */}
-                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${activity.bgColor} ${activity.color} transition-all duration-300 group-hover:scale-105`}>
-                          <ActivityIcon className="w-3 h-3" />
-                          {activity.label}
+                        <span className={`inline-flex items-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-medium ${activity.bgColor} ${activity.color} transition-all duration-300 group-hover:scale-105`}>
+                          <ActivityIcon className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
+                          <span className="hidden xs:inline">{activity.label}</span>
                         </span>
                         {commentsCount >= 5 && (
                           <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-purple-500/10 text-purple-500">
