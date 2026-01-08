@@ -146,9 +146,13 @@ export const Maestria = () => {
           <Card className="card-base overflow-hidden bg-card">
             <CardContent className="p-0">
               <div className="flex flex-col lg:flex-row">
-                {/* Video */}
+                {/* Video con Autoplay Optimizado */}
                 <div className="lg:w-2/3 relative">
                   <video 
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
                     controls 
                     preload="metadata" 
                     className="w-full h-full min-h-[280px] sm:min-h-[360px] lg:min-h-[420px] object-cover"

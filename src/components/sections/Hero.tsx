@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { ChevronDown, Calendar, MapPin, ExternalLink, Award, Users, Clock, Globe, Heart, Stethoscope } from "lucide-react";
+import { ChevronDown, Calendar, MapPin, ExternalLink, Award, Users, Clock, Globe, Heart, Stethoscope, Sparkles } from "lucide-react";
 import heroImage from "@/assets/hero-banner.jpg";
 
 export const Hero = () => {
@@ -32,7 +32,7 @@ export const Hero = () => {
           className="w-full h-full object-cover scale-105"
           loading="eager"
         />
-        {/* Multi-layer gradient for depth */}
+        {/* Multi-layer gradient for depth - MLCP Brand Colors */}
         <div className="absolute inset-0 bg-gradient-to-b from-primary/95 via-primary/85 to-primary-dark/95" />
         <div className="absolute inset-0 bg-mesh-pattern" />
         {/* Animated medical icons background */}
@@ -54,18 +54,40 @@ export const Hero = () => {
         </div>
       </div>
 
-      {/* Decorative Elements */}
+      {/* Decorative Elements - MLCP Accent Red */}
       <div className="absolute top-20 left-10 w-72 h-72 bg-accent/20 rounded-full blur-[100px] animate-pulse-subtle" />
       <div className="absolute bottom-20 right-10 w-96 h-96 bg-accent/15 rounded-full blur-[120px]" />
       <div className="absolute top-1/3 right-1/4 w-48 h-48 bg-white/5 rounded-full blur-[80px]" />
 
       {/* Main Content */}
       <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 sm:pt-24 pb-12 sm:pb-16 text-center">
+        
+        {/* 🔥 CTA MAESTRÍA 2026 - Banner de Alto Impacto */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5, delay: 0.02 }}
+          className="mb-6 sm:mb-8"
+        >
+          <a 
+            href="#contacto"
+            onClick={(e) => {
+              e.preventDefault();
+              scrollToSection("contacto");
+            }}
+            className="inline-flex items-center gap-2 sm:gap-3 bg-accent text-white px-4 sm:px-6 py-2.5 sm:py-3 rounded-full font-bold text-sm sm:text-base hover:bg-accent-dark transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 group"
+          >
+            <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 animate-pulse" />
+            <span>🎓 Inscripciones Maestría 2026 - ¡Cupos Limitados!</span>
+            <ExternalLink className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+          </a>
+        </motion.div>
+
         {/* Problem Statement - Emotional Hook */}
         <motion.p
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.05 }}
+          transition={{ duration: 0.5, delay: 0.08 }}
           className="text-white/85 text-sm sm:text-base mb-5 sm:mb-6 max-w-2xl mx-auto px-3 leading-relaxed"
         >
           Cada día, miles de pacientes con hipertensión pulmonar en Latinoamérica 
@@ -76,7 +98,7 @@ export const Hero = () => {
         <motion.h1
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.1 }}
+          transition={{ duration: 0.6, delay: 0.12 }}
           className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-white mb-4 sm:mb-6 leading-[1.1] text-balance px-2"
         >
           Forma parte del cambio en
@@ -88,7 +110,7 @@ export const Hero = () => {
         <motion.p
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
+          transition={{ duration: 0.6, delay: 0.18 }}
           className="text-sm xs:text-base sm:text-lg md:text-xl text-white/90 mb-6 sm:mb-10 max-w-3xl mx-auto leading-relaxed px-3"
         >
           <span className="font-semibold">Una formación diseñada para quienes creen</span> que la 
@@ -102,7 +124,7 @@ export const Hero = () => {
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.3 }}
+          transition={{ duration: 0.6, delay: 0.24 }}
           className="flex flex-col xs:flex-row gap-3 sm:gap-4 items-center justify-center mb-10 sm:mb-12 px-2"
         >
           <div 
@@ -132,16 +154,16 @@ export const Hero = () => {
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.4 }}
+          transition={{ duration: 0.6, delay: 0.3 }}
           className="flex flex-col sm:flex-row gap-3 sm:gap-4 items-center justify-center px-2"
         >
           <Button 
             size="lg" 
             onClick={() => scrollToSection("contacto")}
-            aria-label="Quiero transformar mi práctica clínica"
+            aria-label="Inscribirme a la Maestría 2026"
             className="btn-hero group w-full sm:w-auto min-h-[56px] brand-cta-glow"
           >
-            <span>Quiero ser parte</span>
+            <span>🎓 Inscribirme Ahora</span>
             <ExternalLink className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" aria-hidden="true" />
           </Button>
           
@@ -160,7 +182,7 @@ export const Hero = () => {
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.5 }}
+          transition={{ duration: 0.6, delay: 0.4 }}
           className="mt-10 sm:mt-16 lg:mt-20 grid grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-4 md:gap-5 max-w-4xl mx-auto px-2"
         >
           {stats.map((stat, index) => {
@@ -189,7 +211,7 @@ export const Hero = () => {
       <motion.button
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ duration: 0.6, delay: 0.8 }}
+        transition={{ duration: 0.6, delay: 0.6 }}
         onClick={() => scrollToSection("diferenciales")}
         className="absolute bottom-6 sm:bottom-8 left-1/2 -translate-x-1/2 text-white/70 hover:text-white transition-colors cursor-pointer p-2"
         aria-label="Desplazarse hacia abajo"
