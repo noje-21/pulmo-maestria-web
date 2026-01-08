@@ -26,60 +26,67 @@
     --popover: 0 0% 100%;
     --popover-foreground: 222 47% 11%;
 
-    /* Primary - Deep Navy (Confianza médica) */
-    --primary: 222 65% 38%;
+    /* 
+     * PALETA OFICIAL - Manual de Marca MLCP
+     * Azul principal: #213ECC → 229 75% 46%
+     * Rojo acento: #CE2020 → 0 75% 47%
+     * Blanco: #FFFFFF
+     */
+    
+    /* Primary - Azul Institucional MLCP #213ECC */
+    --primary: 229 75% 46%;
     --primary-foreground: 0 0% 100%;
-    --primary-dark: 222 70% 28%;
-    --primary-light: 222 55% 48%;
+    --primary-dark: 229 80% 36%;
+    --primary-light: 229 70% 56%;
 
     /* Secondary - Warm Slate */
     --secondary: 220 14% 96%;
-    --secondary-foreground: 222 47% 11%;
+    --secondary-foreground: 229 47% 11%;
     --secondary-light: 220 18% 98%;
 
     /* Muted */
     --muted: 220 14% 94%;
-    --muted-foreground: 222 20% 45%;
+    --muted-foreground: 229 20% 45%;
 
-    /* Accent - Vibrant Coral/Terracotta (Diferenciador único) */
-    --accent: 12 76% 56%;
+    /* Accent - Rojo MLCP #CE2020 */
+    --accent: 0 75% 47%;
     --accent-foreground: 0 0% 100%;
-    --accent-light: 12 80% 65%;
-    --accent-dark: 12 70% 45%;
+    --accent-light: 0 80% 57%;
+    --accent-dark: 0 80% 37%;
 
     /* Semantic Colors */
     --success: 158 64% 40%;
     --success-foreground: 0 0% 100%;
     --warning: 43 96% 50%;
-    --warning-foreground: 222 47% 11%;
-    --destructive: 0 72% 51%;
+    --warning-foreground: 229 47% 11%;
+    --destructive: 0 75% 47%;
     --destructive-foreground: 0 0% 100%;
 
     /* Borders & Inputs */
     --border: 220 18% 88%;
     --input: 220 18% 88%;
-    --ring: 222 65% 38%;
+    --ring: 229 75% 46%;
 
     --radius: 0.875rem;
 
-    /* Premium Gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(222 65% 38%) 0%, hsl(222 55% 48%) 100%);
-    --gradient-accent: linear-gradient(135deg, hsl(12 76% 56%) 0%, hsl(12 80% 65%) 100%);
-    --gradient-hero: linear-gradient(160deg, hsl(222 70% 25%) 0%, hsl(222 65% 38%) 50%, hsl(222 55% 48%) 100%);
+    /* Premium Gradients - Paleta Oficial MLCP */
+    --gradient-primary: linear-gradient(135deg, hsl(229 75% 46%) 0%, hsl(229 70% 56%) 100%);
+    --gradient-accent: linear-gradient(135deg, hsl(0 75% 47%) 0%, hsl(0 80% 57%) 100%);
+    --gradient-hero: linear-gradient(160deg, hsl(229 80% 30%) 0%, hsl(229 75% 46%) 50%, hsl(229 70% 56%) 100%);
     --gradient-subtle: linear-gradient(180deg, hsl(220 20% 97%) 0%, hsl(220 14% 94%) 100%);
     --gradient-card: linear-gradient(145deg, hsl(0 0% 100%) 0%, hsl(220 18% 98%) 100%);
     --gradient-glass: linear-gradient(135deg, hsla(0 0% 100% / 0.9) 0%, hsla(220 18% 98% / 0.8) 100%);
     
-    /* Premium Shadows - Layered for depth */
-    --shadow-xs: 0 1px 2px hsla(222 47% 11% / 0.04);
-    --shadow-sm: 0 2px 4px hsla(222 47% 11% / 0.05), 0 1px 2px hsla(222 47% 11% / 0.03);
-    --shadow-md: 0 4px 12px hsla(222 47% 11% / 0.07), 0 2px 4px hsla(222 47% 11% / 0.04);
-    --shadow-lg: 0 8px 24px hsla(222 47% 11% / 0.08), 0 4px 8px hsla(222 47% 11% / 0.04);
-    --shadow-xl: 0 16px 48px hsla(222 47% 11% / 0.1), 0 8px 16px hsla(222 47% 11% / 0.05);
-    --shadow-2xl: 0 24px 64px hsla(222 47% 11% / 0.12), 0 12px 24px hsla(222 47% 11% / 0.06);
-    --shadow-accent: 0 8px 32px hsla(12 76% 56% / 0.25);
-    --shadow-primary: 0 8px 32px hsla(222 65% 38% / 0.2);
-    --shadow-glow: 0 0 40px hsla(12 76% 56% / 0.15);
+    /* Premium Shadows - MLCP Brand */
+    --shadow-xs: 0 1px 2px hsla(229 47% 11% / 0.04);
+    --shadow-sm: 0 2px 4px hsla(229 47% 11% / 0.05), 0 1px 2px hsla(229 47% 11% / 0.03);
+    --shadow-md: 0 4px 12px hsla(229 47% 11% / 0.07), 0 2px 4px hsla(229 47% 11% / 0.04);
+    --shadow-lg: 0 8px 24px hsla(229 47% 11% / 0.08), 0 4px 8px hsla(229 47% 11% / 0.04);
+    --shadow-xl: 0 16px 48px hsla(229 47% 11% / 0.1), 0 8px 16px hsla(229 47% 11% / 0.05);
+    --shadow-2xl: 0 24px 64px hsla(229 47% 11% / 0.12), 0 12px 24px hsla(229 47% 11% / 0.06);
+    --shadow-accent: 0 8px 32px hsla(0 75% 47% / 0.25);
+    --shadow-primary: 0 8px 32px hsla(229 75% 46% / 0.2);
+    --shadow-glow: 0 0 40px hsla(0 75% 47% / 0.15);
     --shadow-inner: inset 0 2px 4px hsla(222 47% 11% / 0.05);
     
     /* Sidebar */
@@ -94,47 +101,47 @@
   }
 
   .dark {
-    /* Dark Mode - Elegant & Professional */
-    --background: 222 35% 8%;
+    /* Dark Mode - MLCP Brand */
+    --background: 229 35% 8%;
     --foreground: 220 20% 95%;
 
-    --card: 222 30% 11%;
+    --card: 229 30% 11%;
     --card-foreground: 220 20% 95%;
 
-    --popover: 222 30% 11%;
+    --popover: 229 30% 11%;
     --popover-foreground: 220 20% 95%;
 
-    /* Primary in Dark Mode */
-    --primary: 222 55% 55%;
+    /* Primary in Dark Mode - Azul MLCP */
+    --primary: 229 70% 60%;
     --primary-foreground: 0 0% 100%;
-    --primary-dark: 222 60% 45%;
-    --primary-light: 222 50% 65%;
+    --primary-dark: 229 75% 50%;
+    --primary-light: 229 65% 70%;
 
     /* Secondary in Dark Mode */
-    --secondary: 222 25% 15%;
+    --secondary: 229 25% 15%;
     --secondary-foreground: 220 20% 95%;
 
-    --muted: 222 25% 14%;
+    --muted: 229 25% 14%;
     --muted-foreground: 220 15% 55%;
 
-    /* Accent in Dark Mode - Brighter coral */
-    --accent: 12 80% 60%;
+    /* Accent in Dark Mode - Rojo MLCP */
+    --accent: 0 80% 55%;
     --accent-foreground: 0 0% 100%;
-    --accent-light: 12 85% 70%;
-    --accent-dark: 12 75% 50%;
+    --accent-light: 0 85% 65%;
+    --accent-dark: 0 75% 45%;
 
-    --destructive: 0 65% 55%;
+    --destructive: 0 75% 55%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 222 25% 18%;
-    --input: 222 25% 18%;
-    --ring: 222 55% 55%;
+    --border: 229 25% 18%;
+    --input: 229 25% 18%;
+    --ring: 229 70% 60%;
     
-    /* Dark Mode Gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(222 55% 55%) 0%, hsl(222 50% 65%) 100%);
-    --gradient-accent: linear-gradient(135deg, hsl(12 80% 60%) 0%, hsl(12 85% 70%) 100%);
-    --gradient-card: linear-gradient(145deg, hsl(222 30% 11%) 0%, hsl(222 30% 13%) 100%);
-    --gradient-glass: linear-gradient(135deg, hsla(222 30% 11% / 0.9) 0%, hsla(222 30% 13% / 0.8) 100%);
+    /* Dark Mode Gradients - MLCP Brand */
+    --gradient-primary: linear-gradient(135deg, hsl(229 70% 60%) 0%, hsl(229 65% 70%) 100%);
+    --gradient-accent: linear-gradient(135deg, hsl(0 80% 55%) 0%, hsl(0 85% 65%) 100%);
+    --gradient-card: linear-gradient(145deg, hsl(229 30% 11%) 0%, hsl(229 30% 13%) 100%);
+    --gradient-glass: linear-gradient(135deg, hsla(229 30% 11% / 0.9) 0%, hsla(229 30% 13% / 0.8) 100%);
     
     --shadow-xs: 0 1px 2px hsla(0 0% 0% / 0.25);
     --shadow-sm: 0 2px 4px hsla(0 0% 0% / 0.3);
@@ -143,14 +150,14 @@
     --shadow-xl: 0 16px 48px hsla(0 0% 0% / 0.45);
     --shadow-2xl: 0 24px 64px hsla(0 0% 0% / 0.5);
     
-    --sidebar-background: 222 30% 11%;
+    --sidebar-background: 229 30% 11%;
     --sidebar-foreground: 220 20% 95%;
-    --sidebar-primary: 222 55% 55%;
+    --sidebar-primary: 229 70% 60%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 222 25% 15%;
+    --sidebar-accent: 229 25% 15%;
     --sidebar-accent-foreground: 220 20% 95%;
-    --sidebar-border: 222 25% 18%;
-    --sidebar-ring: 222 55% 55%;
+    --sidebar-border: 229 25% 18%;
+    --sidebar-ring: 229 70% 60%;
   }
 }
 
