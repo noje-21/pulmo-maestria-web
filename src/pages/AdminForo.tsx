@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -10,9 +9,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { toast } from "sonner";
 import { z } from "zod";
 import { motion, AnimatePresence } from "framer-motion";
-import AdminSidebar from "@/features/admin/AdminSidebar";
+import AdminLayout from "@/features/admin/AdminLayout";
 import { CardSkeleton } from "@/components/common/LoadingSkeleton";
-import { ArrowLeft, Trash2, Pin, Eye, Plus, Save, X, Edit } from "lucide-react";
+import { Trash2, Pin, Eye, Plus, Save, X, Edit, MessageSquare } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import ImageUpload from "@/components/common/ImageUpload";
@@ -32,7 +31,6 @@ const AdminForo = () => {
   const [posts, setPosts] = useState<any[]>([]);
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
-  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     title: "",
@@ -46,34 +44,8 @@ const AdminForo = () => {
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
 
   useEffect(() => {
-    checkAdminAndLoadPosts();
+    loadPosts();
   }, []);
-
-  const checkAdminAndLoadPosts = async () => {
-    try {
-      const { data: { session } } = await supabase.auth.getSession();
-      
-      if (!session) {
-        navigate("/auth");
-        return;
-      }
-
-      const { data: isAdminData } = await supabase.rpc('is_admin', { 
-        check_user_id: session.user.id 
-      });
-
-      if (!isAdminData) {
-        toast.error("No tienes permisos de administrador");
-        navigate("/");
-        return;
-      }
-
-      await loadPosts();
-    } catch (error) {
-      toast.error("Error al verificar permisos");
-      navigate("/");
-    }
-  };
 
   const loadPosts = async () => {
     try {
@@ -121,7 +93,6 @@ const AdminForo = () => {
       featured: post.featured || false,
     });
     
-    // Cargar tags del post
     try {
       const { data: postTags } = await supabase
         .from("forum_post_tags")
@@ -191,7 +162,6 @@ const AdminForo = () => {
         postId = newPost.id;
       }
 
-      // Gestionar tags
       if (postId) {
         await supabase
           .from("forum_post_tags")
@@ -253,246 +223,235 @@ const AdminForo = () => {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen w-full">
-        <AdminSidebar />
-        <div className="flex-1 p-8">
-          <div className="max-w-6xl mx-auto space-y-6">
-            <CardSkeleton />
-            <CardSkeleton />
-            <CardSkeleton />
-          </div>
+      <AdminLayout title="Gestión del Foro" subtitle="Cargando...">
+        <div className="space-y-4">
+          <CardSkeleton />
+          <CardSkeleton />
         </div>
-      </div>
+      </AdminLayout>
     );
   }
 
   return (
-    <div className="flex min-h-screen w-full bg-gradient-to-br from-background via-muted/30 to-background">
-      <AdminSidebar />
-      
-      <div className="flex-1 p-4 md:p-8 overflow-y-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="max-w-6xl mx-auto"
-        >
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-              <Button variant="outline" onClick={() => navigate("/admin")} className="pv-tap-scale">
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                Volver
-              </Button>
-              <div>
-                <h1 className="text-4xl font-bold text-primary">Gestión del Foro</h1>
-                <p className="text-muted-foreground mt-1">Administra las publicaciones del foro</p>
-              </div>
-            </div>
-            <Button onClick={() => setShowForm(!showForm)} className="modern-btn pv-tap-scale">
-              <Plus className="w-4 h-4 mr-2" />
-              Nueva Publicación
-            </Button>
-          </div>
-
-          <AnimatePresence>
-            {showForm && (
-              <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: "auto" }}
-                exit={{ opacity: 0, height: 0 }}
-              >
-                <Card className="p-6 mb-8 modern-card pv-glass pv-glow">
-                  <h3 className="text-2xl font-bold mb-4">
-                    {editingId ? "Editar Publicación" : "Crear Nueva Publicación"}
-                  </h3>
-                  <div className="grid gap-4">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <Label>Título *</Label>
-                        <Input
-                          value={formData.title}
-                          onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                          className="modern-input"
-                          placeholder="Título de la publicación"
-                        />
-                      </div>
-                      <div>
-                        <Label>Categoría *</Label>
-                        <Select
-                          value={formData.category}
-                          onValueChange={(value: any) => setFormData({ ...formData, category: value })}
-                        >
-                          <SelectTrigger className="modern-input">
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="general">Foro General</SelectItem>
-                            <SelectItem value="clinical_questions">Preguntas Clínicas</SelectItem>
-                            <SelectItem value="case_discussions">Casos Discutidos</SelectItem>
-                            <SelectItem value="shared_resources">Recursos Compartidos</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    </div>
-
-                    <div>
-                      <Label>Extracto (resumen corto)</Label>
-                      <Textarea
-                        value={formData.excerpt}
-                        onChange={(e) => setFormData({ ...formData, excerpt: e.target.value })}
-                        placeholder="Breve descripción (max 200 caracteres)"
-                        className="modern-input resize-none h-20"
-                        maxLength={200}
-                      />
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <Label>Estado</Label>
-                        <Select
-                          value={formData.status}
-                          onValueChange={(value: any) => setFormData({ ...formData, status: value })}
-                        >
-                          <SelectTrigger className="modern-input">
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="draft">Borrador</SelectItem>
-                            <SelectItem value="published">Publicado</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-
-                      <div className="flex items-center gap-2 mt-6">
-                        <input
-                          type="checkbox"
-                          id="featured"
-                          checked={formData.featured}
-                          onChange={(e) => setFormData({ ...formData, featured: e.target.checked })}
-                          className="w-4 h-4 rounded border-border"
-                        />
-                        <Label htmlFor="featured">⭐ Marcar como destacado</Label>
-                      </div>
-                    </div>
-
-                    <div>
-                      <Label>Etiquetas</Label>
-                      <TagInput
-                        selectedTags={selectedTags}
-                        onTagsChange={setSelectedTags}
-                        placeholder="Agregar etiquetas..."
-                      />
-                    </div>
-
-                    <div>
-                      <Label>Contenido *</Label>
-                      <RichTextEditor
-                        content={formData.content}
-                        onChange={(content) => setFormData({ ...formData, content })}
-                        placeholder="Escribe el contenido de la publicación..."
-                      />
-                    </div>
-
-                    <div>
-                      <Label>Imagen (opcional)</Label>
-                      <ImageUpload
-                        currentImage={formData.image_url}
-                        onImageUploaded={(url) => setFormData({ ...formData, image_url: url })}
-                        onImageRemoved={() => setFormData({ ...formData, image_url: "" })}
-                        generateTitle={!formData.title}
-                        onTitleGenerated={(title) => {
-                          if (!formData.title) {
-                            setFormData({ ...formData, title });
-                          }
-                        }}
-                      />
-                    </div>
-
-                    <div className="flex flex-col sm:flex-row gap-3">
-                      <Button onClick={handleSubmit} className="modern-btn pv-tap-scale w-full sm:w-auto">
-                        <Save className="w-4 h-4 mr-2" />
-                        {editingId ? "Guardar Cambios" : "Crear Publicación"}
-                      </Button>
-                      <Button onClick={resetForm} variant="outline" className="pv-tap-scale w-full sm:w-auto">
-                        <X className="w-4 h-4 mr-2" />
-                        Cancelar
-                      </Button>
-                    </div>
-                  </div>
-                </Card>
-              </motion.div>
-            )}
-          </AnimatePresence>
-
-          <div className="space-y-4">
-            {posts.map((post, index) => (
-              <motion.div
-                key={post.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-              >
-                <Card className="p-4 md:p-6 modern-card pv-glass pv-glow hover:shadow-xl hover:shadow-primary/10 transition-all duration-300">
-                  <div className="flex flex-col sm:flex-row items-start justify-between gap-4">
-                    <div className="flex-1 w-full sm:w-auto">
-                      <div className="flex items-center gap-3 mb-2">
-                        {post.is_pinned && (
-                          <Pin className="w-4 h-4 text-primary" />
-                        )}
-                        <span className="text-xs font-medium px-2 py-1 rounded-full bg-primary/10 text-primary">
-                          {post.category}
-                        </span>
-                      </div>
-                      <h3 className="text-xl font-bold mb-2">{post.title}</h3>
-                      <p className="text-muted-foreground text-sm mb-3 line-clamp-2">{post.content}</p>
-                      <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                        <span>Por: {post.profiles?.full_name || "Usuario"}</span>
-                        <span>{format(new Date(post.created_at), "dd MMM yyyy", { locale: es })}</span>
-                        <div className="flex items-center gap-1">
-                          <Eye className="w-3 h-3" />
-                          <span>{post.views_count} vistas</span>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="flex flex-wrap gap-2 w-full sm:w-auto sm:ml-4">
-                      <Button
-                        onClick={() => handleEdit(post)}
-                        variant="outline"
-                        size="sm"
-                        className="pv-tap-scale flex-1 sm:flex-none"
-                      >
-                        <Edit className="w-4 h-4" />
-                      </Button>
-                      <Button
-                        onClick={() => handleTogglePin(post.id, post.is_pinned)}
-                        variant="outline"
-                        size="sm"
-                        className="pv-tap-scale flex-1 sm:flex-none"
-                      >
-                        <Pin className="w-4 h-4" />
-                      </Button>
-                      <Button
-                        onClick={() => handleDelete(post.id)}
-                        variant="destructive"
-                        size="sm"
-                        className="pv-tap-scale flex-1 sm:flex-none"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </Button>
-                    </div>
-                  </div>
-                </Card>
-              </motion.div>
-            ))}
-
-            {posts.length === 0 && (
-              <Card className="p-12 text-center modern-card pv-glass">
-                <p className="text-muted-foreground">No hay publicaciones en el foro</p>
-              </Card>
-            )}
-          </div>
-        </motion.div>
+    <AdminLayout 
+      title="Gestión del Foro" 
+      subtitle="Administra las publicaciones y discusiones"
+    >
+      {/* Add Button */}
+      <div className="flex justify-end mb-6">
+        <Button onClick={() => setShowForm(!showForm)} className="gap-2">
+          <Plus className="w-4 h-4" />
+          Nueva Publicación
+        </Button>
       </div>
-    </div>
+
+      {/* Form */}
+      <AnimatePresence>
+        {showForm && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+          >
+            <Card className="p-4 md:p-6 mb-6 bg-card border-border/50">
+              <h3 className="text-xl font-bold mb-4">
+                {editingId ? "Editar Publicación" : "Crear Nueva Publicación"}
+              </h3>
+              <div className="grid gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label>Título *</Label>
+                    <Input
+                      value={formData.title}
+                      onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                      placeholder="Título de la publicación"
+                    />
+                  </div>
+                  <div>
+                    <Label>Categoría *</Label>
+                    <Select
+                      value={formData.category}
+                      onValueChange={(value: any) => setFormData({ ...formData, category: value })}
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="general">Foro General</SelectItem>
+                        <SelectItem value="clinical_questions">Preguntas Clínicas</SelectItem>
+                        <SelectItem value="case_discussions">Casos Discutidos</SelectItem>
+                        <SelectItem value="shared_resources">Recursos Compartidos</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
+                <div>
+                  <Label>Extracto (resumen corto)</Label>
+                  <Textarea
+                    value={formData.excerpt}
+                    onChange={(e) => setFormData({ ...formData, excerpt: e.target.value })}
+                    placeholder="Breve descripción (max 200 caracteres)"
+                    className="resize-none h-20"
+                    maxLength={200}
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label>Estado</Label>
+                    <Select
+                      value={formData.status}
+                      onValueChange={(value: any) => setFormData({ ...formData, status: value })}
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="draft">Borrador</SelectItem>
+                        <SelectItem value="published">Publicado</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="flex items-center gap-2 mt-6">
+                    <input
+                      type="checkbox"
+                      id="featured"
+                      checked={formData.featured}
+                      onChange={(e) => setFormData({ ...formData, featured: e.target.checked })}
+                      className="w-4 h-4 rounded border-border"
+                    />
+                    <Label htmlFor="featured">⭐ Marcar como destacado</Label>
+                  </div>
+                </div>
+
+                <div>
+                  <Label>Etiquetas</Label>
+                  <TagInput
+                    selectedTags={selectedTags}
+                    onTagsChange={setSelectedTags}
+                    placeholder="Agregar etiquetas..."
+                  />
+                </div>
+
+                <div>
+                  <Label>Contenido *</Label>
+                  <RichTextEditor
+                    content={formData.content}
+                    onChange={(content) => setFormData({ ...formData, content })}
+                    placeholder="Escribe el contenido de la publicación..."
+                  />
+                </div>
+
+                <div>
+                  <Label>Imagen (opcional)</Label>
+                  <ImageUpload
+                    currentImage={formData.image_url}
+                    onImageUploaded={(url) => setFormData({ ...formData, image_url: url })}
+                    onImageRemoved={() => setFormData({ ...formData, image_url: "" })}
+                    generateTitle={!formData.title}
+                    onTitleGenerated={(title) => {
+                      if (!formData.title) {
+                        setFormData({ ...formData, title });
+                      }
+                    }}
+                  />
+                </div>
+
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <Button onClick={handleSubmit} className="gap-2">
+                    <Save className="w-4 h-4" />
+                    {editingId ? "Guardar Cambios" : "Crear Publicación"}
+                  </Button>
+                  <Button onClick={resetForm} variant="outline" className="gap-2">
+                    <X className="w-4 h-4" />
+                    Cancelar
+                  </Button>
+                </div>
+              </div>
+            </Card>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Posts List */}
+      <div className="space-y-4">
+        {posts.length === 0 ? (
+          <Card className="p-12 text-center bg-card border-border/50">
+            <MessageSquare className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
+            <p className="text-muted-foreground">No hay publicaciones en el foro</p>
+          </Card>
+        ) : (
+          posts.map((post, index) => (
+            <motion.div
+              key={post.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.05 }}
+            >
+              <Card className="p-4 md:p-5 bg-card border-border/50 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300">
+                <div className="flex flex-col sm:flex-row items-start justify-between gap-4">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex flex-wrap items-center gap-2 mb-2">
+                      {post.is_pinned && (
+                        <Pin className="w-4 h-4 text-primary" />
+                      )}
+                      <span className="text-xs font-medium px-2 py-1 rounded-full bg-primary/10 text-primary">
+                        {post.category === "general" ? "General" :
+                         post.category === "clinical_questions" ? "Preguntas Clínicas" :
+                         post.category === "case_discussions" ? "Casos" : "Recursos"}
+                      </span>
+                      {post.featured && (
+                        <span className="text-xs font-medium px-2 py-1 rounded-full bg-yellow-500/10 text-yellow-600">
+                          ⭐ Destacado
+                        </span>
+                      )}
+                    </div>
+                    <h3 className="text-lg font-bold mb-1 line-clamp-1">{post.title}</h3>
+                    <p className="text-muted-foreground text-sm mb-2 line-clamp-2">{post.excerpt || post.content}</p>
+                    <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
+                      <span>Por: {post.profiles?.full_name || "Usuario"}</span>
+                      <span>{format(new Date(post.created_at), "dd MMM yyyy", { locale: es })}</span>
+                      <div className="flex items-center gap-1">
+                        <Eye className="w-3 h-3" />
+                        <span>{post.views_count}</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex gap-2 w-full sm:w-auto">
+                    <Button
+                      onClick={() => handleEdit(post)}
+                      variant="outline"
+                      size="sm"
+                      className="flex-1 sm:flex-none gap-1"
+                    >
+                      <Edit className="w-4 h-4" />
+                    </Button>
+                    <Button
+                      onClick={() => handleTogglePin(post.id, post.is_pinned)}
+                      variant="outline"
+                      size="sm"
+                      className="flex-1 sm:flex-none gap-1"
+                    >
+                      <Pin className="w-4 h-4" />
+                    </Button>
+                    <Button
+                      onClick={() => handleDelete(post.id)}
+                      variant="destructive"
+                      size="sm"
+                      className="flex-1 sm:flex-none gap-1"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
+                  </div>
+                </div>
+              </Card>
+            </motion.div>
+          ))
+        )}
+      </div>
+    </AdminLayout>
   );
 };
 
