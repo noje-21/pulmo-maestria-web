@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -10,9 +9,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { toast } from "sonner";
 import { z } from "zod";
 import { motion, AnimatePresence } from "framer-motion";
-import AdminSidebar from "@/features/admin/AdminSidebar";
+import AdminLayout from "@/features/admin/AdminLayout";
 import { CardSkeleton } from "@/components/common/LoadingSkeleton";
-import { ArrowLeft, Plus, Trash2, Edit, Save, X } from "lucide-react";
+import { Plus, Trash2, Edit, Save, X, Newspaper } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import ImageUpload from "@/components/common/ImageUpload";
@@ -30,7 +29,6 @@ const AdminNovedades = () => {
   const [novedades, setNovedades] = useState<any[]>([]);
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
-  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     title: "",
@@ -42,34 +40,8 @@ const AdminNovedades = () => {
   });
 
   useEffect(() => {
-    checkAdminAndLoadNovedades();
+    loadNovedades();
   }, []);
-
-  const checkAdminAndLoadNovedades = async () => {
-    try {
-      const { data: { session } } = await supabase.auth.getSession();
-      
-      if (!session) {
-        navigate("/auth");
-        return;
-      }
-
-      const { data: isAdminData } = await supabase.rpc('is_admin', { 
-        check_user_id: session.user.id 
-      });
-
-      if (!isAdminData) {
-        toast.error("No tienes permisos de administrador");
-        navigate("/");
-        return;
-      }
-
-      await loadNovedades();
-    } catch (error) {
-      toast.error("Error al verificar permisos");
-      navigate("/");
-    }
-  };
 
   const loadNovedades = async () => {
     try {
@@ -123,7 +95,6 @@ const AdminNovedades = () => {
       return;
     }
 
-    // Validate image URL if provided
     if (formData.image_url) {
       const validation = imageUrlSchema.safeParse(formData.image_url);
       if (!validation.success) {
@@ -139,7 +110,6 @@ const AdminNovedades = () => {
         return;
       }
 
-      // Generar slug automáticamente si está vacío
       const slug = formData.slug || formData.title.toLowerCase()
         .replace(/[^a-z0-9]+/g, '-')
         .replace(/^-+|-+$/g, '');
@@ -199,199 +169,183 @@ const AdminNovedades = () => {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen w-full">
-        <AdminSidebar />
-        <div className="flex-1 p-8">
-          <div className="max-w-6xl mx-auto space-y-6">
-            <CardSkeleton />
-            <CardSkeleton />
-          </div>
+      <AdminLayout title="Gestión de Novedades" subtitle="Cargando...">
+        <div className="space-y-4">
+          <CardSkeleton />
+          <CardSkeleton />
         </div>
-      </div>
+      </AdminLayout>
     );
   }
 
   return (
-    <div className="flex min-h-screen w-full bg-gradient-to-br from-background via-muted/30 to-background">
-      <AdminSidebar />
-      
-      <div className="flex-1 p-4 md:p-8 overflow-y-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="max-w-6xl mx-auto"
-        >
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-              <Button variant="outline" onClick={() => navigate("/admin")} className="pv-tap-scale">
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                Volver
-              </Button>
-              <div>
-                <h1 className="text-4xl font-bold text-primary">Gestión de Novedades</h1>
-                <p className="text-muted-foreground mt-1">Administra las novedades y actualizaciones</p>
-              </div>
-            </div>
-            <Button onClick={() => setShowForm(!showForm)} className="modern-btn pv-tap-scale">
-              <Plus className="w-4 h-4 mr-2" />
-              Nueva Novedad
-            </Button>
-          </div>
-
-          <AnimatePresence>
-            {showForm && (
-              <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: "auto" }}
-                exit={{ opacity: 0, height: 0 }}
-              >
-                <Card className="p-6 mb-8 modern-card pv-glass pv-glow">
-                  <h3 className="text-2xl font-bold mb-4">
-                    {editingId ? "Editar Novedad" : "Crear Nueva Novedad"}
-                  </h3>
-                  <div className="grid gap-4">
-                    <div>
-                      <Label>Título *</Label>
-                      <Input
-                        value={formData.title}
-                        onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                        className="modern-input"
-                      />
-                    </div>
-                    <div>
-                      <Label>Slug (URL) *</Label>
-                      <Input
-                        value={formData.slug}
-                        onChange={(e) => setFormData({ ...formData, slug: e.target.value.toLowerCase().replace(/\s+/g, "-") })}
-                        className="modern-input"
-                      />
-                    </div>
-                    <div>
-                      <Label>Extracto</Label>
-                      <Textarea
-                        value={formData.excerpt}
-                        onChange={(e) => setFormData({ ...formData, excerpt: e.target.value })}
-                        rows={2}
-                        className="modern-input"
-                      />
-                    </div>
-                    <div>
-                      <Label>Contenido *</Label>
-                      <Textarea
-                        value={formData.content}
-                        onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-                        rows={8}
-                        className="modern-input"
-                      />
-                    </div>
-                    <div>
-                      <Label>Imagen (opcional)</Label>
-                      <ImageUpload
-                        currentImage={formData.image_url}
-                        onImageUploaded={(url) => setFormData({ ...formData, image_url: url })}
-                        onImageRemoved={() => setFormData({ ...formData, image_url: "" })}
-                        generateTitle={!formData.title}
-                        onTitleGenerated={(title) => {
-                          if (!formData.title) {
-                            setFormData({ ...formData, title });
-                          }
-                        }}
-                      />
-                    </div>
-                    <div>
-                      <Label>Estado</Label>
-                      <Select
-                        value={formData.status}
-                        onValueChange={(value: any) => setFormData({ ...formData, status: value })}
-                      >
-                        <SelectTrigger className="modern-input">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="draft">Borrador</SelectItem>
-                          <SelectItem value="published">Publicado</SelectItem>
-                          <SelectItem value="archived">Archivado</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div className="flex flex-col sm:flex-row gap-3">
-                      <Button onClick={handleSubmit} className="modern-btn pv-tap-scale w-full sm:w-auto">
-                        <Save className="w-4 h-4 mr-2" />
-                        {editingId ? "Guardar Cambios" : "Crear Novedad"}
-                      </Button>
-                      <Button onClick={resetForm} variant="outline" className="pv-tap-scale w-full sm:w-auto">
-                        <X className="w-4 h-4 mr-2" />
-                        Cancelar
-                      </Button>
-                    </div>
-                  </div>
-                </Card>
-              </motion.div>
-            )}
-          </AnimatePresence>
-
-          <div className="space-y-4">
-            {novedades.map((novedad, index) => (
-              <motion.div
-                key={novedad.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-              >
-                <Card className="p-4 md:p-6 modern-card pv-glass pv-glow hover:shadow-xl hover:shadow-primary/10 transition-all duration-300">
-                  <div className="flex flex-col sm:flex-row items-start justify-between gap-4">
-                    <div className="flex-1 w-full sm:w-auto">
-                      <div className="flex items-center gap-3 mb-2">
-                        <span className={`text-xs font-medium px-2 py-1 rounded-full ${
-                          novedad.status === "published" ? "bg-green-500/10 text-green-500" :
-                          novedad.status === "archived" ? "bg-gray-500/10 text-gray-500" :
-                          "bg-yellow-500/10 text-yellow-500"
-                        }`}>
-                          {novedad.status === "published" ? "Publicado" :
-                           novedad.status === "archived" ? "Archivado" : "Borrador"}
-                        </span>
-                      </div>
-                      <h3 className="text-xl font-bold mb-2">{novedad.title}</h3>
-                      {novedad.excerpt && (
-                        <p className="text-muted-foreground text-sm mb-3">{novedad.excerpt}</p>
-                      )}
-                      <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                        <span>Autor: {novedad.profiles?.full_name || "Admin"}</span>
-                        <span>{format(new Date(novedad.created_at), "dd MMM yyyy", { locale: es })}</span>
-                      </div>
-                    </div>
-                    <div className="flex gap-2 w-full sm:w-auto sm:ml-4">
-                      <Button
-                        onClick={() => handleEdit(novedad)}
-                        variant="outline"
-                        size="sm"
-                        className="pv-tap-scale flex-1 sm:flex-none"
-                      >
-                        <Edit className="w-4 h-4" />
-                      </Button>
-                      <Button
-                        onClick={() => handleDelete(novedad.id)}
-                        variant="destructive"
-                        size="sm"
-                        className="pv-tap-scale flex-1 sm:flex-none"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </Button>
-                    </div>
-                  </div>
-                </Card>
-              </motion.div>
-            ))}
-
-            {novedades.length === 0 && (
-              <Card className="p-12 text-center modern-card pv-glass">
-                <p className="text-muted-foreground">No hay novedades creadas</p>
-              </Card>
-            )}
-          </div>
-        </motion.div>
+    <AdminLayout 
+      title="Gestión de Novedades" 
+      subtitle="Publica noticias y actualizaciones para la comunidad"
+    >
+      {/* Add Button */}
+      <div className="flex justify-end mb-6">
+        <Button onClick={() => setShowForm(!showForm)} className="gap-2">
+          <Plus className="w-4 h-4" />
+          Nueva Novedad
+        </Button>
       </div>
-    </div>
+
+      {/* Form */}
+      <AnimatePresence>
+        {showForm && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+          >
+            <Card className="p-4 md:p-6 mb-6 bg-card border-border/50">
+              <h3 className="text-xl font-bold mb-4">
+                {editingId ? "Editar Novedad" : "Crear Nueva Novedad"}
+              </h3>
+              <div className="grid gap-4">
+                <div>
+                  <Label>Título *</Label>
+                  <Input
+                    value={formData.title}
+                    onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                    placeholder="Título de la novedad"
+                  />
+                </div>
+                <div>
+                  <Label>Slug (URL) *</Label>
+                  <Input
+                    value={formData.slug}
+                    onChange={(e) => setFormData({ ...formData, slug: e.target.value.toLowerCase().replace(/\s+/g, "-") })}
+                    placeholder="url-de-la-novedad"
+                  />
+                </div>
+                <div>
+                  <Label>Extracto</Label>
+                  <Textarea
+                    value={formData.excerpt}
+                    onChange={(e) => setFormData({ ...formData, excerpt: e.target.value })}
+                    rows={2}
+                    placeholder="Breve descripción..."
+                  />
+                </div>
+                <div>
+                  <Label>Contenido *</Label>
+                  <Textarea
+                    value={formData.content}
+                    onChange={(e) => setFormData({ ...formData, content: e.target.value })}
+                    rows={8}
+                    placeholder="Contenido completo de la novedad..."
+                  />
+                </div>
+                <div>
+                  <Label>Imagen (opcional)</Label>
+                  <ImageUpload
+                    currentImage={formData.image_url}
+                    onImageUploaded={(url) => setFormData({ ...formData, image_url: url })}
+                    onImageRemoved={() => setFormData({ ...formData, image_url: "" })}
+                    generateTitle={!formData.title}
+                    onTitleGenerated={(title) => {
+                      if (!formData.title) {
+                        setFormData({ ...formData, title });
+                      }
+                    }}
+                  />
+                </div>
+                <div>
+                  <Label>Estado</Label>
+                  <Select
+                    value={formData.status}
+                    onValueChange={(value: any) => setFormData({ ...formData, status: value })}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="draft">Borrador</SelectItem>
+                      <SelectItem value="published">Publicado</SelectItem>
+                      <SelectItem value="archived">Archivado</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <Button onClick={handleSubmit} className="gap-2">
+                    <Save className="w-4 h-4" />
+                    {editingId ? "Guardar Cambios" : "Crear Novedad"}
+                  </Button>
+                  <Button onClick={resetForm} variant="outline" className="gap-2">
+                    <X className="w-4 h-4" />
+                    Cancelar
+                  </Button>
+                </div>
+              </div>
+            </Card>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Novedades List */}
+      <div className="space-y-4">
+        {novedades.length === 0 ? (
+          <Card className="p-12 text-center bg-card border-border/50">
+            <Newspaper className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
+            <p className="text-muted-foreground">No hay novedades creadas</p>
+          </Card>
+        ) : (
+          novedades.map((novedad, index) => (
+            <motion.div
+              key={novedad.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.05 }}
+            >
+              <Card className="p-4 md:p-5 bg-card border-border/50 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300">
+                <div className="flex flex-col sm:flex-row items-start justify-between gap-4">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className={`text-xs font-medium px-2 py-1 rounded-full ${
+                        novedad.status === "published" ? "bg-green-500/10 text-green-600" :
+                        novedad.status === "archived" ? "bg-gray-500/10 text-gray-500" :
+                        "bg-yellow-500/10 text-yellow-600"
+                      }`}>
+                        {novedad.status === "published" ? "Publicado" :
+                         novedad.status === "archived" ? "Archivado" : "Borrador"}
+                      </span>
+                    </div>
+                    <h3 className="text-lg font-bold mb-1 line-clamp-1">{novedad.title}</h3>
+                    {novedad.excerpt && (
+                      <p className="text-muted-foreground text-sm mb-2 line-clamp-2">{novedad.excerpt}</p>
+                    )}
+                    <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
+                      <span>Autor: {novedad.profiles?.full_name || "Admin"}</span>
+                      <span>{format(new Date(novedad.created_at), "dd MMM yyyy", { locale: es })}</span>
+                    </div>
+                  </div>
+                  <div className="flex gap-2 w-full sm:w-auto">
+                    <Button
+                      onClick={() => handleEdit(novedad)}
+                      variant="outline"
+                      size="sm"
+                      className="flex-1 sm:flex-none gap-1"
+                    >
+                      <Edit className="w-4 h-4" />
+                    </Button>
+                    <Button
+                      onClick={() => handleDelete(novedad.id)}
+                      variant="destructive"
+                      size="sm"
+                      className="flex-1 sm:flex-none gap-1"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
+                  </div>
+                </div>
+              </Card>
+            </motion.div>
+          ))
+        )}
+      </div>
+    </AdminLayout>
   );
 };
 
