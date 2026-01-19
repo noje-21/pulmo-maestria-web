@@ -14,6 +14,7 @@ import Galeria from "@/components/sections/Galeria";
 import { CTAFinal } from "@/components/sections/CTAFinal";
 import { Contacto } from "@/components/sections/Contacto";
 import { Footer } from "@/components/sections/Footer";
+import MobileFunnelCTA from "@/components/common/MobileFunnelCTA";
 
 const Index = () => {
   return (
@@ -23,8 +24,10 @@ const Index = () => {
       <Navigation />
       
       <main id="main-content">
+        {/* PASO 1: Entrada - Hero Emocional */}
         <Hero />
         
+        {/* PASO 2: Contexto - ¿Qué es y para quién? */}
         <AnimatedOnView>
           <Diferenciales />
         </AnimatedOnView>
@@ -45,6 +48,7 @@ const Index = () => {
           <Eventos />
         </AnimatedOnView>
         
+        {/* PASO 3: Validación - Social Proof */}
         <AnimatedOnView>
           <Testimonios />
         </AnimatedOnView>
@@ -57,14 +61,19 @@ const Index = () => {
           <Galeria />
         </AnimatedOnView>
         
+        {/* PASO 4: Decisión - CTA Final */}
         <CTAFinal />
         
+        {/* PASO 5: Acción - Contacto/Inscripción */}
         <AnimatedOnView>
           <Contacto />
         </AnimatedOnView>
       </main>
       
       <Footer />
+      
+      {/* CTA Fijo Mobile - Funnel de Conversión */}
+      <MobileFunnelCTA />
     </div>
   );
 };
