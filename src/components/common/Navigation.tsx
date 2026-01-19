@@ -8,12 +8,11 @@ import NotificationBell from "@/components/common/NotificationBell";
 import logoMaestria from "@/assets/logo-maestria.jpg";
 import { useScrollToSection } from "@/hooks/useScrollToSection";
 
+// Navegación simplificada para funnel de conversión
 const navItems = [
   { label: "Maestría", section: "maestria" },
   { label: "Expertos", section: "expertos" },
-  { label: "Eventos", section: "eventos" },
-  { label: "Galería", section: "galeria" },
-  { label: "Contacto", section: "contacto" }
+  { label: "Testimonios", section: "testimonios" },
 ];
 
 const Navigation = () => {
@@ -115,7 +114,7 @@ const Navigation = () => {
             </div>
           </Link>
 
-          {/* Desktop Navigation */}
+          {/* Desktop Navigation - Funnel Simplificado */}
           <div className="hidden lg:flex items-center gap-1 xl:gap-2">
             {navItems.map((item) => (
               <button
@@ -130,10 +129,24 @@ const Navigation = () => {
               </button>
             ))}
             
+            {/* CTA Principal - Maestría 2026 */}
+            <button
+              onClick={() => handleNavClick("contacto")}
+              className={`relative nav-link px-3 xl:px-4 py-2 text-sm font-semibold group ${
+                isScrolled ? 'text-accent' : 'text-accent-light hover:text-accent-light/80'
+              }`}
+            >
+              Inscribirme
+              <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-gradient-to-r from-accent to-accent-light group-hover:w-full transition-all duration-300 rounded-full" />
+            </button>
+
+            <div className="w-px h-6 bg-border/50 mx-2" />
+            
+            {/* Links Secundarios */}
             <Link
               to="/foro"
-              className={`nav-link px-3 xl:px-4 py-2 text-sm ${
-                isScrolled ? 'text-foreground' : 'text-white hover:text-white/80'
+              className={`nav-link px-2 py-2 text-xs opacity-80 hover:opacity-100 ${
+                isScrolled ? 'text-muted-foreground' : 'text-white/70 hover:text-white/90'
               }`}
             >
               Foro
@@ -141,8 +154,8 @@ const Navigation = () => {
             
             <Link
               to="/novedades"
-              className={`nav-link px-3 xl:px-4 py-2 text-sm ${
-                isScrolled ? 'text-foreground' : 'text-white hover:text-white/80'
+              className={`nav-link px-2 py-2 text-xs opacity-80 hover:opacity-100 ${
+                isScrolled ? 'text-muted-foreground' : 'text-white/70 hover:text-white/90'
               }`}
             >
               Novedades
@@ -203,7 +216,7 @@ const Navigation = () => {
           </button>
         </div>
 
-        {/* Mobile Navigation */}
+        {/* Mobile Navigation - Funnel Simplificado */}
         <AnimatePresence>
           {isMenuOpen && (
             <motion.div
@@ -215,59 +228,77 @@ const Navigation = () => {
               className="lg:hidden overflow-hidden"
             >
               <div className="py-3 space-y-0.5 bg-card/95 backdrop-blur-xl rounded-2xl mt-2 p-3 sm:p-4 shadow-xl border border-border/50">
+                {/* CTA Principal - Maestría 2026 */}
+                <motion.button
+                  onClick={() => handleNavClick("contacto")}
+                  initial={{ opacity: 0, x: -15 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0 }}
+                  className="w-full text-left bg-accent text-white py-4 px-4 rounded-xl font-bold transition-all duration-200 text-base min-h-[56px] flex items-center justify-center gap-2"
+                >
+                  🎓 Inscribirme a la Maestría 2026
+                </motion.button>
+
+                <div className="w-full h-px bg-border my-3" />
+                
                 {navItems.map((item, index) => (
                   <motion.button
                     key={item.section}
                     onClick={() => handleNavClick(item.section)}
                     initial={{ opacity: 0, x: -15 }}
                     animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: index * 0.05 }}
-                    className="w-full text-left text-foreground hover:text-primary hover:bg-muted py-3.5 px-4 rounded-xl font-medium transition-all duration-200 text-base min-h-[48px] flex items-center"
+                    transition={{ delay: (index + 1) * 0.05 }}
+                    className="w-full text-left text-foreground hover:text-primary hover:bg-muted py-3 px-4 rounded-xl font-medium transition-all duration-200 text-sm min-h-[44px] flex items-center"
                   >
                     {item.label}
                   </motion.button>
                 ))}
                 
+                {/* Links Secundarios */}
                 <div className="w-full h-px bg-border my-2" />
+                <p className="text-xs text-muted-foreground px-4 py-1">Contenido adicional</p>
                 
-                <Link
-                  to="/foro"
-                  className="flex items-center text-foreground hover:text-primary hover:bg-muted py-3.5 px-4 rounded-xl font-medium transition-all duration-200 min-h-[48px]"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Foro
-                </Link>
-                
-                <Link
-                  to="/novedades"
-                  className="flex items-center text-foreground hover:text-primary hover:bg-muted py-3.5 px-4 rounded-xl font-medium transition-all duration-200 min-h-[48px]"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Novedades
-                </Link>
-
-                <div className="w-full h-px bg-border my-2" />
+                <div className="flex gap-2">
+                  <Link
+                    to="/foro"
+                    className="flex-1 flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted py-2.5 px-3 rounded-xl text-xs transition-all duration-200 min-h-[40px] border border-border"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    Foro
+                  </Link>
+                  
+                  <Link
+                    to="/novedades"
+                    className="flex-1 flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted py-2.5 px-3 rounded-xl text-xs transition-all duration-200 min-h-[40px] border border-border"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    Novedades
+                  </Link>
+                </div>
 
                 {isAdmin && (
-                  <Button
-                    onClick={() => {
-                      navigate("/admin");
-                      setIsMenuOpen(false);
-                    }}
-                    variant="outline"
-                    size="sm"
-                    className="w-full rounded-xl"
-                  >
-                    Admin
-                  </Button>
+                  <>
+                    <div className="w-full h-px bg-border my-2" />
+                    <Button
+                      onClick={() => {
+                        navigate("/admin");
+                        setIsMenuOpen(false);
+                      }}
+                      variant="outline"
+                      size="sm"
+                      className="w-full rounded-xl"
+                    >
+                      Admin
+                    </Button>
+                  </>
                 )}
 
                 {user ? (
                   <Button 
                     onClick={handleLogout} 
                     variant="ghost" 
-                    size="lg" 
-                    className="w-full rounded-xl mt-2 min-h-[48px]"
+                    size="sm" 
+                    className="w-full rounded-xl mt-2 min-h-[40px] text-xs"
                   >
                     Cerrar sesión
                   </Button>
@@ -277,7 +308,9 @@ const Navigation = () => {
                       navigate("/auth");
                       setIsMenuOpen(false);
                     }}
-                    className="w-full btn-accent rounded-xl mt-2 min-h-[48px]"
+                    variant="ghost"
+                    size="sm"
+                    className="w-full rounded-xl mt-2 min-h-[40px] text-xs"
                   >
                     Iniciar Sesión
                   </Button>
