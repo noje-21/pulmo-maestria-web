@@ -13,21 +13,21 @@ const pasos = [
     numero: "01",
     icon: ClipboardCheck,
     titulo: "Inscríbete",
-    descripcion: "Solo necesitas completar el formulario. Nos encargamos del resto y te guiamos en cada paso.",
+    descripcion: "Solo necesitas completar el formulario. Accedes al campus virtual para prepararte antes de viajar.",
     color: "primary"
   },
   {
     numero: "02",
     icon: GraduationCap,
     titulo: "Vive la experiencia",
-    descripcion: "12 días intensivos donde cada clase te acerca más a convertirte en el especialista que tus pacientes necesitan.",
+    descripcion: "12 días intensivos presenciales en Buenos Aires con expertos internacionales y casos clínicos reales.",
     color: "accent"
   },
   {
     numero: "03",
     icon: Award,
-    titulo: "Transforma tu práctica",
-    descripcion: "Regresa con nuevas herramientas, una comunidad de apoyo y la confianza de quien domina su especialidad.",
+    titulo: "Continúa creciendo",
+    descripcion: "El campus virtual te acompaña después: materiales, comunidad activa y seguimiento para consolidar tu formación.",
     color: "primary"
   }
 ];

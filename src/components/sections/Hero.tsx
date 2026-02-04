@@ -12,8 +12,8 @@ export const Hero = () => {
 
   const stats = [
     { value: "9+", label: "Expertos Internacionales", icon: Users },
-    { value: "12", label: "Días de Formación", icon: Clock },
-    { value: "100%", label: "Presencial", icon: Award },
+    { value: "12", label: "Días Presenciales", icon: Clock },
+    { value: "+", label: "Campus Virtual", icon: Award },
     { value: "5+", label: "Países Participantes", icon: Globe },
   ];
 
