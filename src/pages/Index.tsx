@@ -5,6 +5,7 @@ import { SkipLink } from "@/components/common/SkipLink";
 import { Hero } from "@/components/sections/Hero";
 import { Diferenciales } from "@/components/sections/Diferenciales";
 import { Maestria } from "@/components/sections/Maestria";
+import { EjesFormacion } from "@/components/sections/EjesFormacion";
 import { ComoFunciona } from "@/components/sections/ComoFunciona";
 import { Expertos } from "@/components/sections/Expertos";
 import { Eventos } from "@/components/sections/Eventos";
@@ -15,6 +16,8 @@ import { CTAFinal } from "@/components/sections/CTAFinal";
 import { Contacto } from "@/components/sections/Contacto";
 import { Footer } from "@/components/sections/Footer";
 import MobileFunnelCTA from "@/components/common/MobileFunnelCTA";
+import { ScrollInvitation } from "@/components/common/ScrollInvitation";
+import { SectionDivider } from "@/components/common/SectionDivider";
 
 const Index = () => {
   return (
@@ -32,23 +35,40 @@ const Index = () => {
           <Diferenciales />
         </AnimatedOnView>
         
+        <ScrollInvitation text="Descubre lo que te espera" targetId="maestria" />
+        
         <AnimatedOnView>
           <Maestria />
         </AnimatedOnView>
+        
+        <SectionDivider variant="dots" className="my-4" />
+        
+        {/* PASO 2.5: Ejes de Formación Premium */}
+        <AnimatedOnView>
+          <EjesFormacion />
+        </AnimatedOnView>
+        
+        <ScrollInvitation text="Así es el camino" targetId="como-funciona" />
         
         <AnimatedOnView>
           <ComoFunciona />
         </AnimatedOnView>
         
+        <SectionDivider variant="gradient" className="my-6" />
+        
         <AnimatedOnView>
           <Expertos />
         </AnimatedOnView>
+        
+        <ScrollInvitation text="Conoce los eventos" targetId="eventos" />
         
         <AnimatedOnView>
           <Eventos />
         </AnimatedOnView>
         
         {/* PASO 3: Validación - Social Proof */}
+        <SectionDivider variant="dots" className="my-4" />
+        
         <AnimatedOnView>
           <Testimonios />
         </AnimatedOnView>
