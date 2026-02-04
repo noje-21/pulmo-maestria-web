@@ -54,7 +54,7 @@ const ejes = [
       "Interpretación hemodinámica",
       "Pruebas de vasorreactividad"
     ],
-    narrativeLink: "El diagnóstico es solo el comienzo..."
+    narrativeLink: null
   },
   {
     id: "fisiopatologia",
@@ -71,7 +71,7 @@ const ejes = [
       "Mecanismos inflamatorios",
       "Genética y HP"
     ],
-    narrativeLink: "Ahora que entiendes el mecanismo, es hora de actuar..."
+    narrativeLink: "Ahora, el conocimiento se convierte en acción →"
   },
   {
     id: "tratamiento",
@@ -88,7 +88,7 @@ const ejes = [
       "Manejo del fallo derecho",
       "Indicaciones de trasplante"
     ],
-    narrativeLink: "Cada paciente es único..."
+    narrativeLink: null
   },
   {
     id: "clinica",
@@ -105,7 +105,7 @@ const ejes = [
       "Embarazo e HP",
       "Situaciones de emergencia"
     ],
-    narrativeLink: "El futuro ya está aquí..."
+    narrativeLink: "Preparándote para lo que viene →"
   },
   {
     id: "investigacion",
@@ -122,7 +122,7 @@ const ejes = [
       "Inteligencia artificial en HP",
       "Ensayos clínicos actuales"
     ],
-    narrativeLink: "Y al final, todo se integra..."
+    narrativeLink: null
   },
   {
     id: "integracion",
@@ -178,22 +178,18 @@ const PhaseIndicator = ({ phase }: { phase: keyof typeof progressionPhases }) =>
   );
 };
 
-// Narrative link between cards
+// Narrative link between cards - more subtle and minimal
 const NarrativeLink = ({ text }: { text: string }) => (
   <motion.div
-    initial={{ opacity: 0 }}
-    whileInView={{ opacity: 1 }}
+    initial={{ opacity: 0, y: 10 }}
+    whileInView={{ opacity: 1, y: 0 }}
     viewport={{ once: true }}
-    transition={{ delay: 0.3 }}
-    className="flex items-center justify-center py-8 md:py-10"
+    transition={{ delay: 0.2, duration: 0.5 }}
+    className="flex items-center justify-center py-10 md:py-14"
   >
-    <div className="flex items-center gap-3 text-muted-foreground/60">
-      <div className="h-px w-8 bg-gradient-to-r from-transparent to-border" />
-      <p className="text-sm italic text-center max-w-xs">
-        {text}
-      </p>
-      <div className="h-px w-8 bg-gradient-to-l from-transparent to-border" />
-    </div>
+    <p className="text-xs sm:text-sm text-muted-foreground/50 font-medium tracking-wide">
+      {text}
+    </p>
   </motion.div>
 );
 
@@ -235,18 +231,18 @@ const EjeCard = ({ eje, isExpanded, onToggle, index, isFirstOfPhase }: EjeCardPr
           isExpanded ? "opacity-100" : "opacity-60 group-hover:opacity-100"
         )} />
 
-        {/* Main content */}
-        <div className="relative p-5 sm:p-8 lg:p-10">
-          {/* Chapter indicator for mobile */}
-          <div className="flex items-center justify-between mb-4 sm:hidden">
+        {/* Main content - enhanced mobile spacing */}
+        <div className="relative p-6 sm:p-8 lg:p-10">
+          {/* Chapter indicator for mobile - more prominent */}
+          <div className="flex items-center justify-between mb-5 sm:hidden">
             <span className={cn(
-              "text-xs font-bold uppercase tracking-widest",
+              "text-sm font-bold uppercase tracking-wider",
               phase.color
             )}>
               Capítulo {eje.numero}
             </span>
             <span className={cn(
-              "text-[10px] px-2 py-0.5 rounded-full",
+              "text-[11px] px-3 py-1 rounded-full font-medium",
               phase.bgColor, phase.color
             )}>
               {phase.label}
@@ -367,66 +363,60 @@ const EjeCard = ({ eje, isExpanded, onToggle, index, isFirstOfPhase }: EjeCardPr
             )}
           </AnimatePresence>
 
-          {/* Tap hint for mobile */}
-          <p className={cn(
-            "text-[11px] text-muted-foreground/60 mt-4 text-center sm:hidden transition-opacity",
-            isExpanded ? "opacity-0" : "opacity-100"
+          {/* Tap hint for mobile - more elegant */}
+          <div className={cn(
+            "mt-6 text-center sm:hidden transition-all duration-300",
+            isExpanded ? "opacity-0 h-0" : "opacity-100"
           )}>
-            Toca para explorar este capítulo
-          </p>
+            <span className="text-xs text-muted-foreground/50 font-medium">
+              Toca para explorar →
+            </span>
+          </div>
         </div>
       </div>
     </motion.article>
   );
 };
 
-// Central message component
+// Central message component - refined for brevity and human connection
 const CentralMessage = () => (
   <motion.div
-    initial={{ opacity: 0, y: 30 }}
+    initial={{ opacity: 0, y: 20 }}
     whileInView={{ opacity: 1, y: 0 }}
     viewport={{ once: true }}
-    transition={{ duration: 0.7 }}
-    className="text-center mb-12 md:mb-16 max-w-3xl mx-auto"
+    transition={{ duration: 0.6 }}
+    className="text-center mb-16 md:mb-20 max-w-2xl mx-auto px-4"
   >
-    {/* Main message */}
-    <div className="relative mb-8">
-      <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-accent/5 to-primary/5 rounded-3xl blur-xl" />
-      <div className="relative bg-card/50 backdrop-blur-sm border border-border/30 rounded-3xl p-6 sm:p-10">
-        <div className="flex justify-center mb-4">
-          <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center">
-            <GraduationCap className="w-6 h-6 text-primary" />
-          </div>
-        </div>
-        
-        <h3 className="text-xl sm:text-2xl md:text-3xl font-bold text-foreground mb-4 leading-tight">
-          La formación que transforma conocimiento en{" "}
-          <span className="text-primary">criterio clínico</span>
-        </h3>
-        
-        <p className="text-muted-foreground text-base sm:text-lg leading-relaxed">
-          Seis ejes de formación diseñados para llevarte desde los fundamentos del diagnóstico 
-          hasta la toma de decisiones clínicas complejas. Un recorrido progresivo donde cada 
-          capítulo construye sobre el anterior.
-        </p>
+    {/* Icon */}
+    <motion.div 
+      initial={{ scale: 0.8, opacity: 0 }}
+      whileInView={{ scale: 1, opacity: 1 }}
+      viewport={{ once: true }}
+      transition={{ delay: 0.2 }}
+      className="flex justify-center mb-6"
+    >
+      <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center">
+        <GraduationCap className="w-7 h-7 text-primary" />
       </div>
-    </div>
+    </motion.div>
+    
+    {/* Main message - concise and memorable */}
+    <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground mb-3 leading-tight">
+      De la teoría al{" "}
+      <span className="text-primary">criterio clínico</span>
+    </h3>
+    
+    <p className="text-muted-foreground text-base sm:text-lg max-w-lg mx-auto">
+      Un recorrido en 6 capítulos que transforma tu forma de pensar y decidir.
+    </p>
 
-    {/* Journey indicator */}
-    <div className="flex items-center justify-center gap-2 text-muted-foreground/70 text-sm">
-      <span className="font-medium text-primary">Inicio</span>
-      <div className="flex gap-1">
-        {[...Array(5)].map((_, i) => (
-          <div key={i} className="w-1.5 h-1.5 rounded-full bg-border" />
-        ))}
-      </div>
-      <span className="font-medium text-accent">Profundización</span>
-      <div className="flex gap-1">
-        {[...Array(5)].map((_, i) => (
-          <div key={i} className="w-1.5 h-1.5 rounded-full bg-border" />
-        ))}
-      </div>
-      <span className="font-medium text-primary">Integración</span>
+    {/* Minimal journey indicator */}
+    <div className="flex items-center justify-center gap-3 mt-8 text-xs sm:text-sm text-muted-foreground/60">
+      <span className="text-primary font-medium">Inicio</span>
+      <ArrowRight className="w-3 h-3" />
+      <span className="text-accent font-medium">Profundización</span>
+      <ArrowRight className="w-3 h-3" />
+      <span className="text-primary font-medium">Integración</span>
     </div>
   </motion.div>
 );
@@ -503,7 +493,8 @@ export const EjesFormacion = () => {
       <CentralMessage />
 
       {/* Single column for maximum protagonist effect */}
-      <div className="flex flex-col gap-4 md:gap-6 max-w-4xl mx-auto">
+      {/* Cards with enhanced mobile spacing */}
+      <div className="flex flex-col gap-6 md:gap-8 max-w-4xl mx-auto">
         {ejes.map((eje, index) => {
           const phaseToShow = getPhaseForIndex(index);
           
