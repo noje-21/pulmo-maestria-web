@@ -17,7 +17,7 @@ interface Message {
 const INITIAL_MESSAGE: Message = {
   id: "welcome",
   role: "assistant",
-  content: "¡Hola! 👋 Soy el asistente virtual de la Maestría en Circulación Pulmonar. Puedo ayudarte con información sobre el programa, módulos, duración y requisitos. ¿En qué puedo ayudarte?"
+  content: "¡Hola! 👋 Soy el asistente virtual de la Maestría en Circulación Pulmonar. Puedo ayudarte con información sobre el programa, los 30 módulos, modalidad (presencial + campus virtual), requisitos y más. ¿En qué puedo ayudarte?"
 };
 
 export const AIAssistant = () => {

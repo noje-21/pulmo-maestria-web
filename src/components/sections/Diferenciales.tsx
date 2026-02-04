@@ -42,8 +42,8 @@ const diferenciales = [
   },
   {
     icon: HeartPulse,
-    title: "Siempre actualizado",
-    description: "La circulación pulmonar evoluciona rápido. Nosotros también. Acceso a lo último en investigación y práctica clínica.",
+    title: "Campus virtual de apoyo",
+    description: "Materiales antes, durante y después de la instancia presencial. El aprendizaje no termina en Buenos Aires.",
     color: "accent" as const
   }
 ];

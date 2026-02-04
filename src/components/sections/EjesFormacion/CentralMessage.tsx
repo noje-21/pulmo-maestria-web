@@ -29,7 +29,7 @@ export const CentralMessage = () => (
     </h3>
     
     <p className="text-muted-foreground text-base sm:text-lg max-w-2xl mx-auto mb-6">
-      Un programa estructurado que abarca desde los fundamentos hasta las fronteras de la investigación en hipertensión pulmonar.
+      12 días presenciales intensivos + campus virtual de apoyo. Un programa estructurado que abarca desde los fundamentos hasta las fronteras de la investigación en hipertensión pulmonar.
     </p>
 
     {/* Journey indicator */}

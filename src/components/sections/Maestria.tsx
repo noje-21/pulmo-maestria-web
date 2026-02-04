@@ -13,13 +13,13 @@ const features = [
   {
     icon: BookOpen,
     title: "Modalidad",
-    description: "Maestría presencial intensiva con clases teóricas y prácticas, talleres interactivos y discusión de casos clínicos reales.",
+    description: "12 días presenciales intensivos + campus virtual de apoyo con materiales, recursos y seguimiento continuo.",
     color: "primary"
   },
   {
     icon: Calendar,
     title: "Fechas",
-    description: "Del 3 al 15 de noviembre de 2025. 12 días de formación intensiva con los mejores especialistas.",
+    description: "Del 3 al 15 de noviembre de 2025. Formación intensiva presencial con los mejores especialistas.",
     color: "accent"
   },
   {
