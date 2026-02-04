@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { ChevronDown, Calendar, MapPin, ExternalLink, Award, Users, Clock, Globe, Heart, Stethoscope, Sparkles } from "lucide-react";
+import { ChevronDown, Calendar, MapPin, ExternalLink, Award, Users, Clock, Globe, Heart, Stethoscope, Sparkles, Phone } from "lucide-react";
 import heroImage from "@/assets/hero-banner.jpg";
 
 export const Hero = () => {
@@ -170,11 +170,12 @@ export const Hero = () => {
           <Button
             variant="outline"
             size="lg"
-            onClick={() => window.location.href = "https://www.maestriacp.com/"}
-            aria-label="Conocer el programa completo"
-            className="bg-white/10 backdrop-blur-md border-2 border-white/30 text-white hover:bg-white/20 hover:border-white/50 font-semibold px-8 py-5 rounded-full transition-all duration-400 w-full sm:w-auto min-h-[56px]"
+            onClick={() => window.open("https://wa.me/5491159064234?text=" + encodeURIComponent("Hola, tengo dudas sobre la Maestría en Circulación Pulmonar 2026. ¿Podrían ayudarme?"), "_blank")}
+            aria-label="Hablar con el equipo académico"
+            className="bg-white/10 backdrop-blur-md border-2 border-white/30 text-white hover:bg-white/20 hover:border-white/50 font-semibold px-8 py-5 rounded-full transition-all duration-400 w-full sm:w-auto min-h-[56px] group"
           >
-            Conocer el programa
+            <Phone className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform" aria-hidden="true" />
+            Habla con nuestro equipo
           </Button>
         </motion.div>
 

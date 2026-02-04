@@ -18,6 +18,8 @@ import { Footer } from "@/components/sections/Footer";
 import MobileFunnelCTA from "@/components/common/MobileFunnelCTA";
 import { ScrollInvitation } from "@/components/common/ScrollInvitation";
 import { SectionDivider } from "@/components/common/SectionDivider";
+import { WhatsAppButton } from "@/components/common/WhatsAppButton";
+import { AIAssistant } from "@/components/common/AIAssistant";
 
 const Index = () => {
   return (
@@ -94,6 +96,10 @@ const Index = () => {
       
       {/* CTA Fijo Mobile - Funnel de Conversión */}
       <MobileFunnelCTA />
+      
+      {/* Atención al Cliente */}
+      <WhatsAppButton />
+      <AIAssistant />
     </div>
   );
 };

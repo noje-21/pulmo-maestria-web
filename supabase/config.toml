@@ -2,3 +2,6 @@ project_id = "tvgkinrbtnbtseooaiex"
 
 [functions.generate-cardiology-title]
 verify_jwt = true
+
+[functions.mlcp-assistant]
+verify_jwt = false
