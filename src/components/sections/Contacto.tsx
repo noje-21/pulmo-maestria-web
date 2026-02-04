@@ -17,7 +17,16 @@ const contactSchema = z.object({
   message: z.string().min(10, "El mensaje debe tener al menos 10 caracteres").max(2000)
 });
 
-const contactInfo = [
+interface ContactItem {
+  icon: typeof Mail;
+  label: string;
+  value: string;
+  href: string;
+  highlight?: boolean;
+}
+
+const contactInfo: ContactItem[] = [
+  { icon: Phone, label: "WhatsApp CRF", value: "+54 9 11 5906-4234", href: "https://wa.me/5491159064234", highlight: true },
   { icon: Mail, label: "Email", value: "magisterenhipertensionpulmonar@gmail.com", href: "mailto:magisterenhipertensionpulmonar@gmail.com" },
   { icon: Phone, label: "WhatsApp", value: "+57 300 414 2568", href: "https://wa.me/573004142568" },
   { icon: Linkedin, label: "LinkedIn", value: "Hipertensión Pulmonar", href: "https://www.linkedin.com/in/hipertension-pulmonar-655a43253" },
@@ -132,14 +141,23 @@ export const Contacto = () => {
                       whileInView={{ opacity: 1, x: 0 }}
                       viewport={{ once: true }}
                       transition={{ duration: 0.3, delay: index * 0.05 }}
-                      className="flex items-center gap-3 sm:gap-4 p-2.5 sm:p-3 rounded-xl hover:bg-muted/50 transition-all duration-300 group"
+                      className={`flex items-center gap-3 sm:gap-4 p-2.5 sm:p-3 rounded-xl hover:bg-muted/50 transition-all duration-300 group ${
+                        item.highlight ? "bg-accent/5 border border-accent/20" : ""
+                      }`}
                     >
-                      <div className="p-2 sm:p-2.5 bg-accent/10 rounded-xl group-hover:bg-accent/20 group-hover:scale-110 transition-all duration-300 flex-shrink-0">
+                      <div className={`p-2 sm:p-2.5 rounded-xl group-hover:scale-110 transition-all duration-300 flex-shrink-0 ${
+                        item.highlight ? "bg-accent/20 group-hover:bg-accent/30" : "bg-accent/10 group-hover:bg-accent/20"
+                      }`}>
                         <item.icon className="w-4 h-4 sm:w-5 sm:h-5 text-accent" />
                       </div>
                       <div className="min-w-0 flex-1 overflow-hidden">
                         <p className="font-semibold text-foreground text-xs sm:text-sm">
                           {item.label}
+                          {item.highlight && (
+                            <span className="ml-2 text-[10px] bg-accent/10 text-accent px-1.5 py-0.5 rounded-full">
+                              Recomendado
+                            </span>
+                          )}
                         </p>
                         <p className="text-accent text-xs sm:text-sm truncate group-hover:text-accent/80 transition-colors">
                           {item.value}

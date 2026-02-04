@@ -71,6 +71,15 @@ export const Footer = () => {
                 <span className="truncate">magisterenhipertensionpulmonar@gmail.com</span>
               </a>
               <a 
+                href="https://wa.me/5491159064234" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 hover:text-accent transition-colors"
+              >
+                <Phone className="w-4 h-4 flex-shrink-0" aria-hidden="true" />
+                <span>+54 9 11 5906-4234 (CRF)</span>
+              </a>
+              <a 
                 href="https://wa.me/573004142568" 
                 target="_blank" 
                 rel="noopener noreferrer"
