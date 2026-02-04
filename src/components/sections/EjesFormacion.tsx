@@ -8,18 +8,18 @@ import {
   Microscope,
   Brain,
   Pill,
-  ChevronDown,
-  Sparkles,
-  ArrowRight
+  ChevronRight,
+  Sparkles
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const ejes = [
   {
     id: "diagnostico",
-    numero: "01",
+    numero: "I",
     icon: Stethoscope,
     titulo: "Diagnóstico Avanzado",
+    enfoque: "Del síntoma a la certeza diagnóstica",
     frase: "Porque cada latido cuenta una historia",
     descripcion: "Domina las herramientas diagnósticas de última generación. Desde el ecocardiograma hasta el cateterismo derecho, desarrolla el ojo clínico que tus pacientes necesitan.",
     temas: [
@@ -27,14 +27,14 @@ const ejes = [
       "Cateterismo cardíaco derecho",
       "Interpretación hemodinámica",
       "Pruebas de vasorreactividad"
-    ],
-    color: "primary" as const
+    ]
   },
   {
     id: "fisiopatologia",
-    numero: "02",
+    numero: "II",
     icon: Heart,
     titulo: "Fisiopatología Profunda",
+    enfoque: "Los mecanismos que transforman tu razonamiento",
     frase: "Entiende el por qué, no solo el qué",
     descripcion: "Sumérgete en los mecanismos moleculares y celulares que explican la hipertensión pulmonar. Conocimiento que transforma tu razonamiento clínico.",
     temas: [
@@ -42,14 +42,14 @@ const ejes = [
       "Disfunción endotelial",
       "Mecanismos inflamatorios",
       "Genética y HP"
-    ],
-    color: "accent" as const
+    ]
   },
   {
     id: "tratamiento",
-    numero: "03",
+    numero: "III",
     icon: Pill,
     titulo: "Estrategias Terapéuticas",
+    enfoque: "Personaliza cada tratamiento",
     frase: "Tratamientos que cambian pronósticos",
     descripcion: "Aprende a diseñar esquemas de tratamiento personalizados. Desde la monoterapia hasta las combinaciones avanzadas y el momento del trasplante.",
     temas: [
@@ -57,14 +57,14 @@ const ejes = [
       "Estrategias de combinación",
       "Manejo del fallo derecho",
       "Indicaciones de trasplante"
-    ],
-    color: "primary" as const
+    ]
   },
   {
     id: "clinica",
-    numero: "04",
+    numero: "IV",
     icon: Activity,
     titulo: "Escenarios Clínicos",
+    enfoque: "Decisiones complejas, criterio experto",
     frase: "Casos reales, decisiones reales",
     descripcion: "Discute y resuelve casos clínicos complejos con expertos. Desarrolla el criterio para tomar decisiones en situaciones de alta complejidad.",
     temas: [
@@ -72,14 +72,14 @@ const ejes = [
       "HP y enfermedades autoinmunes",
       "Embarazo e HP",
       "Situaciones de emergencia"
-    ],
-    color: "accent" as const
+    ]
   },
   {
     id: "investigacion",
-    numero: "05",
+    numero: "V",
     icon: Microscope,
     titulo: "Fronteras de la Ciencia",
+    enfoque: "Lo que viene cambiará la especialidad",
     frase: "Lo que viene cambiará todo",
     descripcion: "Conoce los últimos avances en investigación. Nuevas moléculas, biomarcadores, y terapias emergentes que definirán el futuro de la especialidad.",
     temas: [
@@ -87,14 +87,14 @@ const ejes = [
       "Nuevos biomarcadores",
       "Inteligencia artificial en HP",
       "Ensayos clínicos actuales"
-    ],
-    color: "primary" as const
+    ]
   },
   {
     id: "integracion",
-    numero: "06",
+    numero: "VI",
     icon: Brain,
     titulo: "Visión Integral",
+    enfoque: "El paciente como centro de todo",
     frase: "El paciente es más que su enfermedad",
     descripcion: "Aborda la HP desde una perspectiva multidisciplinaria. Calidad de vida, aspectos psicológicos, y el arte de comunicar pronósticos difíciles.",
     temas: [
@@ -102,119 +102,122 @@ const ejes = [
       "Cuidados paliativos",
       "Comunicación médico-paciente",
       "Trabajo multidisciplinario"
-    ],
-    color: "accent" as const
+    ]
   }
 ];
-
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.1
-    }
-  }
-};
-
-const cardVariants = {
-  hidden: { opacity: 0, y: 30 },
-  visible: { 
-    opacity: 1, 
-    y: 0,
-    transition: { duration: 0.5, ease: "easeOut" as const }
-  }
-};
 
 interface EjeCardProps {
   eje: typeof ejes[0];
   isExpanded: boolean;
   onToggle: () => void;
+  index: number;
 }
 
-const EjeCard = ({ eje, isExpanded, onToggle }: EjeCardProps) => {
+const EjeCard = ({ eje, isExpanded, onToggle, index }: EjeCardProps) => {
   const Icon = eje.icon;
+  const isEven = index % 2 === 0;
   
   return (
-    <motion.div
-      variants={cardVariants}
+    <motion.article
+      initial={{ opacity: 0, y: 40 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-50px" }}
+      transition={{ duration: 0.6, delay: index * 0.1 }}
       className="group"
     >
       <div 
-        className={cn(
-          "relative overflow-hidden rounded-2xl border transition-all duration-500 cursor-pointer",
-          "bg-card hover:shadow-xl",
-          isExpanded 
-            ? "border-primary/30 shadow-lg" 
-            : "border-border/50 hover:border-primary/20",
-          eje.color === "primary" ? "hover:shadow-primary/10" : "hover:shadow-accent/10"
-        )}
         onClick={onToggle}
+        className={cn(
+          "relative cursor-pointer overflow-hidden",
+          "rounded-3xl border-2 transition-all duration-500",
+          "bg-card/80 backdrop-blur-sm",
+          isExpanded 
+            ? "border-primary shadow-2xl shadow-primary/10" 
+            : "border-border/30 hover:border-primary/40 hover:shadow-xl hover:shadow-primary/5",
+        )}
       >
-        {/* Signature Accent Bar */}
+        {/* Gradient overlay on hover */}
         <div className={cn(
-          "absolute top-0 left-0 w-1 h-full transition-all duration-400",
-          eje.color === "primary" ? "bg-primary" : "bg-accent",
-          isExpanded ? "w-1.5" : "w-1"
+          "absolute inset-0 opacity-0 transition-opacity duration-500 pointer-events-none",
+          "bg-gradient-to-br from-primary/5 via-transparent to-accent/5",
+          "group-hover:opacity-100"
         )} />
         
-        {/* Decorative gradient on hover */}
+        {/* Signature accent line */}
         <div className={cn(
-          "absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none",
-          eje.color === "primary" 
-            ? "bg-gradient-to-br from-primary/5 via-transparent to-transparent" 
-            : "bg-gradient-to-br from-accent/5 via-transparent to-transparent"
+          "absolute top-0 left-0 right-0 h-1 transition-all duration-500",
+          isEven ? "bg-primary" : "bg-accent",
+          isExpanded ? "opacity-100" : "opacity-60 group-hover:opacity-100"
         )} />
 
-        {/* Content */}
-        <div className="relative p-6 md:p-8">
-          {/* Header */}
-          <div className="flex items-start gap-4 mb-4">
-            {/* Number Badge */}
+        {/* Main content */}
+        <div className="relative p-6 sm:p-8 lg:p-10">
+          {/* Header row */}
+          <div className="flex items-start gap-5 mb-6">
+            {/* Eje identifier */}
             <div className={cn(
-              "flex-shrink-0 w-14 h-14 rounded-2xl flex items-center justify-center font-bold text-lg transition-all duration-400 group-hover:scale-110",
-              eje.color === "primary" 
-                ? "bg-primary/10 text-primary group-hover:bg-primary/15" 
-                : "bg-accent/10 text-accent group-hover:bg-accent/15"
+              "flex-shrink-0 flex flex-col items-center justify-center",
+              "w-16 h-16 sm:w-20 sm:h-20 rounded-2xl",
+              "transition-all duration-500 group-hover:scale-105",
+              isEven 
+                ? "bg-primary/10 text-primary" 
+                : "bg-accent/10 text-accent"
             )}>
-              {eje.numero}
+              <span className="text-xs font-medium uppercase tracking-wider opacity-70">Eje</span>
+              <span className="text-2xl sm:text-3xl font-bold">{eje.numero}</span>
             </div>
             
-            {/* Title & Icon */}
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-3 mb-1">
+            {/* Title and icon */}
+            <div className="flex-1 min-w-0 pt-1">
+              <div className="flex items-center gap-3 mb-2">
                 <Icon className={cn(
-                  "w-5 h-5 transition-colors",
-                  eje.color === "primary" ? "text-primary" : "text-accent"
+                  "w-5 h-5 flex-shrink-0 transition-colors",
+                  isEven ? "text-primary" : "text-accent"
                 )} />
-                <h3 className="text-xl md:text-2xl font-bold text-foreground group-hover:text-primary transition-colors truncate">
+                <h3 className="text-xl sm:text-2xl lg:text-3xl font-bold text-foreground leading-tight">
                   {eje.titulo}
                 </h3>
               </div>
               <p className={cn(
-                "text-sm font-medium italic",
-                eje.color === "primary" ? "text-primary/70" : "text-accent/70"
+                "text-sm sm:text-base font-medium",
+                isEven ? "text-primary/80" : "text-accent/80"
               )}>
-                "{eje.frase}"
+                {eje.enfoque}
               </p>
             </div>
             
             {/* Expand indicator */}
             <motion.div
-              animate={{ rotate: isExpanded ? 180 : 0 }}
+              animate={{ rotate: isExpanded ? 90 : 0 }}
               transition={{ duration: 0.3 }}
-              className="flex-shrink-0 p-2 rounded-full bg-muted/50 group-hover:bg-muted transition-colors"
+              className={cn(
+                "flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center",
+                "transition-colors duration-300",
+                isExpanded 
+                  ? "bg-primary text-primary-foreground" 
+                  : "bg-muted/60 text-muted-foreground group-hover:bg-primary/10 group-hover:text-primary"
+              )}
             >
-              <ChevronDown className="w-5 h-5 text-muted-foreground" />
+              <ChevronRight className="w-5 h-5" />
             </motion.div>
           </div>
 
+          {/* Impact phrase */}
+          <blockquote className={cn(
+            "relative pl-4 mb-6 border-l-2 transition-colors",
+            isEven ? "border-primary/40" : "border-accent/40"
+          )}>
+            <p className="text-lg sm:text-xl italic text-muted-foreground">
+              "{eje.frase}"
+            </p>
+          </blockquote>
+
           {/* Description */}
-          <p className="text-muted-foreground leading-relaxed mb-4 text-sm md:text-base">
+          <p className="text-muted-foreground leading-relaxed text-base sm:text-lg mb-4">
             {eje.descripcion}
           </p>
 
-          {/* Expandable Content */}
+          {/* Expandable content */}
           <AnimatePresence>
             {isExpanded && (
               <motion.div
@@ -224,38 +227,55 @@ const EjeCard = ({ eje, isExpanded, onToggle }: EjeCardProps) => {
                 transition={{ duration: 0.4, ease: "easeInOut" }}
                 className="overflow-hidden"
               >
-                <div className="pt-4 border-t border-border/40">
-                  <div className="flex items-center gap-2 mb-3">
+                <div className="pt-6 mt-6 border-t border-border/40">
+                  <div className="flex items-center gap-2 mb-4">
                     <Sparkles className={cn(
                       "w-4 h-4",
-                      eje.color === "primary" ? "text-primary" : "text-accent"
+                      isEven ? "text-primary" : "text-accent"
                     )} />
-                    <span className="text-sm font-semibold text-foreground">Temas clave:</span>
+                    <span className="text-sm font-bold uppercase tracking-wider text-foreground">
+                      Competencias Clave
+                    </span>
                   </div>
-                  <ul className="grid sm:grid-cols-2 gap-2">
+                  
+                  <div className="grid sm:grid-cols-2 gap-3">
                     {eje.temas.map((tema, idx) => (
-                      <motion.li
+                      <motion.div
                         key={idx}
-                        initial={{ opacity: 0, x: -10 }}
+                        initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: idx * 0.1 }}
-                        className="flex items-center gap-2 text-sm text-muted-foreground"
+                        transition={{ delay: idx * 0.1 + 0.2 }}
+                        className={cn(
+                          "flex items-center gap-3 p-3 rounded-xl",
+                          "bg-muted/40 border border-border/30",
+                          "transition-colors hover:bg-muted/60"
+                        )}
                       >
-                        <ArrowRight className={cn(
-                          "w-3.5 h-3.5 flex-shrink-0",
-                          eje.color === "primary" ? "text-primary" : "text-accent"
+                        <div className={cn(
+                          "w-2 h-2 rounded-full flex-shrink-0",
+                          isEven ? "bg-primary" : "bg-accent"
                         )} />
-                        <span>{tema}</span>
-                      </motion.li>
+                        <span className="text-sm sm:text-base text-foreground/90">
+                          {tema}
+                        </span>
+                      </motion.div>
                     ))}
-                  </ul>
+                  </div>
                 </div>
               </motion.div>
             )}
           </AnimatePresence>
+
+          {/* Tap hint for mobile */}
+          <p className={cn(
+            "text-xs text-muted-foreground/60 mt-4 text-center sm:hidden transition-opacity",
+            isExpanded ? "opacity-0" : "opacity-100"
+          )}>
+            Toca para explorar
+          </p>
         </div>
       </div>
-    </motion.div>
+    </motion.article>
   );
 };
 
@@ -276,36 +296,32 @@ export const EjesFormacion = () => {
       <SectionHeader
         badge="6 Ejes de Formación"
         title="Un programa que lo cubre todo"
-        subtitle="Cada módulo está diseñado para que domines un aspecto esencial de la circulación pulmonar. Sin atajos, sin superficialidades."
+        subtitle="Cada eje está diseñado para que domines un aspecto esencial de la circulación pulmonar. Sin atajos, sin superficialidades."
       />
 
-      <motion.div
-        variants={containerVariants}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, margin: "-50px" }}
-        className="grid md:grid-cols-2 gap-4 md:gap-6 max-w-6xl mx-auto"
-      >
-        {ejes.map((eje) => (
+      {/* Single column for maximum protagonist effect */}
+      <div className="flex flex-col gap-6 md:gap-8 max-w-4xl mx-auto">
+        {ejes.map((eje, index) => (
           <EjeCard
             key={eje.id}
             eje={eje}
+            index={index}
             isExpanded={expandedId === eje.id}
             onToggle={() => handleToggle(eje.id)}
           />
         ))}
-      </motion.div>
+      </div>
 
       {/* Scroll invitation */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        transition={{ delay: 0.6 }}
-        className="text-center mt-12"
+        transition={{ delay: 0.8 }}
+        className="text-center mt-16"
       >
-        <p className="text-muted-foreground text-sm italic">
-          Haz clic en cada eje para explorar los temas · Continúa scrolleando para conocer a los expertos ↓
+        <p className="text-muted-foreground text-sm">
+          Explora cada eje para descubrir las competencias · Continúa para conocer a los expertos ↓
         </p>
       </motion.div>
     </Section>
