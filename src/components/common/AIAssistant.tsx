@@ -7,6 +7,13 @@ import { cn } from "@/lib/utils";
 
 const WHATSAPP_NUMBER = "5491159064234";
 
+const QUICK_QUESTIONS = [
+  { id: "campus", text: "¿Cómo funciona el campus?" },
+  { id: "incluye", text: "¿Qué incluye la maestría?" },
+  { id: "modalidad", text: "¿Es solo presencial?" },
+  { id: "despues", text: "¿Qué pasa después de los 12 días?" },
+];
+
 interface Message {
   id: string;
   role: "user" | "assistant";
@@ -25,6 +32,7 @@ export const AIAssistant = () => {
   const [messages, setMessages] = useState<Message[]>([INITIAL_MESSAGE]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [showQuickQuestions, setShowQuickQuestions] = useState(true);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -98,6 +106,68 @@ export const AIAssistant = () => {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleQuickQuestion = (question: string) => {
+    setShowQuickQuestions(false);
+    setInput(question);
+    // Submit the question automatically
+    const fakeEvent = { preventDefault: () => {} } as React.FormEvent;
+    setTimeout(() => {
+      const userMessage: Message = {
+        id: Date.now().toString(),
+        role: "user",
+        content: question
+      };
+      setMessages(prev => [...prev, userMessage]);
+      setIsLoading(true);
+      
+      fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/mlcp-assistant`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`
+          },
+          body: JSON.stringify({
+            messages: [...messages, userMessage].map(m => ({
+              role: m.role,
+              content: m.content
+            }))
+          })
+        }
+      )
+        .then(response => {
+          if (!response.ok) throw new Error("Error en la respuesta");
+          return response.json();
+        })
+        .then(data => {
+          const assistantMessage: Message = {
+            id: (Date.now() + 1).toString(),
+            role: "assistant",
+            content: data.message,
+            isHandoff: data.handoff
+          };
+          setMessages(prev => [...prev, assistantMessage]);
+        })
+        .catch(error => {
+          console.error("Error:", error);
+          setMessages(prev => [
+            ...prev,
+            {
+              id: (Date.now() + 1).toString(),
+              role: "assistant",
+              content: "Lo siento, hubo un problema. ¿Te gustaría hablar directamente con nuestro equipo académico?",
+              isHandoff: true
+            }
+          ]);
+        })
+        .finally(() => {
+          setIsLoading(false);
+          setInput("");
+        });
+    }, 100);
   };
 
   const handleWhatsAppHandoff = () => {
@@ -219,6 +289,25 @@ export const AIAssistant = () => {
               
               <div ref={messagesEndRef} />
             </div>
+
+            {/* Quick Questions - Only show when no user messages yet */}
+            {showQuickQuestions && messages.length === 1 && (
+              <div className="px-4 pb-3 border-b border-border">
+                <p className="text-xs text-muted-foreground mb-2">Preguntas frecuentes:</p>
+                <div className="flex flex-wrap gap-1.5">
+                  {QUICK_QUESTIONS.map((q) => (
+                    <button
+                      key={q.id}
+                      onClick={() => handleQuickQuestion(q.text)}
+                      disabled={isLoading}
+                      className="text-xs bg-primary/10 hover:bg-primary/20 text-primary px-2.5 py-1.5 rounded-full transition-colors disabled:opacity-50"
+                    >
+                      {q.text}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {/* Input */}
             <form onSubmit={handleSubmit} className="p-4 border-t border-border">
