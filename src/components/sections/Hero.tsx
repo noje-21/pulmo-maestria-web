@@ -33,7 +33,7 @@ export const Hero = () => {
           loading="eager"
         />
         {/* Multi-layer gradient for depth - MLCP Brand Colors */}
-        <div className="absolute inset-0 bg-gradient-to-b from-primary/95 via-primary/85 to-primary-dark/95" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-primary-dark/80" />
         <div className="absolute inset-0 bg-mesh-pattern" />
         {/* Animated medical icons background */}
         <div className="absolute inset-0 overflow-hidden opacity-[0.03]">
@@ -55,8 +55,8 @@ export const Hero = () => {
       </div>
 
       {/* Decorative Elements - MLCP Accent Red */}
-      <div className="absolute top-20 left-10 w-72 h-72 bg-accent/20 rounded-full blur-[100px] animate-pulse-subtle" />
-      <div className="absolute bottom-20 right-10 w-96 h-96 bg-accent/15 rounded-full blur-[120px]" />
+      <div className="absolute top-20 left-10 w-72 h-72 bg-primary/15 rounded-full blur-[100px] animate-pulse-subtle" />
+      <div className="absolute bottom-20 right-10 w-96 h-96 bg-accent/10 rounded-full blur-[120px]" />
       <div className="absolute top-1/3 right-1/4 w-48 h-48 bg-white/5 rounded-full blur-[80px]" />
 
       {/* Main Content */}
