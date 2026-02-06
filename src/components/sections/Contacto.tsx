@@ -32,7 +32,7 @@ const contactInfo: ContactItem[] = [
   { icon: Linkedin, label: "LinkedIn", value: "Hipertensión Pulmonar", href: "https://www.linkedin.com/in/hipertension-pulmonar-655a43253" },
   { icon: Facebook, label: "Facebook", value: "Hipertensión Pulmonar", href: "https://www.facebook.com/share/16s5MUKG3C/?mibextid=wwXIfr" },
   { icon: Instagram, label: "Instagram", value: "@magisterenhipertensionpulmonar", href: "https://instagram.com/magisterenhipertensionpulmonar" },
-  { icon: Globe, label: "Campus Virtual", value: "www.maestriacp.com", href: "https://www.maestriacp.com/" }
+  { icon: Globe, label: "Campus Virtual", value: "www.www.campus.maestriacp.com", href: "https://www.maestriacp.com/" }
 ];
 
 export const Contacto = () => {
