@@ -6,13 +6,13 @@ const benefits = [
   "El criterio clínico que siempre quisiste tener",
   "Una comunidad que te respalda cuando lo necesitas",
   "Casos reales que te preparan para cualquier situación",
-  "El conocimiento que tus pacientes merecen"
+  "El conocimiento que tus pacientes merecen",
 ];
 
 export const CTAFinal = () => {
   const scrollToContact = () => {
-    document.getElementById('contacto')?.scrollIntoView({
-      behavior: 'smooth'
+    document.getElementById("contacto")?.scrollIntoView({
+      behavior: "smooth",
     });
   };
 
@@ -21,7 +21,7 @@ export const CTAFinal = () => {
       {/* Background gradient - Premium Navy */}
       <div className="absolute inset-0 bg-gradient-to-br from-primary-dark via-primary to-primary-dark" />
       <div className="absolute inset-0 bg-mesh-pattern opacity-20" />
-      
+
       {/* Decorative elements */}
       <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-accent/15 rounded-full blur-[150px] -translate-x-1/2 -translate-y-1/2" />
       <div className="absolute bottom-0 right-0 w-[600px] h-[600px] bg-accent/10 rounded-full blur-[180px] translate-x-1/2 translate-y-1/2" />
@@ -45,15 +45,17 @@ export const CTAFinal = () => {
 
             {/* Title - Emotional */}
             <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4 leading-tight">
-              Tu próximo paciente 
+              Tu próximo paciente
               <span className="text-accent-light block sm:inline"> te necesita preparado</span>
             </h2>
 
             {/* Storytelling description - Purpose */}
             <p className="text-sm sm:text-base md:text-lg text-white/85 mb-6 leading-relaxed">
-              La hipertensión pulmonar no espera. Cada día de formación es un día más 
-              cerca de ofrecer respuestas donde antes solo había preguntas. 
-              <span className="block mt-2 font-medium text-white text-sm sm:text-base">Toma la decisión que cambiará tu práctica.</span>
+              La hipertensión pulmonar no espera. Cada día de formación es un día más cerca de ofrecer respuestas donde
+              antes solo había preguntas.
+              <span className="block mt-2 font-medium text-white text-sm sm:text-base">
+                Toma la decisión que cambiará tu práctica.
+              </span>
             </p>
 
             {/* Benefits list */}
@@ -77,17 +79,18 @@ export const CTAFinal = () => {
             <div className="flex items-center gap-4 mb-8 justify-center lg:justify-start">
               <div className="flex -space-x-2">
                 {[...Array(4)].map((_, i) => (
-                  <div 
-                    key={i} 
+                  <div
+                    key={i}
                     className="w-10 h-10 rounded-full bg-gradient-to-br from-accent to-accent-light border-2 border-white/20 flex items-center justify-center text-white text-xs font-bold"
                   >
-                    {['AL', 'MR', 'JC', 'DP'][i]}
+                    {["AL", "MR", "JC", "DP"][i]}
                   </div>
                 ))}
               </div>
               <div className="text-white/80 text-sm">
                 <span className="font-semibold text-white">+50 profesionales</span>
-                <br />formados en 2024
+                <br />
+                formados en 2024
               </div>
             </div>
           </motion.div>
@@ -130,19 +133,19 @@ export const CTAFinal = () => {
 
               {/* CTA Buttons */}
               <div className="space-y-3">
-                <Button 
-                  size="lg" 
+                <Button
+                  size="lg"
                   onClick={scrollToContact}
                   className="btn-hero group min-h-[56px] w-full brand-cta-glow"
                 >
                   <span>Inscribirme Ahora</span>
                   <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
                 </Button>
-                
+
                 <Button
                   variant="outline"
                   size="lg"
-                  onClick={() => window.location.href = "https://www.maestriacp.com/"}
+                  onClick={() => (window.location.href = "https://campus.maestriacp.com/")}
                   className="bg-transparent border-2 border-white/30 text-white hover:bg-white/10 hover:border-white/50 font-semibold px-8 py-5 rounded-full transition-all duration-400 min-h-[52px] w-full"
                 >
                   Ver Campus Virtual
@@ -150,9 +153,7 @@ export const CTAFinal = () => {
                 </Button>
               </div>
 
-              <p className="text-white/60 text-sm mt-6">
-                Sin compromiso · Respuesta en 24h
-              </p>
+              <p className="text-white/60 text-sm mt-6">Sin compromiso · Respuesta en 24h</p>
             </div>
           </motion.div>
         </div>
