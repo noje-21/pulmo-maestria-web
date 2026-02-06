@@ -1,7 +1,7 @@
 import { Section, SectionHeader } from "@/components/common/Section";
 import { modulos, progressionPhases } from "./data";
-import { PhaseIndicator } from "./PhaseIndicator";
-import { ModuloCard } from "./ModuloCard";
+import { PhaseTransition } from "./PhaseTransition";
+import { ReelModuleCard } from "./ReelModuleCard";
 import { CentralMessage } from "./CentralMessage";
 import { ContextualCTA } from "./ContextualCTA";
 
@@ -30,24 +30,29 @@ export const EjesFormacion = () => {
         subtitle="Cada módulo es un paso en tu transformación como especialista en circulación pulmonar."
       />
 
-      {/* Central Message */}
+      {/* Central Message - Emotional hook */}
       <CentralMessage />
 
-      {/* Modules grouped by phase */}
-      <div className="flex flex-col gap-6 md:gap-8 max-w-4xl mx-auto">
+      {/* Modules as interactive story cards */}
+      <div className="flex flex-col gap-4 sm:gap-6 max-w-3xl mx-auto">
         {modulos.map((modulo, index) => {
           const phaseKey = getPhaseForIndex(index);
           
           return (
             <div key={modulo.id}>
-              {/* Phase indicator for first of each phase */}
+              {/* Phase transition indicator */}
               {phaseKey && (
-                <PhaseIndicator phase={progressionPhases[phaseKey]} />
+                <PhaseTransition 
+                  phase={progressionPhases[phaseKey]} 
+                  phaseKey={phaseKey}
+                  isFirst={index === 0}
+                />
               )}
               
-              <ModuloCard
+              <ReelModuleCard
                 modulo={modulo}
                 index={index}
+                totalModules={modulos.length}
               />
             </div>
           );
