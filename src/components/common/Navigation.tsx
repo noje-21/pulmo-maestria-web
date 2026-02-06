@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { Menu, X, ChevronDown } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
@@ -25,6 +25,32 @@ const Navigation = () => {
   const location = useLocation();
   const scrollToSection = useScrollToSection();
   const isHomePage = location.pathname === "/";
+
+  // Lock body scroll when menu is open
+  useEffect(() => {
+    if (isMenuOpen) {
+      document.body.style.overflow = 'hidden';
+      document.body.style.position = 'fixed';
+      document.body.style.width = '100%';
+      document.body.style.top = `-${window.scrollY}px`;
+    } else {
+      const scrollY = document.body.style.top;
+      document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.width = '';
+      document.body.style.top = '';
+      if (scrollY) {
+        window.scrollTo(0, parseInt(scrollY || '0') * -1);
+      }
+    }
+    
+    return () => {
+      document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.width = '';
+      document.body.style.top = '';
+    };
+  }, [isMenuOpen]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -70,18 +96,26 @@ const Navigation = () => {
   }, []);
 
   const handleLogout = async () => {
+    setIsMenuOpen(false);
     await supabase.auth.signOut();
     navigate("/");
   };
 
-  const handleNavClick = (section: string) => {
+  const handleNavClick = useCallback((section: string) => {
     setIsMenuOpen(false);
-    if (isHomePage) {
-      scrollToSection(section);
-    } else {
-      navigate(`/#${section}`);
-    }
-  };
+    // Small delay to ensure menu closes before scroll
+    setTimeout(() => {
+      if (isHomePage) {
+        scrollToSection(section);
+      } else {
+        navigate(`/#${section}`);
+      }
+    }, 100);
+  }, [isHomePage, navigate, scrollToSection]);
+
+  const closeMenu = useCallback(() => {
+    setIsMenuOpen(false);
+  }, []);
 
   return (
     <motion.nav
@@ -216,110 +250,149 @@ const Navigation = () => {
           </button>
         </div>
 
-        {/* Mobile Navigation - Funnel Simplificado */}
-        <AnimatePresence>
-          {isMenuOpen && (
+      </div>
+
+      {/* Mobile Navigation - Full Screen Overlay */}
+      <AnimatePresence>
+        {isMenuOpen && (
+          <>
+            {/* Backdrop - Click to close */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] lg:hidden"
+              onClick={closeMenu}
+              aria-hidden="true"
+            />
+            
+            {/* Menu Panel */}
             <motion.div
               id="mobile-menu"
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.25 }}
-              className="lg:hidden overflow-hidden"
+              initial={{ opacity: 0, x: "100%" }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: "100%" }}
+              transition={{ duration: 0.3, ease: "easeOut" }}
+              className="fixed top-0 right-0 h-[100dvh] w-[85vw] max-w-[320px] bg-background z-[101] lg:hidden shadow-2xl overflow-y-auto"
             >
-              <div className="py-3 space-y-0.5 bg-card/95 backdrop-blur-xl rounded-2xl mt-2 p-3 sm:p-4 shadow-xl border border-border/50">
+              {/* Header with close button */}
+              <div className="sticky top-0 flex items-center justify-between p-4 border-b border-border bg-background/95 backdrop-blur-sm">
+                <img
+                  src={logoMaestria}
+                  alt="Logo Maestría"
+                  className="h-10 w-auto object-contain rounded-lg"
+                />
+                <button
+                  onClick={closeMenu}
+                  aria-label="Cerrar menú"
+                  className="p-3 rounded-xl bg-muted hover:bg-muted/80 transition-colors min-h-[48px] min-w-[48px] flex items-center justify-center"
+                >
+                  <X size={24} className="text-foreground" />
+                </button>
+              </div>
+
+              {/* Menu Content */}
+              <div className="p-4 space-y-3">
                 {/* CTA Principal - Maestría 2026 */}
                 <motion.button
                   onClick={() => handleNavClick("contacto")}
-                  initial={{ opacity: 0, x: -15 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0 }}
-                  className="w-full text-left bg-accent text-white py-4 px-4 rounded-xl font-bold transition-all duration-200 text-base min-h-[56px] flex items-center justify-center gap-2"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.1 }}
+                  className="w-full bg-accent hover:bg-accent/90 text-white py-4 px-5 rounded-xl font-bold transition-all duration-200 text-base min-h-[56px] flex items-center justify-center gap-2 shadow-lg"
                 >
                   🎓 Inscribirme a la Maestría 2026
                 </motion.button>
 
-                <div className="w-full h-px bg-border my-3" />
+                <div className="w-full h-px bg-border my-4" />
                 
-                {navItems.map((item, index) => (
-                  <motion.button
-                    key={item.section}
-                    onClick={() => handleNavClick(item.section)}
-                    initial={{ opacity: 0, x: -15 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: (index + 1) * 0.05 }}
-                    className="w-full text-left text-foreground hover:text-primary hover:bg-muted py-3 px-4 rounded-xl font-medium transition-all duration-200 text-sm min-h-[44px] flex items-center"
-                  >
-                    {item.label}
-                  </motion.button>
-                ))}
+                {/* Navigation Items */}
+                <nav className="space-y-1">
+                  {navItems.map((item, index) => (
+                    <motion.button
+                      key={item.section}
+                      onClick={() => handleNavClick(item.section)}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.15 + index * 0.05 }}
+                      className="w-full text-left text-foreground hover:text-primary active:bg-muted py-4 px-5 rounded-xl font-medium transition-all duration-200 text-base min-h-[52px] flex items-center"
+                    >
+                      {item.label}
+                    </motion.button>
+                  ))}
+                </nav>
                 
                 {/* Links Secundarios */}
-                <div className="w-full h-px bg-border my-2" />
-                <p className="text-xs text-muted-foreground px-4 py-1">Contenido adicional</p>
+                <div className="w-full h-px bg-border my-4" />
+                <p className="text-xs text-muted-foreground px-2 py-1 uppercase tracking-wider">Contenido adicional</p>
                 
-                <div className="flex gap-2">
+                <div className="grid grid-cols-2 gap-3">
                   <Link
                     to="/foro"
-                    className="flex-1 flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted py-2.5 px-3 rounded-xl text-xs transition-all duration-200 min-h-[40px] border border-border"
-                    onClick={() => setIsMenuOpen(false)}
+                    className="flex items-center justify-center text-foreground hover:text-primary active:bg-muted py-3 px-4 rounded-xl text-sm font-medium transition-all duration-200 min-h-[48px] border border-border bg-muted/30"
+                    onClick={closeMenu}
                   >
                     Foro
                   </Link>
                   
                   <Link
                     to="/novedades"
-                    className="flex-1 flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted py-2.5 px-3 rounded-xl text-xs transition-all duration-200 min-h-[40px] border border-border"
-                    onClick={() => setIsMenuOpen(false)}
+                    className="flex items-center justify-center text-foreground hover:text-primary active:bg-muted py-3 px-4 rounded-xl text-sm font-medium transition-all duration-200 min-h-[48px] border border-border bg-muted/30"
+                    onClick={closeMenu}
                   >
                     Novedades
                   </Link>
                 </div>
 
                 {isAdmin && (
-                  <>
-                    <div className="w-full h-px bg-border my-2" />
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.35 }}
+                  >
+                    <div className="w-full h-px bg-border my-4" />
                     <Button
                       onClick={() => {
                         navigate("/admin");
-                        setIsMenuOpen(false);
+                        closeMenu();
                       }}
                       variant="outline"
-                      size="sm"
-                      className="w-full rounded-xl"
+                      className="w-full rounded-xl min-h-[48px]"
                     >
-                      Admin
+                      Panel Admin
                     </Button>
-                  </>
+                  </motion.div>
                 )}
 
-                {user ? (
-                  <Button 
-                    onClick={handleLogout} 
-                    variant="ghost" 
-                    size="sm" 
-                    className="w-full rounded-xl mt-2 min-h-[40px] text-xs"
-                  >
-                    Cerrar sesión
-                  </Button>
-                ) : (
-                  <Button
-                    onClick={() => {
-                      navigate("/auth");
-                      setIsMenuOpen(false);
-                    }}
-                    variant="ghost"
-                    size="sm"
-                    className="w-full rounded-xl mt-2 min-h-[40px] text-xs"
-                  >
-                    Iniciar Sesión
-                  </Button>
-                )}
+                {/* Auth Section */}
+                <div className="pt-4 mt-4 border-t border-border">
+                  {user ? (
+                    <Button 
+                      onClick={handleLogout} 
+                      variant="ghost" 
+                      className="w-full rounded-xl min-h-[48px] text-sm"
+                    >
+                      Cerrar sesión
+                    </Button>
+                  ) : (
+                    <Button
+                      onClick={() => {
+                        navigate("/auth");
+                        closeMenu();
+                      }}
+                      variant="outline"
+                      className="w-full rounded-xl min-h-[48px] text-sm"
+                    >
+                      Iniciar Sesión
+                    </Button>
+                  )}
+                </div>
               </div>
             </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
+          </>
+        )}
+      </AnimatePresence>
     </motion.nav>
   );
 };
