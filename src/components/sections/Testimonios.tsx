@@ -265,25 +265,16 @@ export const Testimonios = () => {
         ))}
       </div>
 
-      {/* CTA */}
-      <motion.div
-        initial={{ opacity: 0, y: 16 }}
-        whileInView={{ opacity: 1, y: 0 }}
+      {/* Subtle closing line */}
+      <motion.p
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
         viewport={{ once: true }}
         transition={{ duration: 0.5, delay: 0.3 }}
-        className="mt-14 md:mt-20 text-center"
+        className="mt-12 md:mt-16 text-center text-muted-foreground text-sm"
       >
-        <p className="text-xl md:text-2xl font-bold text-foreground mb-2">
-          Tú puedes ser el próximo testimonio
-        </p>
-        <p className="text-muted-foreground mb-6">
-          Sumate a la edición 2026 y transformá tu práctica clínica.
-        </p>
-        <Button size="lg" onClick={scrollToContact} className="btn-hero gap-2">
-          Yo quiero ser el próximo
-          <ArrowRight className="w-5 h-5" />
-        </Button>
-      </motion.div>
+        Más de 300 profesionales ya vivieron esta experiencia.
+      </motion.p>
 
       {/* Cinema Modal */}
       <AnimatePresence>

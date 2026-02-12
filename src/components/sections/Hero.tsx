@@ -63,7 +63,7 @@ export const Hero = () => {
       {/* Main Content */}
       <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 sm:pt-24 pb-12 sm:pb-16 text-center">
         
-        {/* 🔥 CTA MAESTRÍA 2026 - Banner de Alto Impacto */}
+        {/* Edition badge */}
         <motion.div initial={{
         opacity: 0,
         scale: 0.9
@@ -74,14 +74,10 @@ export const Hero = () => {
         duration: 0.5,
         delay: 0.02
       }} className="mb-6 sm:mb-8">
-          <a href="#contacto" onClick={e => {
-          e.preventDefault();
-          scrollToSection("contacto");
-        }} className="inline-flex items-center gap-2 sm:gap-3 bg-accent text-white px-4 sm:px-6 py-2.5 sm:py-3 rounded-full font-bold text-sm sm:text-base hover:bg-accent-dark transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 group">
-            <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 animate-pulse" />
-            <span>🎓 Inscripciones Maestría 2026 - ¡Cupos Limitados!</span>
-            <ExternalLink className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-          </a>
+          <span className="inline-flex items-center gap-2 sm:gap-3 bg-white/10 backdrop-blur-md text-white px-4 sm:px-6 py-2.5 sm:py-3 rounded-full font-semibold text-sm sm:text-base border border-white/20">
+            <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-accent-light animate-pulse" />
+            <span>Edición 2026 · Cupos limitados</span>
+          </span>
         </motion.div>
 
         {/* Problem Statement - Emotional Hook */}
@@ -159,7 +155,7 @@ export const Hero = () => {
           </div>
         </motion.div>
 
-        {/* CTA Buttons */}
+        {/* Scroll indicator text */}
         <motion.div initial={{
         opacity: 0,
         y: 30
@@ -169,16 +165,13 @@ export const Hero = () => {
       }} transition={{
         duration: 0.6,
         delay: 0.3
-      }} className="flex flex-col sm:flex-row gap-3 sm:gap-4 items-center justify-center px-2">
-          <Button size="lg" onClick={() => scrollToSection("contacto")} aria-label="Inscribirme a la Maestría 2026" className="btn-hero group w-full sm:w-auto min-h-[56px] brand-cta-glow">
-            <span>🎓 Inscribirme Ahora</span>
-            <ExternalLink className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" aria-hidden="true" />
-          </Button>
-          
-          <Button variant="outline" size="lg" onClick={() => window.open("https://wa.me/5491159064234?text=" + encodeURIComponent("Hola, tengo dudas sobre la Maestría en Circulación Pulmonar 2026. ¿Podrían ayudarme?"), "_blank")} aria-label="Hablar con el equipo académico" className="bg-white/10 backdrop-blur-md border-2 border-white/30 text-white hover:bg-white/20 hover:border-white/50 font-semibold px-8 py-5 rounded-full transition-all duration-400 w-full sm:w-auto min-h-[56px] group">
-            <Phone className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform" aria-hidden="true" />
-            Habla con nuestro equipo
-          </Button>
+      }} className="flex items-center justify-center px-2">
+          <button 
+            onClick={() => scrollToSection("diferenciales")} 
+            className="text-white/60 hover:text-white/90 text-sm font-medium transition-colors cursor-pointer"
+          >
+            Descubre lo que te espera ↓
+          </button>
         </motion.div>
 
         {/* Stats */}
