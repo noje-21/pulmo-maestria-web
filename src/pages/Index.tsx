@@ -3,22 +3,14 @@ import AnimatedOnView from "@/components/common/AnimatedOnView";
 import { SEO } from "@/components/common/SEO";
 import { SkipLink } from "@/components/common/SkipLink";
 import { HeroFlyer } from "@/components/sections/HeroFlyer";
-import { Hero } from "@/components/sections/Hero";
-import { Diferenciales } from "@/components/sections/Diferenciales";
-import { Maestria } from "@/components/sections/Maestria";
-import { EjesFormacion } from "@/components/sections/EjesFormacion";
-import { ComoFunciona } from "@/components/sections/ComoFunciona";
-import { Expertos } from "@/components/sections/Expertos";
-import { Eventos } from "@/components/sections/Eventos";
+import { Diferencial } from "@/components/sections/Diferencial";
+import { ExperienciaFormativa } from "@/components/sections/ExperienciaFormativa";
 import { Testimonios } from "@/components/sections/Testimonios";
-import { QuienesSomos } from "@/components/sections/QuienesSomos";
-import Galeria from "@/components/sections/Galeria";
-import { CTAFinal } from "@/components/sections/CTAFinal";
+import { ResultadoProfesional } from "@/components/sections/ResultadoProfesional";
+import { AccionFinal } from "@/components/sections/AccionFinal";
 import { Contacto } from "@/components/sections/Contacto";
 import { Footer } from "@/components/sections/Footer";
 import MobileFunnelCTA from "@/components/common/MobileFunnelCTA";
-import { ScrollInvitation } from "@/components/common/ScrollInvitation";
-import { SectionDivider } from "@/components/common/SectionDivider";
 import { WhatsAppButton } from "@/components/common/WhatsAppButton";
 import { AIAssistant } from "@/components/common/AIAssistant";
 
@@ -30,65 +22,31 @@ const Index = () => {
       <Navigation />
       
       <main id="main-content">
-        {/* PASO 1: Entrada - Hero Emocional */}
+        {/* 1️⃣ HERO — Impacto */}
         <HeroFlyer />
-        <Hero />
-        
-        {/* PASO 2: Contexto - ¿Qué es y para quién? */}
+
+        {/* 2️⃣ DIFERENCIAL — ¿Por qué esta maestría? */}
         <AnimatedOnView>
-          <Diferenciales />
+          <Diferencial />
         </AnimatedOnView>
-        
-        <ScrollInvitation text="Descubre lo que te espera" targetId="maestria" />
-        
+
+        {/* 3️⃣ EXPERIENCIA FORMATIVA — El ecosistema completo */}
         <AnimatedOnView>
-          <Maestria />
+          <ExperienciaFormativa />
         </AnimatedOnView>
-        
-        <SectionDivider variant="dots" className="my-4" />
-        
-        {/* PASO 2.5: Ejes de Formación Premium */}
-        <AnimatedOnView>
-          <EjesFormacion />
-        </AnimatedOnView>
-        
-        <ScrollInvitation text="Así es el camino" targetId="como-funciona" />
-        
-        <AnimatedOnView>
-          <ComoFunciona />
-        </AnimatedOnView>
-        
-        <SectionDivider variant="gradient" className="my-6" />
-        
-        <AnimatedOnView>
-          <Expertos />
-        </AnimatedOnView>
-        
-        <ScrollInvitation text="Conoce los eventos" targetId="eventos" />
-        
-        <AnimatedOnView>
-          <Eventos />
-        </AnimatedOnView>
-        
-        {/* PASO 3: Validación - Social Proof */}
-        <SectionDivider variant="dots" className="my-4" />
-        
+
+        {/* 4️⃣ TESTIMONIOS — Momento WOW */}
         <AnimatedOnView>
           <Testimonios />
         </AnimatedOnView>
-        
+
+        {/* 5️⃣ RESULTADO PROFESIONAL — Transformación */}
         <AnimatedOnView>
-          <QuienesSomos />
+          <ResultadoProfesional />
         </AnimatedOnView>
-        
-        <AnimatedOnView>
-          <Galeria />
-        </AnimatedOnView>
-        
-        {/* PASO 4: Decisión - CTA Final */}
-        <CTAFinal />
-        
-        {/* PASO 5: Acción - Contacto/Inscripción */}
+
+        {/* 6️⃣ ACCIÓN FINAL — CTA + Contacto */}
+        <AccionFinal />
         <AnimatedOnView>
           <Contacto />
         </AnimatedOnView>
@@ -96,10 +54,7 @@ const Index = () => {
       
       <Footer />
       
-      {/* CTA Fijo Mobile - Funnel de Conversión */}
       <MobileFunnelCTA />
-      
-      {/* Atención al Cliente */}
       <WhatsAppButton />
       <AIAssistant />
     </div>
