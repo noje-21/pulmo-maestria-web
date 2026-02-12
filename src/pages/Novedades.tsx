@@ -147,7 +147,7 @@ const Novedades = () => {
   return (
     <div className="min-h-screen bg-background">
       <SEO 
-        title="Novedades - Maestría en Circulación Pulmonar 2025"
+        title="Novedades - Maestría en Circulación Pulmonar 2026"
         description="Mantente al día con las últimas noticias, artículos y actualizaciones de la Maestría en Circulación Pulmonar."
         keywords="novedades, noticias, circulación pulmonar, actualizaciones, artículos médicos"
       />

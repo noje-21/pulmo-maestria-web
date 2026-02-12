@@ -19,7 +19,7 @@ const features = [
   {
     icon: Calendar,
     title: "Fechas",
-    description: "Del 2 al 16 de noviembre de 2025. Formación intensiva presencial con los mejores especialistas.",
+    description: "Del 2 al 16 de noviembre de 2026. Formación intensiva presencial con los mejores especialistas.",
     color: "accent"
   },
   {

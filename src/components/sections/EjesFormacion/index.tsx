@@ -33,7 +33,7 @@ export const EjesFormacion = () => {
       padding="large"
     >
       <SectionHeader
-        badge="Programa Académico 2025"
+        badge="Programa Académico 2026"
         title="30 Módulos. Un propósito."
         subtitle="Cada módulo es un paso en tu transformación como especialista en circulación pulmonar."
       />

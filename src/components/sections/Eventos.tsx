@@ -145,7 +145,7 @@ export const Eventos = () => {
           </p>
           <div className="inline-flex items-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 bg-primary/10 text-primary rounded-full font-semibold text-sm sm:text-base">
             <Calendar className="w-4 h-4 sm:w-5 sm:h-5" />
-            <span>Buenos Aires · Noviembre 2025</span>
+            <span>Buenos Aires · Noviembre 2026</span>
           </div>
         </motion.div>
       </div>

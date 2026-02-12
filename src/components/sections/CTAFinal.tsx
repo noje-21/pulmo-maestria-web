@@ -40,7 +40,7 @@ export const CTAFinal = () => {
             {/* Badge */}
             <span className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/10 backdrop-blur-md text-white text-sm font-semibold border border-white/20 mb-6 shadow-lg">
               <Sparkles className="w-4 h-4 text-accent-light" />
-              Edición 2025
+              Edición 2026
             </span>
 
             {/* Title - Emotional */}
@@ -115,7 +115,7 @@ export const CTAFinal = () => {
                   <div className="p-2.5 rounded-xl bg-white/10">
                     <Calendar className="w-5 h-5 text-accent-light" />
                   </div>
-                  <span className="font-semibold text-lg">2 - 16 de noviembre 2025</span>
+                  <span className="font-semibold text-lg">2 - 16 de noviembre 2026</span>
                 </div>
                 <div className="flex items-center justify-center gap-3 text-white">
                   <div className="p-2.5 rounded-xl bg-white/10">
