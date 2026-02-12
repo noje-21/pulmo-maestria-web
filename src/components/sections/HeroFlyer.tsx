@@ -20,7 +20,14 @@ const flyerVideos: FlyerVideo[] = [
   { id: 3, src: "/videos/flyer-3.mp4", label: "Impacto clínico real" },
 ];
 
-/* ─── Pure visual video loop with smooth crossfade ─── */
+/* Ken Burns animation variants — each video gets a different pan direction */
+const kenBurnsVariants = [
+  { scale: [1, 1.08], x: ["0%", "-2%"], y: ["0%", "-1%"] },
+  { scale: [1, 1.1], x: ["0%", "2%"], y: ["0%", "1%"] },
+  { scale: [1.02, 1.12], x: ["1%", "-1%"], y: ["-1%", "1%"] },
+];
+
+/* ─── Pure visual video loop with crossfade + Ken Burns ─── */
 const CinemaPlayer = memo(function CinemaPlayer({
   video,
 }: {
@@ -28,6 +35,7 @@ const CinemaPlayer = memo(function CinemaPlayer({
 }) {
   const ref = useRef<HTMLVideoElement>(null);
   const [ready, setReady] = useState(false);
+  const kb = kenBurnsVariants[video.id % kenBurnsVariants.length];
 
   useEffect(() => {
     setReady(false);
@@ -39,30 +47,38 @@ const CinemaPlayer = memo(function CinemaPlayer({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      transition={{ duration: 1, ease: "easeInOut" }}
+      transition={{ duration: 1.2, ease: "easeInOut" }}
       className="relative w-full aspect-[16/9] rounded-2xl overflow-hidden shadow-[0_16px_64px_rgba(0,0,0,0.6)] border border-white/10 pointer-events-none select-none"
     >
-      <video
-        ref={ref}
-        key={video.src}
-        src={video.src}
-        muted
-        loop
-        autoPlay
-        playsInline
-        preload="metadata"
-        onLoadedData={() => {
-          setReady(true);
-          ref.current?.play().catch(() => {});
-        }}
-        onError={() => {
-          setReady(true);
-        }}
-        className={cn(
-          "w-full h-full object-cover transition-opacity duration-700",
-          ready ? "opacity-100" : "opacity-0"
-        )}
-      />
+      {/* Ken Burns wrapper — slow zoom + pan over the full rotation interval */}
+      <motion.div
+        initial={{ scale: kb.scale[0], x: kb.x[0], y: kb.y[0] }}
+        animate={{ scale: kb.scale[1], x: kb.x[1], y: kb.y[1] }}
+        transition={{ duration: 15, ease: "linear" }}
+        className="absolute inset-0"
+      >
+        <video
+          ref={ref}
+          key={video.src}
+          src={video.src}
+          muted
+          loop
+          autoPlay
+          playsInline
+          preload="metadata"
+          onLoadedData={() => {
+            setReady(true);
+            ref.current?.play().catch(() => {});
+          }}
+          onError={() => {
+            setReady(true);
+          }}
+          className={cn(
+            "w-full h-full object-cover transition-opacity duration-700",
+            ready ? "opacity-100" : "opacity-0"
+          )}
+        />
+      </motion.div>
 
       {/* Loading skeleton */}
       {!ready && (
