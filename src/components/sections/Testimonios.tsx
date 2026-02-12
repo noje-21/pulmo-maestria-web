@@ -114,7 +114,7 @@ const VideoCard = memo(function VideoCard({
             ref={thumbRef}
             src={testimonio.videoSrc}
             muted
-            preload="metadata"
+            preload="none"
             playsInline
             onLoadedData={() => setReady(true)}
             className={cn(
