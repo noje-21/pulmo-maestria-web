@@ -232,18 +232,19 @@ export const HeroFlyer = () => {
       <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-primary/8 rounded-full blur-[150px]" />
       <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-accent/6 rounded-full blur-[120px]" />
 
-      <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20 lg:py-24">
-        <div className="grid lg:grid-cols-2 gap-8 lg:gap-14 items-center">
-          {/* ── Left: Text ── */}
-          <div className="text-center lg:text-left order-2 lg:order-1">
+      <div className="relative z-10 w-full mx-auto px-3 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20">
+        {/* ── Desktop: Asymmetric grid (video dominant) ── */}
+        <div className="hidden lg:grid lg:grid-cols-5 lg:gap-12 lg:items-start">
+          {/* Text: Compact sidebar (2 cols) */}
+          <div className="lg:col-span-2 lg:pt-6 flex flex-col justify-start">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
-              className="mb-5"
+              className="mb-4"
             >
-              <span className="inline-flex items-center gap-2 bg-accent/15 border border-accent/25 text-accent-foreground px-4 py-2 rounded-full text-sm font-semibold backdrop-blur-sm">
-                <Sparkles className="w-4 h-4 text-accent-light animate-pulse" />
+              <span className="inline-flex items-center gap-2 bg-accent/15 border border-accent/25 text-accent-foreground px-3 py-1.5 rounded-full text-xs font-semibold backdrop-blur-sm">
+                <Sparkles className="w-3 h-3 text-accent-light animate-pulse" />
                 <span className="text-white/90">Edición 2026 · Cupos limitados</span>
               </span>
             </motion.div>
@@ -252,22 +253,21 @@ export const HeroFlyer = () => {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.1 }}
-              className="text-3xl sm:text-4xl md:text-5xl xl:text-6xl font-bold text-white leading-[1.1] mb-5 text-balance"
+              className="text-3xl lg:text-4xl xl:text-5xl font-bold text-white leading-[1.15] mb-4 text-left"
             >
               La experiencia que está transformando la{" "}
               <span className="bg-gradient-to-r from-accent-light to-accent bg-clip-text text-transparent">
                 circulación pulmonar
-              </span>{" "}
-              en Latinoamérica
+              </span>
             </motion.h1>
 
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="mb-8 max-w-xl mx-auto lg:mx-0 space-y-2"
+              className="mb-6 space-y-2"
             >
-              <p className="text-white/60 text-sm sm:text-base font-medium">
+              <p className="text-white/60 text-sm font-medium">
                 2 al 16 de noviembre de 2026 · Buenos Aires, Argentina
               </p>
               <p className="text-white/50 text-sm">
@@ -279,12 +279,123 @@ export const HeroFlyer = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.3 }}
-              className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center lg:justify-start"
+              className="flex flex-col gap-2.5"
             >
               <Button
                 size="lg"
                 onClick={() => scrollTo("contacto")}
-                className="btn-hero group min-h-[56px]"
+                className="btn-hero group min-h-[52px] text-sm"
+              >
+                <span>🎓 Reservar mi lugar</span>
+                <ExternalLink className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+              </Button>
+
+              <Button
+                variant="outline"
+                size="lg"
+                onClick={() =>
+                  window.open(
+                    "https://wa.me/5491159064234?text=" +
+                      encodeURIComponent(
+                        "Hola, quiero información sobre la Maestría en Circulación Pulmonar 2026."
+                      ),
+                    "_blank"
+                  )
+                }
+                className="bg-white/5 backdrop-blur-md border-2 border-white/20 text-white hover:bg-white/15 hover:border-white/40 font-semibold px-6 py-3.5 rounded-full transition-all duration-400 min-h-[52px] text-sm group"
+              >
+                <Phone className="w-4 h-4 mr-2 group-hover:scale-110 transition-transform" />
+                Hablar con asesor
+              </Button>
+            </motion.div>
+          </div>
+
+          {/* Video: Hero protagonist (3 cols) */}
+          <motion.div
+            initial={{ opacity: 0, x: 40 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="lg:col-span-3"
+          >
+            <CinemaPlayer
+              video={flyerVideos[idx]}
+              onExpand={openModal}
+              onNext={next}
+              onPrev={prev}
+              total={flyerVideos.length}
+              current={idx}
+            />
+          </motion.div>
+        </div>
+
+        {/* ── Mobile: Vertical stack (video first) ── */}
+        <div className="lg:hidden flex flex-col gap-6">
+          {/* Video first on mobile */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+          >
+            <CinemaPlayer
+              video={flyerVideos[idx]}
+              onExpand={openModal}
+              onNext={next}
+              onPrev={prev}
+              total={flyerVideos.length}
+              current={idx}
+            />
+          </motion.div>
+
+          {/* Text stacked below on mobile */}
+          <div className="text-center px-2">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+              className="mb-4"
+            >
+              <span className="inline-flex items-center gap-2 bg-accent/15 border border-accent/25 text-accent-foreground px-3 py-1.5 rounded-full text-xs font-semibold backdrop-blur-sm">
+                <Sparkles className="w-3 h-3 text-accent-light animate-pulse" />
+                <span className="text-white/90">Edición 2026 · Cupos limitados</span>
+              </span>
+            </motion.div>
+
+            <motion.h1
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.15 }}
+              className="text-2xl sm:text-3xl font-bold text-white leading-[1.15] mb-4 text-balance"
+            >
+              La experiencia que está transformando la{" "}
+              <span className="bg-gradient-to-r from-accent-light to-accent bg-clip-text text-transparent">
+                circulación pulmonar
+              </span>
+            </motion.h1>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="mb-6 space-y-2"
+            >
+              <p className="text-white/60 text-sm font-medium">
+                2 al 16 de noviembre de 2026 · Buenos Aires, Argentina
+              </p>
+              <p className="text-white/50 text-xs">
+                Formación presencial intensiva + campus virtual.
+              </p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.25 }}
+              className="flex flex-col gap-3"
+            >
+              <Button
+                size="lg"
+                onClick={() => scrollTo("contacto")}
+                className="btn-hero group min-h-[52px]"
               >
                 <span>🎓 Reservar mi lugar</span>
                 <ExternalLink className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
@@ -302,30 +413,13 @@ export const HeroFlyer = () => {
                     "_blank"
                   )
                 }
-                className="bg-white/5 backdrop-blur-md border-2 border-white/20 text-white hover:bg-white/15 hover:border-white/40 font-semibold px-8 py-5 rounded-full transition-all duration-400 min-h-[56px] group"
+                className="bg-white/5 backdrop-blur-md border-2 border-white/20 text-white hover:bg-white/15 hover:border-white/40 font-semibold px-8 py-5 rounded-full transition-all duration-400 min-h-[52px] group"
               >
                 <Phone className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform" />
                 Hablar con asesor académico
               </Button>
             </motion.div>
           </div>
-
-          {/* ── Right: Single cinematic video ── */}
-          <motion.div
-            initial={{ opacity: 0, x: 40 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="order-1 lg:order-2"
-          >
-            <CinemaPlayer
-              video={flyerVideos[idx]}
-              onExpand={openModal}
-              onNext={next}
-              onPrev={prev}
-              total={flyerVideos.length}
-              current={idx}
-            />
-          </motion.div>
         </div>
       </div>
 
