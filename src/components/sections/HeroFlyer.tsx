@@ -22,9 +22,9 @@ const flyerVideos: FlyerVideo[] = [
 
 /* Ken Burns animation variants — each video gets a different pan direction */
 const kenBurnsVariants = [
-  { scale: [1, 1.08], x: ["0%", "-2%"], y: ["0%", "-1%"] },
-  { scale: [1, 1.1], x: ["0%", "2%"], y: ["0%", "1%"] },
-  { scale: [1.02, 1.12], x: ["1%", "-1%"], y: ["-1%", "1%"] },
+  { scale: [1, 1.03], x: ["0%", "-0.5%"], y: ["0%", "-0.3%"] },
+  { scale: [1, 1.04], x: ["0%", "0.5%"], y: ["0%", "0.3%"] },
+  { scale: [1, 1.03], x: ["0.3%", "-0.3%"], y: ["-0.3%", "0.3%"] },
 ];
 
 /* ─── Pure visual video loop with crossfade + Ken Burns ─── */
@@ -48,7 +48,7 @@ const CinemaPlayer = memo(function CinemaPlayer({
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 1.2, ease: "easeInOut" }}
-      className="relative w-full aspect-[16/9] rounded-2xl overflow-hidden shadow-[0_16px_64px_rgba(0,0,0,0.6)] border border-white/10 pointer-events-none select-none"
+      className="relative w-full aspect-[16/9] rounded-2xl overflow-hidden shadow-[0_16px_64px_rgba(0,0,0,0.6)] border border-white/10 pointer-events-none select-none bg-black"
     >
       {/* Ken Burns wrapper — slow zoom + pan over the full rotation interval */}
       <motion.div
@@ -74,7 +74,7 @@ const CinemaPlayer = memo(function CinemaPlayer({
             setReady(true);
           }}
           className={cn(
-            "w-full h-full object-cover transition-opacity duration-700",
+            "w-full h-full object-contain transition-opacity duration-700",
             ready ? "opacity-100" : "opacity-0"
           )}
         />
