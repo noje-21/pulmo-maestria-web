@@ -115,7 +115,7 @@ export const CTAFinal = () => {
                   <div className="p-2.5 rounded-xl bg-white/10">
                     <Calendar className="w-5 h-5 text-accent-light" />
                   </div>
-                  <span className="font-semibold text-lg">3 - 15 de noviembre 2025</span>
+                  <span className="font-semibold text-lg">2 - 16 de noviembre 2025</span>
                 </div>
                 <div className="flex items-center justify-center gap-3 text-white">
                   <div className="p-2.5 rounded-xl bg-white/10">

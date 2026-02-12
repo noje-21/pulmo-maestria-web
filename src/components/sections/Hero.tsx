@@ -148,7 +148,7 @@ export const Hero = () => {
             <div className="p-2 rounded-xl bg-accent/20 group-hover:bg-accent/30 transition-colors">
               <Calendar className="w-5 h-5 text-accent-light" aria-hidden="true" />
             </div>
-            <span className="font-semibold text-white text-sm sm:text-base">3 - 15 de noviembre 2025</span>
+            <span className="font-semibold text-white text-sm sm:text-base">2 - 16 de noviembre 2025</span>
           </div>
           
           <div className="flex items-center gap-3 bg-white/10 backdrop-blur-md px-4 sm:px-6 py-3 sm:py-4 rounded-2xl border border-white/20 hover:bg-white/15 hover:border-white/30 transition-all duration-400 group cursor-default w-full xs:w-auto justify-center" role="text" aria-label="Ubicación del evento">
