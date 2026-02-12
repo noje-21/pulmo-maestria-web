@@ -4,40 +4,40 @@ import { Calendar, BookOpen, Stethoscope, Users, Award } from "lucide-react";
 
 const eventos = [
   {
-    fecha: "3-4 Nov",
-    titulo: "Introducción y Fundamentos",
-    descripcion: "Anatomía y fisiología de la circulación pulmonar. Bases hemodinámicas y grupos de HTP, estudios iniciales y abordaje.",
-    icon: BookOpen,
-    color: "primary"
-  },
-  {
-    fecha: "5-7 Nov",
-    titulo: "Circuito Práctico",
-    descripcion: "Ecocardiografía, ECG, Hemodinámica y CCD, intersticiopatías, enfermedades reumatológicas, estudios de función pulmonar.",
-    icon: Stethoscope,
-    color: "accent"
-  },
-  {
-    fecha: "8-10 Nov",
-    titulo: "Diagnóstico y Tratamiento",
-    descripcion: "Clasificación de riesgos, diagnóstico avanzado, estratificación de riesgo y manejo terapéutico integral.",
-    icon: Stethoscope,
-    color: "primary"
-  },
-  {
-    fecha: "11-13 Nov",
-    titulo: "Casos Clínicos y Talleres",
-    descripcion: "Últimas novedades, avances tecnológicos, IA, bioestadística avanzada e interpretación de Trials clínicos.",
-    icon: Users,
-    color: "accent"
-  },
-  {
-    fecha: "14-15 Nov",
-    titulo: "Simposio y Clausura",
-    descripcion: "Simposio Latinoamericano de Hipertensión Pulmonar. Ceremonia de clausura y examen final.",
-    icon: Award,
-    color: "primary"
-  }
+     fecha: "2-3 Nov",
+     titulo: "Introducción y Fundamentos",
+     descripcion: "Anatomía y fisiología de la circulación pulmonar. Bases hemodinámicas y grupos de HTP, estudios iniciales y abordaje.",
+     icon: BookOpen,
+     color: "primary"
+   },
+   {
+     fecha: "4-6 Nov",
+     titulo: "Circuito Práctico",
+     descripcion: "Ecocardiografía, ECG, Hemodinámica y CCD, intersticiopatías, enfermedades reumatológicas, estudios de función pulmonar.",
+     icon: Stethoscope,
+     color: "accent"
+   },
+   {
+     fecha: "7-9 Nov",
+     titulo: "Diagnóstico y Tratamiento",
+     descripcion: "Clasificación de riesgos, diagnóstico avanzado, estratificación de riesgo y manejo terapéutico integral.",
+     icon: Stethoscope,
+     color: "primary"
+   },
+   {
+     fecha: "10-12 Nov",
+     titulo: "Casos Clínicos y Talleres",
+     descripcion: "Últimas novedades, avances tecnológicos, IA, bioestadística avanzada e interpretación de Trials clínicos.",
+     icon: Users,
+     color: "accent"
+   },
+   {
+     fecha: "13-16 Nov",
+     titulo: "Simposio y Clausura",
+     descripcion: "Simposio Latinoamericano de Hipertensión Pulmonar. Ceremonia de clausura y examen final.",
+     icon: Award,
+     color: "primary"
+   }
 ];
 
 export const Eventos = () => {
