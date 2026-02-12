@@ -2,6 +2,7 @@ import Navigation from "@/components/common/Navigation";
 import AnimatedOnView from "@/components/common/AnimatedOnView";
 import { SEO } from "@/components/common/SEO";
 import { SkipLink } from "@/components/common/SkipLink";
+import { HeroFlyer } from "@/components/sections/HeroFlyer";
 import { Hero } from "@/components/sections/Hero";
 import { Diferenciales } from "@/components/sections/Diferenciales";
 import { Maestria } from "@/components/sections/Maestria";
@@ -30,6 +31,7 @@ const Index = () => {
       
       <main id="main-content">
         {/* PASO 1: Entrada - Hero Emocional */}
+        <HeroFlyer />
         <Hero />
         
         {/* PASO 2: Contexto - ¿Qué es y para quién? */}
