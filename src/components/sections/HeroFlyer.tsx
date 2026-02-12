@@ -1,6 +1,16 @@
-import { useRef, useState, useCallback, memo } from "react";
+import { useRef, useState, useCallback, useEffect, memo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Play, X, ExternalLink, Phone, Sparkles } from "lucide-react";
+import {
+  Play,
+  Pause,
+  X,
+  ExternalLink,
+  Phone,
+  Sparkles,
+  ChevronLeft,
+  ChevronRight,
+  Maximize2,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -16,102 +26,195 @@ const flyerVideos: FlyerVideo[] = [
   { id: 3, src: "/videos/flyer-3.mp4", label: "Impacto clínico real" },
 ];
 
-const FlyerCard = memo(function FlyerCard({
+/* ─── Cinematic single-video player ─── */
+const CinemaPlayer = memo(function CinemaPlayer({
   video,
-  featured,
-  onPlay,
+  onExpand,
+  onNext,
+  onPrev,
+  total,
+  current,
 }: {
   video: FlyerVideo;
-  featured?: boolean;
-  onPlay: (v: FlyerVideo) => void;
+  onExpand: () => void;
+  onNext: () => void;
+  onPrev: () => void;
+  total: number;
+  current: number;
 }) {
-  const vidRef = useRef<HTMLVideoElement>(null);
+  const ref = useRef<HTMLVideoElement>(null);
+  const [playing, setPlaying] = useState(true);
   const [ready, setReady] = useState(false);
+  const [ended, setEnded] = useState(false);
+
+  useEffect(() => {
+    setReady(false);
+    setEnded(false);
+    setPlaying(true);
+  }, [video.id]);
+
+  const toggle = useCallback(() => {
+    if (!ref.current) return;
+    if (ref.current.paused) {
+      ref.current.play().catch(() => {});
+      setPlaying(true);
+    } else {
+      ref.current.pause();
+      setPlaying(false);
+    }
+  }, []);
+
+  const scrollTo = useCallback((id: string) => {
+    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+  }, []);
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.7, delay: 0.2 + video.id * 0.15 }}
-      className={cn(
-        "relative group cursor-pointer overflow-hidden rounded-2xl border border-white/10",
-        "shadow-[0_8px_32px_rgba(0,0,0,0.4)] hover:shadow-[0_16px_48px_rgba(0,0,0,0.5)]",
-        "transition-all duration-500",
-        featured ? "md:row-span-2" : ""
-      )}
-      onClick={() => onPlay(video)}
-    >
-      <div className={cn("relative w-full overflow-hidden", featured ? "aspect-[9/14] md:aspect-auto md:h-full" : "aspect-video")}>
-        <video
-          ref={vidRef}
-          src={video.src}
-          muted
-          loop
-          playsInline
-          preload="metadata"
-          onLoadedData={() => {
-            setReady(true);
-            vidRef.current?.play().catch(() => {});
-          }}
-          className={cn(
-            "w-full h-full object-cover transition-transform duration-700 group-hover:scale-105",
-            ready ? "opacity-100" : "opacity-0"
-          )}
-        />
-
-        {!ready && (
-          <div className="absolute inset-0 bg-gradient-to-br from-primary-dark/80 to-black/60 animate-pulse" />
+    <div className="relative w-full aspect-[16/9] sm:aspect-[16/9] rounded-2xl overflow-hidden shadow-[0_16px_64px_rgba(0,0,0,0.6)] border border-white/10">
+      {/* Video */}
+      <video
+        ref={ref}
+        key={video.src}
+        src={video.src}
+        muted
+        playsInline
+        preload="metadata"
+        onLoadedData={() => {
+          setReady(true);
+          ref.current?.play().catch(() => {});
+        }}
+        onEnded={() => setEnded(true)}
+        className={cn(
+          "w-full h-full object-cover transition-opacity duration-700",
+          ready ? "opacity-100" : "opacity-0"
         )}
+      />
 
-        {/* Gradient overlays */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-        <div className="absolute inset-0 bg-black/10 group-hover:bg-black/5 transition-colors duration-500" />
+      {/* Loading skeleton */}
+      {!ready && (
+        <div className="absolute inset-0 bg-gradient-to-br from-primary-dark/80 to-black/60 animate-pulse" />
+      )}
 
-        {/* Play button */}
-        <div className="absolute inset-0 flex items-center justify-center">
+      {/* Gradient overlays */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20 pointer-events-none" />
+
+      {/* End-of-video CTA overlay */}
+      <AnimatePresence>
+        {ended && (
           <motion.div
-            whileHover={{ scale: 1.15 }}
-            whileTap={{ scale: 0.95 }}
-            className={cn(
-              "rounded-full bg-white/15 backdrop-blur-md flex items-center justify-center border border-white/25",
-              "shadow-[0_0_30px_rgba(255,255,255,0.1)] group-hover:shadow-[0_0_40px_rgba(255,255,255,0.2)]",
-              "transition-all duration-400",
-              featured ? "w-20 h-20" : "w-14 h-14"
-            )}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="absolute inset-0 z-20 flex flex-col items-center justify-center gap-4 bg-black/70 backdrop-blur-sm"
           >
-            <Play
-              className={cn("text-white ml-1", featured ? "w-9 h-9" : "w-6 h-6")}
-              fill="currentColor"
-            />
+            <p className="text-white/80 text-sm font-medium">¿Listo para dar el siguiente paso?</p>
+            <Button
+              size="lg"
+              onClick={() => scrollTo("contacto")}
+              className="btn-hero group"
+            >
+              <span>🎓 Reservar mi lugar</span>
+              <ExternalLink className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
+            </Button>
+            <button
+              onClick={() => {
+                if (ref.current) {
+                  ref.current.currentTime = 0;
+                  ref.current.play().catch(() => {});
+                  setEnded(false);
+                  setPlaying(true);
+                }
+              }}
+              className="text-white/50 hover:text-white/80 text-xs underline underline-offset-4 transition-colors"
+            >
+              Ver de nuevo
+            </button>
           </motion.div>
-        </div>
+        )}
+      </AnimatePresence>
 
-        {/* Label */}
-        <div className="absolute bottom-0 inset-x-0 p-4">
-          <p className={cn(
-            "text-white/90 font-medium leading-snug",
-            featured ? "text-base sm:text-lg" : "text-sm"
-          )}>
+      {/* Controls bar */}
+      {!ended && (
+        <div className="absolute bottom-0 inset-x-0 z-10 flex items-end justify-between p-3 sm:p-4">
+          {/* Label */}
+          <p className="text-white/80 text-xs sm:text-sm font-medium truncate max-w-[60%]">
             {video.label}
           </p>
+
+          {/* Buttons */}
+          <div className="flex items-center gap-2">
+            <button
+              onClick={toggle}
+              className="w-9 h-9 rounded-full bg-white/15 backdrop-blur-md flex items-center justify-center text-white hover:bg-white/25 transition-colors"
+              aria-label={playing ? "Pausar" : "Reproducir"}
+            >
+              {playing ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4 ml-0.5" />}
+            </button>
+            <button
+              onClick={onExpand}
+              className="w-9 h-9 rounded-full bg-white/15 backdrop-blur-md flex items-center justify-center text-white hover:bg-white/25 transition-colors"
+              aria-label="Pantalla completa"
+            >
+              <Maximize2 className="w-4 h-4" />
+            </button>
+          </div>
         </div>
-      </div>
-    </motion.div>
+      )}
+
+      {/* Prev / Next arrows */}
+      {total > 1 && !ended && (
+        <>
+          <button
+            onClick={onPrev}
+            className="absolute left-2 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-black/40 backdrop-blur-md flex items-center justify-center text-white/70 hover:text-white hover:bg-black/60 transition-colors"
+            aria-label="Video anterior"
+          >
+            <ChevronLeft className="w-5 h-5" />
+          </button>
+          <button
+            onClick={onNext}
+            className="absolute right-2 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-black/40 backdrop-blur-md flex items-center justify-center text-white/70 hover:text-white hover:bg-black/60 transition-colors"
+            aria-label="Video siguiente"
+          >
+            <ChevronRight className="w-5 h-5" />
+          </button>
+        </>
+      )}
+
+      {/* Dots */}
+      {total > 1 && (
+        <div className="absolute top-3 inset-x-0 z-10 flex justify-center gap-1.5">
+          {Array.from({ length: total }).map((_, i) => (
+            <span
+              key={i}
+              className={cn(
+                "w-2 h-2 rounded-full transition-all duration-300",
+                i === current ? "bg-white w-6" : "bg-white/40"
+              )}
+            />
+          ))}
+        </div>
+      )}
+    </div>
   );
 });
 
+/* ─── Main component ─── */
 export const HeroFlyer = () => {
-  const [activeVideo, setActiveVideo] = useState<FlyerVideo | null>(null);
+  const [idx, setIdx] = useState(0);
+  const [modal, setModal] = useState(false);
   const modalRef = useRef<HTMLVideoElement>(null);
 
-  const openVideo = useCallback((v: FlyerVideo) => {
-    setActiveVideo(v);
+  const next = useCallback(() => setIdx((i) => (i + 1) % flyerVideos.length), []);
+  const prev = useCallback(() => setIdx((i) => (i - 1 + flyerVideos.length) % flyerVideos.length), []);
+
+  const openModal = useCallback(() => {
+    setModal(true);
     document.body.style.overflow = "hidden";
   }, []);
 
-  const closeVideo = useCallback(() => {
+  const closeModal = useCallback(() => {
     modalRef.current?.pause();
-    setActiveVideo(null);
+    setModal(false);
     document.body.style.overflow = "";
   }, []);
 
@@ -125,20 +228,19 @@ export const HeroFlyer = () => {
       className="relative min-h-[100svh] flex items-center overflow-hidden bg-gradient-to-br from-[hsl(229,80%,8%)] via-[hsl(229,60%,12%)] to-[hsl(229,50%,6%)]"
       aria-label="Presentación de la Maestría en Circulación Pulmonar"
     >
-      {/* Ambient decorations */}
+      {/* Ambient */}
       <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-primary/8 rounded-full blur-[150px]" />
       <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-accent/6 rounded-full blur-[120px]" />
-      <div className="absolute top-1/2 left-0 w-[300px] h-[300px] bg-white/3 rounded-full blur-[100px]" />
 
-      <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 sm:py-24 lg:py-28">
-        <div className="grid lg:grid-cols-2 gap-10 lg:gap-14 items-center">
-          {/* Left: Text */}
-          <div className="text-center lg:text-left">
+      <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20 lg:py-24">
+        <div className="grid lg:grid-cols-2 gap-8 lg:gap-14 items-center">
+          {/* ── Left: Text ── */}
+          <div className="text-center lg:text-left order-2 lg:order-1">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.1 }}
-              className="mb-6"
+              transition={{ duration: 0.5 }}
+              className="mb-5"
             >
               <span className="inline-flex items-center gap-2 bg-accent/15 border border-accent/25 text-accent-foreground px-4 py-2 rounded-full text-sm font-semibold backdrop-blur-sm">
                 <Sparkles className="w-4 h-4 text-accent-light animate-pulse" />
@@ -149,8 +251,8 @@ export const HeroFlyer = () => {
             <motion.h1
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.2 }}
-              className="text-3xl sm:text-4xl md:text-5xl lg:text-5xl xl:text-6xl font-bold text-white leading-[1.1] mb-6 text-balance"
+              transition={{ duration: 0.7, delay: 0.1 }}
+              className="text-3xl sm:text-4xl md:text-5xl xl:text-6xl font-bold text-white leading-[1.1] mb-5 text-balance"
             >
               La experiencia que está transformando la{" "}
               <span className="bg-gradient-to-r from-accent-light to-accent bg-clip-text text-transparent">
@@ -159,22 +261,24 @@ export const HeroFlyer = () => {
               en Latinoamérica
             </motion.h1>
 
-            <motion.p
+            <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.35 }}
-              className="text-white/70 text-base sm:text-lg md:text-xl mb-8 max-w-xl mx-auto lg:mx-0 leading-relaxed"
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="mb-8 max-w-xl mx-auto lg:mx-0 space-y-2"
             >
-              Formación intensiva presencial + campus virtual + referentes internacionales.
-              <span className="block mt-2 text-white/50 text-sm sm:text-base">
+              <p className="text-white/60 text-sm sm:text-base font-medium">
                 2 al 16 de noviembre de 2026 · Buenos Aires, Argentina
-              </span>
-            </motion.p>
+              </p>
+              <p className="text-white/50 text-sm">
+                Formación presencial intensiva + campus virtual.
+              </p>
+            </motion.div>
 
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.5 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
               className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center lg:justify-start"
             >
               <Button
@@ -192,7 +296,9 @@ export const HeroFlyer = () => {
                 onClick={() =>
                   window.open(
                     "https://wa.me/5491159064234?text=" +
-                      encodeURIComponent("Hola, quiero información sobre la Maestría en Circulación Pulmonar 2026."),
+                      encodeURIComponent(
+                        "Hola, quiero información sobre la Maestría en Circulación Pulmonar 2026."
+                      ),
                     "_blank"
                   )
                 }
@@ -204,45 +310,45 @@ export const HeroFlyer = () => {
             </motion.div>
           </div>
 
-          {/* Right: Cinematic Video Grid */}
+          {/* ── Right: Single cinematic video ── */}
           <motion.div
             initial={{ opacity: 0, x: 40 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8, delay: 0.3 }}
-            className="grid grid-cols-2 gap-3 sm:gap-4 h-[420px] sm:h-[480px] lg:h-[540px]"
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="order-1 lg:order-2"
           >
-            {/* Featured (large) */}
-            <FlyerCard video={flyerVideos[0]} featured onPlay={openVideo} />
-
-            {/* Two secondary */}
-            <div className="flex flex-col gap-3 sm:gap-4">
-              <FlyerCard video={flyerVideos[1]} onPlay={openVideo} />
-              <FlyerCard video={flyerVideos[2]} onPlay={openVideo} />
-            </div>
+            <CinemaPlayer
+              video={flyerVideos[idx]}
+              onExpand={openModal}
+              onNext={next}
+              onPrev={prev}
+              total={flyerVideos.length}
+              current={idx}
+            />
           </motion.div>
         </div>
       </div>
 
-      {/* Cinema Modal */}
+      {/* ── Fullscreen Modal ── */}
       <AnimatePresence>
-        {activeVideo && (
+        {modal && (
           <div className="fixed inset-0 z-[200] flex items-center justify-center p-4">
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               className="absolute inset-0 bg-black/90 backdrop-blur-md"
-              onClick={closeVideo}
+              onClick={closeModal}
             />
             <motion.div
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
               transition={{ duration: 0.3 }}
-              className="relative z-10 w-full max-w-4xl rounded-2xl overflow-hidden bg-black shadow-[0_0_80px_rgba(0,0,0,0.8)]"
+              className="relative z-10 w-full max-w-5xl rounded-2xl overflow-hidden bg-black shadow-[0_0_80px_rgba(0,0,0,0.8)]"
             >
               <button
-                onClick={closeVideo}
+                onClick={closeModal}
                 className="absolute top-3 right-3 z-20 w-10 h-10 rounded-full bg-black/60 backdrop-blur-sm flex items-center justify-center text-white hover:bg-black/80 transition-colors"
                 aria-label="Cerrar video"
               >
@@ -250,7 +356,7 @@ export const HeroFlyer = () => {
               </button>
               <video
                 ref={modalRef}
-                src={activeVideo.src}
+                src={flyerVideos[idx].src}
                 controls
                 autoPlay
                 playsInline
