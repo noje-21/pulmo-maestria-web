@@ -234,9 +234,9 @@ export const HeroFlyer = () => {
 
       <div className="relative z-10 w-full mx-auto px-3 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20">
         {/* ── Desktop: Asymmetric grid (video dominant) ── */}
-        <div className="hidden lg:grid lg:grid-cols-5 lg:gap-12 lg:items-start">
+        <div className="hidden lg:grid lg:grid-cols-7 lg:gap-10 lg:items-start">
           {/* Text: Compact sidebar (2 cols) */}
-          <div className="lg:col-span-2 lg:pt-6 flex flex-col justify-start">
+          <div className="lg:col-span-2 lg:pt-8 flex flex-col justify-start">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -315,7 +315,7 @@ export const HeroFlyer = () => {
             initial={{ opacity: 0, x: 40 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="lg:col-span-3"
+            className="lg:col-span-5"
           >
             <CinemaPlayer
               video={flyerVideos[idx]}
