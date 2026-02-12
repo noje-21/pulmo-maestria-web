@@ -110,7 +110,7 @@ export const HeroFlyer = () => {
   return (
     <section
       id="hero-flyer"
-      className="relative min-h-[100svh] flex items-center overflow-hidden bg-gradient-to-br from-[hsl(229,80%,8%)] via-[hsl(229,60%,12%)] to-[hsl(229,50%,6%)]"
+      className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-[hsl(229,80%,8%)] via-[hsl(229,60%,12%)] to-[hsl(229,50%,6%)]"
       aria-label="Presentación de la Maestría en Circulación Pulmonar"
     >
       {/* Ambient */}
@@ -195,12 +195,12 @@ export const HeroFlyer = () => {
             </motion.div>
           </div>
 
-          {/* Video: Hero protagonist (5 cols) */}
+          {/* Video: Hero protagonist (5 cols) — grows to fill space */}
           <motion.div
             initial={{ opacity: 0, x: 40 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="lg:col-span-5"
+            className="lg:col-span-5 h-full flex items-center justify-center"
           >
             <AnimatePresence mode="wait">
               <CinemaPlayer video={flyerVideos[idx]} />
