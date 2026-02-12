@@ -21,7 +21,7 @@ const testimonios: VideoTestimonio[] = [
     especialidad: "Cardiólogo Intervencionista",
     pais: "Argentina",
     cita: "Esta maestría transformó por completo mi abordaje clínico.",
-    videoSrc: "/videos/testimonio-1.mp4",
+    videoSrc: "/videos/testimonio-6.mp4",
     featured: true,
   },
   {
@@ -30,7 +30,7 @@ const testimonios: VideoTestimonio[] = [
     especialidad: "Neumólogo",
     pais: "Colombia",
     cita: "La formación práctica marca la diferencia.",
-    videoSrc: "/videos/testimonio-2.mp4",
+    videoSrc: "/videos/testimonio-7.mp4",
   },
   {
     id: 3,
@@ -38,7 +38,7 @@ const testimonios: VideoTestimonio[] = [
     especialidad: "Internista",
     pais: "México",
     cita: "Apliqué lo aprendido desde el primer día.",
-    videoSrc: "/videos/testimonio-3.mp4",
+    videoSrc: "/videos/testimonio-8.mp4",
   },
 ];
 
