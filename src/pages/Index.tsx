@@ -10,6 +10,7 @@ import { WhatsAppButton } from "@/components/common/WhatsAppButton";
 import { AIAssistant } from "@/components/common/AIAssistant";
 
 // Lazy-loaded sections (below the fold)
+const Hero = lazy(() => import("@/components/sections/Hero").then(m => ({ default: m.Hero })));
 const Diferenciales = lazy(() => import("@/components/sections/Diferenciales").then(m => ({ default: m.Diferenciales })));
 const Maestria = lazy(() => import("@/components/sections/Maestria").then(m => ({ default: m.Maestria })));
 const EjesFormacion = lazy(() => import("@/components/sections/EjesFormacion").then(m => ({ default: m.EjesFormacion })));
@@ -34,6 +35,7 @@ const Index = () => {
       <main id="main-content">
         {/* PASO 1: Entrada - Hero Flyer (protagonista) */}
         <HeroFlyer />
+        <Hero />
         
         {/* All below-the-fold sections lazy-loaded */}
         <Suspense fallback={null}>
