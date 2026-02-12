@@ -1,5 +1,5 @@
 import { useRef, useState, useCallback, useEffect, memo } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   ExternalLink,
   Phone,
@@ -20,7 +20,7 @@ const flyerVideos: FlyerVideo[] = [
   { id: 3, src: "/videos/flyer-3.mp4", label: "Impacto clínico real" },
 ];
 
-/* ─── Pure visual video loop (no UI) ─── */
+/* ─── Pure visual video loop with smooth crossfade ─── */
 const CinemaPlayer = memo(function CinemaPlayer({
   video,
 }: {
@@ -34,7 +34,14 @@ const CinemaPlayer = memo(function CinemaPlayer({
   }, [video.id]);
 
   return (
-    <div className="relative w-full aspect-[16/9] rounded-2xl overflow-hidden shadow-[0_16px_64px_rgba(0,0,0,0.6)] border border-white/10 pointer-events-none select-none">
+    <motion.div
+      key={video.id}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 1, ease: "easeInOut" }}
+      className="relative w-full aspect-[16/9] rounded-2xl overflow-hidden shadow-[0_16px_64px_rgba(0,0,0,0.6)] border border-white/10 pointer-events-none select-none"
+    >
       <video
         ref={ref}
         key={video.src}
@@ -47,6 +54,9 @@ const CinemaPlayer = memo(function CinemaPlayer({
         onLoadedData={() => {
           setReady(true);
           ref.current?.play().catch(() => {});
+        }}
+        onError={() => {
+          setReady(true);
         }}
         className={cn(
           "w-full h-full object-cover transition-opacity duration-700",
@@ -61,7 +71,7 @@ const CinemaPlayer = memo(function CinemaPlayer({
 
       {/* Subtle bottom gradient for text legibility */}
       <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent pointer-events-none" />
-    </div>
+    </motion.div>
   );
 });
 
@@ -169,14 +179,16 @@ export const HeroFlyer = () => {
             </motion.div>
           </div>
 
-          {/* Video: Hero protagonist (3 cols) */}
+          {/* Video: Hero protagonist (5 cols) */}
           <motion.div
             initial={{ opacity: 0, x: 40 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
             className="lg:col-span-5"
           >
-            <CinemaPlayer video={flyerVideos[idx]} />
+            <AnimatePresence mode="wait">
+              <CinemaPlayer video={flyerVideos[idx]} />
+            </AnimatePresence>
           </motion.div>
         </div>
 
@@ -188,7 +200,9 @@ export const HeroFlyer = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
-            <CinemaPlayer video={flyerVideos[idx]} />
+            <AnimatePresence mode="wait">
+              <CinemaPlayer video={flyerVideos[idx]} />
+            </AnimatePresence>
           </motion.div>
 
           {/* Text stacked below on mobile */}
