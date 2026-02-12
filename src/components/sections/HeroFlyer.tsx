@@ -48,7 +48,7 @@ const CinemaPlayer = memo(function CinemaPlayer({
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 1.2, ease: "easeInOut" }}
-      className="relative w-full aspect-[16/9] rounded-2xl overflow-hidden shadow-[0_16px_64px_rgba(0,0,0,0.6)] border border-white/10 pointer-events-none select-none bg-black"
+      className="relative w-full aspect-[4/3] lg:aspect-[16/10] rounded-2xl overflow-hidden shadow-[0_16px_64px_rgba(0,0,0,0.6)] border border-white/10 pointer-events-none select-none bg-black"
     >
       {/* Ken Burns wrapper — slow zoom + pan over the full rotation interval */}
       <motion.div
@@ -117,9 +117,9 @@ export const HeroFlyer = () => {
       <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-primary/8 rounded-full blur-[150px]" />
       <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-accent/6 rounded-full blur-[120px]" />
 
-      <div className="relative z-10 w-full mx-auto px-3 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20">
+      <div className="relative z-10 w-full mx-auto px-2 sm:px-4 lg:px-6 py-8 sm:py-10 lg:py-12">
         {/* ── Desktop: Asymmetric grid (video dominant) ── */}
-        <div className="hidden lg:grid lg:grid-cols-7 lg:gap-10 lg:items-start">
+        <div className="hidden lg:grid lg:grid-cols-7 lg:gap-8 lg:items-center">
           {/* Text: Compact sidebar (2 cols) */}
           <div className="lg:col-span-2 lg:pt-8 flex flex-col justify-start">
             <motion.div
