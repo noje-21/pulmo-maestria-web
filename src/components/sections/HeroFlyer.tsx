@@ -1,15 +1,9 @@
 import { useRef, useState, useCallback, useEffect, memo } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import {
-  Play,
-  Pause,
-  X,
   ExternalLink,
   Phone,
   Sparkles,
-  ChevronLeft,
-  ChevronRight,
-  Maximize2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -26,63 +20,34 @@ const flyerVideos: FlyerVideo[] = [
   { id: 3, src: "/videos/flyer-3.mp4", label: "Impacto clínico real" },
 ];
 
-/* ─── Cinematic single-video player ─── */
+/* ─── Pure visual video loop (no UI) ─── */
 const CinemaPlayer = memo(function CinemaPlayer({
   video,
-  onExpand,
-  onNext,
-  onPrev,
-  total,
-  current,
 }: {
   video: FlyerVideo;
-  onExpand: () => void;
-  onNext: () => void;
-  onPrev: () => void;
-  total: number;
-  current: number;
 }) {
   const ref = useRef<HTMLVideoElement>(null);
-  const [playing, setPlaying] = useState(true);
   const [ready, setReady] = useState(false);
-  const [ended, setEnded] = useState(false);
 
   useEffect(() => {
     setReady(false);
-    setEnded(false);
-    setPlaying(true);
   }, [video.id]);
 
-  const toggle = useCallback(() => {
-    if (!ref.current) return;
-    if (ref.current.paused) {
-      ref.current.play().catch(() => {});
-      setPlaying(true);
-    } else {
-      ref.current.pause();
-      setPlaying(false);
-    }
-  }, []);
-
-  const scrollTo = useCallback((id: string) => {
-    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
-  }, []);
-
   return (
-    <div className="relative w-full aspect-[16/9] sm:aspect-[16/9] rounded-2xl overflow-hidden shadow-[0_16px_64px_rgba(0,0,0,0.6)] border border-white/10">
-      {/* Video */}
+    <div className="relative w-full aspect-[16/9] rounded-2xl overflow-hidden shadow-[0_16px_64px_rgba(0,0,0,0.6)] border border-white/10 pointer-events-none select-none">
       <video
         ref={ref}
         key={video.src}
         src={video.src}
         muted
+        loop
+        autoPlay
         playsInline
         preload="metadata"
         onLoadedData={() => {
           setReady(true);
           ref.current?.play().catch(() => {});
         }}
-        onEnded={() => setEnded(true)}
         className={cn(
           "w-full h-full object-cover transition-opacity duration-700",
           ready ? "opacity-100" : "opacity-0"
@@ -94,106 +59,8 @@ const CinemaPlayer = memo(function CinemaPlayer({
         <div className="absolute inset-0 bg-gradient-to-br from-primary-dark/80 to-black/60 animate-pulse" />
       )}
 
-      {/* Gradient overlays */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20 pointer-events-none" />
-
-      {/* End-of-video CTA overlay */}
-      <AnimatePresence>
-        {ended && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="absolute inset-0 z-20 flex flex-col items-center justify-center gap-4 bg-black/70 backdrop-blur-sm"
-          >
-            <p className="text-white/80 text-sm font-medium">¿Listo para dar el siguiente paso?</p>
-            <Button
-              size="lg"
-              onClick={() => scrollTo("contacto")}
-              className="btn-hero group"
-            >
-              <span>🎓 Reservar mi lugar</span>
-              <ExternalLink className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
-            </Button>
-            <button
-              onClick={() => {
-                if (ref.current) {
-                  ref.current.currentTime = 0;
-                  ref.current.play().catch(() => {});
-                  setEnded(false);
-                  setPlaying(true);
-                }
-              }}
-              className="text-white/50 hover:text-white/80 text-xs underline underline-offset-4 transition-colors"
-            >
-              Ver de nuevo
-            </button>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Controls bar */}
-      {!ended && (
-        <div className="absolute bottom-0 inset-x-0 z-10 flex items-end justify-between p-3 sm:p-4">
-          {/* Label */}
-          <p className="text-white/80 text-xs sm:text-sm font-medium truncate max-w-[60%]">
-            {video.label}
-          </p>
-
-          {/* Buttons */}
-          <div className="flex items-center gap-2">
-            <button
-              onClick={toggle}
-              className="w-9 h-9 rounded-full bg-white/15 backdrop-blur-md flex items-center justify-center text-white hover:bg-white/25 transition-colors"
-              aria-label={playing ? "Pausar" : "Reproducir"}
-            >
-              {playing ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4 ml-0.5" />}
-            </button>
-            <button
-              onClick={onExpand}
-              className="w-9 h-9 rounded-full bg-white/15 backdrop-blur-md flex items-center justify-center text-white hover:bg-white/25 transition-colors"
-              aria-label="Pantalla completa"
-            >
-              <Maximize2 className="w-4 h-4" />
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* Prev / Next arrows */}
-      {total > 1 && !ended && (
-        <>
-          <button
-            onClick={onPrev}
-            className="absolute left-2 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-black/40 backdrop-blur-md flex items-center justify-center text-white/70 hover:text-white hover:bg-black/60 transition-colors"
-            aria-label="Video anterior"
-          >
-            <ChevronLeft className="w-5 h-5" />
-          </button>
-          <button
-            onClick={onNext}
-            className="absolute right-2 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-black/40 backdrop-blur-md flex items-center justify-center text-white/70 hover:text-white hover:bg-black/60 transition-colors"
-            aria-label="Video siguiente"
-          >
-            <ChevronRight className="w-5 h-5" />
-          </button>
-        </>
-      )}
-
-      {/* Dots */}
-      {total > 1 && (
-        <div className="absolute top-3 inset-x-0 z-10 flex justify-center gap-1.5">
-          {Array.from({ length: total }).map((_, i) => (
-            <span
-              key={i}
-              className={cn(
-                "w-2 h-2 rounded-full transition-all duration-300",
-                i === current ? "bg-white w-6" : "bg-white/40"
-              )}
-            />
-          ))}
-        </div>
-      )}
+      {/* Subtle bottom gradient for text legibility */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent pointer-events-none" />
     </div>
   );
 });
@@ -201,21 +68,13 @@ const CinemaPlayer = memo(function CinemaPlayer({
 /* ─── Main component ─── */
 export const HeroFlyer = () => {
   const [idx, setIdx] = useState(0);
-  const [modal, setModal] = useState(false);
-  const modalRef = useRef<HTMLVideoElement>(null);
 
-  const next = useCallback(() => setIdx((i) => (i + 1) % flyerVideos.length), []);
-  const prev = useCallback(() => setIdx((i) => (i - 1 + flyerVideos.length) % flyerVideos.length), []);
-
-  const openModal = useCallback(() => {
-    setModal(true);
-    document.body.style.overflow = "hidden";
-  }, []);
-
-  const closeModal = useCallback(() => {
-    modalRef.current?.pause();
-    setModal(false);
-    document.body.style.overflow = "";
+  // Auto-rotate videos every 15 seconds
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setIdx((i) => (i + 1) % flyerVideos.length);
+    }, 15000);
+    return () => clearInterval(timer);
   }, []);
 
   const scrollTo = useCallback((id: string) => {
@@ -317,14 +176,7 @@ export const HeroFlyer = () => {
             transition={{ duration: 0.8, delay: 0.2 }}
             className="lg:col-span-5"
           >
-            <CinemaPlayer
-              video={flyerVideos[idx]}
-              onExpand={openModal}
-              onNext={next}
-              onPrev={prev}
-              total={flyerVideos.length}
-              current={idx}
-            />
+            <CinemaPlayer video={flyerVideos[idx]} />
           </motion.div>
         </div>
 
@@ -336,14 +188,7 @@ export const HeroFlyer = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
-            <CinemaPlayer
-              video={flyerVideos[idx]}
-              onExpand={openModal}
-              onNext={next}
-              onPrev={prev}
-              total={flyerVideos.length}
-              current={idx}
-            />
+            <CinemaPlayer video={flyerVideos[idx]} />
           </motion.div>
 
           {/* Text stacked below on mobile */}
@@ -423,43 +268,6 @@ export const HeroFlyer = () => {
         </div>
       </div>
 
-      {/* ── Fullscreen Modal ── */}
-      <AnimatePresence>
-        {modal && (
-          <div className="fixed inset-0 z-[200] flex items-center justify-center p-4">
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="absolute inset-0 bg-black/90 backdrop-blur-md"
-              onClick={closeModal}
-            />
-            <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              transition={{ duration: 0.3 }}
-              className="relative z-10 w-full max-w-5xl rounded-2xl overflow-hidden bg-black shadow-[0_0_80px_rgba(0,0,0,0.8)]"
-            >
-              <button
-                onClick={closeModal}
-                className="absolute top-3 right-3 z-20 w-10 h-10 rounded-full bg-black/60 backdrop-blur-sm flex items-center justify-center text-white hover:bg-black/80 transition-colors"
-                aria-label="Cerrar video"
-              >
-                <X className="w-5 h-5" />
-              </button>
-              <video
-                ref={modalRef}
-                src={flyerVideos[idx].src}
-                controls
-                autoPlay
-                playsInline
-                className="w-full aspect-video"
-              />
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
     </section>
   );
 };
