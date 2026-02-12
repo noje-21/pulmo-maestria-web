@@ -255,7 +255,7 @@ const Foro = () => {
   return (
     <div className="min-h-screen bg-background">
       <SEO 
-        title="Foro Comunitario - Maestría en Circulación Pulmonar 2025"
+        title="Foro Comunitario - Maestría en Circulación Pulmonar 2026"
         description="Participa en discusiones, comparte experiencias y conecta con otros profesionales de la salud en nuestro foro comunitario."
         keywords="foro, comunidad, discusiones, circulación pulmonar, profesionales de la salud"
       />

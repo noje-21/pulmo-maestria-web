@@ -9,8 +9,8 @@ interface SEOProps {
 }
 
 export const SEO = ({
-  title = "Maestría Latinoamericana en Circulación Pulmonar 2025",
-  description = "Formación intensiva en circulación pulmonar dirigida a internistas, cardiólogos, reumatólogos y neumonólogos. Del 2 al 16 de noviembre 2025 en Buenos Aires.",
+  title = "Maestría Latinoamericana en Circulación Pulmonar 2026",
+  description = "Formación intensiva en circulación pulmonar dirigida a internistas, cardiólogos, reumatólogos y neumonólogos. Del 2 al 16 de noviembre 2026 en Buenos Aires.",
   keywords = "maestría, circulación pulmonar, hipertensión pulmonar, cardiología, Buenos Aires, medicina, formación médica",
   ogImage = "https://lovable.dev/opengraph-image-p98pqg.png",
   canonicalUrl = "https://www.maestriacp.com/"
