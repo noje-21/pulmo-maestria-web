@@ -1,7 +1,7 @@
 import { useState, useRef, useCallback, memo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Section, SectionHeader } from "@/components/common/Section";
-import { Play, X, MapPin, Stethoscope, ArrowRight } from "lucide-react";
+import { Section } from "@/components/common/Section";
+import { Play, X, MapPin, Stethoscope, ArrowRight, Users, Globe, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -10,7 +10,9 @@ interface VideoTestimonio {
   nombre: string;
   especialidad: string;
   ubicacion: string;
+  frase: string;
   videoSrc: string;
+  featured?: boolean;
 }
 
 const testimonios: VideoTestimonio[] = [
@@ -18,39 +20,52 @@ const testimonios: VideoTestimonio[] = [
     id: 1,
     nombre: "Testimonio 1",
     especialidad: "Cardiólogo",
-    ubicacion: "Latinoamérica",
+    ubicacion: "Argentina",
+    frase: "Esta maestría cambió mi forma de abordar la hipertensión pulmonar.",
     videoSrc: "/videos/testimonio-1.mp4",
+    featured: true,
   },
   {
     id: 2,
     nombre: "Testimonio 2",
     especialidad: "Neumólogo",
-    ubicacion: "Latinoamérica",
+    ubicacion: "Colombia",
+    frase: "El nivel académico y la calidad de los referentes es incomparable.",
     videoSrc: "/videos/testimonio-2.mp4",
   },
   {
     id: 3,
     nombre: "Testimonio 3",
     especialidad: "Internista",
-    ubicacion: "Latinoamérica",
+    ubicacion: "México",
+    frase: "Lo que aprendí lo aplico todos los días con mis pacientes.",
     videoSrc: "/videos/testimonio-3.mp4",
   },
   {
     id: 4,
     nombre: "Testimonio 4",
     especialidad: "Cardiólogo",
-    ubicacion: "Latinoamérica",
+    ubicacion: "Chile",
+    frase: "Una formación única, con impacto clínico real e inmediato.",
     videoSrc: "/videos/testimonio-4.mp4",
   },
   {
     id: 5,
     nombre: "Testimonio 5",
     especialidad: "Neumólogo",
-    ubicacion: "Latinoamérica",
+    ubicacion: "Perú",
+    frase: "Recomiendo esta experiencia a todo profesional comprometido.",
     videoSrc: "/videos/testimonio-5.mp4",
   },
 ];
 
+const metrics = [
+  { icon: Users, value: "+300", label: "Médicos formados" },
+  { icon: Globe, value: "+15", label: "Países representados" },
+  { icon: Heart, value: "100%", label: "Impacto clínico inmediato" },
+];
+
+/* ─── Video Card ─── */
 const VideoCard = memo(function VideoCard({
   testimonio,
   onPlay,
@@ -58,22 +73,37 @@ const VideoCard = memo(function VideoCard({
   testimonio: VideoTestimonio;
   onPlay: (t: VideoTestimonio) => void;
 }) {
-  const [thumbnailReady, setThumbnailReady] = useState(false);
+  const [ready, setReady] = useState(false);
   const thumbRef = useRef<HTMLVideoElement>(null);
+  const isFeatured = testimonio.featured;
 
   return (
     <motion.article
-      initial={{ opacity: 0, y: 24 }}
+      initial={{ opacity: 0, y: 28 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-40px" }}
-      transition={{ duration: 0.45, delay: testimonio.id * 0.08 }}
-      className="group"
+      transition={{ duration: 0.5, delay: testimonio.id * 0.08 }}
+      className={cn(
+        "group relative",
+        isFeatured && "md:col-span-2 md:row-span-2"
+      )}
       aria-label={`Testimonio de ${testimonio.nombre}`}
     >
-      <div className="card-base card-hover h-full overflow-hidden rounded-2xl">
+      <div
+        className={cn(
+          "h-full overflow-hidden rounded-2xl border transition-all duration-500",
+          "bg-card border-border/30",
+          "shadow-[var(--shadow-md)] hover:shadow-[var(--shadow-xl)]",
+          "hover:border-accent/20",
+          isFeatured && "brand-accent-bar-top"
+        )}
+      >
         {/* Video thumbnail */}
         <div
-          className="relative aspect-video bg-muted/40 cursor-pointer overflow-hidden"
+          className={cn(
+            "relative cursor-pointer overflow-hidden",
+            isFeatured ? "aspect-video" : "aspect-video"
+          )}
           onClick={() => onPlay(testimonio)}
           role="button"
           tabIndex={0}
@@ -86,35 +116,61 @@ const VideoCard = memo(function VideoCard({
             muted
             preload="metadata"
             playsInline
-            onLoadedData={() => setThumbnailReady(true)}
+            onLoadedData={() => setReady(true)}
             className={cn(
-              "w-full h-full object-cover transition-transform duration-500 group-hover:scale-105",
-              thumbnailReady ? "opacity-100" : "opacity-0"
+              "w-full h-full object-cover transition-transform duration-700 group-hover:scale-105",
+              ready ? "opacity-100" : "opacity-0"
             )}
           />
 
-          {!thumbnailReady && (
+          {!ready && (
             <div className="absolute inset-0 bg-gradient-to-br from-muted/60 via-muted/40 to-muted/60 animate-pulse" />
           )}
 
-          {/* Play button overlay */}
-          <div className="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/30 transition-colors duration-300">
+          {/* Overlays */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+          <div className="absolute inset-0 bg-black/10 group-hover:bg-black/0 transition-colors duration-500" />
+
+          {/* Play */}
+          <div className="absolute inset-0 flex items-center justify-center">
             <motion.div
-              whileHover={{ scale: 1.1 }}
+              whileHover={{ scale: 1.12 }}
               whileTap={{ scale: 0.95 }}
-              className="w-16 h-16 sm:w-18 sm:h-18 rounded-full bg-primary/90 backdrop-blur-sm flex items-center justify-center shadow-lg shadow-primary/30 group-hover:shadow-xl group-hover:shadow-primary/40 transition-shadow duration-300"
+              className={cn(
+                "rounded-full bg-accent/90 backdrop-blur-sm flex items-center justify-center",
+                "shadow-[var(--shadow-accent)] group-hover:shadow-[0_0_40px_hsl(var(--accent)/0.5)]",
+                "transition-shadow duration-400",
+                isFeatured ? "w-20 h-20" : "w-16 h-16"
+              )}
             >
-              <Play className="w-7 h-7 text-primary-foreground ml-1" fill="currentColor" />
+              <Play
+                className={cn("text-white ml-1", isFeatured ? "w-9 h-9" : "w-7 h-7")}
+                fill="currentColor"
+              />
             </motion.div>
           </div>
 
-          {/* Gradient bottom */}
-          <div className="absolute bottom-0 inset-x-0 h-16 bg-gradient-to-t from-black/50 to-transparent pointer-events-none" />
+          {/* Quote overlay on featured */}
+          {isFeatured && (
+            <div className="absolute bottom-0 inset-x-0 p-5 sm:p-6">
+              <p className="text-white/90 text-base sm:text-lg font-medium italic leading-snug drop-shadow-lg">
+                "{testimonio.frase}"
+              </p>
+            </div>
+          )}
         </div>
 
         {/* Info */}
-        <div className="p-4 sm:p-5">
-          <h3 className="font-semibold text-foreground text-base sm:text-lg mb-1.5 group-hover:text-primary transition-colors">
+        <div className={cn("p-4 sm:p-5", isFeatured && "sm:p-6")}>
+          {!isFeatured && (
+            <p className="text-muted-foreground text-sm italic mb-2 line-clamp-2">
+              "{testimonio.frase}"
+            </p>
+          )}
+          <h3 className={cn(
+            "font-semibold text-foreground group-hover:text-primary transition-colors",
+            isFeatured ? "text-lg sm:text-xl mb-2" : "text-base mb-1.5"
+          )}>
             {testimonio.nombre}
           </h3>
           <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-muted-foreground">
@@ -133,6 +189,7 @@ const VideoCard = memo(function VideoCard({
   );
 });
 
+/* ─── Main Section ─── */
 export const Testimonios = () => {
   const [activeVideo, setActiveVideo] = useState<VideoTestimonio | null>(null);
   const modalVideoRef = useRef<HTMLVideoElement>(null);
@@ -143,9 +200,7 @@ export const Testimonios = () => {
   }, []);
 
   const closeVideo = useCallback(() => {
-    if (modalVideoRef.current) {
-      modalVideoRef.current.pause();
-    }
+    modalVideoRef.current?.pause();
     setActiveVideo(null);
     document.body.style.overflow = "";
   }, []);
@@ -156,15 +211,56 @@ export const Testimonios = () => {
 
   return (
     <Section id="testimonios" background="default" pattern="none" padding="large">
-      <SectionHeader
-        badge="Voces reales"
-        title="Testimonios reales de nuestros alumnos"
-        subtitle="Escucha directamente de quienes ya transformaron su práctica clínica con esta formación."
-      />
+      {/* Header */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.5 }}
+        className="text-center mb-12 md:mb-16"
+      >
+        <div className="mb-4 flex justify-center">
+          <span className="brand-badge">Voces reales</span>
+        </div>
+        <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-primary mb-6 brand-section-signature-center">
+          Lo que dicen quienes ya vivieron la maestría
+        </h2>
+        <p className="text-lg md:text-xl text-muted-foreground mt-8 max-w-2xl mx-auto">
+          Profesionales que hoy aplican este conocimiento en su práctica real.
+        </p>
+      </motion.div>
 
-      {/* Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-        {testimonios.map((t) => (
+      {/* Metrics */}
+      <motion.div
+        initial={{ opacity: 0, y: 16 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.5, delay: 0.15 }}
+        className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 max-w-3xl mx-auto mb-14 md:mb-18"
+      >
+        {metrics.map((m, i) => {
+          const Icon = m.icon;
+          return (
+            <div
+              key={i}
+              className="flex flex-col items-center gap-2 p-5 rounded-2xl bg-muted/40 border border-border/40"
+            >
+              <Icon className="w-6 h-6 text-accent" />
+              <span className="text-2xl sm:text-3xl font-bold text-foreground">{m.value}</span>
+              <span className="text-sm text-muted-foreground">{m.label}</span>
+            </div>
+          );
+        })}
+      </motion.div>
+
+      {/* Grid: featured + rest */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-5 lg:gap-6">
+        {/* Featured card takes 2 cols */}
+        {testimonios.filter((t) => t.featured).map((t) => (
+          <VideoCard key={t.id} testimonio={t} onPlay={openVideo} />
+        ))}
+        {/* Remaining cards */}
+        {testimonios.filter((t) => !t.featured).map((t) => (
           <VideoCard key={t.id} testimonio={t} onPlay={openVideo} />
         ))}
       </div>
@@ -175,18 +271,21 @@ export const Testimonios = () => {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.5, delay: 0.3 }}
-        className="mt-12 md:mt-16 text-center"
+        className="mt-14 md:mt-20 text-center"
       >
-        <p className="text-lg md:text-xl font-semibold text-foreground mb-4">
+        <p className="text-xl md:text-2xl font-bold text-foreground mb-2">
           Tú puedes ser el próximo testimonio
         </p>
-        <Button size="lg" onClick={scrollToContact} className="gap-2">
-          Inscribirme ahora
-          <ArrowRight className="w-4 h-4" />
+        <p className="text-muted-foreground mb-6">
+          Sumate a la edición 2026 y transformá tu práctica clínica.
+        </p>
+        <Button size="lg" onClick={scrollToContact} className="btn-hero gap-2">
+          Yo quiero ser el próximo
+          <ArrowRight className="w-5 h-5" />
         </Button>
       </motion.div>
 
-      {/* Modal */}
+      {/* Cinema Modal */}
       <AnimatePresence>
         {activeVideo && (
           <div className="fixed inset-0 z-[200] flex items-center justify-center p-4">
@@ -194,15 +293,15 @@ export const Testimonios = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+              className="absolute inset-0 bg-black/90 backdrop-blur-md"
               onClick={closeVideo}
             />
             <motion.div
-              initial={{ scale: 0.92, opacity: 0 }}
+              initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.92, opacity: 0 }}
-              transition={{ duration: 0.25 }}
-              className="relative z-10 w-full max-w-3xl rounded-2xl overflow-hidden bg-black shadow-2xl"
+              exit={{ scale: 0.9, opacity: 0 }}
+              transition={{ duration: 0.3 }}
+              className="relative z-10 w-full max-w-4xl rounded-2xl overflow-hidden bg-black shadow-[0_0_80px_rgba(0,0,0,0.8)]"
             >
               <button
                 onClick={closeVideo}
@@ -221,11 +320,25 @@ export const Testimonios = () => {
                 className="w-full aspect-video"
               />
 
-              <div className="p-4 bg-card">
-                <h3 className="font-semibold text-foreground">{activeVideo.nombre}</h3>
-                <p className="text-sm text-muted-foreground">
+              <div className="p-5 sm:p-6 bg-gradient-to-b from-[hsl(229,30%,8%)] to-black">
+                <p className="text-white/80 text-sm italic mb-3">"{activeVideo.frase}"</p>
+                <h3 className="font-semibold text-white text-lg">{activeVideo.nombre}</h3>
+                <p className="text-white/60 text-sm">
                   {activeVideo.especialidad} · {activeVideo.ubicacion}
                 </p>
+                <Button
+                  size="lg"
+                  onClick={() => {
+                    closeVideo();
+                    setTimeout(() => {
+                      document.getElementById("contacto")?.scrollIntoView({ behavior: "smooth" });
+                    }, 300);
+                  }}
+                  className="mt-5 btn-hero gap-2 w-full sm:w-auto"
+                >
+                  Yo quiero ser el próximo
+                  <ArrowRight className="w-5 h-5" />
+                </Button>
               </div>
             </motion.div>
           </div>
