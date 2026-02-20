@@ -4,13 +4,11 @@ import { X, Download, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Navigation, Pagination } from "swiper/modules";
-import type { Swiper as SwiperType } from "swiper";
 
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 
-// Optimized image imports
 import gallery1 from "@/assets/secion/maestria1.jpg";
 import gallery2 from "@/assets/secion/maestria2.jpg";
 import gallery3 from "@/assets/secion/maestria3.jpg";
@@ -93,15 +91,26 @@ const galeriasPorAño: YearGallery[] = [
   },
 ];
 
-// Memoized image component with professional medical aesthetic
-const GalleryImage = memo(
-  ({ src, alt, onClick, className = "" }: { src: string; alt: string; onClick: () => void; className?: string }) => (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.95 }}
-      animate={{ opacity: 1, scale: 1 }}
-      whileHover={{ scale: 1.03, y: -6 }}
-      whileTap={{ scale: 0.97 }}
-      transition={{ duration: 0.4, ease: "easeOut" }}
+/**
+ * GalleryImage — optimized for mobile:
+ * - No whileHover (irrelevant on touch, wastes listeners)
+ * - No scale animation on mount (avoids layout recalculation)
+ * - CSS-only hover for desktop via group classes
+ * - img loading="lazy" with decoding="async"
+ */
+const GalleryImage = memo(function GalleryImage({
+  src,
+  alt,
+  onClick,
+  className = "",
+}: {
+  src: string;
+  alt: string;
+  onClick: () => void;
+  className?: string;
+}) {
+  return (
+    <div
       className={`relative overflow-hidden rounded-2xl shadow-xl cursor-pointer group ${className}`}
       onClick={onClick}
     >
@@ -109,18 +118,18 @@ const GalleryImage = memo(
         src={src}
         alt={alt}
         loading="lazy"
-        className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105 group-hover:brightness-110"
+        decoding="async"
+        className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
         draggable={false}
       />
-      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-      <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-500">
-        <p className="text-white font-semibold text-sm md:text-base line-clamp-2">{alt}</p>
+      {/* CSS-only overlay — zero JS cost */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-400 pointer-events-none" />
+      <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-400 pointer-events-none">
+        <p className="text-white font-semibold text-sm line-clamp-2">{alt}</p>
       </div>
-    </motion.div>
-  ),
-);
-
-GalleryImage.displayName = "GalleryImage";
+    </div>
+  );
+});
 
 const Galeria = () => {
   const [selectedImage, setSelectedImage] = useState<ImageData | null>(null);
@@ -163,92 +172,81 @@ const Galeria = () => {
   }, [selectedImage]);
 
   return (
-    <section id="galeria" className="py-24 px-4 md:px-8 bg-gradient-to-b from-background via-muted/30 to-background">
+    <section id="galeria" className="py-20 px-4 md:px-8 bg-gradient-to-b from-background via-muted/30 to-background">
       <div className="max-w-7xl mx-auto">
+        {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-16"
+          className="text-center mb-14"
         >
-          <h2 className="text-5xl md:text-6xl font-bold mb-4 bg-gradient-to-r from-primary via-primary/80 to-primary bg-clip-text text-transparent">
+          <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary via-primary/80 to-primary bg-clip-text text-transparent">
             Galería de Momentos
           </h2>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             Revive los mejores momentos de cada año de formación
           </p>
         </motion.div>
 
-        <div className="space-y-24">
+        {/* Year galleries — reduced spacing (was space-y-24) */}
+        <div className="space-y-16">
           {galeriasPorAño.map((gallery, galleryIndex) => (
             <motion.div
               key={gallery.year}
-              initial={{ opacity: 0, y: 40 }}
+              initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 0.7, delay: galleryIndex * 0.1 }}
+              viewport={{ once: true, margin: "-80px" }}
+              transition={{ duration: 0.6, delay: galleryIndex * 0.08 }}
               className="relative"
             >
-              {/* Hero Section - Professional Medical Style */}
-              <div className="relative h-[350px] sm:h-[450px] md:h-[550px] rounded-3xl overflow-hidden mb-12 group">
-                <motion.img
+              {/* Hero banner — CSS Ken Burns via animation class, no JS */}
+              <div className="relative h-[280px] sm:h-[380px] md:h-[480px] rounded-3xl overflow-hidden mb-10 group">
+                <img
                   src={gallery.hero}
-                  alt={`Hero ${gallery.year}`}
-                  className="w-full h-full object-cover"
+                  alt={`Edición ${gallery.year}`}
+                  className="w-full h-full object-cover transition-transform duration-[8000ms] ease-out group-hover:scale-105"
                   loading="lazy"
-                  initial={{ scale: 1.1 }}
-                  whileInView={{ scale: 1 }}
-                  transition={{ duration: 1.2, ease: "easeOut" }}
-                  viewport={{ once: true }}
+                  decoding="async"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent" />
 
                 <div className="absolute inset-0 flex flex-col items-center justify-center text-white p-4 sm:p-6 md:p-8">
-                  <motion.div
-                    initial={{ opacity: 0, y: 30 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-                    className="text-center max-w-4xl"
-                  >
-                    <motion.div
-                      className="inline-block mb-4 sm:mb-6 px-6 sm:px-8 py-2 sm:py-3 bg-primary/20 backdrop-blur-xl rounded-full border border-white/20 shadow-2xl"
-                      whileHover={{ scale: 1.05, backgroundColor: "rgba(var(--primary), 0.3)" }}
-                      transition={{ duration: 0.3 }}
-                    >
-                      <span className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tight">{gallery.year}</span>
-                    </motion.div>
-                    <h3 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-2 sm:mb-4 tracking-tight leading-tight">
+                  <div className="text-center max-w-4xl">
+                    <div className="inline-block mb-4 px-6 py-2 bg-primary/20 backdrop-blur-xl rounded-full border border-white/20 shadow-2xl">
+                      <span className="text-4xl sm:text-5xl font-black tracking-tight">{gallery.year}</span>
+                    </div>
+                    <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2 tracking-tight leading-tight">
                       {gallery.title}
                     </h3>
-                    <p className="text-lg sm:text-xl md:text-2xl font-light mb-2 text-white/90">{gallery.subtitle}</p>
-                    <p className="text-sm sm:text-base md:text-lg text-white/70 max-w-2xl mx-auto px-4">
+                    <p className="text-base sm:text-lg font-light mb-1 text-white/90">{gallery.subtitle}</p>
+                    <p className="text-sm sm:text-base text-white/70 max-w-2xl mx-auto px-4">
                       {gallery.description}
                     </p>
-                  </motion.div>
+                  </div>
                 </div>
               </div>
 
-              {/* Professional Carousel with Fade + Zoom Animation */}
-              <div className="relative px-4 sm:px-8 md:px-12">
+              {/* Carousel */}
+              <div className="relative px-4 sm:px-10 md:px-12">
                 <Swiper
                   modules={[Autoplay, Navigation, Pagination]}
-                  spaceBetween={16}
+                  spaceBetween={14}
                   slidesPerView={1}
                   breakpoints={{
-                    640: { slidesPerView: 2, spaceBetween: 20 },
-                    1024: { slidesPerView: 3, spaceBetween: 24 },
-                    1280: { slidesPerView: 3, spaceBetween: 28 },
+                    640: { slidesPerView: 2, spaceBetween: 18 },
+                    1024: { slidesPerView: 3, spaceBetween: 22 },
+                    1280: { slidesPerView: 3, spaceBetween: 26 },
                   }}
                   navigation={{
-                    prevEl: `.swiper-button-prev-${gallery.year}`,
-                    nextEl: `.swiper-button-next-${gallery.year}`,
+                    prevEl: `.swiper-prev-${gallery.year}`,
+                    nextEl: `.swiper-next-${gallery.year}`,
                   }}
                   pagination={{
                     clickable: true,
                     dynamicBullets: true,
-                    el: `.swiper-pagination-${gallery.year}`,
+                    el: `.swiper-pag-${gallery.year}`,
                   }}
                   autoplay={{
                     delay: 5000,
@@ -256,117 +254,82 @@ const Galeria = () => {
                     pauseOnMouseEnter: true,
                   }}
                   loop={true}
-                  speed={800}
-                  effect="slide"
-                  className="pb-16"
-                  onSwiper={(swiper: SwiperType) => {
-                    swiper.on("slideChange", () => {
-                      const nextSlide = swiper.slides[swiper.activeIndex + 1];
-                      const prevSlide = swiper.slides[swiper.activeIndex - 1];
-                      [nextSlide, prevSlide].forEach((slide) => {
-                        if (slide) {
-                          const img = slide.querySelector("img");
-                          if (img && !img.complete) {
-                            img.loading = "eager";
-                          }
-                        }
-                      });
-                    });
-                  }}
+                  speed={480}
+                  grabCursor={true}
+                  className="pb-14"
                 >
                   {gallery.images.map((image, index) => (
-                    <SwiperSlide key={index} className="transition-opacity duration-500">
+                    <SwiperSlide key={index}>
                       <GalleryImage
                         src={image.src}
                         alt={image.alt}
                         onClick={() => handleImageClick(gallery, index)}
-                        className="h-[280px] sm:h-[340px] md:h-[400px]"
+                        className="h-[240px] sm:h-[300px] md:h-[360px]"
                       />
-                      {image.category && (
-                        <motion.div
-                          initial={{ opacity: 0, y: 10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ delay: 0.2 }}
-                          className="mt-4 text-center"
-                        >
-                          {/* <span className="inline-block px-4 py-1.5 text-xs sm:text-sm font-semibold bg-primary/15 text-primary rounded-full border border-primary/20 shadow-sm">
-                            {image.category}
-                          </span>*/}
-                        </motion.div>
-                      )}
                     </SwiperSlide>
                   ))}
                 </Swiper>
 
-                {/* Professional Navigation Controls */}
+                {/* Nav buttons */}
                 <button
-                  className={`swiper-button-prev-${gallery.year} absolute left-0 sm:left-2 top-[40%] sm:top-1/2 -translate-y-1/2 z-20 w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 flex items-center justify-center bg-background/95 backdrop-blur-md rounded-full shadow-xl hover:shadow-2xl hover:bg-primary hover:text-primary-foreground transition-all duration-300 hover:scale-110 active:scale-95 border border-border/50`}
+                  className={`swiper-prev-${gallery.year} absolute left-0 sm:left-1 top-[45%] -translate-y-1/2 z-20 w-9 h-9 sm:w-11 sm:h-11 flex items-center justify-center bg-background/95 backdrop-blur-md rounded-full shadow-lg hover:bg-primary hover:text-primary-foreground active:scale-90 transition-all duration-200 border border-border/50`}
                   aria-label="Anterior"
                 >
-                  <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7" />
+                  <ChevronLeft className="w-5 h-5" />
                 </button>
                 <button
-                  className={`swiper-button-next-${gallery.year} absolute right-0 sm:right-2 top-[40%] sm:top-1/2 -translate-y-1/2 z-20 w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 flex items-center justify-center bg-background/95 backdrop-blur-md rounded-full shadow-xl hover:shadow-2xl hover:bg-primary hover:text-primary-foreground transition-all duration-300 hover:scale-110 active:scale-95 border border-border/50`}
+                  className={`swiper-next-${gallery.year} absolute right-0 sm:right-1 top-[45%] -translate-y-1/2 z-20 w-9 h-9 sm:w-11 sm:h-11 flex items-center justify-center bg-background/95 backdrop-blur-md rounded-full shadow-lg hover:bg-primary hover:text-primary-foreground active:scale-90 transition-all duration-200 border border-border/50`}
                   aria-label="Siguiente"
                 >
-                  <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7" />
+                  <ChevronRight className="w-5 h-5" />
                 </button>
 
-                {/* Custom Pagination Dots */}
-                <div className={`swiper-pagination-${gallery.year} flex justify-center gap-2 mt-2`} />
+                {/* Pagination dots */}
+                <div className={`swiper-pag-${gallery.year} flex justify-center gap-2 mt-2`} />
               </div>
             </motion.div>
           ))}
         </div>
       </div>
 
-      {/* Professional Medical Modal with Smooth Animations */}
+      {/* Lightbox modal */}
       <AnimatePresence mode="wait">
         {selectedImage && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.3, ease: "easeInOut" }}
+            transition={{ duration: 0.25 }}
             className="fixed inset-0 bg-black/96 backdrop-blur-2xl z-50 flex items-center justify-center p-2 sm:p-4"
             onClick={handleClose}
           >
             <motion.div
-              initial={{ scale: 0.92, opacity: 0, y: 20 }}
+              initial={{ scale: 0.94, opacity: 0, y: 16 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
-              exit={{ scale: 0.92, opacity: 0, y: 20 }}
-              transition={{ duration: 0.4, type: "spring", damping: 28, stiffness: 300 }}
+              exit={{ scale: 0.94, opacity: 0, y: 16 }}
+              transition={{ duration: 0.3, type: "spring", damping: 30, stiffness: 320 }}
               className="relative max-w-7xl max-h-[95vh] w-full"
               onClick={(e) => e.stopPropagation()}
             >
-              {/* Image Container with Fade + Zoom */}
-              <motion.div
-                className="relative flex items-center justify-center"
-                initial={{ scale: 0.95 }}
-                animate={{ scale: 1 }}
-                transition={{ duration: 0.5, ease: "easeOut" }}
-              >
+              {/* Image */}
+              <div className="relative flex items-center justify-center">
                 <img
                   src={selectedImage.src}
                   alt={selectedImage.alt}
                   className="max-w-full max-h-[85vh] object-contain rounded-2xl shadow-2xl border border-white/10"
                   loading="eager"
+                  decoding="sync"
                   draggable={false}
                 />
-              </motion.div>
+              </div>
 
-              {/* Professional Controls */}
-              <motion.div
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
-                className="absolute top-2 sm:top-4 right-2 sm:right-4 flex gap-2"
-              >
+              {/* Controls top-right */}
+              <div className="absolute top-2 sm:top-4 right-2 sm:right-4 flex gap-2">
                 <Button
                   onClick={handleDownload}
                   size="icon"
                   variant="secondary"
-                  className="rounded-full bg-background/95 backdrop-blur-md hover:bg-primary hover:text-primary-foreground transition-all duration-300 hover:scale-110 shadow-xl w-10 h-10 sm:w-12 sm:h-12"
+                  className="rounded-full bg-background/95 backdrop-blur-md hover:bg-primary hover:text-primary-foreground transition-all duration-200 shadow-xl w-10 h-10 sm:w-12 sm:h-12"
                   aria-label="Descargar imagen"
                 >
                   <Download className="w-4 h-4 sm:w-5 sm:h-5" />
@@ -375,44 +338,39 @@ const Galeria = () => {
                   onClick={handleClose}
                   size="icon"
                   variant="secondary"
-                  className="rounded-full bg-background/95 backdrop-blur-md hover:bg-destructive hover:text-destructive-foreground transition-all duration-300 hover:scale-110 shadow-xl w-10 h-10 sm:w-12 sm:h-12"
+                  className="rounded-full bg-background/95 backdrop-blur-md hover:bg-destructive hover:text-destructive-foreground transition-all duration-200 shadow-xl w-10 h-10 sm:w-12 sm:h-12"
                   aria-label="Cerrar"
                 >
                   <X className="w-4 h-4 sm:w-5 sm:h-5" />
                 </Button>
-              </motion.div>
+              </div>
 
-              {/* Smooth Navigation */}
+              {/* Prev / Next */}
               <Button
                 onClick={handlePrevImage}
                 size="icon"
                 variant="secondary"
-                className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 rounded-full bg-background/95 backdrop-blur-md hover:bg-primary hover:text-primary-foreground transition-all duration-300 hover:scale-110 active:scale-95 shadow-xl w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16"
+                className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 rounded-full bg-background/95 backdrop-blur-md hover:bg-primary hover:text-primary-foreground transition-all duration-200 active:scale-95 shadow-xl w-11 h-11 sm:w-14 sm:h-14"
                 aria-label="Imagen anterior"
               >
-                <ChevronLeft className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8" />
+                <ChevronLeft className="w-5 h-5 sm:w-7 sm:h-7" />
               </Button>
               <Button
                 onClick={handleNextImage}
                 size="icon"
                 variant="secondary"
-                className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 rounded-full bg-background/95 backdrop-blur-md hover:bg-primary hover:text-primary-foreground transition-all duration-300 hover:scale-110 active:scale-95 shadow-xl w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16"
+                className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 rounded-full bg-background/95 backdrop-blur-md hover:bg-primary hover:text-primary-foreground transition-all duration-200 active:scale-95 shadow-xl w-11 h-11 sm:w-14 sm:h-14"
                 aria-label="Imagen siguiente"
               >
-                <ChevronRight className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8" />
+                <ChevronRight className="w-5 h-5 sm:w-7 sm:h-7" />
               </Button>
 
-              {/* Professional Image Info */}
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 }}
-                className="absolute bottom-2 sm:bottom-4 left-1/2 -translate-x-1/2 text-center max-w-[90%] sm:max-w-2xl"
-              >
-                <p className="text-white text-sm sm:text-base md:text-lg font-semibold bg-black/70 backdrop-blur-md px-4 sm:px-6 py-2 sm:py-3 rounded-full border border-white/10 shadow-2xl">
+              {/* Caption */}
+              <div className="absolute bottom-2 sm:bottom-4 left-1/2 -translate-x-1/2 text-center max-w-[90%] sm:max-w-2xl">
+                <p className="text-white text-sm sm:text-base font-semibold bg-black/70 backdrop-blur-md px-4 sm:px-6 py-2 rounded-full border border-white/10 shadow-2xl">
                   {selectedImage.alt}
                 </p>
-              </motion.div>
+              </div>
             </motion.div>
           </motion.div>
         )}
