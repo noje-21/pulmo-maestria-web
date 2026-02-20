@@ -187,15 +187,20 @@ const HeroText = memo(function HeroText({ onReservar }: { onReservar: () => void
       </motion.div>
 
       {/* Escasez: Solo 15 cupos anuales */}
-      <motion.p
-        initial={{ opacity: 0, y: 16 }}
+      <motion.div
+        initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4, delay: 0.08, ease: "easeOut" }}
-        className="text-accent-light font-bold text-base sm:text-lg tracking-wide mb-4"
+        transition={{ duration: 0.35, delay: 0.2, ease: [0.25, 0.46, 0.45, 0.94] }}
+        className="mb-4"
         aria-label="Solo 15 cupos anuales disponibles"
       >
-        Solo 15 cupos anuales
-      </motion.p>
+        <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-accent/40 bg-accent/10 backdrop-blur-sm shadow-[0_0_16px_hsl(var(--accent)/0.15)]">
+          <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse shrink-0" />
+          <span className="text-accent-light font-semibold text-sm sm:text-base tracking-wide">
+            Solo 15 cupos anuales
+          </span>
+        </span>
+      </motion.div>
 
       <motion.h1
         initial={{ opacity: 0, y: 30 }}
