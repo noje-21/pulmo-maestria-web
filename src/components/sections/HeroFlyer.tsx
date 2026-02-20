@@ -1,4 +1,4 @@
-import { useRef, useState, useCallback, useEffect, memo } from "react";
+import { useRef, useState, useCallback, useEffect, useMemo, memo } from "react";
 import { motion } from "framer-motion";
 import { ExternalLink, Phone, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -20,15 +20,21 @@ const ROTATION_INTERVAL = 15_000;
 const PRELOAD_AHEAD = 5_000;
 
 /**
- * A/B crossfade player using a single pair of <video> elements.
- * Never unmounts — avoids all ERR_ABORTED storms from React remounting.
+ * A/B crossfade player — persistent pair of <video> elements.
+ * - Never unmounts → zero ERR_ABORTED requests from React remounting
+ * - player JSX is memoized → no DOM recreation on opacity/idx state changes
+ * - switchTo uses only refs → no extra renders during crossfade
  */
 const useCinemaPlayer = () => {
   const refA = useRef<HTMLVideoElement>(null);
   const refB = useRef<HTMLVideoElement>(null);
   const activeRef = useRef<"A" | "B">("A");
-  const [opacityA, setOpacityA] = useState(1);
-  const [opacityB, setOpacityB] = useState(0);
+  // Use refs for opacity to avoid triggering renders from the hook itself.
+  // The CSS transition-opacity on the <video> handles the visual crossfade.
+  const opacityARef = useRef(1);
+  const opacityBRef = useRef(0);
+  // A single state toggle forces React to commit the updated style props.
+  const [, forceUpdate] = useState(0);
   const initialized = useRef(false);
 
   // Seed the first video once on mount
@@ -52,34 +58,49 @@ const useCinemaPlayer = () => {
     incoming.play().catch(() => {});
 
     if (isA) {
-      setOpacityA(0);
-      setOpacityB(1);
+      opacityARef.current = 0;
+      opacityBRef.current = 1;
       activeRef.current = "B";
     } else {
-      setOpacityA(1);
-      setOpacityB(0);
+      opacityARef.current = 1;
+      opacityBRef.current = 0;
       activeRef.current = "A";
     }
+    // Single cheap re-render to apply updated opacity values
+    forceUpdate((n) => n + 1);
   }, []);
 
-  const player = (
-    <div className="relative w-full aspect-[4/3] lg:aspect-[16/10] rounded-2xl overflow-hidden shadow-[0_16px_64px_rgba(0,0,0,0.6)] border border-white/10 select-none bg-black">
-      <video
-        ref={refA}
-        muted loop playsInline preload="auto"
-        className="absolute inset-0 w-full h-full object-contain transition-opacity duration-[1200ms]"
-        style={{ opacity: opacityA }}
-        aria-hidden="true"
-      />
-      <video
-        ref={refB}
-        muted loop playsInline preload="metadata"
-        className="absolute inset-0 w-full h-full object-contain transition-opacity duration-[1200ms]"
-        style={{ opacity: opacityB }}
-        aria-hidden="true"
-      />
-      <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent pointer-events-none" />
-    </div>
+  // Memoized JSX — recreated only when opacity values change (via forceUpdate)
+  const player = useMemo(
+    () => (
+      <div className="relative w-full aspect-[4/3] lg:aspect-[16/10] rounded-2xl overflow-hidden shadow-[0_16px_64px_rgba(0,0,0,0.6)] border border-white/10 select-none bg-black">
+        <video
+          ref={refA}
+          muted loop playsInline preload="auto"
+          className="absolute inset-0 w-full h-full object-contain"
+          style={{
+            opacity: opacityARef.current,
+            transition: "opacity 1200ms ease-in-out",
+            willChange: "opacity",
+          }}
+          aria-hidden="true"
+        />
+        <video
+          ref={refB}
+          muted loop playsInline preload="none"
+          className="absolute inset-0 w-full h-full object-contain"
+          style={{
+            opacity: opacityBRef.current,
+            transition: "opacity 1200ms ease-in-out",
+            willChange: "opacity",
+          }}
+          aria-hidden="true"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent pointer-events-none" />
+      </div>
+    ),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [opacityARef.current, opacityBRef.current]
   );
 
   return { player, switchTo };
@@ -213,8 +234,9 @@ export const HeroFlyer = () => {
   const preloadedSet = useRef<Set<number>>(new Set([0]));
   const { player, switchTo } = useCinemaPlayer();
 
-  const scrollTo = useCallback((id: string) => {
-    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+  // Stable callback — never re-creates on idx change
+  const scrollToContacto = useCallback(() => {
+    document.getElementById("contacto")?.scrollIntoView({ behavior: "smooth" });
   }, []);
 
   const goTo = useCallback((i: number) => {
@@ -222,7 +244,7 @@ export const HeroFlyer = () => {
     switchTo(flyerVideos[i]);
   }, [switchTo]);
 
-  // Preload via <link rel="preload"> and auto-rotate
+  // Preload via <link rel="preload"> and auto-rotate via chained setTimeout
   useEffect(() => {
     const next = (idx + 1) % flyerVideos.length;
 
@@ -255,23 +277,24 @@ export const HeroFlyer = () => {
       className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-[hsl(229,80%,8%)] via-[hsl(229,60%,12%)] to-[hsl(229,50%,6%)]"
       aria-label="Presentación de la Maestría en Circulación Pulmonar"
     >
-      {/* Ambient glows */}
-      <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-primary/8 rounded-full blur-[150px]" />
-      <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-accent/6 rounded-full blur-[120px]" />
+      {/* Ambient glows — static divs, no animation, GPU-composited via blur */}
+      <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-primary/8 rounded-full blur-[150px] pointer-events-none" />
+      <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-accent/6 rounded-full blur-[120px] pointer-events-none" />
 
       <div className="relative z-10 w-full mx-auto px-2 sm:px-4 lg:px-6 py-8 sm:py-10 lg:py-12">
 
         {/* ── Desktop layout ── */}
         <div className="hidden lg:grid lg:grid-cols-7 lg:gap-8 lg:items-center">
           <div className="lg:col-span-2 lg:pt-8 flex flex-col justify-start">
-            <HeroText onReservar={() => scrollTo("contacto")} />
+            <HeroText onReservar={scrollToContacto} />
           </div>
 
           <motion.div
             initial={{ opacity: 0, x: 40 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
+            transition={{ duration: 0.7, delay: 0.15, ease: [0.25, 0.46, 0.45, 0.94] }}
             className="lg:col-span-5 h-full flex flex-col items-center justify-center"
+            style={{ willChange: "transform, opacity" }}
           >
             {player}
             <ProgressDots total={flyerVideos.length} current={idx} onSelect={goTo} />
@@ -281,16 +304,17 @@ export const HeroFlyer = () => {
         {/* ── Mobile layout ── */}
         <div className="lg:hidden flex flex-col gap-6">
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
+            transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
+            style={{ willChange: "transform, opacity" }}
           >
             {player}
             <ProgressDots total={flyerVideos.length} current={idx} onSelect={goTo} />
           </motion.div>
 
           <div className="text-center px-2">
-            <HeroText onReservar={() => scrollTo("contacto")} />
+            <HeroText onReservar={scrollToContacto} />
           </div>
         </div>
 
