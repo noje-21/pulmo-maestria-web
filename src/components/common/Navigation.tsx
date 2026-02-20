@@ -53,8 +53,18 @@ const Navigation = () => {
   }, [isMenuOpen]);
 
   useEffect(() => {
+    // Throttled via rAF — sets state only when value actually changes
+    let ticking = false;
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        setIsScrolled((prev) => {
+          const next = window.scrollY > 20;
+          return prev === next ? prev : next; // skip if no change
+        });
+        ticking = false;
+      });
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
@@ -119,12 +129,13 @@ const Navigation = () => {
 
   return (
     <motion.nav
-      initial={{ y: -100 }}
+      initial={{ y: isHomePage ? -80 : 0 }}
       animate={{ y: 0 }}
-      transition={{ duration: 0.5, ease: "easeOut" }}
+      transition={{ duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
+      style={{ willChange: "transform" }}
       role="navigation"
       aria-label="Navegación principal"
-      className={`fixed top-0 w-full z-50 transition-all duration-300 ${
+      className={`fixed top-0 w-full z-50 transition-[background-color,box-shadow,border-color] duration-300 ${
         isScrolled 
           ? "bg-background/95 backdrop-blur-xl shadow-md border-b border-border/50" 
           : "bg-transparent"
