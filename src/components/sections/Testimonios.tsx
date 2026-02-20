@@ -99,10 +99,14 @@ const VideoCard = memo(function VideoCard({
   return (
     <motion.article
       ref={containerRef}
-      initial={{ opacity: 0, y: 28 }}
+      initial={{ opacity: 0, y: 14 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-40px" }}
-      transition={{ duration: 0.5, delay: testimonio.id * 0.08 }}
+      viewport={{ once: true, margin: "-32px" }}
+      transition={{
+        duration: 0.35,
+        delay: testimonio.id * 0.06,
+        ease: [0.25, 0.46, 0.45, 0.94],
+      }}
       className={cn(
         "group relative",
         isFeatured && "md:col-span-2 md:row-span-2"
@@ -145,7 +149,7 @@ const VideoCard = memo(function VideoCard({
               playsInline
               onLoadedData={() => setReady(true)}
               className={cn(
-                "w-full h-full object-cover transition-transform duration-700 group-hover:scale-105",
+                "w-full h-full object-cover transition-[transform,opacity] duration-500 group-hover:scale-105",
                 ready ? "opacity-100" : "opacity-0"
               )}
             />
