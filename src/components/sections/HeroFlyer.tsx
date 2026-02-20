@@ -173,11 +173,12 @@ const ProgressDots = memo(function ProgressDots({
 const HeroText = memo(function HeroText({ onReservar }: { onReservar: () => void }) {
   return (
     <>
+      {/* Badge: Edición 2026 · Cupos limitados */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="mb-4"
+        className="mb-3"
       >
         <span className="inline-flex items-center gap-2 bg-accent/15 border border-accent/25 text-accent-foreground px-3 py-1.5 rounded-full text-xs font-semibold backdrop-blur-sm">
           <Sparkles className="w-3 h-3 text-accent-light animate-pulse" />
@@ -185,10 +186,21 @@ const HeroText = memo(function HeroText({ onReservar }: { onReservar: () => void
         </span>
       </motion.div>
 
+      {/* Escasez: Solo 15 cupos anuales */}
+      <motion.p
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, delay: 0.08, ease: "easeOut" }}
+        className="text-accent-light font-bold text-base sm:text-lg tracking-wide mb-4"
+        aria-label="Solo 15 cupos anuales disponibles"
+      >
+        Solo 15 cupos anuales
+      </motion.p>
+
       <motion.h1
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.7, delay: 0.1 }}
+        transition={{ duration: 0.7, delay: 0.15 }}
         className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold text-white leading-[1.15] mb-4"
       >
         La experiencia que está transformando la{" "}
@@ -200,7 +212,7 @@ const HeroText = memo(function HeroText({ onReservar }: { onReservar: () => void
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 0.2 }}
+        transition={{ duration: 0.6, delay: 0.25 }}
         className="mb-6 space-y-2"
       >
         <p className="text-white/60 text-sm font-medium">
@@ -214,7 +226,7 @@ const HeroText = memo(function HeroText({ onReservar }: { onReservar: () => void
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 0.3 }}
+        transition={{ duration: 0.6, delay: 0.35 }}
       >
         <HeroCTAs onReservar={onReservar} />
       </motion.div>
