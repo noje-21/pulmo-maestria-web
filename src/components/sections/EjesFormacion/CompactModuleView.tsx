@@ -52,9 +52,10 @@ export const CompactModuleView = ({
         return (
           <motion.div
             key={phaseKey}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4 }}
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-32px" }}
+            transition={{ duration: 0.35, ease: [0.25, 0.46, 0.45, 0.94] }}
             className="space-y-3"
           >
             {/* Phase header */}
@@ -227,11 +228,8 @@ const ModuleDetailPanel = ({ modulo, index, totalModules, onClose }: ModuleDetai
         </span>
         <div className="grid gap-2">
           {modulo.temas.map((tema, idx) => (
-            <motion.div
+            <div
               key={idx}
-              initial={{ opacity: 0, x: -10 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: idx * 0.05 + 0.1 }}
               className="flex items-center gap-2 text-sm text-foreground/80"
             >
               <ArrowRight className={cn(
@@ -239,7 +237,7 @@ const ModuleDetailPanel = ({ modulo, index, totalModules, onClose }: ModuleDetai
                 isAccentPhase ? "text-accent" : "text-primary"
               )} />
               {tema}
-            </motion.div>
+            </div>
           ))}
         </div>
       </div>

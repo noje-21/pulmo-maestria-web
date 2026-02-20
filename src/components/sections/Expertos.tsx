@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { GraduationCap } from "lucide-react";
@@ -78,41 +79,78 @@ const expertos = [
   }
 ];
 
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.1
-    }
-  }
-};
+/** Single expert card — memoized so re-renders in the parent don't recreate each card */
+const ExpertoCard = memo(function ExpertoCard({
+  experto,
+  index,
+}: {
+  experto: (typeof expertos)[number];
+  index: number;
+}) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-40px" }}
+      transition={{
+        duration: 0.38,
+        // Tight stagger — capped at 5 cards × 0.06 = 0.30s max delay
+        delay: Math.min(index, 5) * 0.06,
+        ease: [0.25, 0.46, 0.45, 0.94],
+      }}
+    >
+      <Card className="card-base card-hover h-full group bg-card brand-card-signature">
+        <CardContent className="p-5 flex flex-col items-center text-center h-full">
+          {/* Photo */}
+          <div className="relative mb-4">
+            {/* Glow only on hover — opacity-0 baseline, no continuous animation */}
+            <div className="absolute inset-0 bg-gradient-to-br from-primary to-accent rounded-full blur-lg opacity-0 group-hover:opacity-40 transition-opacity duration-300" />
+            <img
+              src={experto.imagen}
+              alt={experto.nombre}
+              loading="lazy"
+              decoding="async"
+              className="relative w-24 h-24 md:w-28 md:h-28 object-cover rounded-full border-3 border-border shadow-md group-hover:scale-105 transition-transform duration-300"
+            />
+          </div>
 
-const cardVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { 
-    opacity: 1, 
-    y: 0,
-    transition: { duration: 0.5 }
-  }
-};
+          <h3 className="text-base md:text-lg font-bold text-foreground mb-1 group-hover:text-primary transition-colors">
+            {experto.nombre}
+          </h3>
+          <p className="text-accent text-sm font-semibold mb-2">
+            {experto.cargo}
+          </p>
+          <div className="w-10 h-0.5 bg-gradient-to-r from-transparent via-border to-transparent mb-2" />
+          <p className="text-xs text-muted-foreground mb-1 line-clamp-2">
+            {experto.especialidad}
+          </p>
+          <p className="text-xs text-muted-foreground/70 mt-auto">
+            {experto.institucion}
+          </p>
+        </CardContent>
+      </Card>
+    </motion.div>
+  );
+});
 
 export const Expertos = () => {
-  // Separate director from other experts
   const director = expertos.find(e => e.destacado);
   const otrosExpertos = expertos.filter(e => !e.destacado);
 
   return (
-    <section id="expertos" className="py-20 md:py-28 bg-gradient-to-b from-background to-muted/50 relative overflow-hidden">
+    <section
+      id="expertos"
+      className="py-20 md:py-28 bg-gradient-to-b from-background to-muted/50 relative overflow-hidden"
+    >
       <div className="absolute inset-0 bg-dots-pattern opacity-30" />
       
       <div className="section-container relative z-10">
-        {/* Section Header with Purpose */}
+        {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
+          transition={{ duration: 0.45, ease: [0.25, 0.46, 0.45, 0.94] }}
           className="section-header"
         >
           <h2 className="section-title brand-section-signature-center">Aprende de los mejores</h2>
@@ -125,16 +163,15 @@ export const Expertos = () => {
         {/* Director Card - Featured */}
         {director && (
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
+            transition={{ duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
             className="mb-12"
           >
             <Card className="card-base overflow-hidden bg-gradient-to-r from-primary/5 to-accent/5 border-primary/20 brand-accent-bar">
               <CardContent className="p-0">
                 <div className="flex flex-col md:flex-row items-center gap-6 md:gap-10 p-6 md:p-8">
-                  {/* Photo */}
                   <div className="relative shrink-0">
                     <div className="absolute inset-0 bg-gradient-to-br from-primary to-accent rounded-2xl blur-xl opacity-30" />
                     <img
@@ -142,13 +179,13 @@ export const Expertos = () => {
                       alt={director.nombre}
                       className="relative w-36 h-36 md:w-44 md:h-44 object-cover rounded-2xl border-4 border-background shadow-xl"
                       loading="lazy"
+                      decoding="async"
                     />
                     <div className="absolute -bottom-2 -right-2 bg-accent text-accent-foreground p-2 rounded-xl shadow-lg">
                       <GraduationCap className="w-5 h-5" />
                     </div>
                   </div>
                   
-                  {/* Info */}
                   <div className="flex-1 text-center md:text-left">
                     <span className="inline-block px-3 py-1 bg-primary/10 text-primary text-xs font-semibold rounded-full mb-3">
                       Director de Maestría
@@ -169,56 +206,12 @@ export const Expertos = () => {
           </motion.div>
         )}
 
-        {/* Experts Grid */}
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6"
-        >
+        {/* Experts Grid — each card animates independently via whileInView */}
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
           {otrosExpertos.map((experto, index) => (
-            <motion.div key={index} variants={cardVariants}>
-              <Card className="card-base card-hover h-full group bg-card brand-card-signature">
-                <CardContent className="p-5 flex flex-col items-center text-center h-full">
-                  {/* Photo */}
-                  <div className="relative mb-4">
-                    <div className="absolute inset-0 bg-gradient-to-br from-primary to-accent rounded-full blur-lg opacity-0 group-hover:opacity-40 transition-opacity duration-300" />
-                    <img
-                      src={experto.imagen}
-                      alt={experto.nombre}
-                      loading="lazy"
-                      className="relative w-24 h-24 md:w-28 md:h-28 object-cover rounded-full border-3 border-border shadow-md group-hover:scale-105 transition-transform duration-300"
-                    />
-                  </div>
-
-                  {/* Name */}
-                  <h3 className="text-base md:text-lg font-bold text-foreground mb-1 group-hover:text-primary transition-colors">
-                    {experto.nombre}
-                  </h3>
-                  
-                  {/* Role */}
-                  <p className="text-accent text-sm font-semibold mb-2">
-                    {experto.cargo}
-                  </p>
-                  
-                  {/* Divider */}
-                  <div className="w-10 h-0.5 bg-gradient-to-r from-transparent via-border to-transparent mb-2" />
-                  
-                  {/* Specialty */}
-                  <p className="text-xs text-muted-foreground mb-1 line-clamp-2">
-                    {experto.especialidad}
-                  </p>
-                  
-                  {/* Institution */}
-                  <p className="text-xs text-muted-foreground/70 mt-auto">
-                    {experto.institucion}
-                  </p>
-                </CardContent>
-              </Card>
-            </motion.div>
+            <ExpertoCard key={experto.nombre} experto={experto} index={index} />
           ))}
-        </motion.div>
+        </div>
       </div>
     </section>
   );
