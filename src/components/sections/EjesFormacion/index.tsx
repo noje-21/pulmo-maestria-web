@@ -22,7 +22,7 @@ const getPhaseForIndex = (index: number): string | null => {
 };
 
 export const EjesFormacion = () => {
-  const [viewMode, setViewMode] = useState<ViewMode>("detailed");
+  const [viewMode, setViewMode] = useState<ViewMode>("compact");
   const { playExpandSound, playCollapseSound, playToggleSound } = useSoundEffects();
 
   return (
