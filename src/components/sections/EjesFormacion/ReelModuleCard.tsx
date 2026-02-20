@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, memo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown, Sparkles, ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -14,13 +14,13 @@ interface ReelModuleCardProps {
   onCollapseSound?: () => void;
 }
 
-export const ReelModuleCard = ({ 
+export const ReelModuleCard = memo(function ReelModuleCard({ 
   modulo, 
   index, 
   totalModules,
   onExpandSound,
   onCollapseSound
-}: ReelModuleCardProps) => {
+}: ReelModuleCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const Icon = modulo.icon;
   const phase = progressionPhases[modulo.phase];
@@ -36,25 +36,25 @@ export const ReelModuleCard = ({
     } else {
       onExpandSound?.();
     }
-    setIsExpanded(!isExpanded);
+    setIsExpanded(prev => !prev);
   }, [isExpanded, onExpandSound, onCollapseSound]);
   
   return (
     <motion.article
-      initial={{ opacity: 0, y: 40 }}
+      initial={{ opacity: 0, y: 32 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-60px" }}
+      viewport={{ once: true, margin: "-50px" }}
       transition={{ 
-        duration: 0.5, 
+        duration: 0.4, 
         ease: [0.25, 0.46, 0.45, 0.94],
-        delay: 0.03
+        delay: 0.02
       }}
-      className="group w-full will-change-transform"
+      className="group w-full"
+      style={{ willChange: "transform, opacity" }}
     >
-    <motion.div 
+      {/* whileHover removed on touch-first layout — no hover events on mobile */}
+      <div
         onClick={handleToggle}
-        whileHover={{ y: -3 }}
-        whileTap={{ scale: 0.99 }}
         className={cn(
           "relative cursor-pointer overflow-hidden",
           "rounded-2xl sm:rounded-3xl border transition-all duration-300",
@@ -64,24 +64,22 @@ export const ReelModuleCard = ({
             : "border-border/40 hover:border-primary/25 hover:shadow-lg hover:shadow-primary/5",
         )}
       >
-        {/* Animated gradient background on hover */}
-        <motion.div 
-          className={cn(
-            "absolute inset-0 opacity-0 transition-opacity duration-700",
-            "bg-gradient-to-br",
-            isAccentPhase 
-              ? "from-accent/5 via-transparent to-primary/5" 
-              : "from-primary/5 via-transparent to-accent/5"
-          )}
-          animate={{ opacity: isExpanded ? 1 : 0 }}
-        />
+        {/* Gradient background shown when expanded — static class, no motion overhead */}
+        <div className={cn(
+          "absolute inset-0 transition-opacity duration-500",
+          "bg-gradient-to-br",
+          isAccentPhase 
+            ? "from-accent/5 via-transparent to-primary/5" 
+            : "from-primary/5 via-transparent to-accent/5",
+          isExpanded ? "opacity-100" : "opacity-0"
+        )} />
         
-        {/* Progress indicator bar - optimized */}
+        {/* Progress indicator bar */}
         <div className="absolute top-0 left-0 right-0 h-0.5 sm:h-1 bg-muted/20 overflow-hidden">
           <div 
             style={{ width: `${progressPercentage}%` }}
             className={cn(
-              "h-full transition-all duration-500",
+              "h-full",
               isAccentPhase ? "bg-accent" : "bg-primary"
             )}
           />
@@ -90,17 +88,11 @@ export const ReelModuleCard = ({
         {/* Main content */}
         <div className="relative p-4 sm:p-6 lg:p-7">
           
-          {/* Top row: Progress + Phase badge */}
+          {/* Top row: Progress + Phase badge — plain span, no nested whileInView */}
           <div className="flex items-center justify-between mb-4">
-            <motion.span 
-              initial={{ opacity: 0, x: -10 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.2 }}
-              className="text-[11px] sm:text-xs text-muted-foreground/70 font-medium"
-            >
+            <span className="text-[11px] sm:text-xs text-muted-foreground/70 font-medium">
               Paso {index + 1} de {totalModules} · {progressMilestone}
-            </motion.span>
+            </span>
             <span className={cn(
               "text-[10px] sm:text-xs px-3 py-1.5 rounded-full font-semibold uppercase tracking-wider",
               phase.bgColor, phase.color
@@ -109,7 +101,7 @@ export const ReelModuleCard = ({
             </span>
           </div>
 
-          {/* Hook visual - The emotional punch */}
+          {/* Hook visual */}
           <div className="mb-4">
             <p className={cn(
               "text-sm sm:text-base font-bold italic",
@@ -121,7 +113,6 @@ export const ReelModuleCard = ({
 
           {/* Module header with icon */}
           <div className="flex items-start gap-3 sm:gap-4 mb-4">
-            {/* Icon container */}
             <div className={cn(
               "flex-shrink-0 flex items-center justify-center",
               "w-12 h-12 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl",
@@ -133,7 +124,6 @@ export const ReelModuleCard = ({
               <Icon className="w-6 h-6 sm:w-7 sm:h-7" />
             </div>
             
-            {/* Title and subtitle */}
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-1">
                 <span className={cn(
@@ -183,17 +173,16 @@ export const ReelModuleCard = ({
           </div>
 
           {/* Expandable content */}
-          <AnimatePresence>
+          <AnimatePresence initial={false}>
             {isExpanded && (
               <motion.div
                 initial={{ height: 0, opacity: 0 }}
                 animate={{ height: "auto", opacity: 1 }}
                 exit={{ height: 0, opacity: 0 }}
-                transition={{ duration: 0.25, ease: "easeOut" }}
+                transition={{ duration: 0.22, ease: "easeOut" }}
                 className="overflow-hidden"
               >
                 <div className="pt-4 mt-4 border-t border-border/30">
-                  {/* Section title */}
                   <div className="flex items-center gap-2 mb-3">
                     <div className={cn(
                       "w-1 h-4 rounded-full",
@@ -204,7 +193,7 @@ export const ReelModuleCard = ({
                     </span>
                   </div>
                   
-                  {/* Topics grid - optimized without stagger */}
+                  {/* Topics — plain divs, no stagger animation inside 30 cards */}
                   <div className="grid grid-cols-1 gap-2">
                     {modulo.temas.map((tema, idx) => (
                       <div
@@ -225,7 +214,6 @@ export const ReelModuleCard = ({
                     ))}
                   </div>
 
-                  {/* Transformation message */}
                   <div className={cn(
                     "mt-4 p-3 rounded-lg text-center",
                     "bg-gradient-to-r",
@@ -245,7 +233,6 @@ export const ReelModuleCard = ({
             )}
           </AnimatePresence>
 
-          {/* Tap hint for mobile */}
           {!isExpanded && (
             <div className="mt-2 text-center sm:hidden">
               <span className="text-[10px] text-muted-foreground/50 font-medium">
@@ -254,7 +241,7 @@ export const ReelModuleCard = ({
             </div>
           )}
         </div>
-      </motion.div>
+      </div>
     </motion.article>
   );
-};
+});
