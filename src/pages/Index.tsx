@@ -11,10 +11,8 @@ import { AIAssistant } from "@/components/common/AIAssistant";
 
 // Lazy-loaded sections (below the fold)
 const Hero = lazy(() => import("@/components/sections/Hero").then(m => ({ default: m.Hero })));
-const Diferenciales = lazy(() => import("@/components/sections/Diferenciales").then(m => ({ default: m.Diferenciales })));
 const Maestria = lazy(() => import("@/components/sections/Maestria").then(m => ({ default: m.Maestria })));
 const EjesFormacion = lazy(() => import("@/components/sections/EjesFormacion").then(m => ({ default: m.EjesFormacion })));
-const ComoFunciona = lazy(() => import("@/components/sections/ComoFunciona").then(m => ({ default: m.ComoFunciona })));
 const Expertos = lazy(() => import("@/components/sections/Expertos").then(m => ({ default: m.Expertos })));
 const Eventos = lazy(() => import("@/components/sections/Eventos").then(m => ({ default: m.Eventos })));
 const Testimonios = lazy(() => import("@/components/sections/Testimonios").then(m => ({ default: m.Testimonios })));
@@ -41,12 +39,6 @@ const Index = () => {
         <Suspense fallback={null}>
           {/* PASO 2: Contexto */}
           <AnimatedOnView>
-            <Diferenciales />
-          </AnimatedOnView>
-          
-          <ScrollInvitation text="Descubre lo que te espera" targetId="maestria" />
-          
-          <AnimatedOnView>
             <Maestria />
           </AnimatedOnView>
           
@@ -54,12 +46,6 @@ const Index = () => {
           
           <AnimatedOnView>
             <EjesFormacion />
-          </AnimatedOnView>
-          
-          <ScrollInvitation text="Así es el camino" targetId="como-funciona" />
-          
-          <AnimatedOnView>
-            <ComoFunciona />
           </AnimatedOnView>
           
           <SectionDivider variant="gradient" className="my-6" />
