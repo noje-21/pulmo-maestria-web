@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback, memo } from "react";
+import { useState, useRef, useCallback, useEffect, memo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Section } from "@/components/common/Section";
 import { Play, X, MapPin, Stethoscope, ArrowRight, Users, Globe, Heart } from "lucide-react";
@@ -74,11 +74,31 @@ const VideoCard = memo(function VideoCard({
   onPlay: (t: VideoTestimonio) => void;
 }) {
   const [ready, setReady] = useState(false);
+  // Only start loading (preload="metadata") once card enters viewport
+  const [inView, setInView] = useState(false);
   const thumbRef = useRef<HTMLVideoElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const isFeatured = testimonio.featured;
+
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setInView(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: "150px" }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   return (
     <motion.article
+      ref={containerRef}
       initial={{ opacity: 0, y: 28 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-40px" }}
@@ -110,21 +130,25 @@ const VideoCard = memo(function VideoCard({
           aria-label={`Reproducir testimonio de ${testimonio.nombre}`}
           onKeyDown={(e) => e.key === "Enter" && onPlay(testimonio)}
         >
-          <video
-            ref={thumbRef}
-            src={testimonio.videoSrc}
-            muted
-            preload="metadata"
-            playsInline
-            onLoadedData={() => setReady(true)}
-            className={cn(
-              "w-full h-full object-cover transition-transform duration-700 group-hover:scale-105",
-              ready ? "opacity-100" : "opacity-0"
-            )}
-          />
-
+          {/* Skeleton shown until video frame is ready */}
           {!ready && (
             <div className="absolute inset-0 bg-gradient-to-br from-muted/60 via-muted/40 to-muted/60 animate-pulse" />
+          )}
+
+          {/* Video only requests metadata once it enters the viewport */}
+          {inView && (
+            <video
+              ref={thumbRef}
+              src={testimonio.videoSrc}
+              muted
+              preload="metadata"
+              playsInline
+              onLoadedData={() => setReady(true)}
+              className={cn(
+                "w-full h-full object-cover transition-transform duration-700 group-hover:scale-105",
+                ready ? "opacity-100" : "opacity-0"
+              )}
+            />
           )}
 
           {/* Overlays */}
