@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronRight, Sparkles, ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -19,6 +19,7 @@ export const CompactModuleView = ({
   onCollapseSound 
 }: CompactModuleViewProps) => {
   const [selectedModuleId, setSelectedModuleId] = useState<string | null>(null);
+  const detailPanelRef = useRef<HTMLDivElement>(null);
   
   const selectedModule = modulos.find(m => m.id === selectedModuleId);
   const selectedIndex = modulos.findIndex(m => m.id === selectedModuleId);
@@ -32,18 +33,54 @@ export const CompactModuleView = ({
     return acc;
   }, {} as Record<string, Modulo[]>);
 
-  const handleModuleClick = (moduleId: string) => {
+  const handleModuleClick = useCallback((moduleId: string) => {
     if (selectedModuleId === moduleId) {
       onCollapseSound?.();
       setSelectedModuleId(null);
     } else {
       onExpandSound?.();
       setSelectedModuleId(moduleId);
+      // Auto-scroll to detail panel after animation starts
+      requestAnimationFrame(() => {
+        setTimeout(() => {
+          detailPanelRef.current?.scrollIntoView({
+            behavior: "smooth",
+            block: "nearest",
+          });
+        }, 80);
+      });
     }
-  };
+  }, [selectedModuleId, onExpandSound, onCollapseSound]);
 
   return (
     <div className="space-y-6">
+      {/* Selected module detail panel — appears at top for easy access on mobile */}
+      <AnimatePresence mode="wait">
+        {selectedModule && (
+          <motion.div
+            ref={detailPanelRef}
+            key={selectedModule.id}
+            initial={{ opacity: 0, y: -12 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ 
+              duration: 0.28, 
+              ease: [0.25, 0.46, 0.45, 0.94]
+            }}
+          >
+            <ModuleDetailPanel 
+              modulo={selectedModule} 
+              index={selectedIndex}
+              totalModules={modulos.length}
+              onClose={() => {
+                onCollapseSound?.();
+                setSelectedModuleId(null);
+              }}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Chips grid by phase */}
       {Object.entries(modulesByPhase).map(([phaseKey, phaseModulos]) => {
         const phase = progressionPhases[phaseKey];
@@ -93,33 +130,6 @@ export const CompactModuleView = ({
           </motion.div>
         );
       })}
-
-      {/* Selected module detail panel */}
-      <AnimatePresence mode="wait">
-        {selectedModule && (
-          <motion.div
-            key={selectedModule.id}
-            initial={{ opacity: 0, height: 0, y: 20 }}
-            animate={{ opacity: 1, height: "auto", y: 0 }}
-            exit={{ opacity: 0, height: 0, y: 10 }}
-            transition={{ 
-              duration: 0.35, 
-              ease: [0.25, 0.46, 0.45, 0.94]
-            }}
-            className="overflow-hidden"
-          >
-            <ModuleDetailPanel 
-              modulo={selectedModule} 
-              index={selectedIndex}
-              totalModules={modulos.length}
-              onClose={() => {
-                onCollapseSound?.();
-                setSelectedModuleId(null);
-              }}
-            />
-          </motion.div>
-        )}
-      </AnimatePresence>
     </div>
   );
 };
