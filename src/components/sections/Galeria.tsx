@@ -330,7 +330,7 @@ const Galeria = () => {
                 >
                   {gallery.images.map((image, index) => (
                     <SwiperSlide key={index}>
-                      <GalleryImage
+                      <BlurUpImage
                         src={image.src}
                         alt={image.alt}
                         onClick={() => handleImageClick(gallery, index)}
