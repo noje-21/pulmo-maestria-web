@@ -29,7 +29,7 @@ export const galeriasPorAño: YearGallery[] = [
     subtitle: "Innovación en Circulación Pulmonar",
     description: "Avances en hemodinamia y cateterismo cardiaco derecho",
     hero: gallery3,
-    heroMobile: gallery3Mobile,
+    // heroMobile removed — sizes attribute handles responsive loading
     images: [
       { src: gallery1, alt: "Evaluación Hemodinámica Avanzada", category: "Hemodinamia" },
       { src: gallery12, alt: "Técnicas de Cateterismo Derecho", category: "Procedimientos" },
