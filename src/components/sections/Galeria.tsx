@@ -12,6 +12,7 @@ import "swiper/css/navigation";
 // @ts-ignore
 import "swiper/css/pagination";
 
+// Standard imports (auto-converted to webp by vite-imagetools)
 import gallery1 from "@/assets/secion/maestria1.jpg";
 import gallery2 from "@/assets/secion/maestria2.jpg";
 import gallery3 from "@/assets/secion/maestria3.jpg";
@@ -30,6 +31,11 @@ import gallery33 from "@/assets/secion/maestria33.jpg";
 import gallery34 from "@/assets/secion/maestria34.jpg";
 import gallery35 from "@/assets/secion/maestria35.jpg";
 import gallery36 from "@/assets/secion/maestria36.jpg";
+
+// Mobile-optimized hero images (640px wide)
+import gallery1Mobile from "@/assets/secion/maestria1.jpg?w=640&format=webp&quality=75";
+import gallery2Mobile from "@/assets/secion/maestria2.jpg?w=640&format=webp&quality=75";
+import gallery3Mobile from "@/assets/secion/maestria3.jpg?w=640&format=webp&quality=75";
 
 interface ImageData {
   src: string;
