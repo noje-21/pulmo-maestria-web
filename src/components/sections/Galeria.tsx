@@ -1,6 +1,6 @@
 import { useState, useCallback, memo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Download, ChevronLeft, ChevronRight } from "lucide-react";
+import { X, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Navigation, Pagination } from "swiper/modules";
