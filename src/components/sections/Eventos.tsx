@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Calendar, BookOpen, Stethoscope, Users, Award } from "lucide-react";
@@ -40,7 +41,7 @@ const eventos = [
    }
 ];
 
-export const Eventos = () => {
+export const Eventos = memo(function Eventos() {
   return (
     <section id="eventos" className="py-20 md:py-28 bg-gradient-to-b from-muted/50 to-background relative overflow-hidden">
       <div className="absolute inset-0 bg-grid-pattern opacity-50" />
@@ -151,4 +152,4 @@ export const Eventos = () => {
       </div>
     </section>
   );
-};
+});

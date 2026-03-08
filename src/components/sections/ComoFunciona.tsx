@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Section, SectionHeader } from "@/components/common/Section";
@@ -32,7 +33,7 @@ const pasos = [
   }
 ];
 
-export const ComoFunciona = () => {
+export const ComoFunciona = memo(function ComoFunciona() {
   return (
     <Section id="como-funciona" background="muted" pattern="grid" padding="large">
       <SectionHeader
@@ -96,4 +97,4 @@ export const ComoFunciona = () => {
       </div>
     </Section>
   );
-};
+});

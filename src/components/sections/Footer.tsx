@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useScrollToSection } from "@/hooks/useScrollToSection";
@@ -25,7 +26,7 @@ const socialLinks = [
   { icon: Instagram, href: "https://instagram.com/magisterenhipertensionpulmonar", label: "Instagram" }
 ];
 
-export const Footer = () => {
+export const Footer = memo(function Footer() {
   const scrollToSection = useScrollToSection();
 
   return (
@@ -210,4 +211,4 @@ export const Footer = () => {
       </div>
     </footer>
   );
-};
+});

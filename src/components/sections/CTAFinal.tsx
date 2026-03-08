@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Calendar, MapPin, ExternalLink, Sparkles, CheckCircle, Users, Award } from "lucide-react";
@@ -9,7 +10,7 @@ const benefits = [
   "El conocimiento que tus pacientes merecen",
 ];
 
-export const CTAFinal = () => {
+export const CTAFinal = memo(function CTAFinal() {
   const scrollToContact = () => {
     document.getElementById("contacto")?.scrollIntoView({
       behavior: "smooth",
@@ -160,4 +161,4 @@ export const CTAFinal = () => {
       </div>
     </section>
   );
-};
+});
