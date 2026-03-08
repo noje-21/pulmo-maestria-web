@@ -14,9 +14,16 @@ export default defineConfig(({ mode }) => ({
     react(),
     imagetools({
       defaultDirectives: (url) => {
-        if (url.searchParams.has("format")) return new URLSearchParams();
-        // Auto-convert imported jpg/png to webp
-        if (/\.(jpe?g|png)$/i.test(url.pathname)) {
+        // Preset: ?responsive → generates srcset with 3 widths
+        if (url.searchParams.has("responsive")) {
+          return new URLSearchParams("w=640;1024;1920&format=webp&quality=80&as=srcset");
+        }
+        // Preset: ?mobile → single 640px webp
+        if (url.searchParams.has("mobile")) {
+          return new URLSearchParams("w=640&format=webp&quality=75");
+        }
+        // Auto-convert all jpg/png to webp
+        if (/\.(jpe?g|png)$/i.test(url.pathname) && !url.searchParams.has("format")) {
           return new URLSearchParams({ format: "webp", quality: "80" });
         }
         return new URLSearchParams();

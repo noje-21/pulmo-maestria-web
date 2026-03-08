@@ -12,6 +12,7 @@ import "swiper/css/navigation";
 // @ts-ignore
 import "swiper/css/pagination";
 
+// Standard imports (auto-converted to webp by vite-imagetools)
 import gallery1 from "@/assets/secion/maestria1.jpg";
 import gallery2 from "@/assets/secion/maestria2.jpg";
 import gallery3 from "@/assets/secion/maestria3.jpg";
@@ -31,6 +32,14 @@ import gallery34 from "@/assets/secion/maestria34.jpg";
 import gallery35 from "@/assets/secion/maestria35.jpg";
 import gallery36 from "@/assets/secion/maestria36.jpg";
 
+// Mobile-optimized hero images (640px wide)
+// @ts-ignore - vite-imagetools preset
+import gallery1Mobile from "@/assets/secion/maestria1.jpg?mobile";
+// @ts-ignore - vite-imagetools preset
+import gallery2Mobile from "@/assets/secion/maestria2.jpg?mobile";
+// @ts-ignore - vite-imagetools preset
+import gallery3Mobile from "@/assets/secion/maestria3.jpg?mobile";
+
 interface ImageData {
   src: string;
   alt: string;
@@ -43,6 +52,7 @@ interface YearGallery {
   subtitle: string;
   description: string;
   hero: string;
+  heroMobile?: string;
   images: ImageData[];
 }
 
@@ -53,6 +63,7 @@ const galeriasPorAño: YearGallery[] = [
     subtitle: "Innovación en Circulación Pulmonar",
     description: "Avances en hemodinamia y cateterismo cardiaco derecho",
     hero: gallery3,
+    heroMobile: gallery3Mobile,
     images: [
       { src: gallery1, alt: "Evaluación Hemodinámica Avanzada", category: "Hemodinamia" },
       { src: gallery12, alt: "Técnicas de Cateterismo Derecho", category: "Procedimientos" },
@@ -68,6 +79,7 @@ const galeriasPorAño: YearGallery[] = [
     subtitle: "Consolidación del Conocimiento",
     description: "Diagnóstico y manejo de patologías cardiopulmonares",
     hero: gallery2,
+    heroMobile: gallery2Mobile,
     images: [
       { src: gallery2, alt: "Monitorización Cardiorrespiratoria en UCI", category: "Cuidados Críticos" },
       { src: gallery22, alt: "Ecocardiografía Transesofágica", category: "Imagenología" },
@@ -83,6 +95,7 @@ const galeriasPorAño: YearGallery[] = [
     subtitle: "Bases en Cardiología Avanzada",
     description: "Fundamentos de la circulación pulmonar y hemodinámica",
     hero: gallery1,
+    heroMobile: gallery1Mobile,
     images: [
       { src: gallery3, alt: "Introducción a la Hemodinamia", category: "Fundamentos" },
       { src: gallery32, alt: "Anatomía y Fisiología del Corazón Derecho", category: "Bases Anatómicas" },
@@ -122,6 +135,7 @@ const GalleryImage = memo(function GalleryImage({
         alt={alt}
         loading="lazy"
         decoding="async"
+        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
         className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
         draggable={false}
       />
@@ -197,13 +211,19 @@ const Galeria = () => {
             >
               {/* Hero banner — CSS Ken Burns via animation class, no JS */}
               <div className="relative h-[280px] sm:h-[380px] md:h-[480px] rounded-3xl overflow-hidden mb-10 group">
-                <img
-                  src={gallery.hero}
-                  alt={`Edición ${gallery.year}`}
-                  className="w-full h-full object-cover transition-transform duration-[8000ms] ease-out group-hover:scale-105"
-                  loading="lazy"
-                  decoding="async"
-                />
+                <picture>
+                  {gallery.heroMobile && (
+                    <source media="(max-width: 640px)" srcSet={gallery.heroMobile} type="image/webp" />
+                  )}
+                  <img
+                    src={gallery.hero}
+                    alt={`Edición ${gallery.year}`}
+                    className="w-full h-full object-cover transition-transform duration-[8000ms] ease-out group-hover:scale-105"
+                    loading="lazy"
+                    decoding="async"
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 1200px"
+                  />
+                </picture>
                 <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent" />
 
                 <div className="absolute inset-0 flex flex-col items-center justify-center text-white p-4 sm:p-6 md:p-8">

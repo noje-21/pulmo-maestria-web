@@ -110,6 +110,7 @@ const ExpertoCard = memo(function ExpertoCard({
               alt={experto.nombre}
               loading="lazy"
               decoding="async"
+              sizes="(max-width: 768px) 96px, 112px"
               className="relative w-24 h-24 md:w-28 md:h-28 object-cover rounded-full border-3 border-border shadow-md group-hover:scale-105 transition-transform duration-300"
             />
           </div>
@@ -180,6 +181,7 @@ export const Expertos = () => {
                       className="relative w-36 h-36 md:w-44 md:h-44 object-cover rounded-2xl border-4 border-background shadow-xl"
                       loading="lazy"
                       decoding="async"
+                      sizes="(max-width: 768px) 144px, 176px"
                     />
                     <div className="absolute -bottom-2 -right-2 bg-accent text-accent-foreground p-2 rounded-xl shadow-lg">
                       <GraduationCap className="w-5 h-5" />
