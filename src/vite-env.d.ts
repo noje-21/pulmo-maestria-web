@@ -1,2 +1,11 @@
 /// <reference types="vite/client" />
-/// <reference types="vite-imagetools/client" />
+
+// vite-imagetools presets
+declare module "*?responsive" {
+  const srcset: string;
+  export default srcset;
+}
+declare module "*?mobile" {
+  const src: string;
+  export default src;
+}

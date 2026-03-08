@@ -33,9 +33,12 @@ import gallery35 from "@/assets/secion/maestria35.jpg";
 import gallery36 from "@/assets/secion/maestria36.jpg";
 
 // Mobile-optimized hero images (640px wide)
-import gallery1Mobile from "@/assets/secion/maestria1.jpg?w=640&format=webp&quality=75";
-import gallery2Mobile from "@/assets/secion/maestria2.jpg?w=640&format=webp&quality=75";
-import gallery3Mobile from "@/assets/secion/maestria3.jpg?w=640&format=webp&quality=75";
+// @ts-ignore - vite-imagetools preset
+import gallery1Mobile from "@/assets/secion/maestria1.jpg?mobile";
+// @ts-ignore - vite-imagetools preset
+import gallery2Mobile from "@/assets/secion/maestria2.jpg?mobile";
+// @ts-ignore - vite-imagetools preset
+import gallery3Mobile from "@/assets/secion/maestria3.jpg?mobile";
 
 interface ImageData {
   src: string;
