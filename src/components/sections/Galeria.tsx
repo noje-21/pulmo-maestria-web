@@ -324,16 +324,7 @@ const Galeria = () => {
               </div>
 
               {/* Controls top-right */}
-              <div className="absolute top-2 sm:top-4 right-2 sm:right-4 flex gap-2">
-                <Button
-                  onClick={handleDownload}
-                  size="icon"
-                  variant="secondary"
-                  className="rounded-full bg-background/95 backdrop-blur-md hover:bg-primary hover:text-primary-foreground transition-all duration-200 shadow-xl w-10 h-10 sm:w-12 sm:h-12"
-                  aria-label="Descargar imagen"
-                >
-                  <Download className="w-4 h-4 sm:w-5 sm:h-5" />
-                </Button>
+              <div className="absolute top-2 sm:top-4 right-2 sm:right-4">
                 <Button
                   onClick={handleClose}
                   size="icon"
