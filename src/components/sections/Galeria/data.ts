@@ -61,7 +61,7 @@ export const galeriasPorAño: YearGallery[] = [
     subtitle: "Bases en Cardiología Avanzada",
     description: "Fundamentos de la circulación pulmonar y hemodinámica",
     hero: gallery1,
-    heroMobile: gallery1Mobile,
+    // heroMobile removed — sizes attribute handles responsive loading
     images: [
       { src: gallery3, alt: "Introducción a la Hemodinamia", category: "Fundamentos" },
       { src: gallery32, alt: "Anatomía y Fisiología del Corazón Derecho", category: "Bases Anatómicas" },
