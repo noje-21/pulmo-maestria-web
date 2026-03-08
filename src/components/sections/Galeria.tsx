@@ -127,7 +127,7 @@ const BlurUpImage = memo(function BlurUpImage({
 }) {
   const [loaded, setLoaded] = useState(false);
   const [blurUrl, setBlurUrl] = useState<string | null>(null);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  // canvasRef not needed — canvas created inline in effect
 
   // Generate a tiny blurred placeholder from a downscaled version
   useEffect(() => {
