@@ -52,6 +52,7 @@ interface YearGallery {
   subtitle: string;
   description: string;
   hero: string;
+  heroMobile?: string;
   images: ImageData[];
 }
 
