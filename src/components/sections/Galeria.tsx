@@ -63,6 +63,7 @@ const galeriasPorAño: YearGallery[] = [
     subtitle: "Innovación en Circulación Pulmonar",
     description: "Avances en hemodinamia y cateterismo cardiaco derecho",
     hero: gallery3,
+    heroMobile: gallery3Mobile,
     images: [
       { src: gallery1, alt: "Evaluación Hemodinámica Avanzada", category: "Hemodinamia" },
       { src: gallery12, alt: "Técnicas de Cateterismo Derecho", category: "Procedimientos" },
@@ -78,6 +79,7 @@ const galeriasPorAño: YearGallery[] = [
     subtitle: "Consolidación del Conocimiento",
     description: "Diagnóstico y manejo de patologías cardiopulmonares",
     hero: gallery2,
+    heroMobile: gallery2Mobile,
     images: [
       { src: gallery2, alt: "Monitorización Cardiorrespiratoria en UCI", category: "Cuidados Críticos" },
       { src: gallery22, alt: "Ecocardiografía Transesofágica", category: "Imagenología" },
@@ -93,6 +95,7 @@ const galeriasPorAño: YearGallery[] = [
     subtitle: "Bases en Cardiología Avanzada",
     description: "Fundamentos de la circulación pulmonar y hemodinámica",
     hero: gallery1,
+    heroMobile: gallery1Mobile,
     images: [
       { src: gallery3, alt: "Introducción a la Hemodinamia", category: "Fundamentos" },
       { src: gallery32, alt: "Anatomía y Fisiología del Corazón Derecho", category: "Bases Anatómicas" },
