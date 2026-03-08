@@ -138,6 +138,19 @@ export const Maestria = () => {
                 <p className="text-sm text-muted-foreground leading-relaxed">
                   {feature.description}
                 </p>
+                {'expandable' in feature && feature.expandable && (
+                  <ul className="mt-3 space-y-1.5 border-t border-border pt-3">
+                    {instituciones.map((inst, i) => (
+                      <li key={i} className="flex items-start gap-2 text-sm">
+                        <CheckCircle className="w-4 h-4 text-accent shrink-0 mt-0.5" />
+                        <span>
+                          <span className="font-medium text-foreground">{inst.nombre}</span>
+                          <span className="text-muted-foreground"> — {inst.rol}</span>
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </CardContent>
             </Card>
           ))}
