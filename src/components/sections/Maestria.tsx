@@ -3,11 +3,18 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Document, Page, pdfjs } from "react-pdf";
-import { BookOpen, MapPin, Calendar, Play, ChevronLeft, ChevronRight, ExternalLink, Building } from "lucide-react";
+import { BookOpen, MapPin, Calendar, Play, ChevronLeft, ChevronRight, ExternalLink, Building, CheckCircle } from "lucide-react";
 import "react-pdf/dist/Page/AnnotationLayer.css";
 import "react-pdf/dist/Page/TextLayer.css";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
+
+const instituciones = [
+  { nombre: "Centro Gallego de Buenos Aires", rol: "Sede principal del programa" },
+  { nombre: "Sanatorio Trinidad de Quilmes", rol: "Centro de práctica clínica" },
+  { nombre: "Hospital María Ferrer", rol: "Referente en enfermedades respiratorias" },
+  { nombre: "Red BASA", rol: "Red de instituciones de salud" }
+];
 
 const features = [
   {
@@ -24,9 +31,10 @@ const features = [
   },
   {
     icon: MapPin,
-    title: "Ubicación",
+    title: "Ubicación e Instituciones",
     description: "Buenos Aires, Argentina. Sede: Centro Gallego de Buenos Aires, en el corazón de la ciudad.",
-    color: "primary"
+    color: "primary",
+    expandable: true
   },
   {
     icon: Building,
