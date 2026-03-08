@@ -10,12 +10,8 @@ declare module "*.png" {
   export default src;
 }
 
-// vite-imagetools: multi-resolution srcset imports
-declare module "*&as=srcset" {
-  const srcset: string;
-  export default srcset;
-}
-declare module "*?as=srcset" {
-  const srcset: string;
-  export default srcset;
+// vite-imagetools: parameterized image imports (srcset, resize, format)
+declare module "*?*" {
+  const src: string;
+  export default src;
 }
