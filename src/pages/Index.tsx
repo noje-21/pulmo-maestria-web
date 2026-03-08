@@ -16,8 +16,6 @@ const EjesFormacion = lazy(() => import("@/components/sections/EjesFormacion").t
 const Expertos = lazy(() => import("@/components/sections/Expertos").then(m => ({ default: m.Expertos })));
 const Eventos = lazy(() => import("@/components/sections/Eventos").then(m => ({ default: m.Eventos })));
 const Testimonios = lazy(() => import("@/components/sections/Testimonios").then(m => ({ default: m.Testimonios })));
-
-
 const Galeria = lazy(() => import("@/components/sections/Galeria"));
 const CTAFinal = lazy(() => import("@/components/sections/CTAFinal").then(m => ({ default: m.CTAFinal })));
 const Contacto = lazy(() => import("@/components/sections/Contacto").then(m => ({ default: m.Contacto })));
@@ -66,10 +64,6 @@ const Index = () => {
           
           <AnimatedOnView>
             <Testimonios />
-          </AnimatedOnView>
-          
-          <AnimatedOnView>
-            <InstitucionesColaboradoras />
           </AnimatedOnView>
 
           <AnimatedOnView>
