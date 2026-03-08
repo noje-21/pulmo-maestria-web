@@ -25,7 +25,7 @@ const socialLinks = [
   { icon: Instagram, href: "https://instagram.com/magisterenhipertensionpulmonar", label: "Instagram" }
 ];
 
-export const Footer = () => {
+export const Footer = memo(function Footer() {
   const scrollToSection = useScrollToSection();
 
   return (
