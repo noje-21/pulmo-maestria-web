@@ -17,13 +17,8 @@ import gallery34 from "@/assets/secion/maestria34.jpg";
 import gallery35 from "@/assets/secion/maestria35.jpg";
 import gallery36 from "@/assets/secion/maestria36.jpg";
 
-// Mobile-optimized hero images (640px wide)
-// @ts-ignore - vite-imagetools preset
-import gallery1Mobile from "@/assets/secion/maestria1.jpg?mobile";
-// @ts-ignore - vite-imagetools preset
-import gallery2Mobile from "@/assets/secion/maestria2.jpg?mobile";
-// @ts-ignore - vite-imagetools preset
-import gallery3Mobile from "@/assets/secion/maestria3.jpg?mobile";
+// Hero images are auto-converted to webp; same source used for all viewports
+// The <picture> element in GalleryYearSection handles responsive sizing via sizes attribute
 
 import type { YearGallery } from "./types";
 
@@ -34,7 +29,7 @@ export const galeriasPorAño: YearGallery[] = [
     subtitle: "Innovación en Circulación Pulmonar",
     description: "Avances en hemodinamia y cateterismo cardiaco derecho",
     hero: gallery3,
-    heroMobile: gallery3Mobile,
+    // heroMobile removed — sizes attribute handles responsive loading
     images: [
       { src: gallery1, alt: "Evaluación Hemodinámica Avanzada", category: "Hemodinamia" },
       { src: gallery12, alt: "Técnicas de Cateterismo Derecho", category: "Procedimientos" },
@@ -50,7 +45,7 @@ export const galeriasPorAño: YearGallery[] = [
     subtitle: "Consolidación del Conocimiento",
     description: "Diagnóstico y manejo de patologías cardiopulmonares",
     hero: gallery2,
-    heroMobile: gallery2Mobile,
+    // heroMobile removed — sizes attribute handles responsive loading
     images: [
       { src: gallery2, alt: "Monitorización Cardiorrespiratoria en UCI", category: "Cuidados Críticos" },
       { src: gallery22, alt: "Ecocardiografía Transesofágica", category: "Imagenología" },
@@ -66,7 +61,7 @@ export const galeriasPorAño: YearGallery[] = [
     subtitle: "Bases en Cardiología Avanzada",
     description: "Fundamentos de la circulación pulmonar y hemodinámica",
     hero: gallery1,
-    heroMobile: gallery1Mobile,
+    // heroMobile removed — sizes attribute handles responsive loading
     images: [
       { src: gallery3, alt: "Introducción a la Hemodinamia", category: "Fundamentos" },
       { src: gallery32, alt: "Anatomía y Fisiología del Corazón Derecho", category: "Bases Anatómicas" },
