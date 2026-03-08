@@ -45,7 +45,7 @@ export const galeriasPorAño: YearGallery[] = [
     subtitle: "Consolidación del Conocimiento",
     description: "Diagnóstico y manejo de patologías cardiopulmonares",
     hero: gallery2,
-    heroMobile: gallery2Mobile,
+    // heroMobile removed — sizes attribute handles responsive loading
     images: [
       { src: gallery2, alt: "Monitorización Cardiorrespiratoria en UCI", category: "Cuidados Críticos" },
       { src: gallery22, alt: "Ecocardiografía Transesofágica", category: "Imagenología" },
