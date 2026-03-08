@@ -27,7 +27,7 @@ const features = [
   {
     icon: MapPin,
     title: "Ubicación e Instituciones",
-    description: "Buenos Aires, Argentina. Sede: Centro Gallego de Buenos Aires, en el corazón de la ciudad.",
+    description: "Buenos Aires, Argentina. Sede: ",
     color: "primary",
     expandable: true
   },
