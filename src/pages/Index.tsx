@@ -68,10 +68,6 @@ const Index = () => {
           </AnimatedOnView>
           
           <AnimatedOnView>
-            <QuienesSomos />
-          </AnimatedOnView>
-          
-          <AnimatedOnView>
             <Galeria />
           </AnimatedOnView>
           
