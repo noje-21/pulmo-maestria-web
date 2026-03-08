@@ -3,11 +3,18 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Document, Page, pdfjs } from "react-pdf";
-import { BookOpen, MapPin, Calendar, Play, ChevronLeft, ChevronRight, ExternalLink, Building } from "lucide-react";
+import { BookOpen, MapPin, Calendar, Play, ChevronLeft, ChevronRight, ExternalLink, Building, CheckCircle } from "lucide-react";
 import "react-pdf/dist/Page/AnnotationLayer.css";
 import "react-pdf/dist/Page/TextLayer.css";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
+
+const instituciones = [
+  { nombre: "Centro Gallego de Buenos Aires", rol: "Sede principal del programa" },
+  { nombre: "Sanatorio Trinidad de Quilmes", rol: "Centro de práctica clínica" },
+  { nombre: "Hospital María Ferrer", rol: "Referente en enfermedades respiratorias" },
+  { nombre: "Red BASA", rol: "Red de instituciones de salud" }
+];
 
 const features = [
   {
@@ -24,9 +31,10 @@ const features = [
   },
   {
     icon: MapPin,
-    title: "Ubicación",
+    title: "Ubicación e Instituciones",
     description: "Buenos Aires, Argentina. Sede: Centro Gallego de Buenos Aires, en el corazón de la ciudad.",
-    color: "primary"
+    color: "primary",
+    expandable: true
   },
   {
     icon: Building,
@@ -130,6 +138,19 @@ export const Maestria = () => {
                 <p className="text-sm text-muted-foreground leading-relaxed">
                   {feature.description}
                 </p>
+                {'expandable' in feature && feature.expandable && (
+                  <ul className="mt-3 space-y-1.5 border-t border-border pt-3">
+                    {instituciones.map((inst, i) => (
+                      <li key={i} className="flex items-start gap-2 text-sm">
+                        <CheckCircle className="w-4 h-4 text-accent shrink-0 mt-0.5" />
+                        <span>
+                          <span className="font-medium text-foreground">{inst.nombre}</span>
+                          <span className="text-muted-foreground"> — {inst.rol}</span>
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </CardContent>
             </Card>
           ))}
