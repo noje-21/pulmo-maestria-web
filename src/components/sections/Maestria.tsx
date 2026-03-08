@@ -86,7 +86,7 @@ export const Maestria = memo(function Maestria() {
                   {feature.title}
                 </h3>
                 <p className="text-sm text-muted-foreground leading-relaxed">
-                  {feature.description}
+                  Buenos Aires, Argentina. Sede: 
                 </p>
                 {'expandable' in feature && feature.expandable && (
                   <ul className="mt-3 space-y-1.5 border-t border-border pt-3">
