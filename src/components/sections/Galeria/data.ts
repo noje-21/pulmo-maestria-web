@@ -17,13 +17,8 @@ import gallery34 from "@/assets/secion/maestria34.jpg";
 import gallery35 from "@/assets/secion/maestria35.jpg";
 import gallery36 from "@/assets/secion/maestria36.jpg";
 
-// Mobile-optimized hero images (640px wide)
-// @ts-ignore - vite-imagetools preset
-import gallery1Mobile from "@/assets/secion/maestria1.jpg?mobile";
-// @ts-ignore - vite-imagetools preset
-import gallery2Mobile from "@/assets/secion/maestria2.jpg?mobile";
-// @ts-ignore - vite-imagetools preset
-import gallery3Mobile from "@/assets/secion/maestria3.jpg?mobile";
+// Hero images are auto-converted to webp; same source used for all viewports
+// The <picture> element in GalleryYearSection handles responsive sizing via sizes attribute
 
 import type { YearGallery } from "./types";
 
