@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { motion } from "framer-motion";
 import { Section, SectionHeader } from "@/components/common/Section";
 import { 
@@ -67,7 +68,7 @@ const cardVariants = {
   }
 };
 
-export const Diferenciales = () => {
+export const Diferenciales = memo(function Diferenciales() {
   return (
     <Section id="diferenciales" background="gradient" pattern="dots" padding="large">
       <SectionHeader
@@ -116,4 +117,4 @@ export const Diferenciales = () => {
       </motion.div>
     </Section>
   );
-};
+});

@@ -1,17 +1,18 @@
+import { memo } from "react";
 import { motion } from "framer-motion";
-import { ChevronDown, Calendar, MapPin, Award, Users, Clock, Globe, Sparkles } from "lucide-react";
+import { ChevronDown, Calendar, MapPin, Award, Users, Clock, Globe } from "lucide-react";
 
-export const Hero = () => {
+const stats = [
+  { value: "9+", label: "Expertos Internacionales", icon: Users },
+  { value: "12", label: "Días Presenciales", icon: Clock },
+  { value: "+", label: "Campus Virtual", icon: Award },
+  { value: "5+", label: "Países Participantes", icon: Globe },
+];
+
+export const Hero = memo(function Hero() {
   const scrollToSection = (id: string) => {
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
   };
-
-  const stats = [
-    { value: "9+", label: "Expertos Internacionales", icon: Users },
-    { value: "12", label: "Días Presenciales", icon: Clock },
-    { value: "+", label: "Campus Virtual", icon: Award },
-    { value: "5+", label: "Países Participantes", icon: Globe },
-  ];
 
   return (
     <section
@@ -160,4 +161,4 @@ export const Hero = () => {
       </div>
     </section>
   );
-};
+});

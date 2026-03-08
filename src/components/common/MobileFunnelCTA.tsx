@@ -9,13 +9,18 @@ export const MobileFunnelCTA = () => {
   const [showPulse, setShowPulse] = useState(false);
 
   useEffect(() => {
+    let ticking = false;
     const handleScroll = () => {
-      // Show after scrolling past hero (500px)
-      if (window.scrollY > 500 && !isDismissed) {
-        setIsVisible(true);
-      } else if (window.scrollY <= 500) {
-        setIsVisible(false);
-      }
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        if (window.scrollY > 500 && !isDismissed) {
+          setIsVisible(true);
+        } else if (window.scrollY <= 500) {
+          setIsVisible(false);
+        }
+        ticking = false;
+      });
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });

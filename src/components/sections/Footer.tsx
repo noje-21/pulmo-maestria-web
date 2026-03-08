@@ -211,4 +211,4 @@ export const Footer = memo(function Footer() {
       </div>
     </footer>
   );
-};
+});

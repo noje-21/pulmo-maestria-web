@@ -1,315 +1,67 @@
+import { lazy, Suspense } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { Routes, Route, useLocation } from "react-router-dom";
-import { motion } from "framer-motion";
+import { Routes, Route } from "react-router-dom";
 import { ProtectedRoute } from "@/components/common/ProtectedRoute";
 import ScrollToTop from "@/components/common/ScrollToTop";
-import useScrollDirection from "@/hooks/useScrollDirection";
 import Index from "./pages/Index";
-import Auth from "./pages/Auth";
-import Register from "./pages/Register";
-import Profile from "./pages/Profile";
-import Admin from "./pages/Admin";
-import AdminContactos from "./pages/AdminContactos";
-import AdminContent from "./pages/AdminContent";
-import AdminForo from "./pages/AdminForo";
-import AdminNovedades from "./pages/AdminNovedades";
-import AdminMedia from "./pages/AdminMedia";
-import AdminDashboard from "./pages/AdminDashboard";
-import Foro from "./pages/Foro";
-import ForoDetail from "./pages/ForoDetail";
-import ForoStats from "./pages/ForoStats";
-import Novedades from "./pages/Novedades";
-import NovedadDetail from "./pages/NovedadDetail";
-import NotFound from "./pages/NotFound";
+
+// Lazy-loaded pages — only Index is eagerly loaded (landing page)
+const Auth = lazy(() => import("./pages/Auth"));
+const Register = lazy(() => import("./pages/Register"));
+const Profile = lazy(() => import("./pages/Profile"));
+const Admin = lazy(() => import("./pages/Admin"));
+const AdminContactos = lazy(() => import("./pages/AdminContactos"));
+const AdminContent = lazy(() => import("./pages/AdminContent"));
+const AdminForo = lazy(() => import("./pages/AdminForo"));
+const AdminNovedades = lazy(() => import("./pages/AdminNovedades"));
+const AdminMedia = lazy(() => import("./pages/AdminMedia"));
+const AdminDashboard = lazy(() => import("./pages/AdminDashboard"));
+const Foro = lazy(() => import("./pages/Foro"));
+const ForoDetail = lazy(() => import("./pages/ForoDetail"));
+const ForoStats = lazy(() => import("./pages/ForoStats"));
+const Novedades = lazy(() => import("./pages/Novedades"));
+const NovedadDetail = lazy(() => import("./pages/NovedadDetail"));
+const NotFound = lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient();
 
-const App = () => {
-  const location = useLocation();
-  const direction = useScrollDirection();
+const PageFallback = () => (
+  <div className="min-h-screen flex items-center justify-center bg-background">
+    <div className="w-8 h-8 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
+  </div>
+);
 
+const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <Toaster />
         <Sonner />
         <ScrollToTop />
-        <Routes location={location} key={location.pathname}>
-          <Route 
-            path="/" 
-            element={
-              <motion.div
-                key="home"
-                initial={{ opacity: 0, y: direction > 0 ? 50 : -50, scale: 0.995 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: direction > 0 ? -50 : 50, scale: 0.995 }}
-                transition={{ duration: 0.45 }}
-                className="min-h-screen"
-              >
-                <Index />
-              </motion.div>
-            } 
-          />
-          <Route 
-            path="/auth" 
-            element={
-              <motion.div
-                key="auth"
-                initial={{ opacity: 0, y: direction > 0 ? 50 : -50, scale: 0.995 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: direction > 0 ? -50 : 50, scale: 0.995 }}
-                transition={{ duration: 0.45 }}
-                className="min-h-screen"
-              >
-                <Auth />
-              </motion.div>
-            } 
-          />
-          <Route 
-            path="/register" 
-            element={
-              <motion.div
-                key="register"
-                initial={{ opacity: 0, y: direction > 0 ? 50 : -50, scale: 0.995 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: direction > 0 ? -50 : 50, scale: 0.995 }}
-                transition={{ duration: 0.45 }}
-                className="min-h-screen"
-              >
-                <Register />
-              </motion.div>
-            } 
-          />
-          <Route 
-            path="/profile" 
-            element={
-              <motion.div
-                key="profile"
-                initial={{ opacity: 0, y: direction > 0 ? 50 : -50, scale: 0.995 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: direction > 0 ? -50 : 50, scale: 0.995 }}
-                transition={{ duration: 0.45 }}
-                className="min-h-screen"
-              >
-                <ProtectedRoute requireAuth={true}>
-                  <Profile />
-                </ProtectedRoute>
-              </motion.div>
-            } 
-          />
-          <Route 
-            path="/admin" 
-            element={
-              <motion.div
-                key="admin"
-                initial={{ opacity: 0, y: direction > 0 ? 50 : -50, scale: 0.995 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: direction > 0 ? -50 : 50, scale: 0.995 }}
-                transition={{ duration: 0.45 }}
-                className="min-h-screen"
-              >
-                <ProtectedRoute requireAdmin={true}>
-                  <Admin />
-                </ProtectedRoute>
-              </motion.div>
-            } 
-          />
-          <Route 
-            path="/admin/contactos" 
-            element={
-              <motion.div
-                key="admin-contactos"
-                initial={{ opacity: 0, y: direction > 0 ? 50 : -50, scale: 0.995 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: direction > 0 ? -50 : 50, scale: 0.995 }}
-                transition={{ duration: 0.45 }}
-                className="min-h-screen"
-              >
-                <ProtectedRoute requireAdmin={true}>
-                  <AdminContactos />
-                </ProtectedRoute>
-              </motion.div>
-            } 
-          />
-          <Route 
-            path="/admin/content" 
-            element={
-              <motion.div
-                key="admin-content"
-                initial={{ opacity: 0, y: direction > 0 ? 50 : -50, scale: 0.995 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: direction > 0 ? -50 : 50, scale: 0.995 }}
-                transition={{ duration: 0.45 }}
-                className="min-h-screen"
-              >
-                <ProtectedRoute requireAdmin={true}>
-                  <AdminContent />
-                </ProtectedRoute>
-              </motion.div>
-            } 
-          />
-          <Route 
-            path="/admin/stats" 
-            element={
-              <motion.div
-                key="admin-stats"
-                initial={{ opacity: 0, y: direction > 0 ? 50 : -50, scale: 0.995 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: direction > 0 ? -50 : 50, scale: 0.995 }}
-                transition={{ duration: 0.45 }}
-                className="min-h-screen"
-              >
-                <ProtectedRoute requireAdmin={true}>
-                  <AdminDashboard />
-                </ProtectedRoute>
-              </motion.div>
-            } 
-          />
-          <Route 
-            path="/admin/foro"
-            element={
-              <motion.div
-                key="admin-foro"
-                initial={{ opacity: 0, y: direction > 0 ? 50 : -50, scale: 0.995 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: direction > 0 ? -50 : 50, scale: 0.995 }}
-                transition={{ duration: 0.45 }}
-                className="min-h-screen"
-              >
-                <ProtectedRoute requireAdmin={true}>
-                  <AdminForo />
-                </ProtectedRoute>
-              </motion.div>
-            } 
-          />
-          <Route 
-            path="/admin/novedades" 
-            element={
-              <motion.div
-                key="admin-novedades"
-                initial={{ opacity: 0, y: direction > 0 ? 50 : -50, scale: 0.995 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: direction > 0 ? -50 : 50, scale: 0.995 }}
-                transition={{ duration: 0.45 }}
-                className="min-h-screen"
-              >
-                <ProtectedRoute requireAdmin={true}>
-                  <AdminNovedades />
-                </ProtectedRoute>
-              </motion.div>
-            } 
-          />
-          <Route 
-            path="/admin/media" 
-            element={
-              <motion.div
-                key="admin-media"
-                initial={{ opacity: 0, y: direction > 0 ? 50 : -50, scale: 0.995 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: direction > 0 ? -50 : 50, scale: 0.995 }}
-                transition={{ duration: 0.45 }}
-                className="min-h-screen"
-              >
-                <ProtectedRoute requireAdmin={true}>
-                  <AdminMedia />
-                </ProtectedRoute>
-              </motion.div>
-            } 
-          />
-          <Route 
-            path="/foro" 
-            element={
-              <motion.div
-                key="foro"
-                initial={{ opacity: 0, y: direction > 0 ? 50 : -50, scale: 0.995 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: direction > 0 ? -50 : 50, scale: 0.995 }}
-                transition={{ duration: 0.45 }}
-                className="min-h-screen"
-              >
-                <Foro />
-              </motion.div>
-            } 
-          />
-          <Route 
-            path="/foro/:id" 
-            element={
-              <motion.div
-                key="foro-detail"
-                initial={{ opacity: 0, y: direction > 0 ? 50 : -50, scale: 0.995 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: direction > 0 ? -50 : 50, scale: 0.995 }}
-                transition={{ duration: 0.45 }}
-                className="min-h-screen"
-              >
-                <ForoDetail />
-              </motion.div>
-            } 
-          />
-          <Route 
-            path="/foro/stats" 
-            element={
-              <motion.div
-                key="foro-stats"
-                initial={{ opacity: 0, y: direction > 0 ? 50 : -50, scale: 0.995 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: direction > 0 ? -50 : 50, scale: 0.995 }}
-                transition={{ duration: 0.45 }}
-                className="min-h-screen"
-              >
-                <ForoStats />
-              </motion.div>
-            } 
-          />
-          <Route 
-            path="/novedades" 
-            element={
-              <motion.div
-                key="novedades"
-                initial={{ opacity: 0, y: direction > 0 ? 50 : -50, scale: 0.995 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: direction > 0 ? -50 : 50, scale: 0.995 }}
-                transition={{ duration: 0.45 }}
-                className="min-h-screen"
-              >
-                <Novedades />
-              </motion.div>
-            } 
-          />
-          <Route 
-            path="/novedades/:slug" 
-            element={
-              <motion.div
-                key="novedad-detail"
-                initial={{ opacity: 0, y: direction > 0 ? 50 : -50, scale: 0.995 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: direction > 0 ? -50 : 50, scale: 0.995 }}
-                transition={{ duration: 0.45 }}
-                className="min-h-screen"
-              >
-                <NovedadDetail />
-              </motion.div>
-            } 
-          />
-          <Route 
-            path="*" 
-            element={
-              <motion.div
-                key="not-found"
-                initial={{ opacity: 0, y: direction > 0 ? 50 : -50, scale: 0.995 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: direction > 0 ? -50 : 50, scale: 0.995 }}
-                transition={{ duration: 0.45 }}
-                className="min-h-screen"
-              >
-                <NotFound />
-              </motion.div>
-            } 
-          />
-        </Routes>
+        <Suspense fallback={<PageFallback />}>
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/auth" element={<Auth />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/profile" element={<ProtectedRoute requireAuth={true}><Profile /></ProtectedRoute>} />
+            <Route path="/admin" element={<ProtectedRoute requireAdmin={true}><Admin /></ProtectedRoute>} />
+            <Route path="/admin/contactos" element={<ProtectedRoute requireAdmin={true}><AdminContactos /></ProtectedRoute>} />
+            <Route path="/admin/content" element={<ProtectedRoute requireAdmin={true}><AdminContent /></ProtectedRoute>} />
+            <Route path="/admin/stats" element={<ProtectedRoute requireAdmin={true}><AdminDashboard /></ProtectedRoute>} />
+            <Route path="/admin/foro" element={<ProtectedRoute requireAdmin={true}><AdminForo /></ProtectedRoute>} />
+            <Route path="/admin/novedades" element={<ProtectedRoute requireAdmin={true}><AdminNovedades /></ProtectedRoute>} />
+            <Route path="/admin/media" element={<ProtectedRoute requireAdmin={true}><AdminMedia /></ProtectedRoute>} />
+            <Route path="/foro" element={<Foro />} />
+            <Route path="/foro/:id" element={<ForoDetail />} />
+            <Route path="/foro/stats" element={<ForoStats />} />
+            <Route path="/novedades" element={<Novedades />} />
+            <Route path="/novedades/:slug" element={<NovedadDetail />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </Suspense>
       </TooltipProvider>
     </QueryClientProvider>
   );

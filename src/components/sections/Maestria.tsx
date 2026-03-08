@@ -1,13 +1,8 @@
-import { useState, useRef, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { memo } from "react";
+import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Document, Page, pdfjs } from "react-pdf";
-import { BookOpen, MapPin, Calendar, Play, ChevronLeft, ChevronRight, ExternalLink, Building, CheckCircle } from "lucide-react";
-import "react-pdf/dist/Page/AnnotationLayer.css";
-import "react-pdf/dist/Page/TextLayer.css";
-
-pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
+import { BookOpen, MapPin, Calendar, Play, ExternalLink, Building, CheckCircle } from "lucide-react";
 
 const instituciones = [
   { nombre: "Centro Gallego de Buenos Aires", rol: "Sede principal del programa" },
@@ -44,52 +39,7 @@ const features = [
   }
 ];
 
-export const Maestria = () => {
-  const [numPages, setNumPages] = useState<number | null>(null);
-  const [pageNumber, setPageNumber] = useState(1);
-  const [direction, setDirection] = useState<"next" | "prev">("next");
-  const [containerWidth, setContainerWidth] = useState<number>(600);
-  const containerRef = useRef<HTMLDivElement | null>(null);
-
-  useEffect(() => {
-    const el = containerRef.current;
-    if (!el) return;
-    
-    const ro = new ResizeObserver(entries => {
-      for (const entry of entries) {
-        const cr = entry.contentRect;
-        const paddingSubtract = 48;
-        const available = Math.max(280, Math.min(800, Math.floor(cr.width - paddingSubtract)));
-        setContainerWidth(available);
-      }
-    });
-    
-    ro.observe(el);
-    const rect = el.getBoundingClientRect();
-    setContainerWidth(Math.max(280, Math.min(800, Math.floor(rect.width - 48))));
-    
-    return () => ro.disconnect();
-  }, []);
-
-  const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
-    setNumPages(numPages);
-    setPageNumber(1);
-  };
-
-  const nextPage = () => {
-    if (numPages && pageNumber < numPages) {
-      setDirection("next");
-      setPageNumber(prev => prev + 1);
-    }
-  };
-
-  const prevPage = () => {
-    if (pageNumber > 1) {
-      setDirection("prev");
-      setPageNumber(prev => prev - 1);
-    }
-  };
-
+export const Maestria = memo(function Maestria() {
   return (
     <section id="maestria" className="py-20 md:py-28 bg-gradient-to-b from-muted/50 to-background relative overflow-hidden">
       <div className="absolute inset-0 bg-grid-pattern opacity-50" />
@@ -177,7 +127,6 @@ export const Maestria = () => {
                     controls 
                     preload="metadata" 
                     className="w-full h-full min-h-[280px] sm:min-h-[360px] lg:min-h-[420px] object-cover"
-                    poster={undefined}
                   >
                     <source src="/video.mp4" type="video/mp4" />
                     Tu navegador no soporta la reproducción de video.
@@ -213,4 +162,4 @@ export const Maestria = () => {
       </div>
     </section>
   );
-};
+});
