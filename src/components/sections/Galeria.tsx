@@ -164,15 +164,6 @@ const Galeria = () => {
     setSelectedImage(currentYear.images[newIndex]);
   }, [currentImageIndex, currentYear]);
 
-  const handleDownload = useCallback(() => {
-    if (!selectedImage) return;
-    const link = document.createElement("a");
-    link.href = selectedImage.src;
-    link.download = selectedImage.alt || "image.jpg";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  }, [selectedImage]);
 
   return (
     <section id="galeria" className="py-20 px-4 md:px-8 bg-gradient-to-b from-background via-muted/30 to-background">
