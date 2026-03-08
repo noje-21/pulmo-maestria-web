@@ -1,12 +1,15 @@
 import { useState, useCallback, memo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Download, ChevronLeft, ChevronRight } from "lucide-react";
+import { X, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Navigation, Pagination } from "swiper/modules";
 
+// @ts-ignore
 import "swiper/css";
+// @ts-ignore
 import "swiper/css/navigation";
+// @ts-ignore
 import "swiper/css/pagination";
 
 import gallery1 from "@/assets/secion/maestria1.jpg";
@@ -161,15 +164,6 @@ const Galeria = () => {
     setSelectedImage(currentYear.images[newIndex]);
   }, [currentImageIndex, currentYear]);
 
-  const handleDownload = useCallback(() => {
-    if (!selectedImage) return;
-    const link = document.createElement("a");
-    link.href = selectedImage.src;
-    link.download = selectedImage.alt || "image.jpg";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  }, [selectedImage]);
 
   return (
     <section id="galeria" className="py-20 px-4 md:px-8 bg-gradient-to-b from-background via-muted/30 to-background">
@@ -324,16 +318,7 @@ const Galeria = () => {
               </div>
 
               {/* Controls top-right */}
-              <div className="absolute top-2 sm:top-4 right-2 sm:right-4 flex gap-2">
-                <Button
-                  onClick={handleDownload}
-                  size="icon"
-                  variant="secondary"
-                  className="rounded-full bg-background/95 backdrop-blur-md hover:bg-primary hover:text-primary-foreground transition-all duration-200 shadow-xl w-10 h-10 sm:w-12 sm:h-12"
-                  aria-label="Descargar imagen"
-                >
-                  <Download className="w-4 h-4 sm:w-5 sm:h-5" />
-                </Button>
+              <div className="absolute top-2 sm:top-4 right-2 sm:right-4">
                 <Button
                   onClick={handleClose}
                   size="icon"
