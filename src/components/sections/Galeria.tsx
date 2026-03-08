@@ -210,13 +210,19 @@ const Galeria = () => {
             >
               {/* Hero banner — CSS Ken Burns via animation class, no JS */}
               <div className="relative h-[280px] sm:h-[380px] md:h-[480px] rounded-3xl overflow-hidden mb-10 group">
-                <img
-                  src={gallery.hero}
-                  alt={`Edición ${gallery.year}`}
-                  className="w-full h-full object-cover transition-transform duration-[8000ms] ease-out group-hover:scale-105"
-                  loading="lazy"
-                  decoding="async"
-                />
+                <picture>
+                  {gallery.heroMobile && (
+                    <source media="(max-width: 640px)" srcSet={gallery.heroMobile} type="image/webp" />
+                  )}
+                  <img
+                    src={gallery.hero}
+                    alt={`Edición ${gallery.year}`}
+                    className="w-full h-full object-cover transition-transform duration-[8000ms] ease-out group-hover:scale-105"
+                    loading="lazy"
+                    decoding="async"
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 1200px"
+                  />
+                </picture>
                 <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent" />
 
                 <div className="absolute inset-0 flex flex-col items-center justify-center text-white p-4 sm:p-6 md:p-8">
