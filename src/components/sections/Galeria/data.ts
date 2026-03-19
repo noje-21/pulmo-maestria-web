@@ -17,19 +17,43 @@ import gallery34 from "@/assets/secion/maestria34.jpg";
 import gallery35 from "@/assets/secion/maestria35.jpg";
 import gallery36 from "@/assets/secion/maestria36.jpg";
 
-// Hero images are auto-converted to webp; same source used for all viewports
-// The <picture> element in GalleryYearSection handles responsive sizing via sizes attribute
+// 2025 images
+import g2025_1 from "@/assets/secion/maestria_2025_1.jpg";
+import g2025_2 from "@/assets/secion/maestria_2025_2.jpg";
+import g2025_3 from "@/assets/secion/maestria_2025_3.jpg";
+import g2025_4 from "@/assets/secion/maestria_2025_4.jpg";
+import g2025_5 from "@/assets/secion/maestria_2025_5.jpg";
+import g2025_6 from "@/assets/secion/maestria_2025_6.jpg";
+import g2025_7 from "@/assets/secion/maestria_2025_7.jpg";
+import g2025_8 from "@/assets/secion/maestria_2025_8.jpg";
+import g2025_9 from "@/assets/secion/maestria_2025_9.jpg";
 
 import type { YearGallery } from "./types";
 
 export const galeriasPorAño: YearGallery[] = [
+  {
+    year: 2025,
+    title: "Programa Académico 2025",
+    subtitle: "Formación Clínica de Excelencia",
+    description: "Rotaciones hospitalarias, hemodinamia práctica y trabajo en equipo",
+    hero: g2025_6,
+    images: [
+      { src: g2025_1, alt: "Clase Magistral de Factores de Riesgo", category: "Formación Teórica" },
+      { src: g2025_2, alt: "Cateterismo Cardíaco en Sala de Hemodinamia", category: "Procedimientos" },
+      { src: g2025_3, alt: "Ecocardiografía con Strain", category: "Imagenología" },
+      { src: g2025_4, alt: "Simulación con Transductor Ecográfico", category: "Simulación" },
+      { src: g2025_5, alt: "Equipo Docente y Alumnos 2025", category: "Equipo" },
+      { src: g2025_7, alt: "Monitoreo Hemodinámico Invasivo", category: "Hemodinamia" },
+      { src: g2025_8, alt: "Práctica en Sala de Cateterismo", category: "Rotación Hospitalaria" },
+      { src: g2025_9, alt: "Cena de Camaradería del Programa", category: "Vida Académica" },
+    ],
+  },
   {
     year: 2024,
     title: "Programa Académico 2024",
     subtitle: "Innovación en Circulación Pulmonar",
     description: "Avances en hemodinamia y cateterismo cardiaco derecho",
     hero: gallery3,
-    // heroMobile removed — sizes attribute handles responsive loading
     images: [
       { src: gallery1, alt: "Evaluación Hemodinámica Avanzada", category: "Hemodinamia" },
       { src: gallery12, alt: "Técnicas de Cateterismo Derecho", category: "Procedimientos" },
@@ -45,7 +69,6 @@ export const galeriasPorAño: YearGallery[] = [
     subtitle: "Consolidación del Conocimiento",
     description: "Diagnóstico y manejo de patologías cardiopulmonares",
     hero: gallery2,
-    // heroMobile removed — sizes attribute handles responsive loading
     images: [
       { src: gallery2, alt: "Monitorización Cardiorrespiratoria en UCI", category: "Cuidados Críticos" },
       { src: gallery22, alt: "Ecocardiografía Transesofágica", category: "Imagenología" },
@@ -61,7 +84,6 @@ export const galeriasPorAño: YearGallery[] = [
     subtitle: "Bases en Cardiología Avanzada",
     description: "Fundamentos de la circulación pulmonar y hemodinámica",
     hero: gallery1,
-    // heroMobile removed — sizes attribute handles responsive loading
     images: [
       { src: gallery3, alt: "Introducción a la Hemodinamia", category: "Fundamentos" },
       { src: gallery32, alt: "Anatomía y Fisiología del Corazón Derecho", category: "Bases Anatómicas" },
