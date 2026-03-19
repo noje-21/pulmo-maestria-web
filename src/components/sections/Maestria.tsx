@@ -119,18 +119,13 @@ export const Maestria = memo(function Maestria() {
               <div className="flex flex-col lg:flex-row">
                 {/* Video con Autoplay Optimizado */}
                 <div className="lg:w-2/3 relative">
-                  <video 
-                    autoPlay
-                    muted
-                    loop
-                    playsInline
-                    controls 
-                    preload="metadata" 
-                    className="w-full h-full min-h-[280px] sm:min-h-[360px] lg:min-h-[420px] object-cover"
-                  >
-                    <source src="/video.mp4" type="video/mp4" />
-                    Tu navegador no soporta la reproducción de video.
-                  </video>
+                  <iframe
+                    src="https://drive.google.com/file/d/17jhm59KqiS5T-m9xFAGlxCjTegMWg6M2/preview"
+                    title="Video de la Maestría"
+                    className="w-full h-full min-h-[280px] sm:min-h-[360px] lg:min-h-[420px]"
+                    allow="autoplay; fullscreen; picture-in-picture"
+                    allowFullScreen
+                  />
                 </div>
                 
                 {/* Video Info */}
