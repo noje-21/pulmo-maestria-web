@@ -89,11 +89,8 @@ const BlurUpImage = memo(function BlurUpImage({
         draggable={false}
       />
 
-      {/* CSS-only overlay — zero JS cost */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-400 pointer-events-none" />
-      <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-400 pointer-events-none">
-        <p className="text-white font-semibold text-sm line-clamp-2">{alt}</p>
-      </div>
+      {/* CSS-only hover overlay */}
+      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-400 pointer-events-none" />
     </div>
   );
 });
