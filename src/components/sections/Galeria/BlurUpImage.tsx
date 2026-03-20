@@ -83,14 +83,14 @@ const BlurUpImage = memo(function BlurUpImage({
         decoding="async"
         sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
         onLoad={() => setLoaded(true)}
-        className={`w-full h-full object-cover transition-all duration-700 ease-out group-hover:scale-105 ${
+        className={`w-full h-full object-cover transition-all duration-500 ease-out group-hover:scale-110 ${
           loaded ? "opacity-100 blur-0" : "opacity-0 blur-sm"
         }`}
         draggable={false}
       />
 
-      {/* CSS-only hover overlay */}
-      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-400 pointer-events-none" />
+      {/* Hover overlay with subtle vignette */}
+      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/15 transition-colors duration-500 pointer-events-none" />
     </div>
   );
 });
