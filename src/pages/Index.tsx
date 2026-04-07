@@ -17,7 +17,7 @@ const Expertos = lazy(() => import("@/components/sections/Expertos").then(m => (
 const Eventos = lazy(() => import("@/components/sections/Eventos").then(m => ({ default: m.Eventos })));
 const Testimonios = lazy(() => import("@/components/sections/Testimonios").then(m => ({ default: m.Testimonios })));
 const Galeria = lazy(() => import("@/components/sections/Galeria"));
-const FlyersCarousel = lazy(() => import("@/components/sections/FlyersCarousel"));
+
 
 const Contacto = lazy(() => import("@/components/sections/Contacto").then(m => ({ default: m.Contacto })));
 const ScrollInvitation = lazy(() => import("@/components/common/ScrollInvitation").then(m => ({ default: m.ScrollInvitation })));
