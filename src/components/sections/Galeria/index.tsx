@@ -11,7 +11,7 @@ import type { Swiper as SwiperType } from "swiper";
 import BlurUpImage from "./BlurUpImage";
 import GalleryLightbox from "./GalleryLightbox";
 import { galeriasPorAño, getMasterSlides } from "./data";
-import type { ImageData } from "./types";
+import type { ImageData, YearGallery } from "./types";
 
 // @ts-ignore
 import "swiper/css";
@@ -24,7 +24,6 @@ import "swiper/css/pagination";
 const EASE = [0.22, 1, 0.36, 1] as const;
 const SWIPE_THRESHOLD = 50;
 
-/* Fixed card dimensions per breakpoint */
 const CARD_W_MOBILE = 260;
 const CARD_W_SM = 300;
 const CARD_W_MD = 340;
@@ -38,7 +37,7 @@ const getCardHeight = (w: number) =>
 
 /* ── Flyer Showcase Card ── */
 interface FlyerCardProps {
-  gallery: (typeof galeriasPorAño)[0];
+  gallery: YearGallery;
   offset: number;
   onClick: () => void;
   cardWidth: number;
@@ -94,10 +93,8 @@ const FlyerCard = ({ gallery, offset, onClick, cardWidth }: FlyerCardProps) => {
           draggable={false}
         />
 
-        {/* Gradient overlay */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent pointer-events-none" />
 
-        {/* Content */}
         <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-5 pointer-events-none">
           <span className="block text-2xl sm:text-3xl md:text-4xl font-black text-white drop-shadow-lg">
             {gallery.year}
@@ -117,7 +114,6 @@ const FlyerCard = ({ gallery, offset, onClick, cardWidth }: FlyerCardProps) => {
           )}
         </div>
 
-        {/* Active badge */}
         <AnimatePresence>
           {isActive && (
             <motion.div
@@ -151,17 +147,29 @@ const useCardWidth = () => {
   return width;
 };
 
+/* ── Props interface ── */
+interface GaleriaProps {
+  /** Independent gallery data. Defaults to the full collection if not provided. */
+  galleries?: YearGallery[];
+}
+
 /* ── Main Gallery ── */
-const Galeria = () => {
+const Galeria = ({ galleries }: GaleriaProps = {}) => {
+  // Use provided galleries or fall back to default — never share references
+  const data = useMemo(
+    () => (galleries ?? galeriasPorAño).map((g) => ({ ...g, images: [...g.images] })),
+    [galleries]
+  );
+
   const [selectedImage, setSelectedImage] = useState<ImageData | null>(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [activeIndex, setActiveIndex] = useState(0);
   const swiperRef = useRef<SwiperType | null>(null);
   const cardWidth = useCardWidth();
 
-  const activeYear = galeriasPorAño[activeIndex].year;
+  const activeYear = data[activeIndex].year;
 
-  const masterSlides = useMemo(() => getMasterSlides(galeriasPorAño), []);
+  const masterSlides = useMemo(() => getMasterSlides(data), [data]);
 
   const imageSlides = useMemo(
     () =>
@@ -175,7 +183,7 @@ const Galeria = () => {
   const { slideYearMap, yearToSlideIndex } = useMemo(() => {
     const map: number[] = [];
     const yearIdx: Record<number, number> = {};
-    let cur = galeriasPorAño[0].year;
+    let cur = data[0].year;
     masterSlides.forEach((slide, i) => {
       if (slide.type === "separator") {
         cur = slide.year;
@@ -184,41 +192,39 @@ const Galeria = () => {
       map[i] = cur;
     });
     return { slideYearMap: map, yearToSlideIndex: yearIdx };
-  }, [masterSlides]);
+  }, [masterSlides, data]);
 
-  const activeGallery = galeriasPorAño[activeIndex];
+  const activeGallery = data[activeIndex];
 
   /* ── Navigation ── */
   const goTo = useCallback(
     (idx: number) => {
       const clamped =
         idx < 0
-          ? galeriasPorAño.length - 1
-          : idx >= galeriasPorAño.length
+          ? data.length - 1
+          : idx >= data.length
           ? 0
           : idx;
       setActiveIndex(clamped);
-      // Sync image carousel
-      const year = galeriasPorAño[clamped].year;
+      const year = data[clamped].year;
       const slideIdx = yearToSlideIndex[year];
       if (slideIdx !== undefined && swiperRef.current) {
         swiperRef.current.slideToLoop(slideIdx, 600);
       }
     },
-    [yearToSlideIndex]
+    [yearToSlideIndex, data]
   );
 
   const goPrev = useCallback(() => goTo(activeIndex - 1), [activeIndex, goTo]);
   const goNext = useCallback(() => goTo(activeIndex + 1), [activeIndex, goTo]);
 
-  // Autoplay: rotate flyers every 6 seconds, pause on hover
   const [isPaused, setIsPaused] = useState(false);
   useEffect(() => {
     if (isPaused) return;
     const timer = setInterval(() => {
       setActiveIndex((prev) => {
-        const next = (prev + 1) % galeriasPorAño.length;
-        const year = galeriasPorAño[next].year;
+        const next = (prev + 1) % data.length;
+        const year = data[next].year;
         const slideIdx = yearToSlideIndex[year];
         if (slideIdx !== undefined && swiperRef.current) {
           swiperRef.current.slideToLoop(slideIdx, 600);
@@ -227,9 +233,8 @@ const Galeria = () => {
       });
     }, 6000);
     return () => clearInterval(timer);
-  }, [isPaused, yearToSlideIndex]);
+  }, [isPaused, yearToSlideIndex, data]);
 
-  // Swipe support for flyer showcase
   const handlePan = useCallback(
     (_: any, info: PanInfo) => {
       if (info.offset.x < -SWIPE_THRESHOLD) goNext();
@@ -238,16 +243,15 @@ const Galeria = () => {
     [goNext, goPrev]
   );
 
-  // Sync from image carousel back to flyer showcase
   const handleSwiperSlideChange = useCallback(
     (swiper: SwiperType) => {
       const year = slideYearMap[swiper.realIndex];
       if (year) {
-        const idx = galeriasPorAño.findIndex((g) => g.year === year);
+        const idx = data.findIndex((g) => g.year === year);
         if (idx !== -1 && idx !== activeIndex) setActiveIndex(idx);
       }
     },
-    [slideYearMap, activeIndex]
+    [slideYearMap, activeIndex, data]
   );
 
   /* ── Lightbox ── */
@@ -270,17 +274,16 @@ const Galeria = () => {
     setSelectedImage(imageSlides[n]);
   }, [currentImageIndex, imageSlides]);
 
-  // Visible flyer offsets: show active ± 2
   const visibleFlyers = useMemo(() => {
-    const result: { gallery: (typeof galeriasPorAño)[0]; offset: number }[] = [];
+    const result: { gallery: YearGallery; offset: number }[] = [];
     for (let off = -2; off <= 2; off++) {
       let idx = activeIndex + off;
-      if (idx < 0) idx += galeriasPorAño.length;
-      if (idx >= galeriasPorAño.length) idx -= galeriasPorAño.length;
-      result.push({ gallery: galeriasPorAño[idx], offset: off });
+      if (idx < 0) idx += data.length;
+      if (idx >= data.length) idx -= data.length;
+      result.push({ gallery: data[idx], offset: off });
     }
     return result;
-  }, [activeIndex]);
+  }, [activeIndex, data]);
 
   let imageCounter = -1;
 
@@ -330,7 +333,6 @@ const Galeria = () => {
           onMouseEnter={() => setIsPaused(true)}
           onMouseLeave={() => setIsPaused(false)}
         >
-          {/* Carousel container — fixed height to prevent layout shifts */}
           <motion.div
             onPanEnd={handlePan}
             className="relative mx-auto overflow-hidden"
@@ -343,14 +345,13 @@ const Galeria = () => {
                 offset={offset}
                 cardWidth={cardWidth}
                 onClick={() => {
-                  const idx = galeriasPorAño.findIndex((g) => g.year === gallery.year);
+                  const idx = data.findIndex((g) => g.year === gallery.year);
                   if (idx !== -1) goTo(idx);
                 }}
               />
             ))}
           </motion.div>
 
-          {/* Prev / Next buttons for flyer showcase */}
           <button
             onClick={goPrev}
             className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-30 w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center bg-background/90 backdrop-blur-md rounded-full shadow-xl hover:bg-primary hover:text-primary-foreground active:scale-90 transition-all duration-300 border border-border/40"
@@ -369,7 +370,7 @@ const Galeria = () => {
 
         {/* ── Year pills ── */}
         <div className="flex justify-center gap-2 mb-8">
-          {galeriasPorAño.map((g, i) => (
+          {data.map((g, i) => (
             <button
               key={g.year}
               onClick={() => goTo(i)}
@@ -465,7 +466,6 @@ const Galeria = () => {
             })}
           </Swiper>
 
-          {/* Nav buttons */}
           <button
             className="swiper-prev-master absolute left-0 sm:left-1 top-[45%] -translate-y-1/2 z-20 w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center bg-background/90 backdrop-blur-md rounded-full shadow-xl hover:bg-primary hover:text-primary-foreground active:scale-90 transition-all duration-300 border border-border/40"
             aria-label="Anterior"
