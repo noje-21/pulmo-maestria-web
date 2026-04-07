@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import GalleryLightbox from "./GalleryLightbox";
 import FilmStrip from "./FilmStrip";
 import AnimatedGalleryYear from "./AnimatedGalleryYear";
+import FilmStripCarousel from "./FilmStripCarousel";
 import { galeriasPorAño } from "./data";
 import type { ImageData, YearGallery } from "./types";
 
