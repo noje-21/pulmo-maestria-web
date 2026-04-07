@@ -17,7 +17,7 @@ const Expertos = lazy(() => import("@/components/sections/Expertos").then(m => (
 const Eventos = lazy(() => import("@/components/sections/Eventos").then(m => ({ default: m.Eventos })));
 const Testimonios = lazy(() => import("@/components/sections/Testimonios").then(m => ({ default: m.Testimonios })));
 const Galeria = lazy(() => import("@/components/sections/Galeria"));
-const CTAFinal = lazy(() => import("@/components/sections/CTAFinal").then(m => ({ default: m.CTAFinal })));
+
 const Contacto = lazy(() => import("@/components/sections/Contacto").then(m => ({ default: m.Contacto })));
 const ScrollInvitation = lazy(() => import("@/components/common/ScrollInvitation").then(m => ({ default: m.ScrollInvitation })));
 const SectionDivider = lazy(() => import("@/components/common/SectionDivider").then(m => ({ default: m.SectionDivider })));
@@ -70,8 +70,6 @@ const Index = () => {
             <Galeria />
           </AnimatedOnView>
           
-          {/* PASO 4: Decisión - CTA Final */}
-          <CTAFinal />
           
           {/* PASO 5: Acción - Contacto/Inscripción */}
           <AnimatedOnView>

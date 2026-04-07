@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { ExternalLink, Phone, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { ReservarPopup } from "./ReservarPopup";
 
 interface FlyerVideo {
   id: number;
@@ -319,8 +320,10 @@ export const HeroFlyer = () => {
 
   const currentSrc = flyerVideos[idx].src;
 
-  const scrollToContacto = useCallback(() => {
-    document.getElementById("contacto")?.scrollIntoView({ behavior: "smooth" });
+  const [showReservar, setShowReservar] = useState(false);
+
+  const openReservar = useCallback(() => {
+    setShowReservar(true);
   }, []);
 
   const goTo = useCallback((i: number) => {
@@ -365,7 +368,7 @@ export const HeroFlyer = () => {
         {/* Desktop layout */}
         <div className="hidden lg:grid lg:grid-cols-7 lg:gap-8 lg:items-center">
           <div className="lg:col-span-2 lg:pt-8 flex flex-col justify-start">
-            <HeroText onReservar={scrollToContacto} />
+            <HeroText onReservar={openReservar} />
           </div>
 
           <motion.div
@@ -393,11 +396,13 @@ export const HeroFlyer = () => {
           </motion.div>
 
           <div className="text-center px-2">
-            <HeroText onReservar={scrollToContacto} />
+            <HeroText onReservar={openReservar} />
           </div>
         </div>
 
       </div>
+
+      <ReservarPopup isOpen={showReservar} onClose={() => setShowReservar(false)} />
     </section>
   );
 };
