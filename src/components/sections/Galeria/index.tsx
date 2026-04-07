@@ -64,11 +64,11 @@ const FlyerCard = ({ gallery, offset, onClick, cardWidth }: FlyerCardProps) => {
       className="absolute cursor-pointer will-change-transform"
       style={{
         width: cardWidth,
-        height: CARD_H_MD,
+        height: cardWidth < CARD_W_SM ? CARD_H_MOBILE : cardWidth < CARD_W_MD ? CARD_H_SM : CARD_H_MD,
         left: "50%",
         top: "50%",
         marginLeft: -cardWidth / 2,
-        marginTop: -CARD_H_MD / 2,
+        marginTop: -(cardWidth < CARD_W_SM ? CARD_H_MOBILE : cardWidth < CARD_W_MD ? CARD_H_SM : CARD_H_MD) / 2,
         zIndex,
         perspective: 1000,
         filter: isActive ? "grayscale(0)" : `grayscale(${absOffset * 25}%)`,
