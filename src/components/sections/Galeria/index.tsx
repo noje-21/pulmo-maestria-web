@@ -337,7 +337,7 @@ const Galeria = () => {
           >
             {visibleFlyers.map(({ gallery, offset }) => (
               <FlyerCard
-                key={gallery.year}
+                key={`flyer-${offset}`}
                 gallery={gallery}
                 offset={offset}
                 cardWidth={cardWidth}
