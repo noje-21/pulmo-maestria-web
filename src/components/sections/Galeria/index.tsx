@@ -196,6 +196,24 @@ const Galeria = () => {
   const goPrev = useCallback(() => goTo(activeIndex - 1), [activeIndex, goTo]);
   const goNext = useCallback(() => goTo(activeIndex + 1), [activeIndex, goTo]);
 
+  // Autoplay: rotate flyers every 6 seconds, pause on hover
+  const [isPaused, setIsPaused] = useState(false);
+  useEffect(() => {
+    if (isPaused) return;
+    const timer = setInterval(() => {
+      setActiveIndex((prev) => {
+        const next = (prev + 1) % galeriasPorAño.length;
+        const year = galeriasPorAño[next].year;
+        const slideIdx = yearToSlideIndex[year];
+        if (slideIdx !== undefined && swiperRef.current) {
+          swiperRef.current.slideToLoop(slideIdx, 600);
+        }
+        return next;
+      });
+    }, 6000);
+    return () => clearInterval(timer);
+  }, [isPaused, yearToSlideIndex]);
+
   // Swipe support for flyer showcase
   const handlePan = useCallback(
     (_: any, info: PanInfo) => {
