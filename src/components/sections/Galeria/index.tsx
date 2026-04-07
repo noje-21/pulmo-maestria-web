@@ -2,9 +2,6 @@ import { useState, useCallback, useMemo, useRef, useEffect } from "react";
 import {
   motion,
   AnimatePresence,
-  useMotionValue,
-  useTransform,
-  animate,
   PanInfo,
 } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
@@ -25,51 +22,61 @@ import "swiper/css/pagination";
 
 /* ── Constants ── */
 const EASE = [0.22, 1, 0.36, 1] as const;
-const FLYER_W = 320; // base width for positioning math
-const FLYER_GAP = 24;
 const SWIPE_THRESHOLD = 50;
+
+/* Fixed card dimensions per breakpoint (applied via CSS) */
+const CARD_W_MOBILE = 260;
+const CARD_W_SM = 300;
+const CARD_W_MD = 340;
+const CARD_H_MOBILE = 200;
+const CARD_H_SM = 240;
+const CARD_H_MD = 280;
 
 /* ── Flyer Showcase Card ── */
 interface FlyerCardProps {
   gallery: (typeof galeriasPorAño)[0];
   offset: number; // -2, -1, 0, 1, 2
   onClick: () => void;
+  cardWidth: number;
 }
 
-const FlyerCard = ({ gallery, offset, onClick }: FlyerCardProps) => {
+const FlyerCard = ({ gallery, offset, onClick, cardWidth }: FlyerCardProps) => {
   const isActive = offset === 0;
   const absOffset = Math.abs(offset);
 
-  // Position, scale, opacity based on distance from center
-  const x = offset * (FLYER_W * 0.55 + FLYER_GAP);
-  const scale = isActive ? 1 : Math.max(0.65, 1 - absOffset * 0.18);
-  const opacity = isActive ? 1 : Math.max(0.4, 1 - absOffset * 0.3);
+  const gap = 20;
+  const x = offset * (cardWidth * 0.58 + gap);
+  const scale = isActive ? 1 : Math.max(0.7, 1 - absOffset * 0.15);
+  const opacity = isActive ? 1 : Math.max(0.45, 1 - absOffset * 0.28);
   const zIndex = 10 - absOffset;
-  const rotateY = offset * -5;
+  const rotateY = offset * -4;
 
   return (
     <motion.div
-      layout
       animate={{
         x,
         scale,
         opacity,
         rotateY,
-        filter: isActive ? "grayscale(0)" : `grayscale(${absOffset * 30}%)`,
       }}
-      transition={{ duration: 0.65, ease: EASE }}
+      transition={{ duration: 0.6, ease: EASE }}
       onClick={onClick}
-      className="absolute left-1/2 top-0 -translate-x-1/2 cursor-pointer will-change-transform"
+      className="absolute cursor-pointer will-change-transform"
       style={{
-        width: FLYER_W,
+        width: cardWidth,
+        height: cardWidth < CARD_W_SM ? CARD_H_MOBILE : cardWidth < CARD_W_MD ? CARD_H_SM : CARD_H_MD,
+        left: "50%",
+        top: "50%",
+        marginLeft: -cardWidth / 2,
+        marginTop: -(cardWidth < CARD_W_SM ? CARD_H_MOBILE : cardWidth < CARD_W_MD ? CARD_H_SM : CARD_H_MD) / 2,
         zIndex,
         perspective: 1000,
-        transformStyle: "preserve-3d",
+        filter: isActive ? "grayscale(0)" : `grayscale(${absOffset * 25}%)`,
       }}
     >
       <div
         className={`
-          relative w-full h-[220px] sm:h-[260px] md:h-[300px] rounded-2xl overflow-hidden
+          relative w-full h-full overflow-hidden rounded-2xl
           transition-shadow duration-500
           ${isActive
             ? "shadow-2xl shadow-primary/30 ring-2 ring-primary/60 ring-offset-2 ring-offset-background"
@@ -80,38 +87,29 @@ const FlyerCard = ({ gallery, offset, onClick }: FlyerCardProps) => {
         <img
           src={gallery.hero}
           alt={`Edición ${gallery.year}`}
-          className={`w-full h-full object-cover transition-transform duration-[5000ms] ease-out ${
-            isActive ? "scale-[1.06]" : ""
-          }`}
+          className="absolute inset-0 w-full h-full object-cover"
           loading="lazy"
           decoding="async"
+          draggable={false}
         />
 
         {/* Gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent" />
-
-        {/* Hover shimmer */}
-        <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/[0.04] to-white/0 opacity-0 hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent pointer-events-none" />
 
         {/* Content */}
-        <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-5">
-          <motion.span
-            animate={{ scale: isActive ? 1 : 0.9 }}
-            transition={{ duration: 0.4 }}
-            className="block text-3xl sm:text-4xl font-black text-white drop-shadow-lg"
-          >
+        <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-5 pointer-events-none">
+          <span className="block text-2xl sm:text-3xl md:text-4xl font-black text-white drop-shadow-lg">
             {gallery.year}
-          </motion.span>
-          <p className="text-xs sm:text-sm text-white/80 leading-tight mt-1 line-clamp-2">
+          </span>
+          <p className="text-xs sm:text-sm text-white/80 leading-tight mt-1 line-clamp-1">
             {gallery.subtitle}
           </p>
           {gallery.description && isActive && (
             <motion.p
-              initial={{ opacity: 0, y: 8 }}
+              initial={{ opacity: 0, y: 6 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0 }}
-              transition={{ delay: 0.2, duration: 0.4 }}
-              className="text-[11px] text-white/60 mt-1.5 line-clamp-1"
+              transition={{ delay: 0.15, duration: 0.35 }}
+              className="text-[11px] text-white/60 mt-1 line-clamp-1"
             >
               {gallery.description}
             </motion.p>
@@ -122,10 +120,10 @@ const FlyerCard = ({ gallery, offset, onClick }: FlyerCardProps) => {
         <AnimatePresence>
           {isActive && (
             <motion.div
-              initial={{ opacity: 0, scale: 0.7, y: -4 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
+              initial={{ opacity: 0, scale: 0.7 }}
+              animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.7 }}
-              transition={{ duration: 0.3 }}
+              transition={{ duration: 0.25 }}
               className="absolute top-3 right-3 px-2.5 py-1 bg-primary text-primary-foreground text-[10px] font-bold rounded-full uppercase tracking-wider shadow-lg"
             >
               Viendo
@@ -137,12 +135,28 @@ const FlyerCard = ({ gallery, offset, onClick }: FlyerCardProps) => {
   );
 };
 
+/* ── Hook: responsive card width ── */
+const useCardWidth = () => {
+  const [width, setWidth] = useState(CARD_W_MD);
+  useEffect(() => {
+    const update = () => {
+      const vw = window.innerWidth;
+      setWidth(vw < 640 ? CARD_W_MOBILE : vw < 1024 ? CARD_W_SM : CARD_W_MD);
+    };
+    update();
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
+  }, []);
+  return width;
+};
+
 /* ── Main Gallery ── */
 const Galeria = () => {
   const [selectedImage, setSelectedImage] = useState<ImageData | null>(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [activeIndex, setActiveIndex] = useState(0);
   const swiperRef = useRef<SwiperType | null>(null);
+  const cardWidth = useCardWidth();
 
   const activeYear = galeriasPorAño[activeIndex].year;
 
@@ -315,25 +329,24 @@ const Galeria = () => {
           onMouseEnter={() => setIsPaused(true)}
           onMouseLeave={() => setIsPaused(false)}
         >
-          {/* Carousel container */}
+          {/* Carousel container — fixed height to prevent layout shifts */}
           <motion.div
             onPanEnd={handlePan}
             className="relative mx-auto overflow-hidden"
-            style={{ height: "clamp(240px, 38vw, 320px)" }}
+            style={{ height: cardWidth < CARD_W_SM ? 220 : cardWidth < CARD_W_MD ? 260 : 300 }}
           >
-            <AnimatePresence initial={false}>
-              {visibleFlyers.map(({ gallery, offset }) => (
-                <FlyerCard
-                  key={gallery.year}
-                  gallery={gallery}
-                  offset={offset}
-                  onClick={() => {
-                    const idx = galeriasPorAño.findIndex((g) => g.year === gallery.year);
-                    if (idx !== -1) goTo(idx);
-                  }}
-                />
-              ))}
-            </AnimatePresence>
+            {visibleFlyers.map(({ gallery, offset }) => (
+              <FlyerCard
+                key={gallery.year}
+                gallery={gallery}
+                offset={offset}
+                cardWidth={cardWidth}
+                onClick={() => {
+                  const idx = galeriasPorAño.findIndex((g) => g.year === gallery.year);
+                  if (idx !== -1) goTo(idx);
+                }}
+              />
+            ))}
           </motion.div>
 
           {/* Prev / Next buttons for flyer showcase */}
