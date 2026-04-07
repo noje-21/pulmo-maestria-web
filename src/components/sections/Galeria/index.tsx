@@ -93,23 +93,14 @@ const Galeria = ({ galleries }: GaleriaProps = {}) => {
         </motion.div>
 
         {/* Year sections with staggered grids */}
-        {data.map((gallery) =>
-          gallery.year === data[0]?.year ? (
-            <FilmStripCarousel
-              key={gallery.year}
-              gallery={gallery}
-              onImageClick={handleImageClick}
-              onYearClick={handleYearClick}
-            />
-          ) : (
-            <AnimatedGalleryYear
-              key={gallery.year}
-              gallery={gallery}
-              onImageClick={handleImageClick}
-              onYearClick={handleYearClick}
-            />
-          )
-        )}
+        {data.map((gallery) => (
+          <FilmStripCarousel
+            key={gallery.year}
+            gallery={gallery}
+            onImageClick={handleImageClick}
+            onYearClick={handleYearClick}
+          />
+        ))}
       </div>
 
       {/* Film strip popup */}
