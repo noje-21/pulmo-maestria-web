@@ -147,17 +147,6 @@ const FilmStrip = memo(function FilmStrip({
                 className="max-w-full max-h-full object-contain rounded-2xl shadow-[0_20px_80px_rgba(0,0,0,0.6)] ring-1 ring-white/10"
                 draggable={false}
               />
-              {/* Caption */}
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2, duration: 0.35 }}
-                className="absolute bottom-4 left-1/2 -translate-x-1/2"
-              >
-                <span className="text-xs sm:text-sm text-white/70 bg-black/50 backdrop-blur-sm px-4 py-1.5 rounded-full border border-white/10">
-                  {activeImage.alt}
-                </span>
-              </motion.div>
             </motion.div>
           </AnimatePresence>
 
