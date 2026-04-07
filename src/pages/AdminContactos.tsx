@@ -2,11 +2,12 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
 import AdminLayout from "@/features/admin/AdminLayout";
 import { TableSkeleton } from "@/components/common/LoadingSkeleton";
-import { Trash2, Mail, MapPin, Briefcase, User } from "lucide-react";
+import { Trash2, Mail, MapPin, Briefcase, User, Send, Loader2 } from "lucide-react";
 
 interface ContactSubmission {
   id: string;
@@ -21,6 +22,8 @@ interface ContactSubmission {
 const AdminContactos = () => {
   const [loading, setLoading] = useState(true);
   const [submissions, setSubmissions] = useState<ContactSubmission[]>([]);
+  const [replyTexts, setReplyTexts] = useState<Record<string, string>>({});
+  const [sendingReply, setSendingReply] = useState<string | null>(null);
 
   useEffect(() => {
     loadSubmissions();
@@ -55,6 +58,36 @@ const AdminContactos = () => {
     } else {
       toast.success("Envío eliminado");
       loadSubmissions();
+    }
+  };
+
+  const handleReply = async (submission: ContactSubmission) => {
+    const replyMessage = replyTexts[submission.id]?.trim();
+    if (!replyMessage) {
+      toast.error("Escribe un mensaje de respuesta");
+      return;
+    }
+
+    setSendingReply(submission.id);
+    try {
+      const { data, error } = await supabase.functions.invoke('reply-contact', {
+        body: {
+          recipientEmail: submission.email,
+          recipientName: submission.name,
+          replyMessage,
+        },
+      });
+
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+
+      toast.success(`Respuesta enviada a ${submission.email}`);
+      setReplyTexts((prev) => ({ ...prev, [submission.id]: "" }));
+    } catch (error) {
+      console.error('Reply error:', error);
+      toast.error("Error al enviar la respuesta");
+    } finally {
+      setSendingReply(null);
     }
   };
 
@@ -137,6 +170,44 @@ const AdminContactos = () => {
                   <div className="mb-4 p-4 rounded-xl bg-muted/50">
                     <p className="text-xs text-muted-foreground mb-1 font-medium">Mensaje</p>
                     <p className="text-foreground text-sm">{submission.message}</p>
+                  </div>
+
+                  {/* Reply section */}
+                  <div className="mb-4 p-4 rounded-xl border border-border/50 bg-card">
+                    <p className="text-xs text-muted-foreground mb-2 font-medium flex items-center gap-1.5">
+                      <Send className="w-3.5 h-3.5" />
+                      Responder a {submission.name}
+                    </p>
+                    <Textarea
+                      placeholder="Escribe tu respuesta..."
+                      value={replyTexts[submission.id] || ""}
+                      onChange={(e) =>
+                        setReplyTexts((prev) => ({
+                          ...prev,
+                          [submission.id]: e.target.value,
+                        }))
+                      }
+                      rows={3}
+                      className="mb-3 resize-none"
+                    />
+                    <Button
+                      size="sm"
+                      onClick={() => handleReply(submission)}
+                      disabled={sendingReply === submission.id || !replyTexts[submission.id]?.trim()}
+                      className="gap-2"
+                    >
+                      {sendingReply === submission.id ? (
+                        <>
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                          Enviando...
+                        </>
+                      ) : (
+                        <>
+                          <Send className="w-4 h-4" />
+                          Enviar respuesta
+                        </>
+                      )}
+                    </Button>
                   </div>
                   
                   <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
