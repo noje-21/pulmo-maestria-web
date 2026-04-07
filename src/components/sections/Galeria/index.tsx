@@ -118,7 +118,8 @@ const Galeria = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: i * 0.1 }}
-                className={`relative h-[160px] sm:h-[200px] rounded-2xl overflow-hidden group transition-all duration-500 ${
+                onClick={() => handleBannerClick(gallery.year)}
+                className={`relative h-[160px] sm:h-[200px] rounded-2xl overflow-hidden group transition-all duration-500 cursor-pointer ${
                   isActive
                     ? "ring-2 ring-primary ring-offset-2 ring-offset-background scale-[1.03] shadow-lg shadow-primary/20"
                     : "opacity-50 grayscale hover:opacity-70 hover:grayscale-0"
