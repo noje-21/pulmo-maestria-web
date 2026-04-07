@@ -1,155 +1,127 @@
 import { useState, useCallback, useMemo, useRef, useEffect } from "react";
-import {
-  motion,
-  AnimatePresence,
-} from "framer-motion";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import GalleryLightbox from "./GalleryLightbox";
+import FilmStrip from "./FilmStrip";
 import { galeriasPorAño } from "./data";
 import type { ImageData, YearGallery } from "./types";
 
-/* ── Constants ── */
-const EASE = [0.22, 1, 0.36, 1] as const;
+const EASE = [0.22, 1, 0.36, 1] as [number, number, number, number];
 
-/* ── Unified Slide type ── */
-interface UnifiedSlide {
-  src: string;
-  alt: string;
-  year: number;
-  title: string;
-  category?: string;
-  galleryIdx: number;
-  imageIdx: number;
-}
-
-/* ── Props ── */
 interface GaleriaProps {
   galleries?: YearGallery[];
 }
 
-/* ── Main Gallery ── */
+const YEAR_LABELS: Record<number, { label: string; subtitle: string }> = {
+  2022: { label: "Los Cimientos", subtitle: "Donde todo comenzó" },
+  2023: { label: "Consolidación", subtitle: "Crecimiento exponencial" },
+  2024: { label: "Innovación", subtitle: "Nuevas fronteras clínicas" },
+  2025: { label: "Excelencia", subtitle: "Impacto internacional" },
+};
+
 const Galeria = ({ galleries }: GaleriaProps = {}) => {
   const data = useMemo(
     () => (galleries ?? galeriasPorAño).map((g) => ({ ...g, images: [...g.images] })),
     [galleries]
   );
 
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [active, setActive] = useState(0);
+  const [openYear, setOpenYear] = useState<number | null>(null);
+  const [cardW, setCardW] = useState(340);
+
+  // Lightbox state
   const [selectedImage, setSelectedImage] = useState<ImageData | null>(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [activeSlide, setActiveSlide] = useState(0);
-  const [isPaused, setIsPaused] = useState(false);
-  const containerRef = useRef<HTMLDivElement>(null);
+  const [lightboxImages, setLightboxImages] = useState<ImageData[]>([]);
 
-  // Build unified slides array
-  const allSlides = useMemo(() => {
-    const slides: UnifiedSlide[] = [];
-    data.forEach((g, gi) => {
-      g.images.forEach((img, ii) => {
-        slides.push({
-          src: img.src,
-          alt: img.alt,
-          year: g.year,
-          title: g.title,
-          category: img.category,
-          galleryIdx: gi,
-          imageIdx: ii,
-        });
-      });
-    });
-    return slides;
-  }, [data]);
-
-  const total = allSlides.length;
-
-  const goTo = useCallback((idx: number) => {
-    setActiveSlide((idx % total + total) % total);
-  }, [total]);
-
-  const goPrev = useCallback(() => goTo(activeSlide - 1), [activeSlide, goTo]);
-  const goNext = useCallback(() => goTo(activeSlide + 1), [activeSlide, goTo]);
-
-  // Autoplay
-  useEffect(() => {
-    if (isPaused) return;
-    const timer = setInterval(() => {
-      setActiveSlide((prev) => (prev + 1) % total);
-    }, 5000);
-    return () => clearInterval(timer);
-  }, [isPaused, total]);
-
-  // Current active year for background
-  const activeYear = allSlides[activeSlide]?.year;
-  const activeHero = data.find((g) => g.year === activeYear)?.hero || allSlides[activeSlide]?.src;
-
-  // Visible slides: show 5 centered on active
-  const visibleSlides = useMemo(() => {
-    const result: { slide: UnifiedSlide; offset: number; index: number }[] = [];
-    for (let off = -2; off <= 2; off++) {
-      let idx = (activeSlide + off + total) % total;
-      result.push({ slide: allSlides[idx], offset: off, index: idx });
-    }
-    return result;
-  }, [activeSlide, allSlides, total]);
-
-  // Responsive card size
-  const [cardWidth, setCardWidth] = useState(380);
-  const [cardHeight, setCardHeight] = useState(280);
+  // Responsive card width
   useEffect(() => {
     const update = () => {
       const vw = window.innerWidth;
-      if (vw < 640) { setCardWidth(280); setCardHeight(200); }
-      else if (vw < 1024) { setCardWidth(340); setCardHeight(240); }
-      else { setCardWidth(420); setCardHeight(300); }
+      setCardW(vw < 640 ? 280 : vw < 1024 ? 320 : 380);
     };
     update();
     window.addEventListener("resize", update);
     return () => window.removeEventListener("resize", update);
   }, []);
 
-  /* ── Lightbox ── */
-  const handleImageClick = useCallback(
-    (idx: number) => {
-      const slide = allSlides[idx];
-      setCurrentImageIndex(idx);
-      setSelectedImage({ src: slide.src, alt: slide.alt, category: slide.category });
+  const gap = 24;
+  const totalW = cardW + gap;
+
+  const scrollToIdx = useCallback(
+    (i: number) => {
+      const container = scrollRef.current;
+      if (!container) return;
+      const containerW = container.clientWidth;
+      const target = i * totalW - (containerW / 2 - cardW / 2);
+      container.scrollTo({ left: target, behavior: "smooth" });
+      setActive(i);
     },
-    [allSlides]
+    [totalW, cardW]
   );
+
+  // Track scroll to update active
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const onScroll = () => {
+      const containerW = el.clientWidth;
+      const center = el.scrollLeft + containerW / 2;
+      const idx = Math.round((center - cardW / 2) / totalW);
+      setActive(Math.max(0, Math.min(data.length - 1, idx)));
+    };
+    el.addEventListener("scroll", onScroll, { passive: true });
+    return () => el.removeEventListener("scroll", onScroll);
+  }, [totalW, cardW, data.length]);
+
+  useEffect(() => {
+    setTimeout(() => scrollToIdx(0), 100);
+  }, [scrollToIdx]);
+
+  // Click year card → toggle film strip
+  const handleYearClick = useCallback(
+    (i: number) => {
+      if (i === active) {
+        setOpenYear((prev) => (prev === data[i].year ? null : data[i].year));
+      } else {
+        scrollToIdx(i);
+      }
+    },
+    [active, data, scrollToIdx]
+  );
+
+  // Film strip image click → open lightbox
+  const handleFilmImageClick = useCallback(
+    (yearIdx: number, img: ImageData, imgIdx: number) => {
+      setLightboxImages(data[yearIdx].images);
+      setCurrentImageIndex(imgIdx);
+      setSelectedImage(img);
+    },
+    [data]
+  );
+
+  // Lightbox nav
   const handleClose = useCallback(() => setSelectedImage(null), []);
   const handlePrevImage = useCallback(() => {
-    const n = currentImageIndex > 0 ? currentImageIndex - 1 : total - 1;
+    const n = currentImageIndex > 0 ? currentImageIndex - 1 : lightboxImages.length - 1;
     setCurrentImageIndex(n);
-    const s = allSlides[n];
-    setSelectedImage({ src: s.src, alt: s.alt, category: s.category });
-  }, [currentImageIndex, allSlides, total]);
+    setSelectedImage(lightboxImages[n]);
+  }, [currentImageIndex, lightboxImages]);
   const handleNextImage = useCallback(() => {
-    const n = currentImageIndex < total - 1 ? currentImageIndex + 1 : 0;
+    const n = currentImageIndex < lightboxImages.length - 1 ? currentImageIndex + 1 : 0;
     setCurrentImageIndex(n);
-    const s = allSlides[n];
-    setSelectedImage({ src: s.src, alt: s.alt, category: s.category });
-  }, [currentImageIndex, allSlides, total]);
+    setSelectedImage(lightboxImages[n]);
+  }, [currentImageIndex, lightboxImages]);
 
-  // Year quick-nav
-  const yearIndices = useMemo(() => {
-    const map: { year: number; firstSlide: number }[] = [];
-    const seen = new Set<number>();
-    allSlides.forEach((s, i) => {
-      if (!seen.has(s.year)) {
-        seen.add(s.year);
-        map.push({ year: s.year, firstSlide: i });
-      }
-    });
-    return map;
-  }, [allSlides]);
-
-  const GAP = 18;
+  // Dynamic background from active year
+  const activeHero = data[active]?.hero;
 
   return (
-    <section id="galeria" className="relative py-16 sm:py-20 overflow-hidden">
-      {/* ── Dynamic blurred background ── */}
+    <section id="galeria" className="relative py-16 sm:py-24 overflow-hidden">
+      {/* Dynamic blurred background */}
       <AnimatePresence mode="wait">
         <motion.div
-          key={activeYear}
+          key={data[active]?.year}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -160,181 +132,215 @@ const Galeria = ({ galleries }: GaleriaProps = {}) => {
             src={activeHero}
             alt=""
             aria-hidden="true"
-            className="absolute inset-0 w-full h-full object-cover scale-110 blur-[60px] opacity-25"
+            className="absolute inset-0 w-full h-full object-cover scale-110 blur-[60px] opacity-20"
             draggable={false}
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-background/85 via-background/60 to-background" />
+          <div className="absolute inset-0 bg-gradient-to-b from-background/90 via-background/70 to-background" />
         </motion.div>
       </AnimatePresence>
 
-      <div className="relative max-w-7xl mx-auto px-4 md:px-8">
-        {/* ── Header ── */}
+      <div className="relative max-w-7xl mx-auto">
+        {/* Header */}
         <motion.div
-          initial={{ opacity: 0, y: 30, scale: 0.96 }}
-          whileInView={{ opacity: 1, y: 0, scale: 1 }}
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.7, ease: EASE }}
-          className="text-center mb-10 sm:mb-14"
+          className="text-center mb-10 sm:mb-14 px-4"
         >
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-3 bg-gradient-to-r from-primary via-primary/80 to-primary bg-clip-text text-transparent">
+          <p className="text-sm font-semibold text-primary tracking-widest uppercase mb-2">
+            Una historia de excelencia
+          </p>
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary via-primary/80 to-primary bg-clip-text text-transparent mb-3">
             Galería de Momentos
           </h2>
           <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto">
-            Revive los mejores momentos de cada año de formación
+            Haz clic en un año para explorar todas sus fotos
           </p>
         </motion.div>
 
-        {/* ── Unified 3D Showcase ── */}
+        {/* Year cards carousel */}
         <div
-          ref={containerRef}
-          className="relative mb-8 sm:mb-12"
-          onMouseEnter={() => setIsPaused(true)}
-          onMouseLeave={() => setIsPaused(false)}
+          ref={scrollRef}
+          className="flex overflow-x-auto snap-x snap-mandatory pb-6 cursor-grab active:cursor-grabbing"
+          style={{
+            paddingLeft: `calc(50% - ${cardW / 2}px)`,
+            paddingRight: `calc(50% - ${cardW / 2}px)`,
+            gap: `${gap}px`,
+            WebkitOverflowScrolling: "touch",
+            scrollbarWidth: "none",
+            msOverflowStyle: "none",
+          }}
         >
-          <div
-            className="relative mx-auto overflow-hidden"
-            style={{ height: cardHeight + 30 }}
-          >
-            {visibleSlides.map(({ slide, offset, index }) => {
-              const isActive = offset === 0;
-              const absOffset = Math.abs(offset);
-              const step = cardWidth + GAP;
-              const x = offset * step * 0.55;
-              const scale = isActive ? 1 : Math.max(0.82, 1 - absOffset * 0.09);
-              const opacity = isActive ? 1 : Math.max(0.5, 1 - absOffset * 0.25);
-              const zIndex = 10 - absOffset;
-              const rotateY = offset * -4;
-              const blurPx = isActive ? 0 : absOffset * 2;
-
-              return (
+          {data.map((g, i) => {
+            const isActive = i === active;
+            const isOpen = openYear === g.year;
+            const labels = YEAR_LABELS[g.year] || { label: g.title, subtitle: g.subtitle };
+            return (
+              <motion.div
+                key={g.year}
+                className="snap-center flex-shrink-0"
+                style={{ width: cardW }}
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-50px" }}
+                transition={{ duration: 0.6, delay: i * 0.1, ease: EASE }}
+                onClick={() => handleYearClick(i)}
+              >
                 <motion.div
-                  key={`slide-${offset}`}
-                  animate={{ x, scale, opacity, rotateY }}
+                  animate={{
+                    scale: isActive ? 1 : 0.88,
+                    opacity: isActive ? 1 : 0.55,
+                  }}
                   transition={{ duration: 0.5, ease: EASE }}
-                  onClick={() => {
-                    if (isActive) {
-                      handleImageClick(index);
-                    } else {
-                      goTo(index);
-                    }
-                  }}
-                  className="absolute cursor-pointer will-change-transform"
-                  style={{
-                    width: cardWidth,
-                    height: cardHeight,
-                    left: "50%",
-                    top: "50%",
-                    marginLeft: -cardWidth / 2,
-                    marginTop: -cardHeight / 2,
-                    zIndex,
-                    perspective: 1200,
-                    filter: `blur(${blurPx}px) grayscale(${isActive ? 0 : absOffset * 15}%)`,
-                  }}
+                  whileHover={{ scale: isActive ? 1.03 : 0.92 }}
+                  className="relative overflow-hidden rounded-2xl shadow-2xl cursor-pointer group"
+                  style={{ aspectRatio: "3/4" }}
                 >
-                  <div
-                    className={`
-                      relative w-full h-full overflow-hidden rounded-2xl
-                      transition-shadow duration-500
-                      ${isActive
-                        ? "shadow-2xl shadow-primary/30 ring-2 ring-primary/60 ring-offset-2 ring-offset-background"
-                        : "shadow-lg"
-                      }
-                    `}
-                  >
-                    <img
-                      src={slide.src}
-                      alt={slide.alt}
-                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-[6000ms] ease-out group-hover:scale-105"
-                      loading="lazy"
-                      decoding="async"
-                      draggable={false}
-                    />
+                  <img
+                    src={g.hero}
+                    alt={g.title}
+                    loading="lazy"
+                    decoding="async"
+                    draggable={false}
+                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-[6000ms] ease-out group-hover:scale-110"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-black/5 pointer-events-none" />
+                  {!isActive && (
+                    <div className="absolute inset-0 bg-black/20 pointer-events-none transition-opacity duration-500" />
+                  )}
 
-                    {/* Gradient overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent pointer-events-none" />
-
-                    {/* Year & title overlay */}
-                    <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-5 pointer-events-none">
-                      <div className="inline-block mb-1.5 px-3 py-1 bg-primary/20 backdrop-blur-sm rounded-full border border-white/20">
-                        <span className="text-xs sm:text-sm font-bold text-white tracking-wide">
+                  {/* Content */}
+                  <div className="absolute bottom-0 left-0 right-0 p-5 sm:p-6">
+                    <motion.div
+                      animate={{ opacity: isActive ? 1 : 0.6, y: isActive ? 0 : 8 }}
+                      transition={{ duration: 0.4, ease: EASE }}
+                    >
+                      <span className="inline-block px-3 py-1 mb-2 bg-primary/25 backdrop-blur-sm rounded-full border border-primary/30">
+                        <span className="text-xs font-bold text-primary-foreground tracking-wider">
                           Programa Académico
                         </span>
-                      </div>
-                      <span className="block text-2xl sm:text-3xl md:text-4xl font-black text-white drop-shadow-lg">
-                        {slide.year}
                       </span>
-                      {isActive && slide.category && (
+                      <span className="block text-3xl sm:text-4xl font-black text-white drop-shadow-lg">
+                        {g.year}
+                      </span>
+                      <h3 className="text-lg sm:text-xl font-bold text-white mt-1">
+                        {labels.label}
+                      </h3>
+                      {isActive && (
                         <motion.p
-                          initial={{ opacity: 0, y: 6 }}
+                          initial={{ opacity: 0, y: 8 }}
                           animate={{ opacity: 1, y: 0 }}
                           transition={{ delay: 0.15, duration: 0.35 }}
-                          className="text-[11px] sm:text-xs text-white/70 mt-1 line-clamp-1"
+                          className="text-sm text-white/70 mt-0.5"
                         >
-                          {slide.category}
+                          {labels.subtitle}
                         </motion.p>
                       )}
-                    </div>
-
-                    {/* Active badge */}
-                    <AnimatePresence>
                       {isActive && (
                         <motion.div
-                          initial={{ opacity: 0, scale: 0.7 }}
-                          animate={{ opacity: 1, scale: 1 }}
-                          exit={{ opacity: 0, scale: 0.7 }}
-                          transition={{ duration: 0.25 }}
-                          className="absolute top-3 right-3 px-2.5 py-1 bg-primary text-primary-foreground text-[10px] font-bold rounded-full uppercase tracking-wider shadow-lg"
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          transition={{ delay: 0.3, duration: 0.3 }}
+                          className="mt-3 inline-flex items-center gap-1.5 px-3 py-1.5 bg-white/10 backdrop-blur-sm rounded-full border border-white/20 text-white/80 text-xs font-medium"
                         >
-                          {allSlides.filter(s => s.year === slide.year).findIndex(s => s === slide) + 1} / {allSlides.filter(s => s.year === slide.year).length}
+                          <span>{isOpen ? "▲ Cerrar" : "▼ Ver"} {g.images.length} fotos</span>
                         </motion.div>
                       )}
-                    </AnimatePresence>
+                    </motion.div>
                   </div>
-                </motion.div>
-              );
-            })}
-          </div>
 
-          {/* Nav buttons */}
-          <button
-            onClick={goPrev}
-            className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-30 w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center bg-background/90 backdrop-blur-md rounded-full shadow-xl hover:bg-primary hover:text-primary-foreground active:scale-90 transition-all duration-300 border border-border/40"
-            aria-label="Anterior"
-          >
-            <ChevronLeft className="w-5 h-5" />
-          </button>
-          <button
-            onClick={goNext}
-            className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-30 w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center bg-background/90 backdrop-blur-md rounded-full shadow-xl hover:bg-primary hover:text-primary-foreground active:scale-90 transition-all duration-300 border border-border/40"
-            aria-label="Siguiente"
-          >
-            <ChevronRight className="w-5 h-5" />
-          </button>
+                  {/* Active ring */}
+                  {isActive && (
+                    <motion.div
+                      layoutId="year-ring"
+                      className="absolute inset-0 rounded-2xl ring-2 ring-primary/60 ring-offset-2 ring-offset-background pointer-events-none"
+                      transition={{ duration: 0.4, ease: EASE }}
+                    />
+                  )}
+                </motion.div>
+              </motion.div>
+            );
+          })}
         </div>
 
-        {/* ── Year pills ── */}
-        <div className="flex justify-center gap-2 mb-6">
-          {yearIndices.map(({ year, firstSlide }) => (
+        {/* Dots */}
+        <div className="flex justify-center gap-2 mb-2">
+          {data.map((_, i) => (
             <button
-              key={year}
-              onClick={() => goTo(firstSlide)}
-              className={`px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all duration-300 ${
-                activeYear === year
-                  ? "bg-primary text-primary-foreground shadow-md shadow-primary/30 scale-105"
-                  : "bg-muted/50 text-muted-foreground hover:bg-muted"
+              key={i}
+              onClick={() => scrollToIdx(i)}
+              aria-label={`Ir a ${data[i].year}`}
+              className={`rounded-full transition-all duration-400 ${
+                i === active
+                  ? "w-8 h-2.5 bg-primary shadow-md shadow-primary/30"
+                  : "w-2.5 h-2.5 bg-muted-foreground/30 hover:bg-muted-foreground/50"
               }`}
-            >
-              {year}
-            </button>
+            />
           ))}
         </div>
 
-        {/* ── Slide counter ── */}
-        <div className="text-center text-sm text-muted-foreground mb-4">
-          <span className="font-semibold text-foreground">{activeSlide + 1}</span>
-          <span className="mx-1">/</span>
-          <span>{total}</span>
+        {/* Timeline */}
+        <div className="hidden sm:flex justify-center mt-6 px-8">
+          <div className="flex items-center gap-0 max-w-xl w-full">
+            {data.map((g, i) => (
+              <div key={i} className="flex items-center flex-1">
+                <button
+                  onClick={() => {
+                    scrollToIdx(i);
+                    setOpenYear(g.year);
+                  }}
+                  className={`relative z-10 w-3.5 h-3.5 rounded-full border-2 transition-all duration-300 flex-shrink-0 ${
+                    i === active
+                      ? "bg-primary border-primary scale-125 shadow-lg shadow-primary/40"
+                      : i < active
+                      ? "bg-primary/60 border-primary/60"
+                      : "bg-muted border-border hover:border-primary/40"
+                  }`}
+                />
+                {i < data.length - 1 && (
+                  <div
+                    className={`h-0.5 flex-1 transition-colors duration-500 ${
+                      i < active ? "bg-primary/50" : "bg-border"
+                    }`}
+                  />
+                )}
+              </div>
+            ))}
+          </div>
         </div>
+        <div className="hidden sm:flex justify-center mt-1 px-8 mb-6">
+          <div className="flex items-center max-w-xl w-full">
+            {data.map((g, i) => (
+              <div key={i} className="flex-1 first:text-left last:text-right text-center">
+                <span
+                  className={`text-xs font-semibold transition-colors duration-300 ${
+                    i === active ? "text-primary" : "text-muted-foreground"
+                  }`}
+                >
+                  {g.year}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Film strip expansion */}
+        <AnimatePresence>
+          {openYear !== null && (
+            <FilmStrip
+              key={openYear}
+              images={data.find((g) => g.year === openYear)?.images || []}
+              year={openYear}
+              title={data.find((g) => g.year === openYear)?.title || ""}
+              onClose={() => setOpenYear(null)}
+              onImageClick={(img, imgIdx) => {
+                const yearIdx = data.findIndex((g) => g.year === openYear);
+                if (yearIdx >= 0) handleFilmImageClick(yearIdx, img, imgIdx);
+              }}
+            />
+          )}
+        </AnimatePresence>
       </div>
 
       {/* Lightbox */}
@@ -344,6 +350,8 @@ const Galeria = ({ galleries }: GaleriaProps = {}) => {
         onPrev={handlePrevImage}
         onNext={handleNextImage}
       />
+
+      <style>{`.snap-x::-webkit-scrollbar{display:none}`}</style>
     </section>
   );
 };
