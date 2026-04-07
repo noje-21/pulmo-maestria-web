@@ -67,9 +67,6 @@ const Index = () => {
             <Testimonios />
           </AnimatedOnView>
 
-          <AnimatedOnView>
-            <FlyersCarousel />
-          </AnimatedOnView>
 
           <AnimatedOnView>
             <Galeria />
