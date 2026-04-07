@@ -47,6 +47,7 @@ Deno.serve(async (req) => {
       },
       body: JSON.stringify({
         from: 'Contacto MLCP <contacto@maestriacp.com>',
+        reply_to: email,
         to: [adminEmail],
         subject: `Nueva consulta de ${name}`,
         html: `
