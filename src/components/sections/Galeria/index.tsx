@@ -75,15 +75,13 @@ const FlyerCard = ({ gallery, offset, onClick, cardWidth }: FlyerCardProps) => {
     >
       <div
         className={`
-          relative w-full overflow-hidden rounded-2xl
-          h-[${CARD_H_MOBILE}px] sm:h-[${CARD_H_SM}px] md:h-[${CARD_H_MD}px]
+          relative w-full h-full overflow-hidden rounded-2xl
           transition-shadow duration-500
           ${isActive
             ? "shadow-2xl shadow-primary/30 ring-2 ring-primary/60 ring-offset-2 ring-offset-background"
             : "shadow-lg"
           }
         `}
-        style={{ height: "100%", aspectRatio: `${cardWidth}/${CARD_H_MD}` }}
       >
         <img
           src={gallery.hero}
