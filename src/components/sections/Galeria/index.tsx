@@ -61,15 +61,16 @@ const FlyerCard = ({ gallery, offset, onClick, cardWidth }: FlyerCardProps) => {
       }}
       transition={{ duration: 0.6, ease: EASE }}
       onClick={onClick}
-      className="absolute left-1/2 top-1/2 cursor-pointer will-change-transform"
+      className="absolute cursor-pointer will-change-transform"
       style={{
         width: cardWidth,
+        height: CARD_H_MD,
+        left: "50%",
+        top: "50%",
         marginLeft: -cardWidth / 2,
-        marginTop: "calc(-50%)", // vertically center
+        marginTop: -CARD_H_MD / 2,
         zIndex,
         perspective: 1000,
-        transformStyle: "preserve-3d",
-        // Prevent filter animation glitches
         filter: isActive ? "grayscale(0)" : `grayscale(${absOffset * 25}%)`,
       }}
     >
