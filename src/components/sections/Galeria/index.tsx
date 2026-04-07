@@ -179,6 +179,7 @@ const Galeria = () => {
               pauseOnMouseEnter: true,
             }}
             onSlideChange={handleSlideChange}
+            onSwiper={(swiper) => { swiperRef.current = swiper; }}
             loop={true}
             speed={480}
             grabCursor={true}
