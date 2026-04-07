@@ -12,7 +12,7 @@ export const gallery2024: YearGallery = {
   title: "Programa Académico 2024",
   subtitle: "Innovación en Circulación Pulmonar",
   description: "Avances en hemodinamia y cateterismo cardiaco derecho",
-  hero: gallery1,
+  hero: gallery3,
   images: [
     { src: gallery32, alt: "Anatomía y Fisiología del Corazón Derecho", category: "Bases Anatómicas" },
     { src: gallery3, alt: "Introducción a la Hemodinamia", category: "Fundamentos" },
