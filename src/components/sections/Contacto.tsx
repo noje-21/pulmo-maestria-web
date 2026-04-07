@@ -7,14 +7,48 @@ import { Card, CardContent } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { z } from "zod";
-import { X, Mail, Phone, Linkedin, Facebook, Instagram, Globe, Send, CheckCircle } from "lucide-react";
+import { X, Mail, Phone, Linkedin, Facebook, Instagram, Globe, Send, CheckCircle, AlertTriangle } from "lucide-react";
+
+const COMMON_DOMAIN_TYPOS: Record<string, string> = {
+  "gmial.com": "gmail.com",
+  "gmal.com": "gmail.com",
+  "gmai.com": "gmail.com",
+  "gamil.com": "gmail.com",
+  "gmail.con": "gmail.com",
+  "gmail.co": "gmail.com",
+  "gmail.om": "gmail.com",
+  "gmaill.com": "gmail.com",
+  "gnail.com": "gmail.com",
+  "hotmal.com": "hotmail.com",
+  "hotmial.com": "hotmail.com",
+  "hotmail.con": "hotmail.com",
+  "hotamil.com": "hotmail.com",
+  "outloo.com": "outlook.com",
+  "outlok.com": "outlook.com",
+  "outlook.con": "outlook.com",
+  "yaho.com": "yahoo.com",
+  "yahooo.com": "yahoo.com",
+  "yahoo.con": "yahoo.com",
+};
+
+const detectEmailTypo = (email: string): string | null => {
+  const domain = email.split("@")[1]?.toLowerCase();
+  if (!domain) return null;
+  return COMMON_DOMAIN_TYPOS[domain]
+    ? `¿Quisiste decir ${email.split("@")[0]}@${COMMON_DOMAIN_TYPOS[domain]}?`
+    : null;
+};
 
 const contactSchema = z.object({
   name: z.string().min(1, "El nombre es requerido").max(100),
   email: z.string().email("Email inválido").max(255),
+  confirmEmail: z.string().email("Confirma tu email").max(255),
   country: z.string().min(1, "El país es requerido").max(100),
   specialty: z.string().min(1, "La especialidad es requerida").max(100),
   message: z.string().min(10, "El mensaje debe tener al menos 10 caracteres").max(2000),
+}).refine((data) => data.email === data.confirmEmail, {
+  message: "Los emails no coinciden",
+  path: ["confirmEmail"],
 });
 
 interface ContactItem {
@@ -64,9 +98,12 @@ const contactInfo: ContactItem[] = [
 export const Contacto = () => {
   const [loading, setLoading] = useState(false);
   const [successMsg, setSuccessMsg] = useState(false);
+  const [emailSuggestion, setEmailSuggestion] = useState<string | null>(null);
+  const [emailMismatch, setEmailMismatch] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
+    confirmEmail: "",
     country: "",
     specialty: "",
     message: "",
@@ -85,7 +122,8 @@ export const Contacto = () => {
     try {
       const trimmedData = {
         name: formData.name.trim(),
-        email: formData.email.trim(),
+        email: formData.email.trim().toLowerCase(),
+        confirmEmail: formData.confirmEmail.trim().toLowerCase(),
         country: formData.country.trim(),
         specialty: formData.specialty.trim(),
         message: formData.message.trim(),
@@ -120,7 +158,9 @@ export const Contacto = () => {
       }
 
       setSuccessMsg(true);
-      setFormData({ name: "", email: "", country: "", specialty: "", message: "" });
+      setFormData({ name: "", email: "", confirmEmail: "", country: "", specialty: "", message: "" });
+      setEmailSuggestion(null);
+      setEmailMismatch(false);
     } catch (error) {
       if (error instanceof z.ZodError) {
         toast.error(error.errors[0].message);
@@ -133,7 +173,33 @@ export const Contacto = () => {
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    const { name, value } = e.target;
+    setFormData((prev) => {
+      const updated = { ...prev, [name]: value };
+      
+      // Check for domain typos on email field
+      if (name === "email") {
+        setEmailSuggestion(detectEmailTypo(value));
+      }
+      
+      // Check email mismatch
+      if (name === "email" || name === "confirmEmail") {
+        const email = name === "email" ? value.trim().toLowerCase() : prev.email.trim().toLowerCase();
+        const confirm = name === "confirmEmail" ? value.trim().toLowerCase() : prev.confirmEmail.trim().toLowerCase();
+        setEmailMismatch(confirm.length > 0 && email !== confirm);
+      }
+      
+      return updated;
+    });
+  };
+
+  const acceptSuggestion = () => {
+    if (!emailSuggestion) return;
+    const suggested = emailSuggestion.match(/(.+@.+)\?$/)?.[1]?.replace("¿Quisiste decir ", "") || "";
+    if (suggested) {
+      setFormData((prev) => ({ ...prev, email: suggested }));
+      setEmailSuggestion(null);
+    }
   };
 
   return (
@@ -211,15 +277,44 @@ export const Contacto = () => {
                       required
                       className="input-modern"
                     />
+                    <div>
+                      <Input
+                        name="email"
+                        type="email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        placeholder="Email"
+                        required
+                        className={`input-modern ${emailSuggestion ? "border-yellow-500 focus-visible:ring-yellow-500" : ""}`}
+                      />
+                      {emailSuggestion && (
+                        <button
+                          type="button"
+                          onClick={acceptSuggestion}
+                          className="mt-1.5 flex items-center gap-1.5 text-xs text-yellow-600 dark:text-yellow-400 hover:underline"
+                        >
+                          <AlertTriangle className="w-3.5 h-3.5" />
+                          {emailSuggestion}
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                  <div>
                     <Input
-                      name="email"
+                      name="confirmEmail"
                       type="email"
-                      value={formData.email}
+                      value={formData.confirmEmail}
                       onChange={handleChange}
-                      placeholder="Email"
+                      placeholder="Confirma tu email"
                       required
-                      className="input-modern"
+                      className={`input-modern ${emailMismatch ? "border-destructive focus-visible:ring-destructive" : ""}`}
                     />
+                    {emailMismatch && (
+                      <p className="mt-1.5 text-xs text-destructive flex items-center gap-1.5">
+                        <X className="w-3.5 h-3.5" />
+                        Los emails no coinciden
+                      </p>
+                    )}
                   </div>
                   <div className="grid sm:grid-cols-2 gap-4">
                     <Input
