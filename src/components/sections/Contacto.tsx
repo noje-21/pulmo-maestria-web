@@ -102,6 +102,23 @@ export const Contacto = () => {
       ]);
       if (error) throw error;
 
+      // Send notification email to admin via Resend
+      try {
+        await supabase.functions.invoke('send-contact-email', {
+          body: {
+            name: validated.name,
+            email: validated.email,
+            country: validated.country,
+            specialty: validated.specialty,
+            message: validated.message,
+            adminEmail: 'magisterenhipertensionpulmonar@gmail.com',
+          },
+        });
+      } catch (emailError) {
+        console.error('Email notification failed:', emailError);
+        // Don't block form success if email fails
+      }
+
       setSuccessMsg(true);
       setFormData({ name: "", email: "", country: "", specialty: "", message: "" });
     } catch (error) {
