@@ -26,11 +26,13 @@ const itemVariants = {
 interface AnimatedGalleryYearProps {
   gallery: YearGallery;
   onImageClick: (gallery: YearGallery, index: number) => void;
+  onYearClick?: (year: number) => void;
 }
 
 const AnimatedGalleryYear = memo(function AnimatedGalleryYear({
   gallery,
   onImageClick,
+  onYearClick,
 }: AnimatedGalleryYearProps) {
   const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
 
@@ -54,11 +56,14 @@ const AnimatedGalleryYear = memo(function AnimatedGalleryYear({
           transition={{ duration: 0.5, delay: 0.1, ease: EASE }}
           className="flex items-center gap-4"
         >
-          <div className="inline-flex items-center px-5 py-2 bg-primary/15 backdrop-blur-sm rounded-2xl border border-primary/20 shadow-lg shadow-primary/5">
+          <button
+            onClick={() => onYearClick?.(gallery.year)}
+            className="inline-flex items-center px-5 py-2 bg-primary/15 backdrop-blur-sm rounded-2xl border border-primary/20 shadow-lg shadow-primary/5 cursor-pointer hover:bg-primary/25 hover:shadow-xl hover:scale-105 active:scale-95 transition-all duration-300"
+          >
             <span className="text-3xl sm:text-4xl font-black text-primary tracking-tight">
               {gallery.year}
             </span>
-          </div>
+          </button>
           <div>
             <h3 className="text-xl sm:text-2xl font-bold text-foreground leading-tight">
               {gallery.title}

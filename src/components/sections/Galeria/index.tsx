@@ -99,12 +99,14 @@ const Galeria = ({ galleries }: GaleriaProps = {}) => {
               key={gallery.year}
               gallery={gallery}
               onImageClick={handleImageClick}
+              onYearClick={handleYearClick}
             />
           ) : (
             <AnimatedGalleryYear
               key={gallery.year}
               gallery={gallery}
               onImageClick={handleImageClick}
+              onYearClick={handleYearClick}
             />
           )
         )}
