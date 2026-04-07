@@ -314,25 +314,24 @@ const Galeria = () => {
           onMouseEnter={() => setIsPaused(true)}
           onMouseLeave={() => setIsPaused(false)}
         >
-          {/* Carousel container */}
+          {/* Carousel container — fixed height to prevent layout shifts */}
           <motion.div
             onPanEnd={handlePan}
             className="relative mx-auto overflow-hidden"
-            style={{ height: "clamp(240px, 38vw, 320px)" }}
+            style={{ height: 300 }}
           >
-            <AnimatePresence initial={false}>
-              {visibleFlyers.map(({ gallery, offset }) => (
-                <FlyerCard
-                  key={gallery.year}
-                  gallery={gallery}
-                  offset={offset}
-                  onClick={() => {
-                    const idx = galeriasPorAño.findIndex((g) => g.year === gallery.year);
-                    if (idx !== -1) goTo(idx);
-                  }}
-                />
-              ))}
-            </AnimatePresence>
+            {visibleFlyers.map(({ gallery, offset }) => (
+              <FlyerCard
+                key={gallery.year}
+                gallery={gallery}
+                offset={offset}
+                cardWidth={CARD_W_MD}
+                onClick={() => {
+                  const idx = galeriasPorAño.findIndex((g) => g.year === gallery.year);
+                  if (idx !== -1) goTo(idx);
+                }}
+              />
+            ))}
           </motion.div>
 
           {/* Prev / Next buttons for flyer showcase */}
