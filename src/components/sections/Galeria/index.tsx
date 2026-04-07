@@ -312,6 +312,12 @@ const Galeria = () => {
         {/* ── 3D Flyer Showcase ── */}
         <div className="relative mb-10 sm:mb-14">
           {/* Carousel container */}
+        <div
+          className="relative mb-10 sm:mb-14"
+          onMouseEnter={() => setIsPaused(true)}
+          onMouseLeave={() => setIsPaused(false)}
+        >
+          {/* Carousel container */}
           <motion.div
             onPanEnd={handlePan}
             className="relative mx-auto overflow-hidden"
