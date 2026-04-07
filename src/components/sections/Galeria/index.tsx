@@ -6,7 +6,7 @@ import { Autoplay, Navigation, Pagination } from "swiper/modules";
 import BlurUpImage from "./BlurUpImage";
 import GalleryLightbox from "./GalleryLightbox";
 import { galeriasPorAño, getMasterSlides } from "./data";
-import type { ImageData, YearGallery } from "./types";
+import type { ImageData, YearGallery, MasterSlide } from "./types";
 
 // @ts-ignore
 import "swiper/css";
@@ -21,40 +21,36 @@ const Galeria = () => {
 
   const masterSlides = useMemo(() => getMasterSlides(galeriasPorAño), []);
 
-  // Build a fake YearGallery for the lightbox navigation
-  const masterGallery = useMemo<YearGallery>(
-    () => ({
-      year: 0,
-      title: "",
-      subtitle: "",
-      description: "",
-      hero: "",
-      images: masterSlides,
-    }),
+  // Only image slides for lightbox navigation
+  const imageSlides = useMemo(
+    () => masterSlides.filter((s): s is ImageData & { type?: "image"; flyerId?: string } => s.type !== "separator"),
     [masterSlides]
   );
 
   const handleImageClick = useCallback(
-    (index: number) => {
-      setCurrentImageIndex(index);
-      setSelectedImage(masterSlides[index]);
+    (imageIndex: number) => {
+      setCurrentImageIndex(imageIndex);
+      setSelectedImage(imageSlides[imageIndex]);
     },
-    [masterSlides]
+    [imageSlides]
   );
 
   const handleClose = useCallback(() => setSelectedImage(null), []);
 
   const handlePrevImage = useCallback(() => {
-    const newIndex = currentImageIndex > 0 ? currentImageIndex - 1 : masterSlides.length - 1;
+    const newIndex = currentImageIndex > 0 ? currentImageIndex - 1 : imageSlides.length - 1;
     setCurrentImageIndex(newIndex);
-    setSelectedImage(masterSlides[newIndex]);
-  }, [currentImageIndex, masterSlides]);
+    setSelectedImage(imageSlides[newIndex]);
+  }, [currentImageIndex, imageSlides]);
 
   const handleNextImage = useCallback(() => {
-    const newIndex = currentImageIndex < masterSlides.length - 1 ? currentImageIndex + 1 : 0;
+    const newIndex = currentImageIndex < imageSlides.length - 1 ? currentImageIndex + 1 : 0;
     setCurrentImageIndex(newIndex);
-    setSelectedImage(masterSlides[newIndex]);
-  }, [currentImageIndex, masterSlides]);
+    setSelectedImage(imageSlides[newIndex]);
+  }, [currentImageIndex, imageSlides]);
+
+  // Track image index offset for lightbox (skip separators)
+  let imageCounter = -1;
 
   return (
     <section id="galeria" className="py-20 px-4 md:px-8 bg-gradient-to-b from-background via-muted/30 to-background">
@@ -74,6 +70,33 @@ const Galeria = () => {
             Revive los mejores momentos de cada año de formación
           </p>
         </motion.div>
+
+        {/* Hero banners grid */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
+          {galeriasPorAño.map((gallery, i) => (
+            <motion.div
+              key={gallery.year}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: i * 0.1 }}
+              className="relative h-[160px] sm:h-[200px] rounded-2xl overflow-hidden group"
+            >
+              <img
+                src={gallery.hero}
+                alt={`Edición ${gallery.year}`}
+                className="w-full h-full object-cover transition-transform duration-[6000ms] ease-out group-hover:scale-105"
+                loading="lazy"
+                decoding="async"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+              <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-4 text-white">
+                <span className="text-2xl sm:text-3xl font-black">{gallery.year}</span>
+                <p className="text-xs sm:text-sm text-white/80 leading-tight mt-0.5">{gallery.subtitle}</p>
+              </div>
+            </motion.div>
+          ))}
+        </div>
 
         {/* Single unified carousel */}
         <motion.div
@@ -111,16 +134,35 @@ const Galeria = () => {
             grabCursor={true}
             className="pb-14"
           >
-            {masterSlides.map((image, index) => (
-              <SwiperSlide key={`${image.flyerId}-${index}`}>
-                <BlurUpImage
-                  src={image.src}
-                  alt={image.alt}
-                  onClick={() => handleImageClick(index)}
-                  className="h-[240px] sm:h-[300px] md:h-[360px]"
-                />
-              </SwiperSlide>
-            ))}
+            {masterSlides.map((slide, index) => {
+              if (slide.type === "separator") {
+                return (
+                  <SwiperSlide key={`sep-${slide.year}`}>
+                    <div className="h-[240px] sm:h-[300px] md:h-[360px] flex items-center justify-center rounded-2xl bg-gradient-to-br from-primary/10 via-primary/5 to-muted/30 border border-border/30">
+                      <div className="text-center px-6">
+                        <div className="inline-block mb-3 px-5 py-1.5 bg-primary/15 backdrop-blur-sm rounded-full border border-primary/20">
+                          <span className="text-3xl sm:text-4xl font-black text-primary">{slide.year}</span>
+                        </div>
+                        <p className="text-sm sm:text-base text-muted-foreground font-medium">{slide.title}</p>
+                      </div>
+                    </div>
+                  </SwiperSlide>
+                );
+              }
+
+              imageCounter++;
+              const imgIdx = imageCounter;
+              return (
+                <SwiperSlide key={`${slide.flyerId}-${index}`}>
+                  <BlurUpImage
+                    src={slide.src}
+                    alt={slide.alt}
+                    onClick={() => handleImageClick(imgIdx)}
+                    className="h-[240px] sm:h-[300px] md:h-[360px]"
+                  />
+                </SwiperSlide>
+              );
+            })}
           </Swiper>
 
           {/* Nav buttons */}
