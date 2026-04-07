@@ -1,8 +1,9 @@
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, useRef } from "react";
 import { motion } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Navigation, Pagination } from "swiper/modules";
+import type { Swiper as SwiperType } from "swiper";
 import BlurUpImage from "./BlurUpImage";
 import GalleryLightbox from "./GalleryLightbox";
 import { galeriasPorAño, getMasterSlides } from "./data";
@@ -18,13 +19,33 @@ import "swiper/css/pagination";
 const Galeria = () => {
   const [selectedImage, setSelectedImage] = useState<ImageData | null>(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [activeYear, setActiveYear] = useState<number>(galeriasPorAño[0].year);
 
   const masterSlides = useMemo(() => getMasterSlides(galeriasPorAño), []);
 
-  // Only image slides for lightbox navigation
   const imageSlides = useMemo(
     () => masterSlides.filter((s): s is ImageData & { type?: "image"; flyerId?: string } => s.type !== "separator"),
     [masterSlides]
+  );
+
+  // Build a map: slide index → year
+  const slideYearMap = useMemo(() => {
+    const map: number[] = [];
+    let currentYear = galeriasPorAño[0].year;
+    masterSlides.forEach((slide, i) => {
+      if (slide.type === "separator") currentYear = slide.year;
+      map[i] = currentYear;
+    });
+    return map;
+  }, [masterSlides]);
+
+  const handleSlideChange = useCallback(
+    (swiper: SwiperType) => {
+      const realIndex = swiper.realIndex;
+      const year = slideYearMap[realIndex];
+      if (year && year !== activeYear) setActiveYear(year);
+    },
+    [slideYearMap, activeYear]
   );
 
   const handleImageClick = useCallback(
@@ -49,7 +70,6 @@ const Galeria = () => {
     setSelectedImage(imageSlides[newIndex]);
   }, [currentImageIndex, imageSlides]);
 
-  // Track image index offset for lightbox (skip separators)
   let imageCounter = -1;
 
   return (
@@ -71,31 +91,43 @@ const Galeria = () => {
           </p>
         </motion.div>
 
-        {/* Hero banners grid */}
+        {/* Hero banners grid — active year highlighted */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
-          {galeriasPorAño.map((gallery, i) => (
-            <motion.div
-              key={gallery.year}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: i * 0.1 }}
-              className="relative h-[160px] sm:h-[200px] rounded-2xl overflow-hidden group"
-            >
-              <img
-                src={gallery.hero}
-                alt={`Edición ${gallery.year}`}
-                className="w-full h-full object-cover transition-transform duration-[6000ms] ease-out group-hover:scale-105"
-                loading="lazy"
-                decoding="async"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
-              <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-4 text-white">
-                <span className="text-2xl sm:text-3xl font-black">{gallery.year}</span>
-                <p className="text-xs sm:text-sm text-white/80 leading-tight mt-0.5">{gallery.subtitle}</p>
-              </div>
-            </motion.div>
-          ))}
+          {galeriasPorAño.map((gallery, i) => {
+            const isActive = gallery.year === activeYear;
+            return (
+              <motion.div
+                key={gallery.year}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: i * 0.1 }}
+                className={`relative h-[160px] sm:h-[200px] rounded-2xl overflow-hidden group transition-all duration-500 ${
+                  isActive
+                    ? "ring-2 ring-primary ring-offset-2 ring-offset-background scale-[1.03] shadow-lg shadow-primary/20"
+                    : "opacity-50 grayscale hover:opacity-70 hover:grayscale-0"
+                }`}
+              >
+                <img
+                  src={gallery.hero}
+                  alt={`Edición ${gallery.year}`}
+                  className="w-full h-full object-cover transition-transform duration-[6000ms] ease-out group-hover:scale-105"
+                  loading="lazy"
+                  decoding="async"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+                <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-4 text-white">
+                  <span className="text-2xl sm:text-3xl font-black">{gallery.year}</span>
+                  <p className="text-xs sm:text-sm text-white/80 leading-tight mt-0.5">{gallery.subtitle}</p>
+                </div>
+                {isActive && (
+                  <div className="absolute top-2 right-2 px-2 py-0.5 bg-primary text-primary-foreground text-[10px] font-bold rounded-full uppercase tracking-wider">
+                    Viendo
+                  </div>
+                )}
+              </motion.div>
+            );
+          })}
         </div>
 
         {/* Single unified carousel */}
@@ -129,6 +161,7 @@ const Galeria = () => {
               disableOnInteraction: false,
               pauseOnMouseEnter: true,
             }}
+            onSlideChange={handleSlideChange}
             loop={true}
             speed={480}
             grabCursor={true}
@@ -165,7 +198,6 @@ const Galeria = () => {
             })}
           </Swiper>
 
-          {/* Nav buttons */}
           <button
             className="swiper-prev-master absolute left-0 sm:left-1 top-[45%] -translate-y-1/2 z-20 w-9 h-9 sm:w-11 sm:h-11 flex items-center justify-center bg-background/95 backdrop-blur-md rounded-full shadow-lg hover:bg-primary hover:text-primary-foreground active:scale-90 transition-all duration-200 border border-border/50"
             aria-label="Anterior"
@@ -179,12 +211,10 @@ const Galeria = () => {
             <ChevronRight className="w-5 h-5" />
           </button>
 
-          {/* Pagination dots */}
           <div className="swiper-pag-master flex justify-center gap-2 mt-2" />
         </motion.div>
       </div>
 
-      {/* Lightbox modal */}
       <GalleryLightbox
         selectedImage={selectedImage}
         onClose={handleClose}
