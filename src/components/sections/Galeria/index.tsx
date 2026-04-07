@@ -78,13 +78,15 @@ const Galeria = ({ galleries }: GaleriaProps = {}) => {
     setTimeout(() => scrollToIdx(0), 100);
   }, [scrollToIdx]);
 
-  // Click year card → toggle film strip
+  // Click year card → open film strip popup
   const handleYearClick = useCallback(
     (i: number) => {
       if (i === active) {
         setOpenYear((prev) => (prev === data[i].year ? null : data[i].year));
       } else {
         scrollToIdx(i);
+        // Open after scroll animation
+        setTimeout(() => setOpenYear(data[i].year), 400);
       }
     },
     [active, data, scrollToIdx]
