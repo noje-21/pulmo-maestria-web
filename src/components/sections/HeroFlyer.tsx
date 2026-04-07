@@ -159,7 +159,7 @@ const VideoPlayer = memo(function VideoPlayer({
 
   return (
     <motion.div
-      className="relative w-full aspect-video rounded-2xl overflow-hidden border border-white/10 bg-black transform-gpu"
+      className="relative w-full aspect-[4/3] sm:aspect-video rounded-2xl overflow-hidden border border-white/10 bg-black transform-gpu"
       style={{
         contain: "layout style paint",
         boxShadow: "0 30px 100px rgba(0,0,0,0.8)",
