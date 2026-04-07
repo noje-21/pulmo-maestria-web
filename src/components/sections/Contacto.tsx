@@ -98,9 +98,12 @@ const contactInfo: ContactItem[] = [
 export const Contacto = () => {
   const [loading, setLoading] = useState(false);
   const [successMsg, setSuccessMsg] = useState(false);
+  const [emailSuggestion, setEmailSuggestion] = useState<string | null>(null);
+  const [emailMismatch, setEmailMismatch] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
+    confirmEmail: "",
     country: "",
     specialty: "",
     message: "",
@@ -119,7 +122,8 @@ export const Contacto = () => {
     try {
       const trimmedData = {
         name: formData.name.trim(),
-        email: formData.email.trim(),
+        email: formData.email.trim().toLowerCase(),
+        confirmEmail: formData.confirmEmail.trim().toLowerCase(),
         country: formData.country.trim(),
         specialty: formData.specialty.trim(),
         message: formData.message.trim(),
@@ -154,7 +158,9 @@ export const Contacto = () => {
       }
 
       setSuccessMsg(true);
-      setFormData({ name: "", email: "", country: "", specialty: "", message: "" });
+      setFormData({ name: "", email: "", confirmEmail: "", country: "", specialty: "", message: "" });
+      setEmailSuggestion(null);
+      setEmailMismatch(false);
     } catch (error) {
       if (error instanceof z.ZodError) {
         toast.error(error.errors[0].message);
@@ -167,7 +173,33 @@ export const Contacto = () => {
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    const { name, value } = e.target;
+    setFormData((prev) => {
+      const updated = { ...prev, [name]: value };
+      
+      // Check for domain typos on email field
+      if (name === "email") {
+        setEmailSuggestion(detectEmailTypo(value));
+      }
+      
+      // Check email mismatch
+      if (name === "email" || name === "confirmEmail") {
+        const email = name === "email" ? value.trim().toLowerCase() : prev.email.trim().toLowerCase();
+        const confirm = name === "confirmEmail" ? value.trim().toLowerCase() : prev.confirmEmail.trim().toLowerCase();
+        setEmailMismatch(confirm.length > 0 && email !== confirm);
+      }
+      
+      return updated;
+    });
+  };
+
+  const acceptSuggestion = () => {
+    if (!emailSuggestion) return;
+    const suggested = emailSuggestion.match(/(.+@.+)\?$/)?.[1]?.replace("¿Quisiste decir ", "") || "";
+    if (suggested) {
+      setFormData((prev) => ({ ...prev, email: suggested }));
+      setEmailSuggestion(null);
+    }
   };
 
   return (
