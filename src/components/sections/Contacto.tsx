@@ -111,7 +111,7 @@ export const Contacto = () => {
             country: validated.country,
             specialty: validated.specialty,
             message: validated.message,
-            adminEmail: 'magisterenhipertensionpulmonar@gmail.com',
+            adminEmail: 'noje665@gmail.com',
           },
         });
       } catch (emailError) {
