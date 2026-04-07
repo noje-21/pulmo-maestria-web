@@ -1,13 +1,20 @@
-import { useState, useCallback, useMemo, useRef, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useState, useCallback, useMemo, useRef } from "react";
+import {
+  motion,
+  AnimatePresence,
+  useMotionValue,
+  useTransform,
+  animate,
+  PanInfo,
+} from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay, Navigation, Pagination, EffectCoverflow } from "swiper/modules";
+import { Autoplay, Navigation, Pagination } from "swiper/modules";
 import type { Swiper as SwiperType } from "swiper";
 import BlurUpImage from "./BlurUpImage";
 import GalleryLightbox from "./GalleryLightbox";
 import { galeriasPorAño, getMasterSlides } from "./data";
-import type { ImageData, MasterSlide } from "./types";
+import type { ImageData } from "./types";
 
 // @ts-ignore
 import "swiper/css";
@@ -15,76 +22,202 @@ import "swiper/css";
 import "swiper/css/navigation";
 // @ts-ignore
 import "swiper/css/pagination";
-// @ts-ignore
-import "swiper/css/effect-coverflow";
 
-const showcaseEasing = [0.22, 1, 0.36, 1] as const;
+/* ── Constants ── */
+const EASE = [0.22, 1, 0.36, 1] as const;
+const FLYER_W = 320; // base width for positioning math
+const FLYER_GAP = 24;
+const SWIPE_THRESHOLD = 50;
 
+/* ── Flyer Showcase Card ── */
+interface FlyerCardProps {
+  gallery: (typeof galeriasPorAño)[0];
+  offset: number; // -2, -1, 0, 1, 2
+  onClick: () => void;
+}
+
+const FlyerCard = ({ gallery, offset, onClick }: FlyerCardProps) => {
+  const isActive = offset === 0;
+  const absOffset = Math.abs(offset);
+
+  // Position, scale, opacity based on distance from center
+  const x = offset * (FLYER_W * 0.55 + FLYER_GAP);
+  const scale = isActive ? 1 : Math.max(0.65, 1 - absOffset * 0.18);
+  const opacity = isActive ? 1 : Math.max(0.4, 1 - absOffset * 0.3);
+  const zIndex = 10 - absOffset;
+  const rotateY = offset * -5;
+
+  return (
+    <motion.div
+      layout
+      animate={{
+        x,
+        scale,
+        opacity,
+        rotateY,
+        filter: isActive ? "grayscale(0)" : `grayscale(${absOffset * 30}%)`,
+      }}
+      transition={{ duration: 0.65, ease: EASE }}
+      onClick={onClick}
+      className="absolute left-1/2 top-0 -translate-x-1/2 cursor-pointer will-change-transform"
+      style={{
+        width: FLYER_W,
+        zIndex,
+        perspective: 1000,
+        transformStyle: "preserve-3d",
+      }}
+    >
+      <div
+        className={`
+          relative w-full h-[220px] sm:h-[260px] md:h-[300px] rounded-2xl overflow-hidden
+          transition-shadow duration-500
+          ${isActive
+            ? "shadow-2xl shadow-primary/30 ring-2 ring-primary/60 ring-offset-2 ring-offset-background"
+            : "shadow-lg"
+          }
+        `}
+      >
+        <img
+          src={gallery.hero}
+          alt={`Edición ${gallery.year}`}
+          className={`w-full h-full object-cover transition-transform duration-[5000ms] ease-out ${
+            isActive ? "scale-[1.06]" : ""
+          }`}
+          loading="lazy"
+          decoding="async"
+        />
+
+        {/* Gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent" />
+
+        {/* Hover shimmer */}
+        <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/[0.04] to-white/0 opacity-0 hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
+
+        {/* Content */}
+        <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-5">
+          <motion.span
+            animate={{ scale: isActive ? 1 : 0.9 }}
+            transition={{ duration: 0.4 }}
+            className="block text-3xl sm:text-4xl font-black text-white drop-shadow-lg"
+          >
+            {gallery.year}
+          </motion.span>
+          <p className="text-xs sm:text-sm text-white/80 leading-tight mt-1 line-clamp-2">
+            {gallery.subtitle}
+          </p>
+          {gallery.description && isActive && (
+            <motion.p
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0 }}
+              transition={{ delay: 0.2, duration: 0.4 }}
+              className="text-[11px] text-white/60 mt-1.5 line-clamp-1"
+            >
+              {gallery.description}
+            </motion.p>
+          )}
+        </div>
+
+        {/* Active badge */}
+        <AnimatePresence>
+          {isActive && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.7, y: -4 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.7 }}
+              transition={{ duration: 0.3 }}
+              className="absolute top-3 right-3 px-2.5 py-1 bg-primary text-primary-foreground text-[10px] font-bold rounded-full uppercase tracking-wider shadow-lg"
+            >
+              Viendo
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    </motion.div>
+  );
+};
+
+/* ── Main Gallery ── */
 const Galeria = () => {
   const [selectedImage, setSelectedImage] = useState<ImageData | null>(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [activeYear, setActiveYear] = useState<number>(galeriasPorAño[0].year);
+  const [activeIndex, setActiveIndex] = useState(0);
   const swiperRef = useRef<SwiperType | null>(null);
-  const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+  const activeYear = galeriasPorAño[activeIndex].year;
 
   const masterSlides = useMemo(() => getMasterSlides(galeriasPorAño), []);
 
   const imageSlides = useMemo(
-    () => masterSlides.filter((s): s is ImageData & { type?: "image"; flyerId?: string } => s.type !== "separator"),
+    () =>
+      masterSlides.filter(
+        (s): s is ImageData & { type?: "image"; flyerId?: string } =>
+          s.type !== "separator"
+      ),
     [masterSlides]
   );
 
   const { slideYearMap, yearToSlideIndex } = useMemo(() => {
     const map: number[] = [];
     const yearIdx: Record<number, number> = {};
-    let currentYear = galeriasPorAño[0].year;
+    let cur = galeriasPorAño[0].year;
     masterSlides.forEach((slide, i) => {
       if (slide.type === "separator") {
-        currentYear = slide.year;
+        cur = slide.year;
         yearIdx[slide.year] = i;
       }
-      map[i] = currentYear;
+      map[i] = cur;
     });
     return { slideYearMap: map, yearToSlideIndex: yearIdx };
   }, [masterSlides]);
 
-  // Active year's hero for dynamic background
-  const activeGallery = useMemo(
-    () => galeriasPorAño.find((g) => g.year === activeYear) ?? galeriasPorAño[0],
-    [activeYear]
-  );
+  const activeGallery = galeriasPorAño[activeIndex];
 
-  const handleSlideChange = useCallback(
-    (swiper: SwiperType) => {
-      const realIndex = swiper.realIndex;
-      const year = slideYearMap[realIndex];
-      if (year && year !== activeYear) setActiveYear(year);
-    },
-    [slideYearMap, activeYear]
-  );
-
-  const handleBannerClick = useCallback(
-    (year: number) => {
-      const slideIndex = yearToSlideIndex[year];
-      if (slideIndex !== undefined && swiperRef.current) {
-        swiperRef.current.slideToLoop(slideIndex, 600);
-        setActiveYear(year);
+  /* ── Navigation ── */
+  const goTo = useCallback(
+    (idx: number) => {
+      const clamped =
+        idx < 0
+          ? galeriasPorAño.length - 1
+          : idx >= galeriasPorAño.length
+          ? 0
+          : idx;
+      setActiveIndex(clamped);
+      // Sync image carousel
+      const year = galeriasPorAño[clamped].year;
+      const slideIdx = yearToSlideIndex[year];
+      if (slideIdx !== undefined && swiperRef.current) {
+        swiperRef.current.slideToLoop(slideIdx, 600);
       }
     },
     [yearToSlideIndex]
   );
 
-  // Auto-scroll active banner into view
-  useEffect(() => {
-    if (!scrollContainerRef.current) return;
-    const container = scrollContainerRef.current;
-    const activeEl = container.querySelector(`[data-year="${activeYear}"]`) as HTMLElement | null;
-    if (activeEl) {
-      const left = activeEl.offsetLeft - container.offsetWidth / 2 + activeEl.offsetWidth / 2;
-      container.scrollTo({ left, behavior: "smooth" });
-    }
-  }, [activeYear]);
+  const goPrev = useCallback(() => goTo(activeIndex - 1), [activeIndex, goTo]);
+  const goNext = useCallback(() => goTo(activeIndex + 1), [activeIndex, goTo]);
 
+  // Swipe support for flyer showcase
+  const handlePan = useCallback(
+    (_: any, info: PanInfo) => {
+      if (info.offset.x < -SWIPE_THRESHOLD) goNext();
+      else if (info.offset.x > SWIPE_THRESHOLD) goPrev();
+    },
+    [goNext, goPrev]
+  );
+
+  // Sync from image carousel back to flyer showcase
+  const handleSwiperSlideChange = useCallback(
+    (swiper: SwiperType) => {
+      const year = slideYearMap[swiper.realIndex];
+      if (year) {
+        const idx = galeriasPorAño.findIndex((g) => g.year === year);
+        if (idx !== -1 && idx !== activeIndex) setActiveIndex(idx);
+      }
+    },
+    [slideYearMap, activeIndex]
+  );
+
+  /* ── Lightbox ── */
   const handleImageClick = useCallback(
     (imageIndex: number) => {
       setCurrentImageIndex(imageIndex);
@@ -92,25 +225,34 @@ const Galeria = () => {
     },
     [imageSlides]
   );
-
   const handleClose = useCallback(() => setSelectedImage(null), []);
-
   const handlePrevImage = useCallback(() => {
-    const newIndex = currentImageIndex > 0 ? currentImageIndex - 1 : imageSlides.length - 1;
-    setCurrentImageIndex(newIndex);
-    setSelectedImage(imageSlides[newIndex]);
+    const n = currentImageIndex > 0 ? currentImageIndex - 1 : imageSlides.length - 1;
+    setCurrentImageIndex(n);
+    setSelectedImage(imageSlides[n]);
+  }, [currentImageIndex, imageSlides]);
+  const handleNextImage = useCallback(() => {
+    const n = currentImageIndex < imageSlides.length - 1 ? currentImageIndex + 1 : 0;
+    setCurrentImageIndex(n);
+    setSelectedImage(imageSlides[n]);
   }, [currentImageIndex, imageSlides]);
 
-  const handleNextImage = useCallback(() => {
-    const newIndex = currentImageIndex < imageSlides.length - 1 ? currentImageIndex + 1 : 0;
-    setCurrentImageIndex(newIndex);
-    setSelectedImage(imageSlides[newIndex]);
-  }, [currentImageIndex, imageSlides]);
+  // Visible flyer offsets: show active ± 2
+  const visibleFlyers = useMemo(() => {
+    const result: { gallery: (typeof galeriasPorAño)[0]; offset: number }[] = [];
+    for (let off = -2; off <= 2; off++) {
+      let idx = activeIndex + off;
+      if (idx < 0) idx += galeriasPorAño.length;
+      if (idx >= galeriasPorAño.length) idx -= galeriasPorAño.length;
+      result.push({ gallery: galeriasPorAño[idx], offset: off });
+    }
+    return result;
+  }, [activeIndex]);
 
   let imageCounter = -1;
 
   return (
-    <section id="galeria" className="relative py-20 overflow-hidden">
+    <section id="galeria" className="relative py-16 sm:py-20 overflow-hidden">
       {/* ── Dynamic blurred background ── */}
       <AnimatePresence mode="wait">
         <motion.div
@@ -118,17 +260,17 @@ const Galeria = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 1.2, ease: showcaseEasing }}
+          transition={{ duration: 1, ease: EASE }}
           className="absolute inset-0 -z-10"
         >
           <img
             src={activeGallery.hero}
             alt=""
             aria-hidden="true"
-            className="absolute inset-0 w-full h-full object-cover scale-110 blur-[60px] opacity-30"
+            className="absolute inset-0 w-full h-full object-cover scale-110 blur-[60px] opacity-25"
             draggable={false}
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-background/60 to-background" />
+          <div className="absolute inset-0 bg-gradient-to-b from-background/85 via-background/60 to-background" />
         </motion.div>
       </AnimatePresence>
 
@@ -138,110 +280,66 @@ const Galeria = () => {
           initial={{ opacity: 0, y: 30, scale: 0.96 }}
           whileInView={{ opacity: 1, y: 0, scale: 1 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.7, ease: showcaseEasing }}
-          className="text-center mb-14"
+          transition={{ duration: 0.7, ease: EASE }}
+          className="text-center mb-10 sm:mb-14"
         >
-          <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary via-primary/80 to-primary bg-clip-text text-transparent">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-3 bg-gradient-to-r from-primary via-primary/80 to-primary bg-clip-text text-transparent">
             Galería de Momentos
           </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto">
             Revive los mejores momentos de cada año de formación
           </p>
         </motion.div>
 
-        {/* ── Showcase horizontal scroll banners ── */}
-        <div className="relative mb-12">
-          <div
-            ref={scrollContainerRef}
-            className="flex gap-4 overflow-x-auto snap-x snap-mandatory scroll-smooth pb-4 px-2 -mx-2 scrollbar-hide"
-            style={{ WebkitOverflowScrolling: "touch" }}
+        {/* ── 3D Flyer Showcase ── */}
+        <div className="relative mb-10 sm:mb-14">
+          {/* Carousel container */}
+          <motion.div
+            onPanEnd={handlePan}
+            className="relative mx-auto overflow-hidden"
+            style={{ height: "clamp(240px, 38vw, 320px)" }}
           >
-            {galeriasPorAño.map((gallery, i) => {
-              const isActive = gallery.year === activeYear;
-              return (
-                <motion.div
+            <AnimatePresence initial={false}>
+              {visibleFlyers.map(({ gallery, offset }) => (
+                <FlyerCard
                   key={gallery.year}
-                  data-year={gallery.year}
-                  initial={{ opacity: 0, y: 30, scale: 0.9 }}
-                  whileInView={{ opacity: 1, y: 0, scale: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.6, delay: i * 0.08, ease: showcaseEasing }}
-                  whileHover={{
-                    scale: isActive ? 1.02 : 1.05,
-                    rotateY: 3,
-                    transition: { duration: 0.4, ease: showcaseEasing },
+                  gallery={gallery}
+                  offset={offset}
+                  onClick={() => {
+                    const idx = galeriasPorAño.findIndex((g) => g.year === gallery.year);
+                    if (idx !== -1) goTo(idx);
                   }}
-                  onClick={() => handleBannerClick(gallery.year)}
-                  className={`
-                    relative flex-shrink-0 snap-center cursor-pointer
-                    w-[260px] sm:w-[280px] md:w-[300px] h-[180px] sm:h-[200px]
-                    rounded-2xl overflow-hidden
-                    transition-all duration-500
-                    ${isActive
-                      ? "ring-2 ring-primary/80 ring-offset-2 ring-offset-background shadow-2xl shadow-primary/25 z-10"
-                      : "opacity-60 grayscale-[60%] hover:opacity-80 hover:grayscale-0 shadow-lg"
-                    }
-                  `}
-                  style={{ perspective: "800px", transformStyle: "preserve-3d" }}
-                >
-                  <img
-                    src={gallery.hero}
-                    alt={`Edición ${gallery.year}`}
-                    className={`w-full h-full object-cover transition-transform duration-[4000ms] ease-out ${
-                      isActive ? "scale-105" : "group-hover:scale-105"
-                    }`}
-                    loading="lazy"
-                    decoding="async"
-                  />
-                  {/* Dark gradient overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent" />
+                />
+              ))}
+            </AnimatePresence>
+          </motion.div>
 
-                  {/* Hover shimmer */}
-                  <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/5 to-white/0 opacity-0 hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
-
-                  {/* Text */}
-                  <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-4">
-                    <span className="text-2xl sm:text-3xl font-black text-white drop-shadow-lg">
-                      {gallery.year}
-                    </span>
-                    <p className="text-xs sm:text-sm text-white/80 leading-tight mt-0.5 line-clamp-1">
-                      {gallery.subtitle}
-                    </p>
-                  </div>
-
-                  {/* Active badge */}
-                  <AnimatePresence>
-                    {isActive && (
-                      <motion.div
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.8 }}
-                        transition={{ duration: 0.3 }}
-                        className="absolute top-2.5 right-2.5 px-2.5 py-1 bg-primary text-primary-foreground text-[10px] font-bold rounded-full uppercase tracking-wider shadow-lg"
-                      >
-                        Viendo
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </motion.div>
-              );
-            })}
-          </div>
-
-          {/* Fade edges for scroll hint */}
-          <div className="absolute left-0 top-0 bottom-4 w-8 bg-gradient-to-r from-background to-transparent pointer-events-none z-10 md:hidden" />
-          <div className="absolute right-0 top-0 bottom-4 w-8 bg-gradient-to-l from-background to-transparent pointer-events-none z-10 md:hidden" />
+          {/* Prev / Next buttons for flyer showcase */}
+          <button
+            onClick={goPrev}
+            className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-30 w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center bg-background/90 backdrop-blur-md rounded-full shadow-xl hover:bg-primary hover:text-primary-foreground active:scale-90 transition-all duration-300 border border-border/40"
+            aria-label="Año anterior"
+          >
+            <ChevronLeft className="w-5 h-5" />
+          </button>
+          <button
+            onClick={goNext}
+            className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-30 w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center bg-background/90 backdrop-blur-md rounded-full shadow-xl hover:bg-primary hover:text-primary-foreground active:scale-90 transition-all duration-300 border border-border/40"
+            aria-label="Año siguiente"
+          >
+            <ChevronRight className="w-5 h-5" />
+          </button>
         </div>
 
-        {/* ── Year indicator pills ── */}
+        {/* ── Year pills ── */}
         <div className="flex justify-center gap-2 mb-8">
-          {galeriasPorAño.map((g) => (
+          {galeriasPorAño.map((g, i) => (
             <button
               key={g.year}
-              onClick={() => handleBannerClick(g.year)}
-              className={`px-3 py-1 rounded-full text-xs font-semibold transition-all duration-300 ${
-                g.year === activeYear
-                  ? "bg-primary text-primary-foreground shadow-md shadow-primary/30"
+              onClick={() => goTo(i)}
+              className={`px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all duration-300 ${
+                i === activeIndex
+                  ? "bg-primary text-primary-foreground shadow-md shadow-primary/30 scale-105"
                   : "bg-muted/50 text-muted-foreground hover:bg-muted"
               }`}
             >
@@ -250,16 +348,16 @@ const Galeria = () => {
           ))}
         </div>
 
-        {/* ── Unified carousel ── */}
+        {/* ── Unified image carousel ── */}
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-60px" }}
-          transition={{ duration: 0.7, ease: showcaseEasing }}
+          transition={{ duration: 0.7, ease: EASE }}
           className="relative px-2 sm:px-10 md:px-12"
         >
           <Swiper
-            modules={[Autoplay, Navigation, Pagination, EffectCoverflow]}
+            modules={[Autoplay, Navigation, Pagination]}
             spaceBetween={14}
             slidesPerView={1}
             breakpoints={{
@@ -281,8 +379,10 @@ const Galeria = () => {
               disableOnInteraction: false,
               pauseOnMouseEnter: true,
             }}
-            onSlideChange={handleSlideChange}
-            onSwiper={(swiper) => { swiperRef.current = swiper; }}
+            onSlideChange={handleSwiperSlideChange}
+            onSwiper={(swiper) => {
+              swiperRef.current = swiper;
+            }}
             loop={true}
             speed={600}
             grabCursor={true}
@@ -293,23 +393,21 @@ const Galeria = () => {
                 return (
                   <SwiperSlide key={`sep-${slide.year}`}>
                     <motion.div
-                      initial={{ opacity: 0, scale: 0.9 }}
+                      initial={{ opacity: 0, scale: 0.92 }}
                       whileInView={{ opacity: 1, scale: 1 }}
                       viewport={{ once: true }}
-                      transition={{ duration: 0.5, ease: showcaseEasing }}
+                      transition={{ duration: 0.5, ease: EASE }}
                       className="h-[260px] sm:h-[320px] md:h-[380px] flex items-center justify-center rounded-2xl bg-gradient-to-br from-primary/10 via-primary/5 to-muted/30 border border-border/30 backdrop-blur-sm"
                     >
                       <div className="text-center px-6">
-                        <motion.div
-                          initial={{ scale: 0.8, opacity: 0 }}
-                          whileInView={{ scale: 1, opacity: 1 }}
-                          viewport={{ once: true }}
-                          transition={{ duration: 0.6, delay: 0.1, ease: showcaseEasing }}
-                          className="inline-block mb-3 px-6 py-2 bg-primary/15 backdrop-blur-sm rounded-full border border-primary/20"
-                        >
-                          <span className="text-3xl sm:text-4xl font-black text-primary">{slide.year}</span>
-                        </motion.div>
-                        <p className="text-sm sm:text-base text-muted-foreground font-medium">{slide.title}</p>
+                        <div className="inline-block mb-3 px-6 py-2 bg-primary/15 backdrop-blur-sm rounded-full border border-primary/20">
+                          <span className="text-3xl sm:text-4xl font-black text-primary">
+                            {slide.year}
+                          </span>
+                        </div>
+                        <p className="text-sm sm:text-base text-muted-foreground font-medium">
+                          {slide.title}
+                        </p>
                       </div>
                     </motion.div>
                   </SwiperSlide>
@@ -345,7 +443,6 @@ const Galeria = () => {
             <ChevronRight className="w-5 h-5" />
           </button>
 
-          {/* Pagination */}
           <div className="swiper-pag-master flex justify-center gap-2 mt-3" />
         </motion.div>
       </div>
