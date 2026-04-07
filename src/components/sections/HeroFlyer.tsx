@@ -1,5 +1,5 @@
 import { useRef, useState, useCallback, useEffect, memo } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { ExternalLink, Phone, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -94,7 +94,17 @@ const CountdownTimer = memo(function CountdownTimer() {
 });
 
 /* ─── Video Player — A/B crossfade, self-contained ─── */
-const VideoPlayer = memo(function VideoPlayer({ currentSrc }: { currentSrc: string }) {
+const VideoPlayer = memo(function VideoPlayer({
+  currentSrc,
+  currentLabel,
+  onHoverStart,
+  onHoverEnd,
+}: {
+  currentSrc: string;
+  currentLabel: string;
+  onHoverStart?: () => void;
+  onHoverEnd?: () => void;
+}) {
   const refA = useRef<HTMLVideoElement>(null);
   const refB = useRef<HTMLVideoElement>(null);
   const activeRef = useRef<"A" | "B">("A");
@@ -132,34 +142,69 @@ const VideoPlayer = memo(function VideoPlayer({ currentSrc }: { currentSrc: stri
     }
   }, [currentSrc]);
 
+  const crossfadeTransition = "opacity 1.4s cubic-bezier(0.4, 0, 0.2, 1)";
+
   return (
-    <div
-      className="relative w-full aspect-[4/3] lg:aspect-[16/10] rounded-2xl overflow-hidden shadow-[0_16px_64px_rgba(0,0,0,0.6)] border border-white/10 bg-black"
-      style={{ contain: "layout style paint" }}
+    <motion.div
+      className="relative w-full aspect-[4/3] lg:aspect-[16/10] rounded-2xl overflow-hidden border border-white/10 bg-black"
+      style={{
+        contain: "layout style paint",
+        boxShadow: "0 30px 100px rgba(0,0,0,0.8)",
+      }}
+      onMouseEnter={onHoverStart}
+      onMouseLeave={onHoverEnd}
+      whileHover={{ scale: 1.01 }}
+      transition={{ duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
     >
-      <video
-        ref={refA}
-        autoPlay
-        muted
-        loop
-        playsInline
-        preload="auto"
-        className="absolute inset-0 w-full h-full object-contain"
-        style={{ opacity: opacities.a, transition: "opacity 1200ms ease-in-out", willChange: "opacity" }}
-        aria-hidden="true"
-      />
-      <video
-        ref={refB}
-        muted
-        loop
-        playsInline
-        preload="none"
-        className="absolute inset-0 w-full h-full object-contain"
-        style={{ opacity: opacities.b, transition: "opacity 1200ms ease-in-out", willChange: "opacity" }}
-        aria-hidden="true"
-      />
-      <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent pointer-events-none" />
-    </div>
+      {/* Ken Burns subtle animation wrapper */}
+      <motion.div
+        className="absolute inset-0"
+        animate={{ scale: [1, 1.02, 1] }}
+        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+        style={{ willChange: "transform" }}
+      >
+        <video
+          ref={refA}
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="metadata"
+          className="absolute inset-0 w-full h-full object-cover"
+          style={{ opacity: opacities.a, transition: crossfadeTransition, willChange: "opacity" }}
+          aria-hidden="true"
+        />
+        <video
+          ref={refB}
+          muted
+          loop
+          playsInline
+          preload="none"
+          className="absolute inset-0 w-full h-full object-cover"
+          style={{ opacity: opacities.b, transition: crossfadeTransition, willChange: "opacity" }}
+          aria-hidden="true"
+        />
+      </motion.div>
+
+      {/* Cinematic overlay */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-transparent pointer-events-none" />
+
+      {/* Dynamic video label */}
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={currentLabel}
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -6 }}
+          transition={{ duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
+          className="absolute bottom-4 left-4 z-10 pointer-events-none"
+        >
+          <span className="inline-block px-3 py-1.5 rounded-lg text-white/70 text-xs font-medium backdrop-blur-md bg-black/30 border border-white/5">
+            {currentLabel}
+          </span>
+        </motion.div>
+      </AnimatePresence>
+    </motion.div>
   );
 });
 
@@ -223,7 +268,7 @@ const ProgressDots = memo(function ProgressDots({
           className={cn(
             "rounded-full transition-all duration-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent",
             i === current
-              ? "w-6 h-2 bg-accent"
+              ? "w-8 h-2.5 bg-accent shadow-[0_0_12px_hsl(var(--accent)/0.5)]"
               : "w-2 h-2 bg-white/30 hover:bg-white/60"
           )}
         />
@@ -317,8 +362,9 @@ const HeroText = memo(function HeroText({ onReservar }: { onReservar: () => void
 export const HeroFlyer = () => {
   const [idx, setIdx] = useState(0);
   const preloadedSet = useRef<Set<number>>(new Set([0]));
+  const hoveringRef = useRef(false);
 
-  const currentSrc = flyerVideos[idx].src;
+  const currentVideo = flyerVideos[idx];
 
   const [showReservar, setShowReservar] = useState(false);
 
@@ -328,6 +374,14 @@ export const HeroFlyer = () => {
 
   const goTo = useCallback((i: number) => {
     setIdx(i);
+  }, []);
+
+  const handleHoverStart = useCallback(() => {
+    hoveringRef.current = true;
+  }, []);
+
+  const handleHoverEnd = useCallback(() => {
+    hoveringRef.current = false;
   }, []);
 
   useEffect(() => {
@@ -345,7 +399,9 @@ export const HeroFlyer = () => {
     }, ROTATION_INTERVAL - PRELOAD_AHEAD);
 
     const rotateTimer = setTimeout(() => {
-      setIdx((prev) => (prev + 1) % flyerVideos.length);
+      if (!hoveringRef.current) {
+        setIdx((prev) => (prev + 1) % flyerVideos.length);
+      }
     }, ROTATION_INTERVAL);
 
     return () => {
@@ -378,7 +434,12 @@ export const HeroFlyer = () => {
             className="lg:col-span-5 h-full flex flex-col items-center justify-center"
             style={{ willChange: "auto" }}
           >
-            <VideoPlayer currentSrc={currentSrc} />
+            <VideoPlayer
+              currentSrc={currentVideo.src}
+              currentLabel={currentVideo.label}
+              onHoverStart={handleHoverStart}
+              onHoverEnd={handleHoverEnd}
+            />
             <ProgressDots total={flyerVideos.length} current={idx} onSelect={goTo} />
           </motion.div>
         </div>
@@ -391,7 +452,10 @@ export const HeroFlyer = () => {
             transition={{ duration: 0.45, ease: [0.25, 0.46, 0.45, 0.94] }}
             style={{ willChange: "auto" }}
           >
-            <VideoPlayer currentSrc={currentSrc} />
+            <VideoPlayer
+              currentSrc={currentVideo.src}
+              currentLabel={currentVideo.label}
+            />
             <ProgressDots total={flyerVideos.length} current={idx} onSelect={goTo} />
           </motion.div>
 
