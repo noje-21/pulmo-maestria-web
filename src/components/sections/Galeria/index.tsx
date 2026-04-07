@@ -333,14 +333,14 @@ const Galeria = () => {
           <motion.div
             onPanEnd={handlePan}
             className="relative mx-auto overflow-hidden"
-            style={{ height: 300 }}
+            style={{ height: cardWidth < CARD_W_SM ? 220 : cardWidth < CARD_W_MD ? 260 : 300 }}
           >
             {visibleFlyers.map(({ gallery, offset }) => (
               <FlyerCard
                 key={gallery.year}
                 gallery={gallery}
                 offset={offset}
-                cardWidth={CARD_W_MD}
+                cardWidth={cardWidth}
                 onClick={() => {
                   const idx = galeriasPorAño.findIndex((g) => g.year === gallery.year);
                   if (idx !== -1) goTo(idx);
