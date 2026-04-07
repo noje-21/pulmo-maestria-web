@@ -310,8 +310,6 @@ const Galeria = () => {
         </motion.div>
 
         {/* ── 3D Flyer Showcase ── */}
-        <div className="relative mb-10 sm:mb-14">
-          {/* Carousel container */}
         <div
           className="relative mb-10 sm:mb-14"
           onMouseEnter={() => setIsPaused(true)}
