@@ -20,6 +20,7 @@ const Galeria = () => {
   const [selectedImage, setSelectedImage] = useState<ImageData | null>(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [activeYear, setActiveYear] = useState<number>(galeriasPorAño[0].year);
+  const swiperRef = useRef<SwiperType | null>(null);
 
   const masterSlides = useMemo(() => getMasterSlides(galeriasPorAño), []);
 
@@ -28,15 +29,19 @@ const Galeria = () => {
     [masterSlides]
   );
 
-  // Build a map: slide index → year
-  const slideYearMap = useMemo(() => {
+  // Build a map: slide index → year, and year → separator slide index
+  const { slideYearMap, yearToSlideIndex } = useMemo(() => {
     const map: number[] = [];
+    const yearIdx: Record<number, number> = {};
     let currentYear = galeriasPorAño[0].year;
     masterSlides.forEach((slide, i) => {
-      if (slide.type === "separator") currentYear = slide.year;
+      if (slide.type === "separator") {
+        currentYear = slide.year;
+        yearIdx[slide.year] = i;
+      }
       map[i] = currentYear;
     });
-    return map;
+    return { slideYearMap: map, yearToSlideIndex: yearIdx };
   }, [masterSlides]);
 
   const handleSlideChange = useCallback(
@@ -46,6 +51,17 @@ const Galeria = () => {
       if (year && year !== activeYear) setActiveYear(year);
     },
     [slideYearMap, activeYear]
+  );
+
+  const handleBannerClick = useCallback(
+    (year: number) => {
+      const slideIndex = yearToSlideIndex[year];
+      if (slideIndex !== undefined && swiperRef.current) {
+        swiperRef.current.slideToLoop(slideIndex, 480);
+        setActiveYear(year);
+      }
+    },
+    [yearToSlideIndex]
   );
 
   const handleImageClick = useCallback(
