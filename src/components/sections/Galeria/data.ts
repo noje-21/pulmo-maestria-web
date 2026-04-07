@@ -36,7 +36,13 @@ import g2025_16 from "@/assets/secion/maestria_2025_16.jpg";
 import g2025_17 from "@/assets/secion/maestria_2025_17.jpg";
 import g2025_18 from "@/assets/secion/maestria_2025_18.jpg";
 
-import type { YearGallery } from "./types";
+import type { YearGallery, ImageData } from "./types";
+
+/** Unified master slides: all images from all years with flyerId for future use */
+export const getMasterSlides = (galleries: YearGallery[]): ImageData[] =>
+  galleries.flatMap((g) =>
+    g.images.map((img) => ({ ...img, flyerId: `flyer-${g.year}` }))
+  );
 
 export const galeriasPorAño: YearGallery[] = [
   {

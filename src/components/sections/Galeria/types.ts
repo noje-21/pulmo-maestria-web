@@ -2,6 +2,7 @@ export interface ImageData {
   src: string;
   alt: string;
   category?: string;
+  flyerId?: string;
 }
 
 export interface YearGallery {
