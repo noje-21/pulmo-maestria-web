@@ -277,15 +277,44 @@ export const Contacto = () => {
                       required
                       className="input-modern"
                     />
+                    <div>
+                      <Input
+                        name="email"
+                        type="email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        placeholder="Email"
+                        required
+                        className={`input-modern ${emailSuggestion ? "border-yellow-500 focus-visible:ring-yellow-500" : ""}`}
+                      />
+                      {emailSuggestion && (
+                        <button
+                          type="button"
+                          onClick={acceptSuggestion}
+                          className="mt-1.5 flex items-center gap-1.5 text-xs text-yellow-600 dark:text-yellow-400 hover:underline"
+                        >
+                          <AlertTriangle className="w-3.5 h-3.5" />
+                          {emailSuggestion}
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                  <div>
                     <Input
-                      name="email"
+                      name="confirmEmail"
                       type="email"
-                      value={formData.email}
+                      value={formData.confirmEmail}
                       onChange={handleChange}
-                      placeholder="Email"
+                      placeholder="Confirma tu email"
                       required
-                      className="input-modern"
+                      className={`input-modern ${emailMismatch ? "border-destructive focus-visible:ring-destructive" : ""}`}
                     />
+                    {emailMismatch && (
+                      <p className="mt-1.5 text-xs text-destructive flex items-center gap-1.5">
+                        <X className="w-3.5 h-3.5" />
+                        Los emails no coinciden
+                      </p>
+                    )}
                   </div>
                   <div className="grid sm:grid-cols-2 gap-4">
                     <Input
