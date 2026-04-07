@@ -334,7 +334,7 @@ const Galeria = () => {
           <motion.div
             onPanEnd={handlePan}
             className="relative mx-auto overflow-hidden"
-            style={{ height: cardWidth < CARD_W_SM ? 220 : cardWidth < CARD_W_MD ? 260 : 300 }}
+            style={{ height: getCardHeight(cardWidth) + 20 }}
           >
             {visibleFlyers.map(({ gallery, offset }) => (
               <FlyerCard
