@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import GalleryLightbox from "./GalleryLightbox";
 import FilmStrip from "./FilmStrip";
 import AnimatedGalleryYear from "./AnimatedGalleryYear";
+import FilmStripCarousel from "./FilmStripCarousel";
 import { galeriasPorAño } from "./data";
 import type { ImageData, YearGallery } from "./types";
 
@@ -92,13 +93,21 @@ const Galeria = ({ galleries }: GaleriaProps = {}) => {
         </motion.div>
 
         {/* Year sections with staggered grids */}
-        {data.map((gallery) => (
-          <AnimatedGalleryYear
-            key={gallery.year}
-            gallery={gallery}
-            onImageClick={handleImageClick}
-          />
-        ))}
+        {data.map((gallery) =>
+          gallery.year === data[0]?.year ? (
+            <FilmStripCarousel
+              key={gallery.year}
+              gallery={gallery}
+              onImageClick={handleImageClick}
+            />
+          ) : (
+            <AnimatedGalleryYear
+              key={gallery.year}
+              gallery={gallery}
+              onImageClick={handleImageClick}
+            />
+          )
+        )}
       </div>
 
       {/* Film strip popup */}
