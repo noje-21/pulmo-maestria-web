@@ -12,7 +12,7 @@ export const gallery2022: YearGallery = {
   title: "Programa Académico 2022",
   subtitle: "Bases en Cardiología Avanzada",
   description: "Fundamentos de la circulación pulmonar y hemodinámica",
-  hero: gallery3,
+  hero: gallery1,
   images: [
     { src: gallery14, alt: "Fisiopatología de la Circulación Pulmonar", category: "Bases Teóricas" },
     { src: gallery1, alt: "Evaluación Hemodinámica Avanzada", category: "Hemodinamia" },
