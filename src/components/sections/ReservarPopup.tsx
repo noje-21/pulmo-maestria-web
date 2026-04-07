@@ -1,4 +1,5 @@
-import { memo } from "react";
+import { memo, useEffect } from "react";
+import confetti from "canvas-confetti";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Calendar, MapPin, ExternalLink, Sparkles, CheckCircle, Users, Award, X } from "lucide-react";
