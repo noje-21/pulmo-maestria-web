@@ -150,23 +150,6 @@ const FilmStripCarousel = memo(function FilmStripCarousel({
                     className="absolute inset-0 w-full h-full object-cover transition-transform duration-[800ms] ease-out group-hover:scale-110"
                   />
 
-                  {/* Gradient overlay on hover */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-
-                  {/* Caption */}
-                  <div className="absolute bottom-0 left-0 right-0 p-3 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out">
-                    <span className="text-xs sm:text-sm text-white font-medium line-clamp-1 drop-shadow-lg">
-                      {image.alt}
-                    </span>
-                    {image.category && (
-                      <span className="text-[10px] text-white/60">{image.category}</span>
-                    )}
-                  </div>
-
-                  {/* Frame number */}
-                  <span className="absolute top-2 left-2 text-[10px] font-mono text-white/40 bg-black/30 backdrop-blur-sm px-1.5 py-0.5 rounded">
-                    {String(realIdx + 1).padStart(2, "0")}
-                  </span>
                 </motion.div>
               </motion.div>
             );
