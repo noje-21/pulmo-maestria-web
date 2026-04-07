@@ -135,12 +135,28 @@ const FlyerCard = ({ gallery, offset, onClick, cardWidth }: FlyerCardProps) => {
   );
 };
 
+/* ── Hook: responsive card width ── */
+const useCardWidth = () => {
+  const [width, setWidth] = useState(CARD_W_MD);
+  useEffect(() => {
+    const update = () => {
+      const vw = window.innerWidth;
+      setWidth(vw < 640 ? CARD_W_MOBILE : vw < 1024 ? CARD_W_SM : CARD_W_MD);
+    };
+    update();
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
+  }, []);
+  return width;
+};
+
 /* ── Main Gallery ── */
 const Galeria = () => {
   const [selectedImage, setSelectedImage] = useState<ImageData | null>(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [activeIndex, setActiveIndex] = useState(0);
   const swiperRef = useRef<SwiperType | null>(null);
+  const cardWidth = useCardWidth();
 
   const activeYear = galeriasPorAño[activeIndex].year;
 
