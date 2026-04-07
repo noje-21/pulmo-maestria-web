@@ -26,6 +26,7 @@ const itemVariants = {
 interface AnimatedGalleryYearProps {
   gallery: YearGallery;
   onImageClick: (gallery: YearGallery, index: number) => void;
+  onYearClick?: (year: number) => void;
 }
 
 const AnimatedGalleryYear = memo(function AnimatedGalleryYear({

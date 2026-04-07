@@ -8,6 +8,7 @@ const SCROLL_SPEED = 0.5; // px per frame
 interface FilmStripCarouselProps {
   gallery: YearGallery;
   onImageClick: (gallery: YearGallery, index: number) => void;
+  onYearClick?: (year: number) => void;
 }
 
 const FilmStripCarousel = memo(function FilmStripCarousel({
