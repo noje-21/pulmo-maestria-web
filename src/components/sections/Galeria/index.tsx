@@ -2,9 +2,6 @@ import { useState, useCallback, useMemo, useRef, useEffect } from "react";
 import {
   motion,
   AnimatePresence,
-  useMotionValue,
-  useTransform,
-  animate,
   PanInfo,
 } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
