@@ -1,8 +1,9 @@
-import { useRef, useState, useCallback, useEffect, memo } from "react";
+import { useRef, useState, useCallback, useEffect, memo, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ExternalLink, Phone, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { ReservarPopup } from "./ReservarPopup";
 
 interface FlyerVideo {
@@ -32,17 +33,17 @@ function getTimeLeft() {
   return { days, hours, minutes };
 }
 
-/* ─── Ambient glows — memoized so video rotation doesn't trigger repaint ─── */
+/* ─── Ambient glows — memoized, GPU-composited ─── */
 const AmbientGlows = memo(function AmbientGlows() {
   return (
     <>
       <div
-        className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-primary/8 rounded-full pointer-events-none"
-        style={{ filter: "blur(150px)", willChange: "auto" }}
+        className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-primary/8 rounded-full pointer-events-none transform-gpu"
+        style={{ filter: "blur(150px)" }}
       />
       <div
-        className="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-accent/6 rounded-full pointer-events-none"
-        style={{ filter: "blur(120px)", willChange: "auto" }}
+        className="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-accent/6 rounded-full pointer-events-none transform-gpu"
+        style={{ filter: "blur(120px)" }}
       />
     </>
   );
@@ -97,11 +98,13 @@ const CountdownTimer = memo(function CountdownTimer() {
 const VideoPlayer = memo(function VideoPlayer({
   currentSrc,
   currentLabel,
+  isMobile,
   onHoverStart,
   onHoverEnd,
 }: {
   currentSrc: string;
   currentLabel: string;
+  isMobile: boolean;
   onHoverStart?: () => void;
   onHoverEnd?: () => void;
 }) {
@@ -110,6 +113,7 @@ const VideoPlayer = memo(function VideoPlayer({
   const activeRef = useRef<"A" | "B">("A");
   const [opacities, setOpacities] = useState<{ a: number; b: number }>({ a: 1, b: 0 });
   const initializedSrc = useRef<string>("");
+  const [transitioning, setTransitioning] = useState(false);
 
   useEffect(() => {
     const v = refA.current;
@@ -133,6 +137,8 @@ const VideoPlayer = memo(function VideoPlayer({
     incoming.load();
     incoming.play().catch(() => {});
 
+    setTransitioning(true);
+
     if (isA) {
       activeRef.current = "B";
       setOpacities({ a: 0, b: 1 });
@@ -140,28 +146,34 @@ const VideoPlayer = memo(function VideoPlayer({
       activeRef.current = "A";
       setOpacities({ a: 1, b: 0 });
     }
+
+    // Clear willChange after crossfade completes
+    const tid = setTimeout(() => setTransitioning(false), 1500);
+    return () => clearTimeout(tid);
   }, [currentSrc]);
 
   const crossfadeTransition = "opacity 1.4s cubic-bezier(0.4, 0, 0.2, 1)";
 
+  // Only promote to GPU layer during active crossfade
+  const videoWillChange = transitioning ? "opacity" : "auto";
+
   return (
     <motion.div
-      className="relative w-full aspect-[4/3] lg:aspect-[16/10] rounded-2xl overflow-hidden border border-white/10 bg-black"
+      className="relative w-full aspect-[4/3] lg:aspect-[16/10] rounded-2xl overflow-hidden border border-white/10 bg-black transform-gpu"
       style={{
         contain: "layout style paint",
         boxShadow: "0 30px 100px rgba(0,0,0,0.8)",
       }}
       onMouseEnter={onHoverStart}
       onMouseLeave={onHoverEnd}
-      whileHover={{ scale: 1.03 }}
+      whileHover={isMobile ? undefined : { scale: 1.03 }}
       transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
     >
-      {/* Ken Burns subtle animation wrapper */}
+      {/* Ken Burns — disabled on mobile for GPU savings */}
       <motion.div
-        className="absolute inset-0"
-        animate={{ scale: [1, 1.02, 1] }}
-        transition={{ duration: 8, repeat: Infinity, ease: [0.4, 0, 0.2, 1] }}
-        style={{ willChange: "transform" }}
+        className="absolute inset-0 transform-gpu"
+        animate={isMobile ? undefined : { scale: [1, 1.02, 1] }}
+        transition={isMobile ? undefined : { duration: 8, repeat: Infinity, ease: [0.4, 0, 0.2, 1] }}
       >
         <video
           ref={refA}
@@ -171,7 +183,7 @@ const VideoPlayer = memo(function VideoPlayer({
           playsInline
           preload="metadata"
           className="absolute inset-0 w-full h-full object-cover"
-          style={{ opacity: opacities.a, transition: crossfadeTransition, willChange: "opacity" }}
+          style={{ opacity: opacities.a, transition: crossfadeTransition, willChange: videoWillChange }}
           aria-hidden="true"
         />
         <video
@@ -181,7 +193,7 @@ const VideoPlayer = memo(function VideoPlayer({
           playsInline
           preload="none"
           className="absolute inset-0 w-full h-full object-cover"
-          style={{ opacity: opacities.b, transition: crossfadeTransition, willChange: "opacity" }}
+          style={{ opacity: opacities.b, transition: crossfadeTransition, willChange: videoWillChange }}
           aria-hidden="true"
         />
       </motion.div>
@@ -199,7 +211,7 @@ const VideoPlayer = memo(function VideoPlayer({
           transition={{ duration: 0.45, ease: [0.4, 0, 0.2, 1] }}
           className="absolute bottom-4 left-4 z-10 pointer-events-none"
         >
-          <span className="inline-block px-3 py-1.5 rounded-lg text-white/70 text-xs font-medium backdrop-blur-md bg-black/30 border border-white/5">
+          <span className="inline-block px-3 py-1.5 rounded-lg text-white/70 text-xs font-medium bg-black/40 border border-white/5 lg:backdrop-blur-md lg:bg-black/30">
             {currentLabel}
           </span>
         </motion.div>
@@ -266,7 +278,8 @@ const ProgressDots = memo(function ProgressDots({
           onClick={() => onSelect(i)}
           aria-label={`Video ${i + 1}`}
           className={cn(
-            "rounded-full transition-all duration-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent",
+            "rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-accent",
+            "transition-[width,height,background-color,box-shadow] duration-500",
             i === current
               ? "w-8 h-2.5 bg-accent shadow-[0_0_12px_hsl(var(--accent)/0.5)]"
               : "w-2 h-2 bg-white/30 hover:bg-white/60"
@@ -363,6 +376,7 @@ export const HeroFlyer = () => {
   const [idx, setIdx] = useState(0);
   const preloadedSet = useRef<Set<number>>(new Set([0]));
   const hoveringRef = useRef(false);
+  const isMobile = useIsMobile();
 
   const currentVideo = flyerVideos[idx];
 
@@ -437,6 +451,7 @@ export const HeroFlyer = () => {
             <VideoPlayer
               currentSrc={currentVideo.src}
               currentLabel={currentVideo.label}
+              isMobile={false}
               onHoverStart={handleHoverStart}
               onHoverEnd={handleHoverEnd}
             />
@@ -455,6 +470,7 @@ export const HeroFlyer = () => {
             <VideoPlayer
               currentSrc={currentVideo.src}
               currentLabel={currentVideo.label}
+              isMobile={true}
             />
             <ProgressDots total={flyerVideos.length} current={idx} onSelect={goTo} />
           </motion.div>
