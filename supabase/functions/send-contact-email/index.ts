@@ -46,7 +46,7 @@ Deno.serve(async (req) => {
         'X-Connection-Api-Key': RESEND_API_KEY,
       },
       body: JSON.stringify({
-        from: 'Contacto MLCP <onboarding@resend.dev>',
+        from: 'Contacto MLCP <contacto@maestriacp.com>',
         to: [adminEmail],
         subject: `Nueva consulta de ${name}`,
         html: `
