@@ -69,7 +69,7 @@ const CountdownTimer = memo(function CountdownTimer() {
     <motion.div
       initial={{ opacity: 0, y: 15 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.35, delay: 0.45, ease: [0.25, 0.46, 0.45, 0.94] }}
+      transition={{ duration: 0.4, delay: 0.45, ease: [0.4, 0, 0.2, 1] }}
       className="mb-5"
       aria-label="Tiempo restante para el cierre de inscripciones"
       style={{ willChange: "auto" }}
@@ -153,14 +153,14 @@ const VideoPlayer = memo(function VideoPlayer({
       }}
       onMouseEnter={onHoverStart}
       onMouseLeave={onHoverEnd}
-      whileHover={{ scale: 1.01 }}
-      transition={{ duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
+      whileHover={{ scale: 1.03 }}
+      transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
     >
       {/* Ken Burns subtle animation wrapper */}
       <motion.div
         className="absolute inset-0"
         animate={{ scale: [1, 1.02, 1] }}
-        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+        transition={{ duration: 8, repeat: Infinity, ease: [0.4, 0, 0.2, 1] }}
         style={{ willChange: "transform" }}
       >
         <video
@@ -196,7 +196,7 @@ const VideoPlayer = memo(function VideoPlayer({
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -6 }}
-          transition={{ duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
+          transition={{ duration: 0.45, ease: [0.4, 0, 0.2, 1] }}
           className="absolute bottom-4 left-4 z-10 pointer-events-none"
         >
           <span className="inline-block px-3 py-1.5 rounded-lg text-white/70 text-xs font-medium backdrop-blur-md bg-black/30 border border-white/5">
@@ -224,7 +224,7 @@ const HeroCTAs = memo(function HeroCTAs({
         className="btn-hero group min-h-[52px] text-sm"
       >
         <span>🎓 Reservar mi lugar</span>
-        <ExternalLink className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+        <ExternalLink className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]" />
       </Button>
 
       <Button
@@ -239,9 +239,9 @@ const HeroCTAs = memo(function HeroCTAs({
             "_blank"
           )
         }
-        className="bg-white/5 border-2 border-white/20 text-white hover:bg-white/15 hover:border-white/40 font-semibold px-6 py-3.5 rounded-full transition-colors duration-300 min-h-[52px] text-sm group"
+        className="bg-white/5 border-2 border-white/20 text-white hover:bg-white/15 hover:border-white/40 font-semibold px-6 py-3.5 rounded-full transition-all duration-[400ms] ease-[cubic-bezier(0.4,0,0.2,1)] min-h-[52px] text-sm group"
       >
-        <Phone className="w-4 h-4 mr-2 group-hover:scale-110 transition-transform" />
+        <Phone className="w-4 h-4 mr-2 group-hover:scale-110 transition-transform duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]" />
         Hablar con asesor
       </Button>
     </div>
@@ -285,7 +285,7 @@ const HeroText = memo(function HeroText({ onReservar }: { onReservar: () => void
       <motion.div
         initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.35, delay: 0.1, ease: [0.25, 0.46, 0.45, 0.94] }}
+        transition={{ duration: 0.4, delay: 0.1, ease: [0.4, 0, 0.2, 1] }}
         className="mb-3"
         style={{ willChange: "auto" }}
       >
@@ -299,7 +299,7 @@ const HeroText = memo(function HeroText({ onReservar }: { onReservar: () => void
       <motion.div
         initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.35, delay: 0.2, ease: [0.25, 0.46, 0.45, 0.94] }}
+        transition={{ duration: 0.4, delay: 0.2, ease: [0.4, 0, 0.2, 1] }}
         className="mb-4"
         aria-label="Solo 15 cupos anuales disponibles"
         style={{ willChange: "auto" }}
@@ -316,7 +316,7 @@ const HeroText = memo(function HeroText({ onReservar }: { onReservar: () => void
       <motion.h1
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.45, delay: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
+        transition={{ duration: 0.45, delay: 0.3, ease: [0.4, 0, 0.2, 1] }}
         className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold text-white leading-[1.15] mb-4"
         style={{ willChange: "auto" }}
       >
@@ -330,7 +330,7 @@ const HeroText = memo(function HeroText({ onReservar }: { onReservar: () => void
       <motion.div
         initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.35, delay: 0.35, ease: [0.25, 0.46, 0.45, 0.94] }}
+        transition={{ duration: 0.4, delay: 0.35, ease: [0.4, 0, 0.2, 1] }}
         className="mb-5 space-y-1"
         style={{ willChange: "auto" }}
       >
@@ -349,7 +349,7 @@ const HeroText = memo(function HeroText({ onReservar }: { onReservar: () => void
       <motion.div
         initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.35, delay: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
+        transition={{ duration: 0.4, delay: 0.5, ease: [0.4, 0, 0.2, 1] }}
         style={{ willChange: "auto" }}
       >
         <HeroCTAs onReservar={onReservar} />
@@ -428,9 +428,9 @@ export const HeroFlyer = () => {
           </div>
 
           <motion.div
-            initial={{ opacity: 0, x: 40 }}
+            initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.55, delay: 0.15, ease: [0.25, 0.46, 0.45, 0.94] }}
+            transition={{ duration: 0.5, delay: 0.15, ease: [0.4, 0, 0.2, 1] }}
             className="lg:col-span-5 h-full flex flex-col items-center justify-center"
             style={{ willChange: "auto" }}
           >
@@ -449,7 +449,7 @@ export const HeroFlyer = () => {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.45, ease: [0.25, 0.46, 0.45, 0.94] }}
+            transition={{ duration: 0.45, ease: [0.4, 0, 0.2, 1] }}
             style={{ willChange: "auto" }}
           >
             <VideoPlayer
