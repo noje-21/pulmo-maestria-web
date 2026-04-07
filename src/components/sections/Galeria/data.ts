@@ -36,13 +36,20 @@ import g2025_16 from "@/assets/secion/maestria_2025_16.jpg";
 import g2025_17 from "@/assets/secion/maestria_2025_17.jpg";
 import g2025_18 from "@/assets/secion/maestria_2025_18.jpg";
 
-import type { YearGallery, ImageData } from "./types";
+import type { YearGallery, ImageData, MasterSlide } from "./types";
 
-/** Unified master slides: all images from all years with flyerId for future use */
-export const getMasterSlides = (galleries: YearGallery[]): ImageData[] =>
-  galleries.flatMap((g) =>
-    g.images.map((img) => ({ ...img, flyerId: `flyer-${g.year}` }))
-  );
+/** Unified master slides with separator slides between year groups */
+export const getMasterSlides = (galleries: YearGallery[]): MasterSlide[] =>
+  galleries.flatMap((g, i) => {
+    const images: MasterSlide[] = g.images.map((img) => ({
+      ...img,
+      type: "image" as const,
+      flyerId: `flyer-${g.year}`,
+    }));
+    // Add separator before each year group (including first)
+    const separator: MasterSlide = { type: "separator", year: g.year, title: g.title };
+    return [separator, ...images];
+  });
 
 export const galeriasPorAño: YearGallery[] = [
   {
