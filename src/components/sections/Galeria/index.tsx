@@ -24,18 +24,22 @@ import "swiper/css/pagination";
 const EASE = [0.22, 1, 0.36, 1] as const;
 const SWIPE_THRESHOLD = 50;
 
-/* Fixed card dimensions per breakpoint (applied via CSS) */
+/* Fixed card dimensions per breakpoint */
 const CARD_W_MOBILE = 260;
 const CARD_W_SM = 300;
 const CARD_W_MD = 340;
 const CARD_H_MOBILE = 200;
 const CARD_H_SM = 240;
 const CARD_H_MD = 280;
+const GAP = 16;
+
+const getCardHeight = (w: number) =>
+  w <= CARD_W_MOBILE ? CARD_H_MOBILE : w <= CARD_W_SM ? CARD_H_SM : CARD_H_MD;
 
 /* ── Flyer Showcase Card ── */
 interface FlyerCardProps {
   gallery: (typeof galeriasPorAño)[0];
-  offset: number; // -2, -1, 0, 1, 2
+  offset: number;
   onClick: () => void;
   cardWidth: number;
 }
@@ -43,35 +47,32 @@ interface FlyerCardProps {
 const FlyerCard = ({ gallery, offset, onClick, cardWidth }: FlyerCardProps) => {
   const isActive = offset === 0;
   const absOffset = Math.abs(offset);
+  const cardHeight = getCardHeight(cardWidth);
 
-  const gap = 20;
-  const x = offset * (cardWidth * 0.58 + gap);
-  const scale = isActive ? 1 : Math.max(0.7, 1 - absOffset * 0.15);
-  const opacity = isActive ? 1 : Math.max(0.45, 1 - absOffset * 0.28);
+  const step = cardWidth + GAP;
+  const x = offset * step * 0.55;
+  const scale = isActive ? 1 : Math.max(0.82, 1 - absOffset * 0.09);
+  const opacity = isActive ? 1 : Math.max(0.55, 1 - absOffset * 0.22);
   const zIndex = 10 - absOffset;
-  const rotateY = offset * -4;
+  const rotateY = offset * -3;
+  const blurPx = isActive ? 0 : absOffset * 1.5;
 
   return (
     <motion.div
-      animate={{
-        x,
-        scale,
-        opacity,
-        rotateY,
-      }}
-      transition={{ duration: 0.6, ease: EASE }}
+      animate={{ x, scale, opacity, rotateY }}
+      transition={{ duration: 0.5, ease: EASE }}
       onClick={onClick}
       className="absolute cursor-pointer will-change-transform"
       style={{
         width: cardWidth,
-        height: cardWidth < CARD_W_SM ? CARD_H_MOBILE : cardWidth < CARD_W_MD ? CARD_H_SM : CARD_H_MD,
+        height: cardHeight,
         left: "50%",
         top: "50%",
         marginLeft: -cardWidth / 2,
-        marginTop: -(cardWidth < CARD_W_SM ? CARD_H_MOBILE : cardWidth < CARD_W_MD ? CARD_H_SM : CARD_H_MD) / 2,
+        marginTop: -cardHeight / 2,
         zIndex,
-        perspective: 1000,
-        filter: isActive ? "grayscale(0)" : `grayscale(${absOffset * 25}%)`,
+        perspective: 1200,
+        filter: `blur(${blurPx}px) grayscale(${isActive ? 0 : absOffset * 20}%)`,
       }}
     >
       <div
