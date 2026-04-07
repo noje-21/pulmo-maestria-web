@@ -5,6 +5,14 @@ export interface ImageData {
   flyerId?: string;
 }
 
+export interface SeparatorSlide {
+  type: "separator";
+  year: number;
+  title: string;
+}
+
+export type MasterSlide = (ImageData & { type?: "image" }) | SeparatorSlide;
+
 export interface YearGallery {
   year: number;
   title: string;
