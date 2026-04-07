@@ -81,12 +81,6 @@ const GalleryLightbox = memo(function GalleryLightbox({
               <ChevronRight className="w-5 h-5 sm:w-7 sm:h-7" />
             </Button>
 
-            {/* Caption */}
-            <div className="absolute bottom-2 sm:bottom-4 left-1/2 -translate-x-1/2 text-center max-w-[90%] sm:max-w-2xl">
-              <p className="text-white text-sm sm:text-base font-semibold bg-black/70 backdrop-blur-md px-4 sm:px-6 py-2 rounded-full border border-white/10 shadow-2xl">
-                {selectedImage.alt}
-              </p>
-            </div>
           </motion.div>
         </motion.div>
       )}
