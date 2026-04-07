@@ -76,7 +76,7 @@ Deno.serve(async (req) => {
         'X-Connection-Api-Key': RESEND_API_KEY,
       },
       body: JSON.stringify({
-        from: 'Magíster en Hipertensión Pulmonar <onboarding@resend.dev>',
+        from: 'Magíster en Hipertensión Pulmonar <contacto@maestriacp.com>',
         to: [recipientEmail],
         subject: `Respuesta a tu consulta - Magíster en Hipertensión Pulmonar`,
         html: `
