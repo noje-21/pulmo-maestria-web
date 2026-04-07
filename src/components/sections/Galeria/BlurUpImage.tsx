@@ -1,4 +1,5 @@
 import { useState, useEffect, memo } from "react";
+import { motion } from "framer-motion";
 
 interface BlurUpImageProps {
   src: string;
@@ -7,12 +8,13 @@ interface BlurUpImageProps {
   className?: string;
 }
 
+const showcaseEasing = [0.22, 1, 0.36, 1] as const;
+
 /**
- * BlurUpImage — lightweight blur-up placeholder for gallery images:
- * - Tiny canvas-based blur placeholder generated on mount
- * - Smooth crossfade from blurred placeholder → sharp image
- * - CSS-only hover effects for desktop
- * - loading="lazy" + decoding="async" for performance
+ * BlurUpImage — cinematic blur-up gallery card:
+ * - Canvas-based blur placeholder with crossfade
+ * - Framer Motion hover: scale + subtle rotateY + overlay
+ * - Lazy loading + async decoding
  */
 const BlurUpImage = memo(function BlurUpImage({
   src,
@@ -23,7 +25,6 @@ const BlurUpImage = memo(function BlurUpImage({
   const [loaded, setLoaded] = useState(false);
   const [blurUrl, setBlurUrl] = useState<string | null>(null);
 
-  // Generate a tiny blurred placeholder from a downscaled version
   useEffect(() => {
     const img = new Image();
     img.crossOrigin = "anonymous";
@@ -32,7 +33,7 @@ const BlurUpImage = memo(function BlurUpImage({
     const handleLoad = () => {
       try {
         const canvas = document.createElement("canvas");
-        const size = 20; // Tiny thumbnail
+        const size = 20;
         canvas.width = size;
         canvas.height = Math.round((img.naturalHeight / img.naturalWidth) * size) || size;
         const ctx = canvas.getContext("2d");
@@ -55,9 +56,16 @@ const BlurUpImage = memo(function BlurUpImage({
   }, [src]);
 
   return (
-    <div
-      className={`relative overflow-hidden rounded-2xl shadow-xl cursor-pointer group ${className}`}
+    <motion.div
+      className={`relative overflow-hidden rounded-2xl shadow-xl cursor-pointer ${className}`}
       onClick={onClick}
+      whileHover={{
+        scale: 1.04,
+        rotateY: 2.5,
+        transition: { duration: 0.45, ease: showcaseEasing },
+      }}
+      whileTap={{ scale: 0.98 }}
+      style={{ perspective: "800px", transformStyle: "preserve-3d" }}
     >
       {/* Blur-up placeholder */}
       {blurUrl && !loaded && (
@@ -70,12 +78,12 @@ const BlurUpImage = memo(function BlurUpImage({
         />
       )}
 
-      {/* Gradient skeleton fallback when no blur data yet */}
+      {/* Gradient skeleton fallback */}
       {!blurUrl && !loaded && (
         <div className="absolute inset-0 bg-gradient-to-br from-muted/60 via-muted/30 to-muted/60 animate-pulse" />
       )}
 
-      {/* Full image with crossfade */}
+      {/* Full image */}
       <img
         src={src}
         alt={alt}
@@ -83,15 +91,24 @@ const BlurUpImage = memo(function BlurUpImage({
         decoding="async"
         sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
         onLoad={() => setLoaded(true)}
-        className={`w-full h-full object-cover transition-all duration-500 ease-out group-hover:scale-110 ${
-          loaded ? "opacity-100 blur-0" : "opacity-0 blur-sm"
+        className={`w-full h-full object-cover transition-all duration-[600ms] ${
+          loaded ? "opacity-100 blur-0 scale-100" : "opacity-0 blur-sm scale-105"
         }`}
+        style={{ transitionTimingFunction: "cubic-bezier(0.22, 1, 0.36, 1)" }}
         draggable={false}
       />
 
-      {/* Hover overlay with subtle vignette */}
-      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/15 transition-colors duration-500 pointer-events-none" />
-    </div>
+      {/* Elegant hover overlay — gradient vignette from bottom */}
+      <div
+        className="absolute inset-0 opacity-0 hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+        style={{
+          background: "linear-gradient(to top, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.08) 40%, transparent 100%)",
+        }}
+      />
+
+      {/* Top-edge light reflection on hover */}
+      <div className="absolute inset-x-0 top-0 h-1/3 bg-gradient-to-b from-white/[0.06] to-transparent opacity-0 hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+    </motion.div>
   );
 });
 
