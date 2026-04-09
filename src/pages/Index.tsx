@@ -8,7 +8,6 @@ import { Footer } from "@/components/sections/Footer";
 import MobileFunnelCTA from "@/components/common/MobileFunnelCTA";
 import { WhatsAppButton } from "@/components/common/WhatsAppButton";
 import { AIAssistant } from "@/components/common/AIAssistant";
-import { GuidedTour } from "@/components/common/GuidedTour";
 
 // Lazy-loaded sections (below the fold)
 const Hero = lazy(() => import("@/components/sections/Hero").then(m => ({ default: m.Hero })));
@@ -89,7 +88,6 @@ const Index = () => {
       {/* Atención al Cliente */}
       <WhatsAppButton />
       <AIAssistant />
-      <GuidedTour />
     </div>
   );
 };
