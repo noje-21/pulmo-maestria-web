@@ -49,3 +49,6 @@ export const Expertos = () => {
     </section>
   );
 };
+
+export default Expertos;
+
