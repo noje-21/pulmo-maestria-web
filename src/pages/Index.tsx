@@ -89,6 +89,7 @@ const Index = () => {
       {/* Atención al Cliente */}
       <WhatsAppButton />
       <AIAssistant />
+      <GuidedTour />
     </div>
   );
 };
