@@ -19,23 +19,32 @@ export const ExpertoCard = memo(function ExpertoCard({ experto, index }: Experto
         delay: Math.min(index, 5) * 0.06,
         ease: [0.25, 0.46, 0.45, 0.94],
       }}
-      className="group"
+      whileHover={{ y: -6, transition: { duration: 0.25, ease: "easeOut" } }}
+      className="group cursor-pointer"
     >
-      <div className="relative h-full rounded-xl border border-border/60 bg-card overflow-hidden shadow-[var(--shadow-sm)] hover:shadow-[var(--shadow-lg)] transition-all duration-300 hover:-translate-y-1">
-        {/* Top accent bar */}
-        <div className="h-0.5 bg-gradient-to-r from-primary/40 via-primary/60 to-primary/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+      <div className="relative h-full rounded-xl border border-border/60 bg-card overflow-hidden shadow-[var(--shadow-sm)] group-hover:shadow-[var(--shadow-xl)] group-hover:border-primary/25 transition-all duration-300">
+        {/* Animated top accent bar — grows on hover */}
+        <div className="h-0.5 group-hover:h-1 bg-gradient-to-r from-primary via-accent to-primary bg-[length:200%_100%] group-hover:animate-[shimmer_2s_linear_infinite] opacity-0 group-hover:opacity-100 transition-all duration-300" />
 
-        <div className="p-5 flex flex-col items-center text-center h-full">
-          {/* Photo */}
+        {/* Subtle background glow on hover */}
+        <div className="absolute inset-0 bg-gradient-to-b from-primary/[0.03] via-transparent to-accent/[0.02] opacity-0 group-hover:opacity-100 transition-opacity duration-400 pointer-events-none" />
+
+        <div className="relative p-5 flex flex-col items-center text-center h-full">
+          {/* Photo with ring animation */}
           <div className="relative mb-4">
-            <div className="absolute -inset-1 bg-gradient-to-br from-primary/20 to-accent/10 rounded-full blur-md opacity-0 group-hover:opacity-60 transition-opacity duration-400" />
+            {/* Outer glow ring */}
+            <div className="absolute -inset-2 rounded-full bg-gradient-to-br from-primary/30 via-accent/20 to-primary/30 opacity-0 group-hover:opacity-70 blur-lg transition-opacity duration-500" />
+            {/* Spinning ring */}
+            <div className="absolute -inset-1 rounded-full bg-gradient-conic from-primary via-accent to-primary opacity-0 group-hover:opacity-40 group-hover:animate-[spin_4s_linear_infinite] transition-opacity duration-300" />
+            {/* White ring to mask the spinning gradient */}
+            <div className="absolute inset-0 rounded-full bg-card" />
             <img
               src={experto.imagen}
               alt={experto.nombre}
               loading="lazy"
               decoding="async"
               sizes="(max-width: 768px) 80px, 96px"
-              className="relative w-20 h-20 md:w-24 md:h-24 object-cover rounded-full border-2 border-border/50 shadow-[var(--shadow-sm)] group-hover:border-primary/30 group-hover:scale-[1.03] transition-all duration-300"
+              className="relative w-20 h-20 md:w-24 md:h-24 object-cover rounded-full border-2 border-border/50 shadow-[var(--shadow-sm)] group-hover:border-primary/40 group-hover:scale-110 transition-all duration-400"
             />
           </div>
 
@@ -44,13 +53,13 @@ export const ExpertoCard = memo(function ExpertoCard({ experto, index }: Experto
             {experto.nombre}
           </h3>
 
-          {/* Role badge */}
-          <span className="inline-block px-2.5 py-0.5 bg-accent/8 text-accent text-xs font-semibold rounded-full mb-3">
+          {/* Role badge — accent pop on hover */}
+          <span className="inline-block px-2.5 py-0.5 bg-accent/8 text-accent text-xs font-semibold rounded-full mb-3 group-hover:bg-accent group-hover:text-accent-foreground transition-all duration-300">
             {experto.cargo}
           </span>
 
-          {/* Divider */}
-          <div className="w-8 h-px bg-border/60 mb-3" />
+          {/* Divider — widens on hover */}
+          <div className="w-8 group-hover:w-12 h-px bg-border/60 group-hover:bg-primary/40 mb-3 transition-all duration-300" />
 
           {/* Specialty */}
           <p className="text-xs text-muted-foreground leading-relaxed mb-2 line-clamp-2 flex-1">
@@ -58,9 +67,9 @@ export const ExpertoCard = memo(function ExpertoCard({ experto, index }: Experto
           </p>
 
           {/* Institution */}
-          <div className="flex items-center gap-1.5 mt-auto pt-1">
-            <Building2 className="w-3 h-3 text-muted-foreground/50 shrink-0" />
-            <p className="text-[11px] text-muted-foreground/60 leading-tight">
+          <div className="flex items-center gap-1.5 mt-auto pt-1 group-hover:text-primary/60 transition-colors duration-200">
+            <Building2 className="w-3 h-3 text-muted-foreground/50 group-hover:text-primary/50 shrink-0 transition-colors duration-200" />
+            <p className="text-[11px] text-muted-foreground/60 group-hover:text-muted-foreground leading-tight transition-colors duration-200">
               {experto.institucion}
             </p>
           </div>
