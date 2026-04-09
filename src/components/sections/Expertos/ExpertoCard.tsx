@@ -34,10 +34,8 @@ export const ExpertoCard = memo(function ExpertoCard({ experto, index }: Experto
           <div className="relative mb-4">
             {/* Outer glow ring */}
             <div className="absolute -inset-2 rounded-full bg-gradient-to-br from-primary/30 via-accent/20 to-primary/30 opacity-0 group-hover:opacity-70 blur-lg transition-opacity duration-500" />
-            {/* Spinning ring */}
-            <div className="absolute -inset-1 rounded-full bg-gradient-conic from-primary via-accent to-primary opacity-0 group-hover:opacity-40 group-hover:animate-[spin_4s_linear_infinite] transition-opacity duration-300" />
-            {/* White ring to mask the spinning gradient */}
-            <div className="absolute inset-0 rounded-full bg-card" />
+            {/* Inner ring highlight */}
+            <div className="absolute -inset-0.5 rounded-full bg-gradient-to-tr from-primary to-accent opacity-0 group-hover:opacity-30 transition-opacity duration-400" />
             <img
               src={experto.imagen}
               alt={experto.nombre}
