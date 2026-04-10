@@ -40,11 +40,20 @@ export const Expertos = () => {
         {director && <DirectorCard director={director} />}
 
         {/* Experts Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-5">
-          {otrosExpertos.map((experto, index) => (
-            <ExpertoCard key={experto.nombre} experto={experto} index={index} />
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-60px" }}
+          variants={{
+            hidden: {},
+            visible: { transition: { staggerChildren: 0.1, delayChildren: 0.15 } },
+          }}
+          className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-5"
+        >
+          {otrosExpertos.map((experto) => (
+            <ExpertoCard key={experto.nombre} experto={experto} />
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );

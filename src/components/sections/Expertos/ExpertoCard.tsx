@@ -5,20 +5,22 @@ import type { Experto } from "./data";
 
 interface ExpertoCardProps {
   experto: Experto;
-  index: number;
 }
 
-export const ExpertoCard = memo(function ExpertoCard({ experto, index }: ExpertoCardProps) {
+const cardVariants = {
+  hidden: { opacity: 0, y: 28, scale: 0.96 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: { duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] },
+  },
+};
+
+export const ExpertoCard = memo(function ExpertoCard({ experto }: ExpertoCardProps) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-40px" }}
-      transition={{
-        duration: 0.4,
-        delay: Math.min(index, 5) * 0.06,
-        ease: [0.25, 0.46, 0.45, 0.94],
-      }}
+      variants={cardVariants}
       whileHover={{ y: -6, transition: { duration: 0.25, ease: "easeOut" } }}
       className="group cursor-pointer"
     >
