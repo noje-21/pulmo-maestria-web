@@ -11,7 +11,7 @@ export const Expertos = () => {
   return (
     <section
       id="expertos"
-      className="py-20 md:py-28 bg-gradient-to-b from-background via-background to-muted/30 relative overflow-hidden"
+      className="py-20 md:py-28 bg-gradient-to-b from-background via-background to-muted/30 relative overflow-x-hidden"
     >
       {/* Subtle background pattern */}
       <div className="absolute inset-0 bg-dots-pattern opacity-20" />
