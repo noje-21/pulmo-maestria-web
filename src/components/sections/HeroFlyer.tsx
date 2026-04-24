@@ -75,10 +75,10 @@ const CountdownTimer = memo(function CountdownTimer() {
       aria-label="Tiempo restante para el cierre de inscripciones"
       style={{ willChange: "auto" }}
     >
-      <div className="inline-flex items-center divide-x divide-white/10 rounded-xl border border-white/10 bg-black/20 overflow-hidden">
+      <div className="inline-flex items-center divide-x divide-white/10 rounded-xl border border-white/10 bg-black/20 overflow-hidden max-w-full">
         {units.map(({ value, label }) => (
-          <div key={label} className="flex flex-col items-center px-3 py-2 gap-0.5 min-w-[48px]">
-            <span className="text-white font-bold text-lg sm:text-xl tabular-nums leading-none tracking-tight">
+          <div key={label} className="flex flex-col items-center px-2.5 sm:px-3 py-2 gap-0.5 min-w-[44px] sm:min-w-[48px]">
+            <span className="text-white font-bold text-base sm:text-lg md:text-xl tabular-nums leading-none tracking-tight">
               {String(value).padStart(2, "0")}
             </span>
             <span className="text-white/35 text-[9px] font-medium uppercase tracking-widest leading-none">
