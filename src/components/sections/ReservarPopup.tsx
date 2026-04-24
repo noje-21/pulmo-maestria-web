@@ -1,4 +1,4 @@
-import { memo, useEffect } from "react";
+import { memo, useEffect, useRef } from "react";
 import confetti from "canvas-confetti";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
@@ -17,6 +17,10 @@ interface ReservarPopupProps {
 }
 
 export const ReservarPopup = memo(function ReservarPopup({ isOpen, onClose }: ReservarPopupProps) {
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const closeBtnRef = useRef<HTMLButtonElement>(null);
+  const previouslyFocused = useRef<HTMLElement | null>(null);
+
   useEffect(() => {
     if (isOpen) {
       const duration = 800;
@@ -29,6 +33,54 @@ export const ReservarPopup = memo(function ReservarPopup({ isOpen, onClose }: Re
       requestAnimationFrame(frame);
     }
   }, [isOpen]);
+
+  // Body scroll lock + focus management + keyboard handling
+  useEffect(() => {
+    if (!isOpen) return;
+
+    previouslyFocused.current = document.activeElement as HTMLElement | null;
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    // Auto-focus close button on next tick (after mount + animation start)
+    const focusTimer = window.setTimeout(() => {
+      closeBtnRef.current?.focus();
+    }, 50);
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        e.preventDefault();
+        onClose();
+        return;
+      }
+      if (e.key === "Tab" && dialogRef.current) {
+        // Focus trap
+        const focusables = dialogRef.current.querySelectorAll<HTMLElement>(
+          'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])'
+        );
+        if (focusables.length === 0) return;
+        const first = focusables[0];
+        const last = focusables[focusables.length - 1];
+        const active = document.activeElement as HTMLElement | null;
+        if (e.shiftKey && active === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && active === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = prevOverflow;
+      window.clearTimeout(focusTimer);
+      previouslyFocused.current?.focus?.();
+    };
+  }, [isOpen, onClose]);
 
   const scrollToContact = () => {
     onClose();
@@ -44,6 +96,8 @@ export const ReservarPopup = memo(function ReservarPopup({ isOpen, onClose }: Re
           className="fixed inset-0 z-50 flex items-start sm:items-center justify-center p-2 sm:p-4 overflow-y-auto overscroll-contain"
           role="dialog"
           aria-modal="true"
+          aria-labelledby="reservar-popup-title"
+          style={{ WebkitOverflowScrolling: "touch" } as React.CSSProperties}
         >
           {/* Backdrop */}
           <motion.div
@@ -57,16 +111,19 @@ export const ReservarPopup = memo(function ReservarPopup({ isOpen, onClose }: Re
 
           {/* Content */}
           <motion.div
+            ref={dialogRef}
             initial={{ scale: 0.95, opacity: 0, y: 20 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.97, opacity: 0, y: 10 }}
             transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
             className="relative z-10 w-full max-w-5xl my-auto max-h-[calc(100dvh-1rem)] sm:max-h-[calc(100dvh-2rem)] overflow-y-auto overscroll-contain rounded-2xl sm:rounded-3xl bg-gradient-to-br from-primary-dark via-primary to-primary-dark shadow-2xl border border-white/10"
+            style={{ WebkitOverflowScrolling: "touch" } as React.CSSProperties}
           >
             {/* Close button */}
             <button
+              ref={closeBtnRef}
               onClick={onClose}
-              className="absolute top-3 right-3 sm:top-4 sm:right-4 z-30 p-2 rounded-full bg-black/40 hover:bg-black/60 text-white transition-colors backdrop-blur-sm border border-white/15"
+              className="sticky top-3 sm:top-4 float-right mr-3 sm:mr-4 z-30 p-2 rounded-full bg-black/50 hover:bg-black/70 text-white transition-colors backdrop-blur-sm border border-white/15 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent"
               aria-label="Cerrar"
             >
               <X className="w-5 h-5" />
@@ -76,7 +133,7 @@ export const ReservarPopup = memo(function ReservarPopup({ isOpen, onClose }: Re
             <div className="absolute top-0 left-0 w-[300px] h-[300px] bg-accent/15 rounded-full blur-[120px] -translate-x-1/2 -translate-y-1/2 pointer-events-none" />
             <div className="absolute bottom-0 right-0 w-[400px] h-[400px] bg-accent/10 rounded-full blur-[150px] translate-x-1/2 translate-y-1/2 pointer-events-none" />
 
-            <div className="relative z-10 px-4 pt-14 pb-6 sm:p-8 md:p-10">
+            <div className="relative z-10 px-4 pt-2 pb-8 sm:px-8 sm:pt-4 sm:pb-10 md:px-10">
               <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
                 {/* Left - Content */}
                 <motion.div
@@ -98,6 +155,7 @@ export const ReservarPopup = memo(function ReservarPopup({ isOpen, onClose }: Re
 
                   {/* Title */}
                   <motion.h2
+                    id="reservar-popup-title"
                     initial={{ opacity: 0, y: 15 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5, delay: 0.25 }}
@@ -212,10 +270,10 @@ export const ReservarPopup = memo(function ReservarPopup({ isOpen, onClose }: Re
                         variant="outline"
                         size="lg"
                         onClick={() => (window.location.href = "https://campus.maestriacp.com/")}
-                        className="bg-transparent border-2 border-white/30 text-white hover:bg-white/10 hover:border-white/50 font-semibold px-8 py-5 rounded-full transition-all duration-400 min-h-[48px] w-full"
+                        className="bg-white/5 border-2 border-accent/40 text-white hover:bg-accent/15 hover:border-accent/60 font-semibold px-6 py-3.5 rounded-full transition-all duration-[400ms] ease-[cubic-bezier(0.4,0,0.2,1)] min-h-[52px] w-full group"
                       >
-                        Ver Campus Virtual
-                        <ExternalLink className="w-4 h-4 ml-2" />
+                        <span>Ver Campus Virtual</span>
+                        <ExternalLink className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]" />
                       </Button>
                     </div>
 
