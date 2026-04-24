@@ -242,6 +242,16 @@ const HeroCTAs = memo(function HeroCTAs({
       <Button
         variant="outline"
         size="lg"
+        onClick={() => (window.location.href = "https://campus.maestriacp.com/")}
+        className="bg-white/5 border-2 border-accent/40 text-white hover:bg-accent/15 hover:border-accent/60 font-semibold px-6 py-3.5 rounded-full transition-all duration-[400ms] ease-[cubic-bezier(0.4,0,0.2,1)] min-h-[52px] text-sm group"
+      >
+        <span>Ver Campus Virtual</span>
+        <ExternalLink className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]" />
+      </Button>
+
+      <Button
+        variant="outline"
+        size="lg"
         onClick={() =>
           window.open(
             "https://wa.me/5491159064234?text=" +
