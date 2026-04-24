@@ -40,29 +40,33 @@ export const ReservarPopup = memo(function ReservarPopup({ isOpen, onClose }: Re
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div
+          className="fixed inset-0 z-50 flex items-start sm:items-center justify-center p-2 sm:p-4 overflow-y-auto overscroll-contain"
+          role="dialog"
+          aria-modal="true"
+        >
           {/* Backdrop */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="absolute inset-0 bg-black/70 backdrop-blur-md"
+            className="fixed inset-0 bg-black/70 backdrop-blur-md"
             onClick={onClose}
           />
 
           {/* Content */}
           <motion.div
-            initial={{ scale: 0.85, opacity: 0, y: 40 }}
+            initial={{ scale: 0.95, opacity: 0, y: 20 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
-            exit={{ scale: 0.9, opacity: 0, y: 20 }}
+            exit={{ scale: 0.97, opacity: 0, y: 10 }}
             transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-            className="relative z-10 w-full max-w-5xl max-h-[90vh] overflow-y-auto rounded-3xl bg-gradient-to-br from-primary-dark via-primary to-primary-dark shadow-2xl border border-white/10"
+            className="relative z-10 w-full max-w-5xl my-auto max-h-[calc(100dvh-1rem)] sm:max-h-[calc(100dvh-2rem)] overflow-y-auto overscroll-contain rounded-2xl sm:rounded-3xl bg-gradient-to-br from-primary-dark via-primary to-primary-dark shadow-2xl border border-white/10"
           >
             {/* Close button */}
             <button
               onClick={onClose}
-              className="absolute top-4 right-4 z-20 p-2 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors"
+              className="absolute top-3 right-3 sm:top-4 sm:right-4 z-30 p-2 rounded-full bg-black/40 hover:bg-black/60 text-white transition-colors backdrop-blur-sm border border-white/15"
               aria-label="Cerrar"
             >
               <X className="w-5 h-5" />
@@ -72,7 +76,7 @@ export const ReservarPopup = memo(function ReservarPopup({ isOpen, onClose }: Re
             <div className="absolute top-0 left-0 w-[300px] h-[300px] bg-accent/15 rounded-full blur-[120px] -translate-x-1/2 -translate-y-1/2 pointer-events-none" />
             <div className="absolute bottom-0 right-0 w-[400px] h-[400px] bg-accent/10 rounded-full blur-[150px] translate-x-1/2 translate-y-1/2 pointer-events-none" />
 
-            <div className="relative z-10 p-6 sm:p-8 md:p-10">
+            <div className="relative z-10 px-4 pt-14 pb-6 sm:p-8 md:p-10">
               <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
                 {/* Left - Content */}
                 <motion.div
