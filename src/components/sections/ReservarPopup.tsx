@@ -66,8 +66,9 @@ export const ReservarPopup = memo(function ReservarPopup({ isOpen, onClose }: Re
             {/* Close button */}
             <button
               onClick={onClose}
-              className="absolute top-4 right-4 z-20 p-2 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors"
+              className="sticky top-3 right-3 ml-auto z-20 flex p-2 rounded-full bg-black/40 hover:bg-black/60 text-white transition-colors backdrop-blur-sm border border-white/15 -mb-10"
               aria-label="Cerrar"
+              style={{ float: "right" }}
             >
               <X className="w-5 h-5" />
             </button>
@@ -76,7 +77,7 @@ export const ReservarPopup = memo(function ReservarPopup({ isOpen, onClose }: Re
             <div className="absolute top-0 left-0 w-[300px] h-[300px] bg-accent/15 rounded-full blur-[120px] -translate-x-1/2 -translate-y-1/2 pointer-events-none" />
             <div className="absolute bottom-0 right-0 w-[400px] h-[400px] bg-accent/10 rounded-full blur-[150px] translate-x-1/2 translate-y-1/2 pointer-events-none" />
 
-            <div className="relative z-10 p-6 sm:p-8 md:p-10">
+            <div className="relative z-10 px-4 py-6 sm:p-8 md:p-10">
               <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
                 {/* Left - Content */}
                 <motion.div
