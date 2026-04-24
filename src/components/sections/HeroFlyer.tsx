@@ -75,10 +75,10 @@ const CountdownTimer = memo(function CountdownTimer() {
       aria-label="Tiempo restante para el cierre de inscripciones"
       style={{ willChange: "auto" }}
     >
-      <div className="inline-flex items-center divide-x divide-white/10 rounded-xl border border-white/10 bg-black/20 overflow-hidden">
+      <div className="inline-flex items-center divide-x divide-white/10 rounded-xl border border-white/10 bg-black/20 overflow-hidden max-w-full">
         {units.map(({ value, label }) => (
-          <div key={label} className="flex flex-col items-center px-3 py-2 gap-0.5 min-w-[48px]">
-            <span className="text-white font-bold text-lg sm:text-xl tabular-nums leading-none tracking-tight">
+          <div key={label} className="flex flex-col items-center px-2.5 sm:px-3 py-2 gap-0.5 min-w-[44px] sm:min-w-[48px]">
+            <span className="text-white font-bold text-base sm:text-lg md:text-xl tabular-nums leading-none tracking-tight">
               {String(value).padStart(2, "0")}
             </span>
             <span className="text-white/35 text-[9px] font-medium uppercase tracking-widest leading-none">
@@ -340,7 +340,7 @@ const HeroText = memo(function HeroText({ onReservar }: { onReservar: () => void
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.45, delay: 0.3, ease: [0.4, 0, 0.2, 1] }}
-        className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold text-white leading-[1.15] mb-4"
+        className="text-[1.4rem] xs:text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold text-white leading-[1.15] mb-4"
         style={{ willChange: "auto" }}
       >
         La experiencia que está transformando la{" "}
@@ -357,10 +357,10 @@ const HeroText = memo(function HeroText({ onReservar }: { onReservar: () => void
         className="mb-5 space-y-1"
         style={{ willChange: "auto" }}
       >
-        <p className="text-white/60 text-sm font-medium">
+        <p className="text-white/60 text-xs sm:text-sm font-medium">
           2 al 16 de noviembre de 2026 · Buenos Aires, Argentina
         </p>
-        <p className="text-white/45 text-sm">
+        <p className="text-white/45 text-xs sm:text-sm">
           Formación presencial intensiva + campus virtual.
         </p>
       </motion.div>
