@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { ReservarPopup } from "./ReservarPopup";
+import { CampusVirtualButton } from "@/components/common/CampusVirtualButton";
 
 interface FlyerVideo {
   id: number;
@@ -239,15 +240,7 @@ const HeroCTAs = memo(function HeroCTAs({
         <ExternalLink className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]" />
       </Button>
 
-      <Button
-        variant="outline"
-        size="lg"
-        onClick={() => (window.location.href = "https://campus.maestriacp.com/")}
-        className="bg-white/5 border-2 border-accent/40 text-white hover:bg-accent/15 hover:border-accent/60 font-semibold px-6 py-3.5 rounded-full transition-all duration-[400ms] ease-[cubic-bezier(0.4,0,0.2,1)] min-h-[52px] text-sm group"
-      >
-        <span>Ver Campus Virtual</span>
-        <ExternalLink className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]" />
-      </Button>
+      <CampusVirtualButton />
 
       <Button
         variant="outline"
@@ -340,7 +333,7 @@ const HeroText = memo(function HeroText({ onReservar }: { onReservar: () => void
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.45, delay: 0.3, ease: [0.4, 0, 0.2, 1] }}
-        className="text-[1.4rem] xs:text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold text-white leading-[1.15] mb-4"
+        className="text-[1.35rem] xs:text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold text-white leading-[1.15] mb-4 break-words hyphens-auto"
         style={{ willChange: "auto" }}
       >
         La experiencia que está transformando la{" "}
@@ -357,10 +350,10 @@ const HeroText = memo(function HeroText({ onReservar }: { onReservar: () => void
         className="mb-5 space-y-1"
         style={{ willChange: "auto" }}
       >
-        <p className="text-white/60 text-xs sm:text-sm font-medium">
+        <p className="text-white/60 text-[11px] xs:text-xs sm:text-sm font-medium leading-snug">
           2 al 16 de noviembre de 2026 · Buenos Aires, Argentina
         </p>
-        <p className="text-white/45 text-xs sm:text-sm">
+        <p className="text-white/45 text-[11px] xs:text-xs sm:text-sm leading-snug">
           Formación presencial intensiva + campus virtual.
         </p>
       </motion.div>
