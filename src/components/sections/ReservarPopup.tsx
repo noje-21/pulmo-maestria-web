@@ -2,7 +2,8 @@ import { memo, useEffect, useRef } from "react";
 import confetti from "canvas-confetti";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Calendar, MapPin, ExternalLink, Sparkles, CheckCircle, Users, Award, X } from "lucide-react";
+import { ArrowRight, Calendar, MapPin, Sparkles, CheckCircle, Users, Award, X } from "lucide-react";
+import { CampusVirtualButton } from "@/components/common/CampusVirtualButton";
 
 const benefits = [
   "El criterio clínico que siempre quisiste tener",
@@ -266,15 +267,7 @@ export const ReservarPopup = memo(function ReservarPopup({ isOpen, onClose }: Re
                         <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
                       </Button>
 
-                      <Button
-                        variant="outline"
-                        size="lg"
-                        onClick={() => (window.location.href = "https://campus.maestriacp.com/")}
-                        className="bg-white/5 border-2 border-accent/40 text-white hover:bg-accent/15 hover:border-accent/60 font-semibold px-6 py-3.5 rounded-full transition-all duration-[400ms] ease-[cubic-bezier(0.4,0,0.2,1)] min-h-[52px] w-full group"
-                      >
-                        <span>Ver Campus Virtual</span>
-                        <ExternalLink className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]" />
-                      </Button>
+                      <CampusVirtualButton fullWidth />
                     </div>
 
                     <p className="text-white/60 text-sm mt-5">Sin compromiso · Respuesta en 24h</p>
