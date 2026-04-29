@@ -2,7 +2,7 @@ import { memo, useEffect, useRef } from "react";
 import confetti from "canvas-confetti";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Calendar, MapPin, ExternalLink, Sparkles, CheckCircle, Users, Award, X } from "lucide-react";
+import { ArrowRight, Calendar, MapPin, Sparkles, CheckCircle, Users, Award, X } from "lucide-react";
 import { CampusVirtualButton } from "@/components/common/CampusVirtualButton";
 
 const benefits = [
