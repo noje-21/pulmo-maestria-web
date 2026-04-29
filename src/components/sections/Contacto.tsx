@@ -275,6 +275,8 @@ export const Contacto = () => {
                       onChange={handleChange}
                       placeholder="Nombre completo"
                       required
+                      aria-label="Nombre completo"
+                      autoComplete="name"
                       className="input-modern"
                     />
                     <div>
@@ -285,12 +287,17 @@ export const Contacto = () => {
                         onChange={handleChange}
                         placeholder="Email"
                         required
+                        aria-label="Correo electrónico"
+                        aria-invalid={!!emailSuggestion || undefined}
+                        aria-describedby={emailSuggestion ? "email-suggestion" : undefined}
+                        autoComplete="email"
                         className={`input-modern ${emailSuggestion ? "border-yellow-500 focus-visible:ring-yellow-500" : ""}`}
                       />
                       {emailSuggestion && (
                         <button
                           type="button"
                           onClick={acceptSuggestion}
+                          id="email-suggestion"
                           className="mt-1.5 flex items-center gap-1.5 text-xs text-yellow-600 dark:text-yellow-400 hover:underline"
                         >
                           <AlertTriangle className="w-3.5 h-3.5" />
@@ -307,10 +314,14 @@ export const Contacto = () => {
                       onChange={handleChange}
                       placeholder="Confirma tu email"
                       required
+                      aria-label="Confirmar correo electrónico"
+                      aria-invalid={emailMismatch || undefined}
+                      aria-describedby={emailMismatch ? "email-mismatch" : undefined}
+                      autoComplete="email"
                       className={`input-modern ${emailMismatch ? "border-destructive focus-visible:ring-destructive" : ""}`}
                     />
                     {emailMismatch && (
-                      <p className="mt-1.5 text-xs text-destructive flex items-center gap-1.5">
+                      <p id="email-mismatch" role="alert" className="mt-1.5 text-xs text-destructive flex items-center gap-1.5">
                         <X className="w-3.5 h-3.5" />
                         Los emails no coinciden
                       </p>
@@ -323,6 +334,8 @@ export const Contacto = () => {
                       onChange={handleChange}
                       placeholder="País"
                       required
+                      aria-label="País"
+                      autoComplete="country-name"
                       className="input-modern"
                     />
                     <Input
@@ -331,6 +344,7 @@ export const Contacto = () => {
                       onChange={handleChange}
                       placeholder="Especialidad (Ej: Cardiología)"
                       required
+                      aria-label="Especialidad médica"
                       className="input-modern"
                     />
                   </div>
@@ -341,6 +355,7 @@ export const Contacto = () => {
                     placeholder="Cuéntanos qué te gustaría saber..."
                     rows={4}
                     required
+                    aria-label="Mensaje"
                     className="input-modern resize-none"
                   />
                   <Button type="submit" className="w-full btn-accent py-6 text-base font-semibold" disabled={loading}>

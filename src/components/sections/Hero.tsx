@@ -82,8 +82,8 @@ export const Hero = memo(function Hero() {
         >
           <div
             className="flex items-center gap-3 bg-white/10 backdrop-blur-md px-4 sm:px-6 py-3 sm:py-4 rounded-2xl border border-white/20 hover:bg-white/15 hover:border-white/30 transition-all duration-400 group cursor-default w-full xs:w-auto justify-center"
-            role="text"
-            aria-label="Fecha del evento"
+            role="group"
+            aria-label="Fecha del evento: 2 al 16 de noviembre 2026"
           >
             <div className="p-2 rounded-xl bg-accent/20 group-hover:bg-accent/30 transition-colors">
               <Calendar className="w-5 h-5 text-accent-light" aria-hidden="true" />
@@ -95,8 +95,8 @@ export const Hero = memo(function Hero() {
 
           <div
             className="flex items-center gap-3 bg-white/10 backdrop-blur-md px-4 sm:px-6 py-3 sm:py-4 rounded-2xl border border-white/20 hover:bg-white/15 hover:border-white/30 transition-all duration-400 group cursor-default w-full xs:w-auto justify-center"
-            role="text"
-            aria-label="Ubicación del evento"
+            role="group"
+            aria-label="Ubicación del evento: Buenos Aires, Argentina"
           >
             <div className="p-2 rounded-xl bg-accent/20 group-hover:bg-accent/30 transition-colors">
               <MapPin className="w-5 h-5 text-accent-light" aria-hidden="true" />
