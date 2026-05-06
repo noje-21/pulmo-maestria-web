@@ -13,7 +13,6 @@ import { AIAssistant } from "@/components/common/AIAssistant";
 const Hero = lazy(() => import("@/components/sections/Hero").then(m => ({ default: m.Hero })));
 const Maestria = lazy(() => import("@/components/sections/Maestria").then(m => ({ default: m.Maestria })));
 const EjesFormacion = lazy(() => import("@/components/sections/EjesFormacion").then(m => ({ default: m.EjesFormacion })));
-const Expertos = lazy(() => import("@/components/sections/Expertos/index").then(m => ({ default: m.Expertos })));
 const Eventos = lazy(() => import("@/components/sections/Eventos").then(m => ({ default: m.Eventos })));
 const Testimonios = lazy(() => import("@/components/sections/Testimonios").then(m => ({ default: m.Testimonios })));
 const Galeria = lazy(() => import("@/components/sections/Galeria"));
@@ -46,12 +45,6 @@ const Index = () => {
           
           <AnimatedOnView>
             <EjesFormacion />
-          </AnimatedOnView>
-          
-          <SectionDivider variant="gradient" className="my-6" />
-          
-          <AnimatedOnView>
-            <Expertos />
           </AnimatedOnView>
           
           <ScrollInvitation text="Conoce los eventos" targetId="eventos" />
