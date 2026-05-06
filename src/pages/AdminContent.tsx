@@ -163,7 +163,7 @@ const AdminContent = () => {
       const payload = { items: modulos, pdfSource };
       const { error } = await supabase
         .from("site_content")
-        .upsert({ section: "modulos_destacados", content: payload, updated_at: new Date().toISOString() }, { onConflict: "section" });
+        .upsert({ section: "modulos_destacados", content: payload as any, updated_at: new Date().toISOString() }, { onConflict: "section" });
       if (error) throw error;
       setModulosDirty(false);
       toast.success("Módulos Destacados actualizados");
