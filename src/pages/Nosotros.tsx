@@ -6,7 +6,7 @@ import ImageLazy from "@/components/common/ImageLazy";
 import AnimatedOnView from "@/components/common/AnimatedOnView";
 import {
   GraduationCap, Target, Eye, Heart, Users,
-  BookOpen, ExternalLink, ArrowRight,
+  BookOpen, ExternalLink, FileText,
 } from "lucide-react";
 import {
   equipoData,
@@ -25,18 +25,25 @@ const Nosotros = () => {
   return (
     <div className="min-h-screen bg-background">
       <SEO
-        title="Nosotros - Maestría en Circulación Pulmonar"
-        description="Conoce al equipo, misión, visión y trayectoria de la Maestría Latinoamericana en Circulación Pulmonar."
-        keywords="nosotros, equipo, misión, visión, circulación pulmonar, hipertensión pulmonar"
+        title="Equipo Directivo y Trayectoria — Maestría en Circulación Pulmonar"
+        description="Conocé al Dr. Adrián Lescano y al equipo directivo de la Maestría Latinoamericana en Circulación Pulmonar: 9 especialistas, 30 módulos y 131 horas académicas confirmadas."
+        keywords="equipo directivo, Adrián Lescano, maestría circulación pulmonar, hipertensión pulmonar, estructura docente"
         jsonLd={{
           "@context": "https://schema.org",
           "@type": "AboutPage",
-          name: "Nosotros - Maestría Latinoamericana en Circulación Pulmonar",
-          description: "Equipo, misión, visión y trayectoria de la Maestría Latinoamericana en Circulación Pulmonar.",
-          url: "https://www.maestriacp.com/nosotros",
+          name: "Equipo Directivo — Maestría Latinoamericana en Circulación Pulmonar",
+          description: "Director: Dr. Adrián José Lescano. Estructura docente con 9 especialistas en hipertensión pulmonar y circulación pulmonar. 30 módulos, 131 horas académicas.",
+          url: "https://www.campus.maestriacp.com/nosotros",
           mainEntity: {
             "@type": "EducationalOrganization",
             name: "Maestría Latinoamericana en Circulación Pulmonar",
+            member: equipoData
+              .filter((m) => m.destacado)
+              .map((m) => ({
+                "@type": "Person",
+                name: m.nombre,
+                jobTitle: m.rol,
+              })),
           },
         }}
       />
@@ -53,7 +60,7 @@ const Nosotros = () => {
                 Nuestra Historia
               </span>
               <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold tracking-tight mb-4 sm:mb-6">
-                Nosotros
+                Nuestro Equipo
               </h1>
               <p className="text-muted-foreground text-base sm:text-lg lg:text-xl max-w-3xl mx-auto leading-relaxed">
                 Somos un equipo multidisciplinario de especialistas latinoamericanos comprometidos con la formación de excelencia en circulación pulmonar y enfermedades vasculares del pulmón.
@@ -205,9 +212,9 @@ const Nosotros = () => {
               <div className="text-center mb-10">
                 <span className="brand-badge-accent mb-3 inline-flex text-xs sm:text-sm">
                   <BookOpen className="w-3.5 h-3.5" />
-                  Producción Científica
+                  Contenido Académico
                 </span>
-                <h2 className="text-2xl sm:text-3xl font-bold">Publicaciones</h2>
+                <h2 className="text-2xl sm:text-3xl font-bold">Módulos Destacados</h2>
               </div>
               <div className="space-y-4">
                 {publicacionesData.map((p, i) => (
@@ -240,6 +247,26 @@ const Nosotros = () => {
                     )}
                   </motion.div>
                 ))}
+              </div>
+              {/* Source reference */}
+              <div className="mt-8 flex items-start gap-3 p-4 rounded-xl bg-muted/50 border border-border/50">
+                <FileText className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+                <div>
+                  <p className="text-xs text-muted-foreground leading-relaxed">
+                    <span className="font-semibold text-foreground/80">Fuente:</span>{" "}
+                    Programa oficial de la Maestría Latinoamericana en Circulación Pulmonar (MAESTRIA_CP_2025.pdf).
+                    Toda la información de equipo, módulos y actividades ha sido extraída del documento institucional vigente.
+                  </p>
+                  <a
+                    href="/MAESTRIA_CP_2025.pdf"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 text-xs text-primary font-medium mt-2 hover:underline"
+                  >
+                    <ExternalLink className="w-3.5 h-3.5" />
+                    Ver programa completo (PDF)
+                  </a>
+                </div>
               </div>
             </div>
           </section>
