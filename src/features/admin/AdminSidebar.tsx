@@ -13,7 +13,8 @@ import {
   ChevronLeft,
   ChevronRight,
   Home,
-  GraduationCap
+  GraduationCap,
+  BookOpen
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import logoMaestria from "@/assets/logo-maestria.jpg";
@@ -25,6 +26,7 @@ const menuItems = [
   { to: "/admin/content", label: "Contenido", icon: FileText },
   { to: "/admin/foro", label: "Foro", icon: MessageSquare },
   { to: "/admin/novedades", label: "Novedades", icon: Newspaper },
+  { to: "/admin/ateneos", label: "Ateneos", icon: BookOpen },
   { to: "/admin/media", label: "Archivos", icon: Image },
 ];
 
