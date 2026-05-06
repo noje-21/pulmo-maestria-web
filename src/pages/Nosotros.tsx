@@ -130,14 +130,18 @@ const Nosotros = () => {
                 <h2 className="text-2xl sm:text-3xl font-bold">Equipo Directivo</h2>
               </div>
               <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                {equipoData.map((m, i) => (
+                {/* Director destacado first, then rest */}
+                {equipoData
+                  .slice()
+                  .sort((a, b) => (b.destacado ? 1 : 0) - (a.destacado ? 1 : 0))
+                  .map((m, i) => (
                   <motion.div
                     key={m.id}
                     {...fadeUp}
                     transition={{ ...fadeUp.transition, delay: i * 0.08 }}
-                    className="card-base card-hover overflow-hidden text-center group"
+                    className={`card-base card-hover overflow-hidden text-center group ${m.destacado ? "sm:col-span-2 lg:col-span-2 ring-2 ring-primary/20" : ""}`}
                   >
-                    <div className="aspect-square overflow-hidden">
+                    <div className={`overflow-hidden ${m.destacado ? "aspect-[3/2]" : "aspect-square"}`}>
                       <ImageLazy
                         src={m.imagen}
                         alt={m.nombre}
@@ -146,7 +150,7 @@ const Nosotros = () => {
                     </div>
                     <div className="p-5">
                       <h3 className="font-bold text-base mb-1">{m.nombre}</h3>
-                      <p className="text-primary text-sm font-medium mb-2">{m.rol}</p>
+                      <p className={`text-sm font-medium mb-2 ${m.destacado ? "text-accent" : "text-primary"}`}>{m.rol}</p>
                       <p className="text-muted-foreground text-xs leading-relaxed line-clamp-3">{m.bio}</p>
                     </div>
                   </motion.div>
