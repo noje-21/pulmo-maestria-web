@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import Navigation from "@/components/common/Navigation";
@@ -12,18 +12,95 @@ import {
 } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
-import { ateneosData } from "@/data/ateneos";
+import { ateneosData, type Ateneo } from "@/data/ateneos";
+import { supabase } from "@/integrations/supabase/client";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const AteneoDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [ateneo, setAteneo] = useState<Ateneo | null>(null);
+  const [related, setRelated] = useState<Ateneo[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const ateneo = useMemo(() => ateneosData.find((a) => a.id === id), [id]);
+  useEffect(() => {
+    const load = async () => {
+      setLoading(true);
+      try {
+        const { data, error } = await supabase
+          .from("ateneos")
+          .select("*")
+          .eq("id", id)
+          .eq("status", "published")
+          .single();
 
-  const related = useMemo(
-    () => ateneosData.filter((a) => a.id !== id).slice(0, 3),
-    [id]
-  );
+        if (data && !error) {
+          setAteneo({
+            id: data.id,
+            titulo: data.titulo,
+            descripcion: data.descripcion,
+            contenido: data.contenido,
+            fecha: data.fecha,
+            imagen: data.imagen || "",
+            imagenes: data.imagenes || [],
+            videoUrl: data.video_url || undefined,
+            pdfUrl: data.pdf_url || undefined,
+          });
+
+          const { data: relData } = await supabase
+            .from("ateneos")
+            .select("*")
+            .eq("status", "published")
+            .neq("id", id!)
+            .order("fecha", { ascending: false })
+            .limit(3);
+
+          setRelated(
+            (relData || []).map((a) => ({
+              id: a.id,
+              titulo: a.titulo,
+              descripcion: a.descripcion,
+              contenido: a.contenido,
+              fecha: a.fecha,
+              imagen: a.imagen || "",
+              imagenes: a.imagenes || [],
+              videoUrl: a.video_url || undefined,
+              pdfUrl: a.pdf_url || undefined,
+            }))
+          );
+        } else {
+          // Fallback to mock data
+          const mock = ateneosData.find((a) => a.id === id);
+          setAteneo(mock || null);
+          setRelated(ateneosData.filter((a) => a.id !== id).slice(0, 3));
+        }
+      } catch {
+        const mock = ateneosData.find((a) => a.id === id);
+        setAteneo(mock || null);
+        setRelated(ateneosData.filter((a) => a.id !== id).slice(0, 3));
+      } finally {
+        setLoading(false);
+      }
+    };
+    load();
+  }, [id]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Navigation />
+        <main className="pt-24 sm:pt-28 pb-16 px-4 sm:px-6 lg:px-8">
+          <div className="max-w-4xl mx-auto">
+            <Skeleton className="h-10 w-40 mb-8" />
+            <Skeleton className="w-full aspect-[21/9] rounded-2xl mb-8" />
+            <Skeleton className="h-12 w-3/4 mb-4" />
+            <Skeleton className="h-40 w-full" />
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
 
   if (!ateneo) {
     return (
@@ -43,8 +120,20 @@ const AteneoDetail = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-background via-muted/20 to-background">
       <SEO
-        title={`${ateneo.titulo} - Ateneos`}
+        title={`${ateneo.titulo} - Ateneos | Maestría en Circulación Pulmonar`}
         description={ateneo.descripcion}
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": "Event",
+          name: ateneo.titulo,
+          description: ateneo.descripcion,
+          startDate: ateneo.fecha,
+          eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
+          organizer: {
+            "@type": "Organization",
+            name: "Maestría Latinoamericana en Circulación Pulmonar",
+          },
+        }}
       />
       <Navigation />
 
