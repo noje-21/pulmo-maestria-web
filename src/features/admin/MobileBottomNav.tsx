@@ -22,7 +22,8 @@ import {
   Image,
   Mail,
   FileText,
-  BookOpen
+  BookOpen,
+  ShieldCheck
 } from "lucide-react";
 
 const mainNavItems = [
@@ -37,6 +38,7 @@ const moreNavItems = [
   { to: "/admin/content", label: "Contenido", icon: FileText },
   { to: "/admin/ateneos", label: "Ateneos", icon: BookOpen },
   { to: "/admin/media", label: "Archivos", icon: Image },
+  { to: "/admin/audit", label: "Auditoría", icon: ShieldCheck },
 ];
 
 export default function MobileBottomNav() {

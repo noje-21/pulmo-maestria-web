@@ -14,7 +14,8 @@ import {
   ChevronRight,
   Home,
   GraduationCap,
-  BookOpen
+  BookOpen,
+  ShieldCheck
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import logoMaestria from "@/assets/logo-maestria.jpg";
@@ -28,6 +29,7 @@ const menuItems = [
   { to: "/admin/novedades", label: "Novedades", icon: Newspaper },
   { to: "/admin/ateneos", label: "Ateneos", icon: BookOpen },
   { to: "/admin/media", label: "Archivos", icon: Image },
+  { to: "/admin/audit", label: "Auditoría", icon: ShieldCheck },
 ];
 
 interface AdminSidebarProps {
