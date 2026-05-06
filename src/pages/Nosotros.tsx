@@ -15,6 +15,7 @@ import {
   trabajosData,
   publicacionesData,
 } from "@/data/nosotros";
+import heroImage from "@/assets/secion/maestria_2025_1.jpg";
 import type { Publicacion } from "@/data/nosotros";
 
 const fadeUp = {
@@ -106,7 +107,7 @@ const Nosotros = () => {
                 </div>
                 <div className="aspect-[4/3] rounded-2xl overflow-hidden border border-border/50">
                   <ImageLazy
-                    src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=800&q=80"
+                    src={heroImage}
                     alt="Equipo de la Maestría en Circulación Pulmonar"
                     className="w-full h-full object-cover"
                   />
