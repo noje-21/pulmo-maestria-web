@@ -1,5 +1,6 @@
 import { useMemo, useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import Navigation from "@/components/common/Navigation";
 import { Footer } from "@/components/sections/Footer";
@@ -19,6 +20,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 const AteneoDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const isPreview = searchParams.get("preview") === "true";
   const [ateneo, setAteneo] = useState<Ateneo | null>(null);
   const [related, setRelated] = useState<Ateneo[]>([]);
   const [loading, setLoading] = useState(true);
@@ -27,12 +30,16 @@ const AteneoDetail = () => {
     const load = async () => {
       setLoading(true);
       try {
-        const { data, error } = await supabase
+        let query = supabase
           .from("ateneos")
           .select("*")
-          .eq("id", id)
-          .eq("status", "published")
-          .single();
+          .eq("id", id!);
+
+        if (!isPreview) {
+          query = query.eq("status", "published");
+        }
+
+        const { data, error } = await query.single();
 
         if (data && !error) {
           setAteneo({
@@ -83,7 +90,7 @@ const AteneoDetail = () => {
       }
     };
     load();
-  }, [id]);
+  }, [id, isPreview]);
 
   if (loading) {
     return (
@@ -138,6 +145,13 @@ const AteneoDetail = () => {
       <Navigation />
 
       <main className="pt-24 sm:pt-28 pb-16 sm:pb-20 px-4 sm:px-6 lg:px-8">
+        {isPreview && (
+          <div className="max-w-4xl mx-auto mb-4">
+            <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-yellow-500/10 border border-yellow-500/30 text-yellow-700 dark:text-yellow-400 text-sm font-medium">
+              <span>👁️ Modo vista previa — este ateneo aún no está publicado.</span>
+            </div>
+          </div>
+        )}
         <article className="max-w-4xl mx-auto">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
             <Button

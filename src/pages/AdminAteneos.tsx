@@ -11,7 +11,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import AdminLayout from "@/features/admin/AdminLayout";
 import { CardSkeleton } from "@/components/common/LoadingSkeleton";
 import ImageUpload from "@/components/common/ImageUpload";
-import { Plus, Trash2, Edit, Save, X, BookOpen, Search, Video, FileText, Calendar } from "lucide-react";
+import { Plus, Trash2, Edit, Save, X, BookOpen, Search, Video, FileText, Calendar, Eye, ArrowUp, ArrowDown, GripVertical, Image as ImageIcon } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 
@@ -45,6 +45,7 @@ const AdminAteneos = () => {
     pdf_url: "",
     status: "published" as AteneoStatus,
   });
+  const [galleryImages, setGalleryImages] = useState<string[]>([]);
 
   useEffect(() => {
     loadAteneos();
@@ -79,6 +80,7 @@ const AdminAteneos = () => {
       pdf_url: "",
       status: "published",
     });
+    setGalleryImages([]);
     setEditingId(null);
     setShowForm(false);
   };
@@ -95,6 +97,7 @@ const AdminAteneos = () => {
       pdf_url: ateneo.pdf_url || "",
       status: ateneo.status,
     });
+    setGalleryImages(ateneo.imagenes || []);
     setEditingId(ateneo.id);
     setShowForm(true);
   };
@@ -119,6 +122,7 @@ const AdminAteneos = () => {
         fecha: formData.fecha,
         categoria: formData.categoria,
         imagen: formData.imagen || null,
+        imagenes: galleryImages,
         video_url: formData.video_url || null,
         pdf_url: formData.pdf_url || null,
         status: formData.status,
@@ -158,6 +162,40 @@ const AdminAteneos = () => {
     } catch (error: any) {
       toast.error("Error al eliminar ateneo");
     }
+  };
+
+
+  const handleQuickPublish = async (ateneoId: string, newStatus: AteneoStatus) => {
+    try {
+      const { error } = await supabase.from("ateneos").update({ status: newStatus }).eq("id", ateneoId);
+      if (error) throw error;
+      toast.success(newStatus === "published" ? "Ateneo publicado" : "Estado actualizado");
+      loadAteneos();
+    } catch {
+      toast.error("Error al actualizar estado");
+    }
+  };
+
+  const handlePreview = (ateneoId: string) => {
+    window.open(`/ateneos/${ateneoId}?preview=true`, "_blank");
+  };
+
+  const addGalleryImage = (url: string) => {
+    setGalleryImages((prev) => [...prev, url]);
+  };
+
+  const removeGalleryImage = (idx: number) => {
+    setGalleryImages((prev) => prev.filter((_, i) => i !== idx));
+  };
+
+  const moveGalleryImage = (idx: number, direction: "up" | "down") => {
+    setGalleryImages((prev) => {
+      const arr = [...prev];
+      const target = direction === "up" ? idx - 1 : idx + 1;
+      if (target < 0 || target >= arr.length) return arr;
+      [arr[idx], arr[target]] = [arr[target], arr[idx]];
+      return arr;
+    });
   };
 
   const filteredAteneos = ateneos.filter((a) => {
@@ -279,6 +317,40 @@ const AdminAteneos = () => {
                     onImageRemoved={() => setFormData({ ...formData, imagen: "" })}
                   />
                 </div>
+                {/* Ordered Gallery Editor */}
+                <div>
+                  <Label className="flex items-center gap-1.5 mb-2">
+                    <ImageIcon className="w-3.5 h-3.5" /> Galería de imágenes ({galleryImages.length})
+                  </Label>
+                  {galleryImages.length > 0 && (
+                    <div className="space-y-2 mb-3">
+                      {galleryImages.map((img, i) => (
+                        <div key={`gallery-${i}`} className="flex items-center gap-2 p-2 rounded-lg bg-muted/50 border border-border/50">
+                          <GripVertical className="w-4 h-4 text-muted-foreground shrink-0" />
+                          <img src={img} alt={`Galería ${i + 1}`} className="w-16 h-12 object-cover rounded" />
+                          <span className="text-xs text-muted-foreground flex-1 truncate">{img.split("/").pop()}</span>
+                          <div className="flex gap-1 shrink-0">
+                            <Button type="button" variant="ghost" size="icon" className="h-7 w-7" disabled={i === 0} onClick={() => moveGalleryImage(i, "up")}>
+                              <ArrowUp className="w-3.5 h-3.5" />
+                            </Button>
+                            <Button type="button" variant="ghost" size="icon" className="h-7 w-7" disabled={i === galleryImages.length - 1} onClick={() => moveGalleryImage(i, "down")}>
+                              <ArrowDown className="w-3.5 h-3.5" />
+                            </Button>
+                            <Button type="button" variant="ghost" size="icon" className="h-7 w-7 text-destructive" onClick={() => removeGalleryImage(i)}>
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </Button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  <ImageUpload
+                    currentImage=""
+                    onImageUploaded={addGalleryImage}
+                    onImageRemoved={() => {}}
+                  />
+                  <p className="text-xs text-muted-foreground mt-1">Sube imágenes una por una. Usa las flechas para reordenar.</p>
+                </div>
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div>
                     <Label className="flex items-center gap-1.5"><Video className="w-3.5 h-3.5" /> URL de Video (opcional)</Label>
@@ -363,6 +435,18 @@ const AdminAteneos = () => {
                     </div>
                   </div>
                   <div className="flex gap-2 w-full sm:w-auto">
+                    <Button onClick={() => handlePreview(ateneo.id)} variant="outline" size="sm" className="flex-1 sm:flex-none gap-1" title="Vista previa">
+                      <Eye className="w-4 h-4" />
+                    </Button>
+                    {ateneo.status !== "published" ? (
+                      <Button onClick={() => handleQuickPublish(ateneo.id, "published")} variant="outline" size="sm" className="flex-1 sm:flex-none gap-1 text-green-600 border-green-500/30 hover:bg-green-500/10">
+                        Publicar
+                      </Button>
+                    ) : (
+                      <Button onClick={() => handleQuickPublish(ateneo.id, "draft")} variant="outline" size="sm" className="flex-1 sm:flex-none gap-1 text-yellow-600 border-yellow-500/30 hover:bg-yellow-500/10">
+                        Borrador
+                      </Button>
+                    )}
                     <Button onClick={() => handleEdit(ateneo)} variant="outline" size="sm" className="flex-1 sm:flex-none gap-1">
                       <Edit className="w-4 h-4" />
                     </Button>
