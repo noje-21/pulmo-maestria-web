@@ -7,6 +7,10 @@ import Alejo from "@/assets/alejandro.jpg";
 import Julie from "@/assets/julieta.jpg";
 import GuilleS from "@/assets/guillermina.jpg";
 import Dora from "@/assets/dora.jpg";
+import gallery1 from "@/assets/secion/maestria1.jpg";
+import gallery3 from "@/assets/secion/maestria3.jpg";
+import gallery32 from "@/assets/secion/maestria32.jpg";
+import gallery34 from "@/assets/secion/maestria34.jpg";
 
 export interface Trabajo {
   id: string;
@@ -107,7 +111,7 @@ export const trabajosData: Trabajo[] = [
     titulo: "Maestría Latinoamericana en Circulación Pulmonar — 30 Módulos, 131 horas académicas",
     descripcion: "Programa presencial intensivo con módulos teóricos y prácticos que abarcan desde la anatomía y fisiopatología hasta los esquemas terapéuticos en hipertensión pulmonar. Se desarrolla en el Centro Gallego de Buenos Aires, Sanatorio Trinidad Quilmes y Hospital Ferrer.",
     imagenes: [
-      "https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=800&q=80",
+      gallery1,
     ],
     fecha: "2019 – 2026",
   },
@@ -116,7 +120,7 @@ export const trabajosData: Trabajo[] = [
     titulo: "Simposio Latinoamericano de Hipertensión Pulmonar",
     descripcion: "Jornada de casos clínicos con expertos nacionales e internacionales. Incluye 'Medicina Basada en la Experiencia' y perspectiva de los pacientes, coordinado por Dra. Soricetti y Dr. Silva Chrome.",
     imagenes: [
-      "https://images.unsplash.com/photo-1551190822-a9ce113ac100?w=800&q=80",
+      gallery3,
     ],
     fecha: "Noviembre 2025",
   },
@@ -125,7 +129,7 @@ export const trabajosData: Trabajo[] = [
     titulo: "Talleres Prácticos — CCD, Ecocardiografía y Consultas Clínicas",
     descripcion: "Actividades de interacción entre docentes y pacientes: cateterismo cardíaco derecho, laboratorio de ultrasonografía cardiovascular, capilaroscopia, manejo de bombas de infusión de prostaciclinas y test de caminata de 6 minutos.",
     imagenes: [
-      "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&q=80",
+      gallery32,
     ],
     fecha: "2024 – 2026",
   },
@@ -134,7 +138,7 @@ export const trabajosData: Trabajo[] = [
     titulo: "Plataforma Virtual y Actividad Bibliográfica",
     descripcion: "Campus virtual con clases grabadas, material bibliográfico y 30 horas de actividad bibliográfica supervisada. Facilita el repaso de los módulos teóricos y complementa la formación presencial.",
     imagenes: [
-      "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=800&q=80",
+      gallery34,
     ],
     fecha: "2023 – 2026",
   },

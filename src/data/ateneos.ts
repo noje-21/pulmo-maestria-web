@@ -1,3 +1,10 @@
+import maestria1 from "@/assets/secion/maestria1.jpg";
+import maestria2 from "@/assets/secion/maestria2.jpg";
+import maestria12 from "@/assets/secion/maestria12.jpg";
+import maestria13 from "@/assets/secion/maestria13.jpg";
+import maestria14 from "@/assets/secion/maestria14.jpg";
+import maestria15 from "@/assets/secion/maestria15.jpg";
+
 export interface Ateneo {
   id: string;
   titulo: string;
@@ -25,11 +32,11 @@ export const ateneosData: Ateneo[] = [
     </ul>
     <p>La discusión fue enriquecida por la participación de especialistas de Argentina, Colombia, México y Chile, quienes aportaron su experiencia clínica en la implementación de estas guías en contextos latinoamericanos.</p>`,
     fecha: "2026-03-15",
-    imagen: "https://images.unsplash.com/photo-1559757175-5700dde675bc?w=800&q=80",
     imagenes: [
-      "https://images.unsplash.com/photo-1559757175-5700dde675bc?w=800&q=80",
-      "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=800&q=80",
+      maestria1,
+      maestria2,
     ],
+    imagen: maestria1,
     videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
   },
   {
@@ -40,9 +47,9 @@ export const ateneosData: Ateneo[] = [
     <h3>Abordaje terapéutico</h3>
     <p>Se discutieron las opciones de tratamiento incluyendo endarterectomía pulmonar, angioplastia con balón y terapia farmacológica con riociguat. El equipo multidisciplinario evaluó la operabilidad del paciente y definió un plan terapéutico combinado.</p>`,
     fecha: "2026-02-20",
-    imagen: "https://images.unsplash.com/photo-1582719471384-894fbb16f461?w=800&q=80",
+    imagen: maestria12,
     imagenes: [
-      "https://images.unsplash.com/photo-1582719471384-894fbb16f461?w=800&q=80",
+      maestria12,
     ],
     pdfUrl: "https://example.com/caso-cteph.pdf",
   },
@@ -59,7 +66,7 @@ export const ateneosData: Ateneo[] = [
       <li>Correlación ecocardiográfica-hemodinámica</li>
     </ul>`,
     fecha: "2026-01-10",
-    imagen: "https://images.unsplash.com/photo-1551190822-a9ce113ac100?w=800&q=80",
+    imagen: maestria13,
     videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
   },
   {
@@ -69,7 +76,7 @@ export const ateneosData: Ateneo[] = [
     contenido: `<p>Se revisaron los protocolos de screening y seguimiento de hipertensión pulmonar en pacientes con enfermedades del tejido conectivo, con énfasis en esclerosis sistémica y lupus eritematoso sistémico.</p>
     <p>Se presentaron datos del registro latinoamericano de HP asociada a enfermedades autoinmunes y se discutieron las particularidades del tratamiento en esta población.</p>`,
     fecha: "2025-12-05",
-    imagen: "https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=800&q=80",
+    imagen: maestria14,
   },
   {
     id: "5",
@@ -77,7 +84,7 @@ export const ateneosData: Ateneo[] = [
     descripcion: "Estado actual de la investigación en terapia génica y su potencial aplicación en hipertensión pulmonar.",
     contenido: `<p>Este ateneo exploró las fronteras de la investigación en terapia génica aplicada a las enfermedades vasculares pulmonares. Se revisaron los estudios preclínicos más prometedores y las perspectivas de traslación clínica.</p>`,
     fecha: "2025-11-18",
-    imagen: "https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?w=800&q=80",
+    imagen: maestria15,
   },
   {
     id: "6",
@@ -85,6 +92,6 @@ export const ateneosData: Ateneo[] = [
     descripcion: "Evidencia y experiencia clínica en programas de rehabilitación para pacientes con HP.",
     contenido: `<p>Se revisó la evidencia acumulada sobre los beneficios de la rehabilitación cardiopulmonar supervisada en pacientes con hipertensión pulmonar. Se compartieron protocolos de ejercicio adaptados y resultados de programas regionales.</p>`,
     fecha: "2025-10-22",
-    imagen: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&q=80",
+    imagen: maestria1,
   },
 ];
