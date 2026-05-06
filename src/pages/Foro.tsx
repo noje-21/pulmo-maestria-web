@@ -172,6 +172,15 @@ const Foro = () => {
       }
       
       setPosts(data as any || []);
+
+      // Debug mode: solo visible para admins en consola
+      if (isAdmin && data) {
+        console.group('[Forum Debug] Posts loaded');
+        data.forEach((p: any) => {
+          console.log(`Post "${p.title}" | user_id: ${p.user_id} | profile: ${p.profiles ? JSON.stringify(p.profiles) : 'NULL — no profile found'}`);
+        });
+        console.groupEnd();
+      }
     } catch (error: any) {
       console.error("Error loading posts:", error);
       toast.error("No pudimos cargar las publicaciones. Intenta refrescar.");
