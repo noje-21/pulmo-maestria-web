@@ -79,7 +79,11 @@ export const ReservarPopup = memo(function ReservarPopup({ isOpen, onClose }: Re
       document.removeEventListener("keydown", handleKeyDown);
       document.body.style.overflow = prevOverflow;
       window.clearTimeout(focusTimer);
-      previouslyFocused.current?.focus?.();
+      // Safari iOS needs a setTimeout for reliable focus restoration
+      const elToRestore = previouslyFocused.current;
+      if (elToRestore?.focus) {
+        window.setTimeout(() => elToRestore.focus(), 0);
+      }
     };
   }, [isOpen, onClose]);
 
