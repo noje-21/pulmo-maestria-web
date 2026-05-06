@@ -16,6 +16,8 @@ const quickLinks = [
 const pageLinks = [
   { label: "Foro Comunitario", to: "/foro" },
   { label: "Novedades", to: "/novedades" },
+  { label: "Ateneos", to: "/ateneos" },
+  { label: "Nosotros", to: "/nosotros" },
   { label: "Campus Virtual", href: "https://www.maestriacp.com/", external: true },
   { label: "Iniciar Sesión", to: "/auth" }
 ];
