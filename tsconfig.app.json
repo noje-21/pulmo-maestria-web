@@ -3,6 +3,7 @@
     "allowImportingTsExtensions": true,
     "isolatedModules": true,
     "jsx": "react-jsx",
+    "types": ["vitest/globals"],
     "lib": [
       "ES2020",
       "DOM",
