@@ -12,6 +12,7 @@ import {
   Calendar, User, Search, ArrowRight, Filter, 
   Newspaper, Clock, Sparkles
 } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import { format, formatDistanceToNow } from "date-fns";
 import { es } from "date-fns/locale";
 import { toast } from "sonner";
@@ -81,6 +82,7 @@ const Novedades = () => {
   const [authorFilter, setAuthorFilter] = useState<string>("all");
   const [authors, setAuthors] = useState<{ id: string; name: string }[]>([]);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [visibleCount, setVisibleCount] = useState(6);
 
   useEffect(() => {
     loadNovedades();
@@ -141,7 +143,8 @@ const Novedades = () => {
   }, [searchQuery, authorFilter]);
 
   const featuredNovedad = novedades[0];
-  const gridNovedades = novedades.slice(1);
+  const gridNovedades = novedades.slice(1, 1 + visibleCount);
+  const hasMore = novedades.length > 1 + visibleCount;
   const hasActiveFilter = authorFilter !== "all";
 
   return (
@@ -458,6 +461,21 @@ const Novedades = () => {
                         </motion.article>
                       ))}
                     </div>
+                  </div>
+                )}
+
+                {/* Load More */}
+                {hasMore && (
+                  <div className="text-center pt-4">
+                    <Button
+                      variant="outline"
+                      size="lg"
+                      onClick={() => setVisibleCount((c) => c + 6)}
+                      className="gap-2 rounded-xl"
+                    >
+                      Cargar más novedades
+                      <ArrowRight className="w-4 h-4" />
+                    </Button>
                   </div>
                 )}
               </motion.div>

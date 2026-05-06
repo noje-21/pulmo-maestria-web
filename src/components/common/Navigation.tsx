@@ -15,6 +15,11 @@ const navItems = [
   { label: "Testimonios", section: "testimonios" },
 ];
 
+const pageNavItems = [
+  { label: "Ateneos", to: "/ateneos" },
+  { label: "Nosotros", to: "/nosotros" },
+];
+
 const Navigation = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
@@ -206,6 +211,18 @@ const Navigation = () => {
               Novedades
             </Link>
 
+            {pageNavItems.map((item) => (
+              <Link
+                key={item.to}
+                to={item.to}
+                className={`nav-link px-2 py-2 text-xs opacity-80 hover:opacity-100 ${
+                  isScrolled ? 'text-muted-foreground' : 'text-white/70 hover:text-white/90'
+                }`}
+              >
+                {item.label}
+              </Link>
+            ))}
+
             <div className="w-px h-6 bg-border/50 mx-2" />
 
             {isAdmin && (
@@ -354,6 +371,17 @@ const Navigation = () => {
                   >
                     Novedades
                   </Link>
+
+                  {pageNavItems.map((item) => (
+                    <Link
+                      key={item.to}
+                      to={item.to}
+                      className="flex items-center justify-center text-foreground hover:text-primary active:bg-muted py-3 px-4 rounded-xl text-sm font-medium transition-all duration-200 min-h-[48px] border border-border bg-muted/30"
+                      onClick={closeMenu}
+                    >
+                      {item.label}
+                    </Link>
+                  ))}
                 </div>
 
                 {isAdmin && (

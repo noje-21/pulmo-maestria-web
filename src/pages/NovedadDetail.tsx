@@ -6,13 +6,21 @@ import { Badge } from "@/components/ui/badge";
 import { motion } from "framer-motion";
 import Navigation from "@/components/common/Navigation";
 import ReactionButton from "@/features/forum/ReactionButton";
-import { Calendar, User, ArrowLeft, Clock, Share2, Sparkles } from "lucide-react";
+import { Calendar, User, ArrowLeft, Clock, Share2, Sparkles, ArrowRight, Newspaper } from "lucide-react";
 import { format, formatDistanceToNow } from "date-fns";
 import { es } from "date-fns/locale";
 import ImageLazy from "@/components/common/ImageLazy";
 import DOMPurify from "dompurify";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
+
+interface RelatedNovedad {
+  id: string;
+  title: string;
+  slug: string;
+  image_url?: string;
+  published_at: string;
+}
 
 interface Novedad {
   id: string;
@@ -46,6 +54,7 @@ const NovedadDetail = () => {
   const navigate = useNavigate();
   const [novedad, setNovedad] = useState<Novedad | null>(null);
   const [loading, setLoading] = useState(true);
+  const [related, setRelated] = useState<RelatedNovedad[]>([]);
 
   useEffect(() => {
     loadNovedad();
@@ -65,6 +74,16 @@ const NovedadDetail = () => {
 
       if (error) throw error;
       setNovedad(data as any);
+
+      // Load related articles
+      const { data: relData } = await supabase
+        .from("novedades")
+        .select("id, title, slug, image_url, published_at")
+        .eq("status", "published")
+        .neq("slug", slug)
+        .order("published_at", { ascending: false })
+        .limit(3);
+      setRelated((relData as RelatedNovedad[]) || []);
     } catch (error: any) {
       console.error("Error loading novedad:", error);
       navigate("/novedades");
@@ -87,6 +106,14 @@ const NovedadDetail = () => {
       navigator.clipboard.writeText(window.location.href);
       toast.success("Enlace copiado al portapapeles");
     }
+  };
+
+  const handleShareTwitter = () => {
+    window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(window.location.href)}&text=${encodeURIComponent(novedad?.title || '')}`, '_blank');
+  };
+
+  const handleShareLinkedIn = () => {
+    window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.href)}`, '_blank');
   };
 
   const getInitials = (name: string) => {
@@ -222,11 +249,62 @@ const NovedadDetail = () => {
                   initialCount={novedad.reactions_count || 0}
                 />
                 
-                <Button variant="outline" size="sm" onClick={handleShare} className="gap-2">
-                  <Share2 className="w-4 h-4" />
-                  Compartir
-                </Button>
+                <div className="flex items-center gap-2">
+                  <Button variant="outline" size="sm" onClick={handleShareTwitter} className="gap-2 text-xs">
+                    𝕏
+                  </Button>
+                  <Button variant="outline" size="sm" onClick={handleShareLinkedIn} className="gap-2 text-xs">
+                    in
+                  </Button>
+                  <Button variant="outline" size="sm" onClick={handleShare} className="gap-2">
+                    <Share2 className="w-4 h-4" />
+                    Copiar enlace
+                  </Button>
+                </div>
               </motion.footer>
+
+              {/* Related Articles */}
+              {related.length > 0 && (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.35 }}
+                  className="pt-10 mt-10 border-t border-border/50"
+                >
+                  <h3 className="text-xl font-bold mb-6">Artículos Relacionados</h3>
+                  <div className="grid sm:grid-cols-3 gap-4">
+                    {related.map((r) => (
+                      <div
+                        key={r.id}
+                        onClick={() => navigate(`/novedades/${r.slug}`)}
+                        className="group cursor-pointer card-base card-hover overflow-hidden"
+                      >
+                        <div className="aspect-[16/9] overflow-hidden">
+                          {r.image_url ? (
+                            <ImageLazy
+                              src={r.image_url}
+                              alt={r.title}
+                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                            />
+                          ) : (
+                            <div className="w-full h-full bg-gradient-to-br from-muted to-muted/50 flex items-center justify-center">
+                              <Newspaper className="w-8 h-8 text-muted-foreground/30" />
+                            </div>
+                          )}
+                        </div>
+                        <div className="p-4">
+                          <p className="text-xs text-muted-foreground mb-1">
+                            {format(new Date(r.published_at), "dd MMM yyyy", { locale: es })}
+                          </p>
+                          <h4 className="font-semibold text-sm line-clamp-2 group-hover:text-primary transition-colors">
+                            {r.title}
+                          </h4>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
             </div>
           </motion.div>
         </article>
