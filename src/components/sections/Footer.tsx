@@ -7,7 +7,6 @@ import { GraduationCap, ArrowUpRight, Heart, Mail, Phone, MapPin, ExternalLink, 
 const quickLinks = [
   { label: "Inicio", section: "inicio" },
   { label: "Maestría", section: "maestria" },
-  { label: "Expertos", section: "expertos" },
   { label: "Eventos", section: "eventos" },
   { label: "Galería", section: "galeria" },
   { label: "Contacto", section: "contacto" }
