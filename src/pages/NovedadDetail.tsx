@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { motion } from "framer-motion";
 import Navigation from "@/components/common/Navigation";
 import ReactionButton from "@/features/forum/ReactionButton";
-import { Calendar, User, ArrowLeft, Clock, Share2, Sparkles, ArrowRight } from "lucide-react";
+import { Calendar, User, ArrowLeft, Clock, Share2, Sparkles, ArrowRight, Newspaper } from "lucide-react";
 import { format, formatDistanceToNow } from "date-fns";
 import { es } from "date-fns/locale";
 import ImageLazy from "@/components/common/ImageLazy";
