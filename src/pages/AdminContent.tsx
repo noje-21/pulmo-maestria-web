@@ -53,16 +53,6 @@ const sectionConfigs: SectionConfig[] = [
     ],
   },
   {
-    id: "expertos",
-    label: "Sección Expertos",
-    emoji: "👨‍⚕️",
-    fields: [
-      { key: "title", label: "Título", type: "text" },
-      { key: "description", label: "Descripción", type: "textarea", rows: 3 },
-      { key: "image", label: "Imagen de sección", type: "image" },
-    ],
-  },
-  {
     id: "eventos",
     label: "Sección Eventos",
     emoji: "📅",
