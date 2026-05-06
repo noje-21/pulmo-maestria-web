@@ -11,7 +11,7 @@ import { z } from "zod";
 import { motion, AnimatePresence } from "framer-motion";
 import AdminLayout from "@/features/admin/AdminLayout";
 import { CardSkeleton } from "@/components/common/LoadingSkeleton";
-import { Plus, Trash2, Edit, Save, X, Newspaper } from "lucide-react";
+import { Plus, Trash2, Edit, Save, X, Newspaper, Search, ChevronLeft, ChevronRight, Share2, Eye } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import ImageUpload from "@/components/common/ImageUpload";
@@ -29,6 +29,9 @@ const AdminNovedades = () => {
   const [novedades, setNovedades] = useState<any[]>([]);
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [page, setPage] = useState(1);
+  const pageSize = 10;
 
   const [formData, setFormData] = useState({
     title: "",
@@ -183,8 +186,17 @@ const AdminNovedades = () => {
       title="Gestión de Novedades" 
       subtitle="Publica noticias y actualizaciones para la comunidad"
     >
-      {/* Add Button */}
-      <div className="flex justify-end mb-6">
+      {/* Toolbar */}
+      <div className="flex flex-col sm:flex-row gap-3 mb-6">
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+          <Input
+            placeholder="Buscar novedades..."
+            value={searchQuery}
+            onChange={(e) => { setSearchQuery(e.target.value); setPage(1); }}
+            className="pl-9"
+          />
+        </div>
         <Button onClick={() => setShowForm(!showForm)} className="gap-2">
           <Plus className="w-4 h-4" />
           Nueva Novedad
@@ -228,6 +240,18 @@ const AdminNovedades = () => {
                     rows={2}
                     placeholder="Breve descripción..."
                   />
+                </div>
+                <div>
+                  <Label>Texto para compartir (extracto)</Label>
+                  <Textarea
+                    value={formData.excerpt}
+                    onChange={(e) => setFormData({ ...formData, excerpt: e.target.value })}
+                    rows={2}
+                    placeholder="Texto que aparece al compartir en redes sociales..."
+                  />
+                  <p className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
+                    <Share2 className="w-3 h-3" /> Este texto se usa como preview en redes sociales
+                  </p>
                 </div>
                 <div>
                   <Label>Contenido *</Label>
@@ -285,14 +309,38 @@ const AdminNovedades = () => {
       </AnimatePresence>
 
       {/* Novedades List */}
+      {(() => {
+        const filteredNovedades = novedades.filter((n) => {
+          if (!searchQuery) return true;
+          const q = searchQuery.toLowerCase();
+          return n.title.toLowerCase().includes(q) || (n.excerpt || "").toLowerCase().includes(q);
+        });
+        const totalPages = Math.ceil(filteredNovedades.length / pageSize);
+        const paged = filteredNovedades.slice((page - 1) * pageSize, page * pageSize);
+
+        return (
       <div className="space-y-4">
-        {novedades.length === 0 ? (
+        <div className="flex items-center justify-between text-sm text-muted-foreground mb-2">
+          <span>{filteredNovedades.length} novedad{filteredNovedades.length !== 1 ? "es" : ""}</span>
+          {totalPages > 1 && (
+            <div className="flex items-center gap-2">
+              <Button variant="ghost" size="sm" disabled={page <= 1} onClick={() => setPage(page - 1)}>
+                <ChevronLeft className="w-4 h-4" />
+              </Button>
+              <span>{page} / {totalPages}</span>
+              <Button variant="ghost" size="sm" disabled={page >= totalPages} onClick={() => setPage(page + 1)}>
+                <ChevronRight className="w-4 h-4" />
+              </Button>
+            </div>
+          )}
+        </div>
+        {paged.length === 0 ? (
           <Card className="p-12 text-center bg-card border-border/50">
             <Newspaper className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
-            <p className="text-muted-foreground">No hay novedades creadas</p>
+            <p className="text-muted-foreground">{searchQuery ? "No se encontraron novedades" : "No hay novedades creadas"}</p>
           </Card>
         ) : (
-          novedades.map((novedad, index) => (
+          paged.map((novedad, index) => (
             <motion.div
               key={novedad.id}
               initial={{ opacity: 0, y: 20 }}
@@ -319,6 +367,9 @@ const AdminNovedades = () => {
                     <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
                       <span>Autor: {novedad.profiles?.full_name || "Admin"}</span>
                       <span>{format(new Date(novedad.created_at), "dd MMM yyyy", { locale: es })}</span>
+                      {novedad.image_url && (
+                        <span className="text-green-600">📷 Con imagen</span>
+                      )}
                     </div>
                   </div>
                   <div className="flex gap-2 w-full sm:w-auto">
@@ -345,6 +396,8 @@ const AdminNovedades = () => {
           ))
         )}
       </div>
+        );
+      })()}
     </AdminLayout>
   );
 };
