@@ -156,8 +156,6 @@ const Nosotros = () => {
                   </motion.div>
                 ))}
               </div>
-                ))}
-              </div>
             </div>
           </section>
         </AnimatedOnView>
