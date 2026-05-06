@@ -1,19 +1,26 @@
 import { useEffect } from "react";
 
+const SITE_NAME = "Maestría Latinoamericana en Circulación Pulmonar";
+const SITE_URL = "https://www.maestriacp.com";
+
 interface SEOProps {
   title?: string;
   description?: string;
   keywords?: string;
   ogImage?: string;
   canonicalUrl?: string;
+  ogType?: string;
+  jsonLd?: Record<string, unknown>;
 }
 
 export const SEO = ({
   title = "Maestría Latinoamericana en Circulación Pulmonar 2026",
   description = "Formación intensiva en circulación pulmonar dirigida a internistas, cardiólogos, reumatólogos y neumonólogos. Del 2 al 16 de noviembre 2026 en Buenos Aires.",
   keywords = "maestría, circulación pulmonar, hipertensión pulmonar, cardiología, Buenos Aires, medicina, formación médica",
-  ogImage = "https://lovable.dev/opengraph-image-p98pqg.png",
-  canonicalUrl = "https://www.maestriacp.com/"
+  ogImage = `${SITE_URL}/og-image.jpg`,
+  canonicalUrl = `${SITE_URL}/`,
+  ogType = "website",
+  jsonLd,
 }: SEOProps) => {
   useEffect(() => {
     // Update title
@@ -41,8 +48,12 @@ export const SEO = ({
     updateMetaTag("og:description", description, "property");
     updateMetaTag("og:image", ogImage, "property");
     updateMetaTag("og:url", canonicalUrl, "property");
+    updateMetaTag("og:type", ogType, "property");
+    updateMetaTag("og:site_name", SITE_NAME, "property");
+    updateMetaTag("og:locale", "es_AR", "property");
 
     // Twitter tags
+    updateMetaTag("twitter:card", "summary_large_image");
     updateMetaTag("twitter:title", title);
     updateMetaTag("twitter:description", description);
     updateMetaTag("twitter:image", ogImage);
@@ -57,7 +68,40 @@ export const SEO = ({
       canonical.href = canonicalUrl;
       document.head.appendChild(canonical);
     }
-  }, [title, description, keywords, ogImage, canonicalUrl]);
+
+    // JSON-LD structured data
+    const defaultJsonLd = {
+      "@context": "https://schema.org",
+      "@type": "EducationalOrganization",
+      name: SITE_NAME,
+      url: SITE_URL,
+      description,
+      event: {
+        "@type": "EducationEvent",
+        name: "Maestría Latinoamericana en Circulación Pulmonar 2026",
+        startDate: "2026-11-02",
+        endDate: "2026-11-16",
+        eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
+        eventStatus: "https://schema.org/EventScheduled",
+        location: {
+          "@type": "Place",
+          name: "Buenos Aires",
+          address: { "@type": "PostalAddress", addressLocality: "Buenos Aires", addressCountry: "AR" },
+        },
+        organizer: { "@type": "Organization", name: SITE_NAME, url: SITE_URL },
+      },
+    };
+
+    const ld = jsonLd || defaultJsonLd;
+    let script = document.querySelector('script[data-seo-jsonld]') as HTMLScriptElement | null;
+    if (!script) {
+      script = document.createElement("script");
+      script.type = "application/ld+json";
+      script.setAttribute("data-seo-jsonld", "");
+      document.head.appendChild(script);
+    }
+    script.textContent = JSON.stringify(ld);
+  }, [title, description, keywords, ogImage, canonicalUrl, ogType, jsonLd]);
 
   return null;
 };
