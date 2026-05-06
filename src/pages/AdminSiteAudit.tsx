@@ -3,7 +3,7 @@ import AdminLayout from "@/features/admin/AdminLayout";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle2, AlertTriangle, XCircle, Loader2, Search, RefreshCw } from "lucide-react";
+import { CheckCircle2, AlertTriangle, XCircle, Loader2, Search, RefreshCw, Clock } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface AuditResult {
@@ -13,50 +13,48 @@ interface AuditResult {
   detail?: string;
 }
 
-// All defined routes in the app
-const VALID_ROUTES = [
-  "/", "/auth", "/register", "/profile",
-  "/admin", "/admin/contactos", "/admin/content", "/admin/stats",
-  "/admin/foro", "/admin/novedades", "/admin/media", "/admin/ateneos",
-  "/admin/audit",
-  "/ateneos", "/nosotros", "/foro", "/foro/stats",
-  "/novedades",
-];
-
-// Dynamic route patterns
-const DYNAMIC_PATTERNS = [
-  /^\/ateneos\/[^/]+$/,
-  /^\/foro\/[^/]+$/,
-  /^\/novedades\/[^/]+$/,
-];
-
-// Valid hash anchors on landing page
-const VALID_HASHES = [
-  "#maestria", "#ejes", "#testimonios", "#galeria", "#contacto",
-];
-
-function isValidRoute(path: string): boolean {
-  const [route, hash] = path.split("#");
-  const cleanRoute = route || "/";
-  if (hash && cleanRoute === "/") {
-    return VALID_HASHES.includes(`#${hash}`);
+/** Fetch a URL with HEAD, falling back to GET on 405, with a timeout */
+async function probe(url: string, timeoutMs = 5000): Promise<{ ok: boolean; status: number; error?: string }> {
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), timeoutMs);
+  try {
+    let res = await fetch(url, { method: "HEAD", redirect: "follow", signal: ctrl.signal });
+    // Some servers reject HEAD — retry with GET
+    if (res.status === 405) {
+      res = await fetch(url, { method: "GET", redirect: "follow", signal: ctrl.signal });
+    }
+    return { ok: res.ok, status: res.status };
+  } catch (e: any) {
+    if (e.name === "AbortError") return { ok: false, status: 0, error: "timeout" };
+    return { ok: false, status: 0, error: e.message || "network error" };
+  } finally {
+    clearTimeout(timer);
   }
-  if (VALID_ROUTES.includes(cleanRoute)) return true;
-  return DYNAMIC_PATTERNS.some((p) => p.test(cleanRoute));
 }
 
-async function runAudit(): Promise<AuditResult[]> {
+async function runAudit(onProgress: (msg: string) => void): Promise<AuditResult[]> {
   const results: AuditResult[] = [];
 
-  // 1. Check for #expertos references
-  results.push({
-    type: "ok",
-    category: "Anclas residuales",
-    message: 'No se encontraron referencias a "#expertos"',
-    detail: "La sección Expertos fue removida y consolidada en Equipo Directivo (/nosotros).",
-  });
+  // 1. Check for #expertos references in the current DOM
+  onProgress("Buscando anclas residuales (#expertos)...");
+  const allAnchors = document.querySelectorAll('a[href*="#expertos"]');
+  if (allAnchors.length === 0) {
+    results.push({
+      type: "ok",
+      category: "Anclas residuales",
+      message: 'No se encontraron referencias a "#expertos"',
+      detail: "La sección Expertos fue removida y consolidada en Equipo Directivo (/nosotros).",
+    });
+  } else {
+    results.push({
+      type: "error",
+      category: "Anclas residuales",
+      message: `Se encontraron ${allAnchors.length} enlace(s) a "#expertos"`,
+      detail: "Estos enlaces apuntan a una sección que ya no existe.",
+    });
+  }
 
-  // 2. Verify critical pages are reachable
+  // 2. Verify critical pages are reachable via fetch
   const criticalPages = [
     { path: "/", label: "Landing" },
     { path: "/nosotros", label: "Nosotros" },
@@ -65,53 +63,96 @@ async function runAudit(): Promise<AuditResult[]> {
     { path: "/novedades", label: "Novedades" },
     { path: "/auth", label: "Login" },
     { path: "/admin", label: "Admin Dashboard" },
+    { path: "/admin/content", label: "Admin Contenido" },
+    { path: "/admin/audit", label: "Admin Auditoría" },
   ];
 
   for (const page of criticalPages) {
-    try {
-      const res = await fetch(page.path, { method: "HEAD", redirect: "follow" });
-      if (res.ok) {
-        results.push({ type: "ok", category: "Páginas críticas", message: `${page.label} (${page.path}) — accesible` });
-      } else {
-        results.push({ type: "error", category: "Páginas críticas", message: `${page.label} (${page.path}) — HTTP ${res.status}` });
-      }
-    } catch {
-      results.push({ type: "warn", category: "Páginas críticas", message: `${page.label} (${page.path}) — no se pudo verificar (SPA)` });
+    onProgress(`Verificando ${page.label}...`);
+    const { ok, status, error } = await probe(page.path);
+    if (ok) {
+      results.push({ type: "ok", category: "Páginas críticas", message: `${page.label} (${page.path}) — accesible (${status})` });
+    } else if (error) {
+      results.push({ type: "warn", category: "Páginas críticas", message: `${page.label} (${page.path}) — ${error}` });
+    } else {
+      results.push({ type: "error", category: "Páginas críticas", message: `${page.label} (${page.path}) — HTTP ${status}` });
     }
   }
 
-  // 3. Check internal links in the DOM
+  // 3. Collect ALL internal links from the DOM and verify each via fetch
   const allLinks = document.querySelectorAll("a[href]");
   const checked = new Set<string>();
-  let brokenCount = 0;
+  const internalLinks: string[] = [];
 
   allLinks.forEach((a) => {
     const href = a.getAttribute("href") || "";
-    // Skip external, mailto, tel, whatsapp, blob, data
+    // Skip external, mailto, tel, blob, data, javascript
     if (/^(https?:|mailto:|tel:|blob:|data:|javascript:)/.test(href)) return;
+    // Skip pure hash anchors on current page (e.g. "#contacto")
+    if (/^#/.test(href)) return;
     if (checked.has(href)) return;
     checked.add(href);
-
-    if (!isValidRoute(href)) {
-      brokenCount++;
-      results.push({
-        type: "error",
-        category: "Enlaces internos",
-        message: `Enlace potencialmente roto: ${href}`,
-        detail: "No coincide con ninguna ruta definida en el router.",
-      });
-    }
+    internalLinks.push(href);
   });
 
-  if (brokenCount === 0) {
-    results.push({
-      type: "ok",
-      category: "Enlaces internos",
-      message: `${checked.size} enlaces internos verificados — todos válidos`,
+  // Probe links in batches of 4 to avoid overwhelming the server
+  let brokenCount = 0;
+  const BATCH = 4;
+  for (let i = 0; i < internalLinks.length; i += BATCH) {
+    const batch = internalLinks.slice(i, i + BATCH);
+    onProgress(`Verificando enlaces internos (${i + 1}–${Math.min(i + BATCH, internalLinks.length)} de ${internalLinks.length})...`);
+    const probes = await Promise.all(batch.map((href) => probe(href)));
+    batch.forEach((href, j) => {
+      const { ok, status, error } = probes[j];
+      if (!ok) {
+        brokenCount++;
+        results.push({
+          type: "error",
+          category: "Enlaces internos",
+          message: `Enlace roto: ${href}`,
+          detail: error ? `Error: ${error}` : `HTTP ${status}`,
+        });
+      }
     });
   }
 
-  // 4. Check for dead component folders (compile-time check already done)
+  if (brokenCount === 0 && internalLinks.length > 0) {
+    results.push({
+      type: "ok",
+      category: "Enlaces internos",
+      message: `${internalLinks.length} enlaces internos verificados por fetch — todos accesibles`,
+    });
+  } else if (internalLinks.length === 0) {
+    results.push({
+      type: "warn",
+      category: "Enlaces internos",
+      message: "No se encontraron enlaces internos en el DOM actual",
+      detail: "La auditoría solo analiza los enlaces visibles en esta página. Navega a la landing para un análisis más completo.",
+    });
+  }
+
+  // 4. Check asset links (PDF, images referenced in href)
+  onProgress("Verificando recursos estáticos...");
+  const assetLinks = document.querySelectorAll('a[href$=".pdf"], a[href$=".doc"], a[href$=".docx"]');
+  const checkedAssets = new Set<string>();
+  for (const a of Array.from(assetLinks)) {
+    const href = a.getAttribute("href") || "";
+    if (checkedAssets.has(href) || /^https?:/.test(href)) continue;
+    checkedAssets.add(href);
+    const { ok, status, error } = await probe(href);
+    if (ok) {
+      results.push({ type: "ok", category: "Recursos estáticos", message: `${href} — accesible (${status})` });
+    } else {
+      results.push({
+        type: "error",
+        category: "Recursos estáticos",
+        message: `Archivo no encontrado: ${href}`,
+        detail: error || `HTTP ${status}`,
+      });
+    }
+  }
+
+  // 5. Static code notes
   results.push({
     type: "ok",
     category: "Código muerto",
@@ -139,13 +180,14 @@ const iconMap = {
 export default function AdminSiteAudit() {
   const [results, setResults] = useState<AuditResult[] | null>(null);
   const [running, setRunning] = useState(false);
+  const [progress, setProgress] = useState("");
 
   const handleRun = useCallback(async () => {
     setRunning(true);
     setResults(null);
-    // Small delay for UX
-    await new Promise((r) => setTimeout(r, 600));
-    const r = await runAudit();
+    setProgress("Iniciando auditoría...");
+    const r = await runAudit(setProgress);
+    setProgress("");
     setResults(r);
     setRunning(false);
   }, []);
@@ -171,6 +213,13 @@ export default function AdminSiteAudit() {
             </Button>
           )}
         </div>
+
+        {running && progress && (
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <Clock className="w-4 h-4 animate-pulse" />
+            {progress}
+          </div>
+        )}
 
         <AnimatePresence>
           {results && (
