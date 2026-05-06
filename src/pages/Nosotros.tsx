@@ -1,4 +1,6 @@
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
+import { supabase } from "@/integrations/supabase/client";
 import Navigation from "@/components/common/Navigation";
 import { Footer } from "@/components/sections/Footer";
 import { SEO } from "@/components/common/SEO";
@@ -13,6 +15,7 @@ import {
   trabajosData,
   publicacionesData,
 } from "@/data/nosotros";
+import type { Publicacion } from "@/data/nosotros";
 
 const fadeUp = {
   initial: { opacity: 0, y: 24 },
@@ -22,6 +25,24 @@ const fadeUp = {
 };
 
 const Nosotros = () => {
+  const [modulos, setModulos] = useState<Publicacion[]>(publicacionesData);
+  const [pdfSource, setPdfSource] = useState("/MAESTRIA_CP_2025.pdf");
+
+  useEffect(() => {
+    supabase
+      .from("site_content")
+      .select("content")
+      .eq("section", "modulos_destacados")
+      .maybeSingle()
+      .then(({ data }) => {
+        if (data?.content) {
+          const c = data.content as any;
+          if (c.items?.length) setModulos(c.items);
+          if (c.pdfSource) setPdfSource(c.pdfSource.startsWith("/") ? c.pdfSource : `/${c.pdfSource}`);
+        }
+      });
+  }, []);
+
   return (
     <div className="min-h-screen bg-background">
       <SEO
@@ -217,7 +238,7 @@ const Nosotros = () => {
                 <h2 className="text-2xl sm:text-3xl font-bold">Módulos Destacados</h2>
               </div>
               <div className="space-y-4">
-                {publicacionesData.map((p, i) => (
+              {modulos.map((p, i) => (
                   <motion.div
                     key={p.id}
                     {...fadeUp}
@@ -258,7 +279,7 @@ const Nosotros = () => {
                     Toda la información de equipo, módulos y actividades ha sido extraída del documento institucional vigente.
                   </p>
                   <a
-                    href="/MAESTRIA_CP_2025.pdf"
+                    href={pdfSource}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-1.5 text-xs text-primary font-medium mt-2 hover:underline"
