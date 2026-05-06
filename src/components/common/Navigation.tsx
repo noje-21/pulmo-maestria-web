@@ -11,7 +11,6 @@ import { useScrollToSection } from "@/hooks/useScrollToSection";
 // Navegación simplificada para funnel de conversión
 const navItems = [
   { label: "Maestría", section: "maestria" },
-  { label: "Expertos", section: "expertos" },
   { label: "Testimonios", section: "testimonios" },
 ];
 
