@@ -32,7 +32,6 @@ export const ateneosData: Ateneo[] = [
     </ul>
     <p>La discusión fue enriquecida por la participación de especialistas de Argentina, Colombia, México y Chile, quienes aportaron su experiencia clínica en la implementación de estas guías en contextos latinoamericanos.</p>`,
     fecha: "2026-03-15",
-    imagen: "https://images.unsplash.com/photo-1559757175-5700dde675bc?w=800&q=80",
     imagenes: [
       maestria1,
       maestria2,
