@@ -25,17 +25,36 @@ const AteneoDetail = () => {
   const [ateneo, setAteneo] = useState<Ateneo | null>(null);
   const [related, setRelated] = useState<Ateneo[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     const load = async () => {
       setLoading(true);
       try {
+        // If preview mode, verify admin auth first
+        let adminVerified = false;
+        if (isPreview) {
+          const { data: { session } } = await supabase.auth.getSession();
+          if (session) {
+            const { data: roleData } = await supabase.rpc('is_admin', {
+              check_user_id: session.user.id,
+            });
+            adminVerified = !!roleData;
+            setIsAdmin(!!roleData);
+          }
+          if (!adminVerified) {
+            // Not admin — fall back to normal published-only view
+            navigate(`/ateneos/${id}`, { replace: true });
+            return;
+          }
+        }
+
         let query = supabase
           .from("ateneos")
           .select("*")
           .eq("id", id!);
 
-        if (!isPreview) {
+        if (!isPreview || !adminVerified) {
           query = query.eq("status", "published");
         }
 
