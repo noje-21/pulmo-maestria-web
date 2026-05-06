@@ -21,7 +21,8 @@ import {
   TrendingUp,
   Image,
   Mail,
-  FileText
+  FileText,
+  BookOpen
 } from "lucide-react";
 
 const mainNavItems = [
@@ -34,6 +35,7 @@ const moreNavItems = [
   { to: "/admin/stats", label: "Estadísticas", icon: TrendingUp },
   { to: "/admin/contactos", label: "Contactos", icon: Mail },
   { to: "/admin/content", label: "Contenido", icon: FileText },
+  { to: "/admin/ateneos", label: "Ateneos", icon: BookOpen },
   { to: "/admin/media", label: "Archivos", icon: Image },
 ];
 

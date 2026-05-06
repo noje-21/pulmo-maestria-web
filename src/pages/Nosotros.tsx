@@ -28,6 +28,17 @@ const Nosotros = () => {
         title="Nosotros - Maestría en Circulación Pulmonar"
         description="Conoce al equipo, misión, visión y trayectoria de la Maestría Latinoamericana en Circulación Pulmonar."
         keywords="nosotros, equipo, misión, visión, circulación pulmonar, hipertensión pulmonar"
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": "AboutPage",
+          name: "Nosotros - Maestría Latinoamericana en Circulación Pulmonar",
+          description: "Equipo, misión, visión y trayectoria de la Maestría Latinoamericana en Circulación Pulmonar.",
+          url: "https://www.maestriacp.com/nosotros",
+          mainEntity: {
+            "@type": "EducationalOrganization",
+            name: "Maestría Latinoamericana en Circulación Pulmonar",
+          },
+        }}
       />
       <Navigation />
 

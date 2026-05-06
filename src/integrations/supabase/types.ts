@@ -14,6 +14,57 @@ export type Database = {
   }
   public: {
     Tables: {
+      ateneos: {
+        Row: {
+          categoria: Database["public"]["Enums"]["ateneo_category"]
+          contenido: string
+          created_at: string
+          created_by: string
+          descripcion: string
+          fecha: string
+          id: string
+          imagen: string | null
+          imagenes: string[] | null
+          pdf_url: string | null
+          status: Database["public"]["Enums"]["ateneo_status"]
+          titulo: string
+          updated_at: string
+          video_url: string | null
+        }
+        Insert: {
+          categoria?: Database["public"]["Enums"]["ateneo_category"]
+          contenido?: string
+          created_at?: string
+          created_by: string
+          descripcion: string
+          fecha?: string
+          id?: string
+          imagen?: string | null
+          imagenes?: string[] | null
+          pdf_url?: string | null
+          status?: Database["public"]["Enums"]["ateneo_status"]
+          titulo: string
+          updated_at?: string
+          video_url?: string | null
+        }
+        Update: {
+          categoria?: Database["public"]["Enums"]["ateneo_category"]
+          contenido?: string
+          created_at?: string
+          created_by?: string
+          descripcion?: string
+          fecha?: string
+          id?: string
+          imagen?: string | null
+          imagenes?: string[] | null
+          pdf_url?: string | null
+          status?: Database["public"]["Enums"]["ateneo_status"]
+          titulo?: string
+          updated_at?: string
+          video_url?: string | null
+        }
+        Relationships: []
+      }
       contact_submissions: {
         Row: {
           country: string
@@ -502,6 +553,14 @@ export type Database = {
     }
     Enums: {
       app_role: "admin" | "user"
+      ateneo_category:
+        | "caso_clinico"
+        | "actualizacion"
+        | "investigacion"
+        | "rehabilitacion"
+        | "imaging"
+        | "general"
+      ateneo_status: "draft" | "published" | "archived"
       forum_category:
         | "general"
         | "clinical_questions"
@@ -636,6 +695,15 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "user"],
+      ateneo_category: [
+        "caso_clinico",
+        "actualizacion",
+        "investigacion",
+        "rehabilitacion",
+        "imaging",
+        "general",
+      ],
+      ateneo_status: ["draft", "published", "archived"],
       forum_category: [
         "general",
         "clinical_questions",
