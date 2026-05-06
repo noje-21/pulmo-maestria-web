@@ -6,27 +6,88 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { Save, FileText, Users, Mail, Sparkles } from "lucide-react";
+import { Save, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
 import AdminLayout from "@/features/admin/AdminLayout";
 import { CardSkeleton } from "@/components/common/LoadingSkeleton";
+import { SiteImageUpload } from "@/components/admin/SiteImageUpload";
 
-interface SiteContent {
-  section: string;
-  content: any;
+interface SectionConfig {
+  id: string;
+  label: string;
+  emoji: string;
+  fields: FieldConfig[];
 }
 
-const sections = [
-  { id: "hero", label: "Sección Hero", icon: Sparkles, emoji: "🎯" },
-  { id: "maestria", label: "Sección Maestría", icon: FileText, emoji: "🎓" },
-  { id: "expertos", label: "Sección Expertos", icon: Users, emoji: "👨‍⚕️" },
-  { id: "contacto", label: "Sección Contacto", icon: Mail, emoji: "📧" },
+interface FieldConfig {
+  key: string;
+  label: string;
+  type: "text" | "textarea" | "image";
+  rows?: number;
+  half?: boolean;
+}
+
+const sectionConfigs: SectionConfig[] = [
+  {
+    id: "hero",
+    label: "Sección Hero",
+    emoji: "🎯",
+    fields: [
+      { key: "title", label: "Título Principal", type: "text" },
+      { key: "subtitle", label: "Subtítulo", type: "text" },
+      { key: "description", label: "Descripción", type: "textarea", rows: 3 },
+      { key: "dates", label: "Fechas", type: "text", half: true },
+      { key: "location", label: "Ubicación", type: "text", half: true },
+      { key: "warning", label: "Advertencia", type: "text" },
+      { key: "image", label: "Imagen Hero", type: "image" },
+    ],
+  },
+  {
+    id: "maestria",
+    label: "Sección Maestría",
+    emoji: "🎓",
+    fields: [
+      { key: "title", label: "Título", type: "text" },
+      { key: "description", label: "Descripción", type: "textarea", rows: 4 },
+      { key: "image", label: "Imagen Maestría", type: "image" },
+    ],
+  },
+  {
+    id: "expertos",
+    label: "Sección Expertos",
+    emoji: "👨‍⚕️",
+    fields: [
+      { key: "title", label: "Título", type: "text" },
+      { key: "description", label: "Descripción", type: "textarea", rows: 3 },
+      { key: "image", label: "Imagen de sección", type: "image" },
+    ],
+  },
+  {
+    id: "eventos",
+    label: "Sección Eventos",
+    emoji: "📅",
+    fields: [
+      { key: "title", label: "Título", type: "text" },
+      { key: "description", label: "Descripción", type: "textarea", rows: 3 },
+      { key: "image", label: "Imagen de sección", type: "image" },
+    ],
+  },
+  {
+    id: "contacto",
+    label: "Sección Contacto",
+    emoji: "📧",
+    fields: [
+      { key: "title", label: "Título", type: "text" },
+      { key: "description", label: "Descripción", type: "textarea", rows: 3 },
+    ],
+  },
 ];
 
 const AdminContent = () => {
   const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
+  const [savingSection, setSavingSection] = useState<string | null>(null);
   const [content, setContent] = useState<Record<string, any>>({});
+  const [dirty, setDirty] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     loadContent();
@@ -34,19 +95,15 @@ const AdminContent = () => {
 
   const loadContent = async () => {
     try {
-      const { data, error } = await supabase
-        .from("site_content")
-        .select("*");
-
+      const { data, error } = await supabase.from("site_content").select("*");
       if (error) throw error;
 
-      const contentMap: Record<string, any> = {};
-      data?.forEach((item: SiteContent) => {
-        contentMap[item.section] = item.content;
+      const map: Record<string, any> = {};
+      data?.forEach((item: { section: string; content: any }) => {
+        map[item.section] = item.content;
       });
-
-      setContent(contentMap);
-    } catch (error) {
+      setContent(map);
+    } catch {
       toast.error("Error al cargar el contenido");
     } finally {
       setLoading(false);
@@ -54,31 +111,33 @@ const AdminContent = () => {
   };
 
   const handleSave = async (section: string) => {
-    setSaving(true);
+    setSavingSection(section);
     try {
       const { error } = await supabase
         .from("site_content")
-        .update({ content: content[section] })
-        .eq("section", section);
+        .upsert({ section, content: content[section] || {}, updated_at: new Date().toISOString() }, { onConflict: "section" });
 
       if (error) throw error;
 
+      setDirty((prev) => {
+        const next = new Set(prev);
+        next.delete(section);
+        return next;
+      });
       toast.success("¡Contenido actualizado con éxito!");
-    } catch (error) {
+    } catch {
       toast.error("Error al guardar el contenido");
     } finally {
-      setSaving(false);
+      setSavingSection(null);
     }
   };
 
   const updateField = (section: string, field: string, value: string) => {
-    setContent(prev => ({
+    setContent((prev) => ({
       ...prev,
-      [section]: {
-        ...prev[section],
-        [field]: value
-      }
+      [section]: { ...prev[section], [field]: value },
     }));
+    setDirty((prev) => new Set(prev).add(section));
   };
 
   if (loading) {
@@ -93,180 +152,126 @@ const AdminContent = () => {
   }
 
   return (
-    <AdminLayout 
-      title="Editar Contenido del Sitio" 
-      subtitle="Actualiza los textos e información de cada sección"
+    <AdminLayout
+      title="Editar Contenido del Sitio"
+      subtitle="Actualiza textos e imágenes de cada sección. Los cambios se previsualzan antes de guardar."
     >
       <div className="space-y-6">
-        {/* Hero Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-        >
-          <Card className="p-4 md:p-6 bg-card border-border/50">
-            <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
-              <span className="text-2xl">🎯</span>
-              Sección Hero
-            </h2>
-            <div className="grid gap-4">
-              <div>
-                <Label>Título Principal</Label>
-                <Input
-                  value={content.hero?.title || ""}
-                  onChange={(e) => updateField("hero", "title", e.target.value)}
-                />
-              </div>
-              <div>
-                <Label>Subtítulo</Label>
-                <Input
-                  value={content.hero?.subtitle || ""}
-                  onChange={(e) => updateField("hero", "subtitle", e.target.value)}
-                />
-              </div>
-              <div>
-                <Label>Descripción</Label>
-                <Textarea
-                  value={content.hero?.description || ""}
-                  onChange={(e) => updateField("hero", "description", e.target.value)}
-                  rows={3}
-                />
-              </div>
-              <div className="grid sm:grid-cols-2 gap-4">
-                <div>
-                  <Label>Fechas</Label>
-                  <Input
-                    value={content.hero?.dates || ""}
-                    onChange={(e) => updateField("hero", "dates", e.target.value)}
-                  />
+        {sectionConfigs.map((sec, idx) => {
+          const isSaving = savingSection === sec.id;
+          const isDirty = dirty.has(sec.id);
+
+          // Group half fields into pairs
+          const rows: FieldConfig[][] = [];
+          let halfBuffer: FieldConfig[] = [];
+          sec.fields.forEach((f) => {
+            if (f.half) {
+              halfBuffer.push(f);
+              if (halfBuffer.length === 2) {
+                rows.push([...halfBuffer]);
+                halfBuffer = [];
+              }
+            } else {
+              if (halfBuffer.length) {
+                rows.push([...halfBuffer]);
+                halfBuffer = [];
+              }
+              rows.push([f]);
+            }
+          });
+          if (halfBuffer.length) rows.push([...halfBuffer]);
+
+          return (
+            <motion.div
+              key={sec.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 * idx }}
+            >
+              <Card className="p-4 md:p-6 bg-card border-border/50">
+                <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
+                  <span className="text-2xl">{sec.emoji}</span>
+                  {sec.label}
+                  {isDirty && (
+                    <span className="ml-2 text-xs bg-yellow-500/20 text-yellow-600 px-2 py-0.5 rounded-full">
+                      Sin guardar
+                    </span>
+                  )}
+                </h2>
+
+                <div className="grid gap-4">
+                  {rows.map((row, ri) => {
+                    if (row.length === 2) {
+                      return (
+                        <div key={ri} className="grid sm:grid-cols-2 gap-4">
+                          {row.map((f) => (
+                            <div key={f.key}>
+                              <Label>{f.label}</Label>
+                              <Input
+                                value={content[sec.id]?.[f.key] || ""}
+                                onChange={(e) => updateField(sec.id, f.key, e.target.value)}
+                              />
+                            </div>
+                          ))}
+                        </div>
+                      );
+                    }
+
+                    const f = row[0];
+
+                    if (f.type === "image") {
+                      return (
+                        <SiteImageUpload
+                          key={f.key}
+                          label={f.label}
+                          currentUrl={content[sec.id]?.[f.key] || ""}
+                          onUrlChange={(url) => updateField(sec.id, f.key, url)}
+                          folder={sec.id}
+                        />
+                      );
+                    }
+
+                    if (f.type === "textarea") {
+                      return (
+                        <div key={f.key}>
+                          <Label>{f.label}</Label>
+                          <Textarea
+                            value={content[sec.id]?.[f.key] || ""}
+                            onChange={(e) => updateField(sec.id, f.key, e.target.value)}
+                            rows={f.rows || 3}
+                          />
+                        </div>
+                      );
+                    }
+
+                    return (
+                      <div key={f.key}>
+                        <Label>{f.label}</Label>
+                        <Input
+                          value={content[sec.id]?.[f.key] || ""}
+                          onChange={(e) => updateField(sec.id, f.key, e.target.value)}
+                        />
+                      </div>
+                    );
+                  })}
                 </div>
-                <div>
-                  <Label>Ubicación</Label>
-                  <Input
-                    value={content.hero?.location || ""}
-                    onChange={(e) => updateField("hero", "location", e.target.value)}
-                  />
-                </div>
-              </div>
-              <div>
-                <Label>Advertencia</Label>
-                <Input
-                  value={content.hero?.warning || ""}
-                  onChange={(e) => updateField("hero", "warning", e.target.value)}
-                />
-              </div>
-            </div>
-            <Button onClick={() => handleSave("hero")} disabled={saving} className="mt-4 gap-2">
-              <Save className="w-4 h-4" />
-              {saving ? "Guardando..." : "Guardar Cambios"}
-            </Button>
-          </Card>
-        </motion.div>
 
-        {/* Maestría Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-        >
-          <Card className="p-4 md:p-6 bg-card border-border/50">
-            <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
-              <span className="text-2xl">🎓</span>
-              Sección Maestría
-            </h2>
-            <div className="grid gap-4">
-              <div>
-                <Label>Título</Label>
-                <Input
-                  value={content.maestria?.title || ""}
-                  onChange={(e) => updateField("maestria", "title", e.target.value)}
-                />
-              </div>
-              <div>
-                <Label>Descripción</Label>
-                <Textarea
-                  value={content.maestria?.description || ""}
-                  onChange={(e) => updateField("maestria", "description", e.target.value)}
-                  rows={4}
-                />
-              </div>
-            </div>
-            <Button onClick={() => handleSave("maestria")} disabled={saving} className="mt-4 gap-2">
-              <Save className="w-4 h-4" />
-              {saving ? "Guardando..." : "Guardar Cambios"}
-            </Button>
-          </Card>
-        </motion.div>
-
-        {/* Expertos Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-        >
-          <Card className="p-4 md:p-6 bg-card border-border/50">
-            <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
-              <span className="text-2xl">👨‍⚕️</span>
-              Sección Expertos
-            </h2>
-            <div className="grid gap-4">
-              <div>
-                <Label>Título</Label>
-                <Input
-                  value={content.expertos?.title || ""}
-                  onChange={(e) => updateField("expertos", "title", e.target.value)}
-                />
-              </div>
-              <div>
-                <Label>Descripción</Label>
-                <Textarea
-                  value={content.expertos?.description || ""}
-                  onChange={(e) => updateField("expertos", "description", e.target.value)}
-                  rows={3}
-                />
-              </div>
-            </div>
-            <Button onClick={() => handleSave("expertos")} disabled={saving} className="mt-4 gap-2">
-              <Save className="w-4 h-4" />
-              {saving ? "Guardando..." : "Guardar Cambios"}
-            </Button>
-          </Card>
-        </motion.div>
-
-        {/* Contacto Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
-        >
-          <Card className="p-4 md:p-6 bg-card border-border/50">
-            <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
-              <span className="text-2xl">📧</span>
-              Sección Contacto
-            </h2>
-            <div className="grid gap-4">
-              <div>
-                <Label>Título</Label>
-                <Input
-                  value={content.contacto?.title || ""}
-                  onChange={(e) => updateField("contacto", "title", e.target.value)}
-                />
-              </div>
-              <div>
-                <Label>Descripción</Label>
-                <Textarea
-                  value={content.contacto?.description || ""}
-                  onChange={(e) => updateField("contacto", "description", e.target.value)}
-                  rows={3}
-                />
-              </div>
-            </div>
-            <Button onClick={() => handleSave("contacto")} disabled={saving} className="mt-4 gap-2">
-              <Save className="w-4 h-4" />
-              {saving ? "Guardando..." : "Guardar Cambios"}
-            </Button>
-          </Card>
-        </motion.div>
+                <Button
+                  onClick={() => handleSave(sec.id)}
+                  disabled={isSaving}
+                  className="mt-4 gap-2"
+                >
+                  {isSaving ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <Save className="w-4 h-4" />
+                  )}
+                  {isSaving ? "Guardando..." : "Guardar Cambios"}
+                </Button>
+              </Card>
+            </motion.div>
+          );
+        })}
       </div>
     </AdminLayout>
   );
