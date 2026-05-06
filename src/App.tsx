@@ -20,6 +20,7 @@ const AdminNovedades = lazy(() => import("./pages/AdminNovedades"));
 const AdminMedia = lazy(() => import("./pages/AdminMedia"));
 const AdminDashboard = lazy(() => import("./pages/AdminDashboard"));
 const AdminAteneos = lazy(() => import("./pages/AdminAteneos"));
+const AdminSiteAudit = lazy(() => import("./pages/AdminSiteAudit"));
 const Ateneos = lazy(() => import("./pages/Ateneos"));
 const AteneoDetail = lazy(() => import("./pages/AteneoDetail"));
 const Nosotros = lazy(() => import("./pages/Nosotros"));
@@ -59,6 +60,7 @@ const App = () => {
             <Route path="/admin/novedades" element={<ProtectedRoute requireAdmin={true}><AdminNovedades /></ProtectedRoute>} />
             <Route path="/admin/media" element={<ProtectedRoute requireAdmin={true}><AdminMedia /></ProtectedRoute>} />
             <Route path="/admin/ateneos" element={<ProtectedRoute requireAdmin={true}><AdminAteneos /></ProtectedRoute>} />
+            <Route path="/admin/audit" element={<ProtectedRoute requireAdmin={true}><AdminSiteAudit /></ProtectedRoute>} />
             <Route path="/ateneos" element={<Ateneos />} />
             <Route path="/ateneos/:id" element={<AteneoDetail />} />
             <Route path="/nosotros" element={<Nosotros />} />
