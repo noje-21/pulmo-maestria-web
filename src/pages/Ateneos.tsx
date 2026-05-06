@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import Navigation from "@/components/common/Navigation";
@@ -6,31 +6,112 @@ import { Footer } from "@/components/sections/Footer";
 import { SEO } from "@/components/common/SEO";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import ImageLazy from "@/components/common/ImageLazy";
 import {
   Calendar, Search, ArrowRight, Sparkles, BookOpen,
-  Video, FileText,
+  Video, FileText, Filter,
 } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
-import { ateneosData } from "@/data/ateneos";
+import { supabase } from "@/integrations/supabase/client";
+import { ateneosData, type Ateneo } from "@/data/ateneos";
+import { Skeleton } from "@/components/ui/skeleton";
+
+const categoryLabels: Record<string, string> = {
+  caso_clinico: "Caso Clínico",
+  actualizacion: "Actualización",
+  investigacion: "Investigación",
+  rehabilitacion: "Rehabilitación",
+  imaging: "Imaging",
+  general: "General",
+};
+
+const yearOptions = ["2026", "2025", "2024"];
 
 const Ateneos = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
+  const [categoryFilter, setCategoryFilter] = useState("all");
+  const [yearFilter, setYearFilter] = useState("all");
+  const [ateneos, setAteneos] = useState<Ateneo[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+
+  useEffect(() => {
+    loadAteneos();
+  }, []);
+
+  const loadAteneos = async () => {
+    try {
+      const { data, error } = await supabase
+        .from("ateneos")
+        .select("*")
+        .eq("status", "published")
+        .order("fecha", { ascending: false });
+
+      if (error) throw error;
+
+      if (data && data.length > 0) {
+        setAteneos(data.map((a) => ({
+          id: a.id,
+          titulo: a.titulo,
+          descripcion: a.descripcion,
+          contenido: a.contenido,
+          fecha: a.fecha,
+          imagen: a.imagen || "",
+          imagenes: a.imagenes || [],
+          videoUrl: a.video_url || undefined,
+          pdfUrl: a.pdf_url || undefined,
+          categoria: a.categoria,
+        })));
+      } else {
+        // Fallback to mock data
+        setAteneos(ateneosData);
+      }
+    } catch {
+      setAteneos(ateneosData);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const filtered = useMemo(() => {
-    if (!searchQuery) return ateneosData;
-    const q = searchQuery.toLowerCase();
-    return ateneosData.filter(
-      (a) =>
-        a.titulo.toLowerCase().includes(q) ||
-        a.descripcion.toLowerCase().includes(q)
-    );
-  }, [searchQuery]);
+    let result = ateneos;
+    if (searchQuery) {
+      const q = searchQuery.toLowerCase();
+      result = result.filter(
+        (a) => a.titulo.toLowerCase().includes(q) || a.descripcion.toLowerCase().includes(q)
+      );
+    }
+    if (categoryFilter !== "all") {
+      result = result.filter((a) => (a as any).categoria === categoryFilter);
+    }
+    if (yearFilter !== "all") {
+      result = result.filter((a) => a.fecha.startsWith(yearFilter));
+    }
+    return result;
+  }, [searchQuery, categoryFilter, yearFilter, ateneos]);
 
   const featured = filtered[0];
   const rest = filtered.slice(1);
+  const hasActiveFilter = categoryFilter !== "all" || yearFilter !== "all";
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: "Ateneos Académicos - Maestría en Circulación Pulmonar",
+    description: "Ateneos académicos de la Maestría Latinoamericana en Circulación Pulmonar.",
+    url: "https://www.maestriacp.com/ateneos",
+    isPartOf: { "@type": "WebSite", name: "Maestría Latinoamericana en Circulación Pulmonar" },
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -38,6 +119,7 @@ const Ateneos = () => {
         title="Ateneos - Maestría en Circulación Pulmonar 2026"
         description="Ateneos académicos de la Maestría Latinoamericana en Circulación Pulmonar. Casos clínicos, presentaciones y discusiones."
         keywords="ateneos, casos clínicos, circulación pulmonar, hipertensión pulmonar, discusión académica"
+        jsonLd={jsonLd}
       />
       <Navigation />
 
@@ -62,9 +144,9 @@ const Ateneos = () => {
               </p>
             </div>
 
-            {/* Search */}
-            <div className="max-w-xl mx-auto">
-              <div className="relative">
+            {/* Search & Filters */}
+            <div className="flex flex-col sm:flex-row gap-2.5 sm:gap-3 max-w-2xl mx-auto">
+              <div className="relative flex-1">
                 <Search className="absolute left-3.5 sm:left-4 top-1/2 -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-muted-foreground" />
                 <Input
                   type="text"
@@ -74,10 +156,101 @@ const Ateneos = () => {
                   className="pl-10 sm:pl-12 h-11 sm:h-12 text-sm sm:text-base rounded-xl border-border/50 bg-card"
                 />
               </div>
+
+              {/* Desktop Filters */}
+              <div className="hidden sm:flex items-center gap-3">
+                <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+                  <SelectTrigger className="w-[160px] h-12 rounded-xl">
+                    <SelectValue placeholder="Categoría" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Todas</SelectItem>
+                    {Object.entries(categoryLabels).map(([k, v]) => (
+                      <SelectItem key={k} value={k}>{v}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <Select value={yearFilter} onValueChange={setYearFilter}>
+                  <SelectTrigger className="w-[120px] h-12 rounded-xl">
+                    <SelectValue placeholder="Año" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Todos</SelectItem>
+                    {yearOptions.map((y) => (
+                      <SelectItem key={y} value={y}>{y}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {hasActiveFilter && (
+                  <Button variant="ghost" size="sm" onClick={() => { setCategoryFilter("all"); setYearFilter("all"); }}>
+                    Limpiar
+                  </Button>
+                )}
+              </div>
+
+              {/* Mobile Filters */}
+              <Sheet open={isFilterOpen} onOpenChange={setIsFilterOpen}>
+                <SheetTrigger asChild className="sm:hidden">
+                  <Button variant="outline" size="lg" className="h-12 gap-2 rounded-xl relative">
+                    <Filter className="w-5 h-5" />
+                    Filtros
+                    {hasActiveFilter && (
+                      <span className="absolute -top-1 -right-1 w-5 h-5 bg-primary text-primary-foreground text-xs rounded-full flex items-center justify-center">
+                        {(categoryFilter !== "all" ? 1 : 0) + (yearFilter !== "all" ? 1 : 0)}
+                      </span>
+                    )}
+                  </Button>
+                </SheetTrigger>
+                <SheetContent side="bottom" className="rounded-t-3xl h-auto">
+                  <SheetHeader className="mb-6">
+                    <SheetTitle>Filtros</SheetTitle>
+                  </SheetHeader>
+                  <div className="space-y-4 pb-8">
+                    <div className="space-y-3">
+                      <label className="text-sm font-medium">Categoría</label>
+                      <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+                        <SelectTrigger className="w-full"><SelectValue placeholder="Todas" /></SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">Todas</SelectItem>
+                          {Object.entries(categoryLabels).map(([k, v]) => (
+                            <SelectItem key={k} value={k}>{v}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-3">
+                      <label className="text-sm font-medium">Año</label>
+                      <Select value={yearFilter} onValueChange={setYearFilter}>
+                        <SelectTrigger className="w-full"><SelectValue placeholder="Todos" /></SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">Todos</SelectItem>
+                          {yearOptions.map((y) => (
+                            <SelectItem key={y} value={y}>{y}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    {hasActiveFilter && (
+                      <Button variant="outline" onClick={() => { setCategoryFilter("all"); setYearFilter("all"); }} className="w-full">
+                        Limpiar filtros
+                      </Button>
+                    )}
+                  </div>
+                </SheetContent>
+              </Sheet>
             </div>
           </motion.header>
 
-          {filtered.length === 0 ? (
+          {loading ? (
+            <div className="space-y-8">
+              <Skeleton className="h-64 w-full rounded-2xl" />
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {[...Array(3)].map((_, i) => (
+                  <Skeleton key={i} className="h-72 rounded-xl" />
+                ))}
+              </div>
+            </div>
+          ) : filtered.length === 0 ? (
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-16 sm:py-20">
               <div className="relative mb-5 sm:mb-6 mx-auto w-fit">
                 <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-accent/20 rounded-full blur-xl scale-150" />
