@@ -153,7 +153,6 @@ export const Contacto = () => {
           },
         });
       } catch (emailError) {
-        console.error('Email notification failed:', emailError);
         // Don't block form success if email fails
       }
 
