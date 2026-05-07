@@ -23,7 +23,7 @@ describe("GalleryLightbox", () => {
   };
 
   const selectedImage = {
-    src: "/test.jpg",
+    src: "/test.webp",
     alt: "Evaluación Hemodinámica",
     category: "Hemodinamia",
   };
@@ -43,7 +43,7 @@ describe("GalleryLightbox", () => {
     render(<GalleryLightbox selectedImage={selectedImage} {...mockHandlers} />);
     const img = screen.getByAlt("Evaluación Hemodinámica");
     expect(img).toBeInTheDocument();
-    expect(img).toHaveAttribute("src", "/test.jpg");
+    expect(img).toHaveAttribute("src", "/test.webp");
   });
 
   it("displays caption text", () => {

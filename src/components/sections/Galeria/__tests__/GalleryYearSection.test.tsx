@@ -28,10 +28,10 @@ const mockGallery: YearGallery = {
   title: "Programa Académico 2024",
   subtitle: "Innovación en Circulación Pulmonar",
   description: "Avances en hemodinamia",
-  hero: "/hero-2024.jpg",
+  hero: "/hero-2024.webp",
   images: [
-    { src: "/img1.jpg", alt: "Imagen 1", category: "Cat 1" },
-    { src: "/img2.jpg", alt: "Imagen 2", category: "Cat 2" },
+    { src: "/img1.webp", alt: "Imagen 1", category: "Cat 1" },
+    { src: "/img2.webp", alt: "Imagen 2", category: "Cat 2" },
   ],
 };
 
@@ -66,7 +66,7 @@ describe("GalleryYearSection", () => {
     );
     const heroImg = screen.getByAlt("Edición 2024");
     expect(heroImg).toBeInTheDocument();
-    expect(heroImg).toHaveAttribute("src", "/hero-2024.jpg");
+    expect(heroImg).toHaveAttribute("src", "/hero-2024.webp");
     expect(heroImg).toHaveAttribute("loading", "lazy");
   });
 

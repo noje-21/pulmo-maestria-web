@@ -5,7 +5,7 @@ import BlurUpImage from "../BlurUpImage";
 
 describe("BlurUpImage", () => {
   const defaultProps = {
-    src: "/test-image.jpg",
+    src: "/test-image.webp",
     alt: "Test image",
     onClick: vi.fn(),
   };
@@ -14,7 +14,7 @@ describe("BlurUpImage", () => {
     render(<BlurUpImage {...defaultProps} />);
     const img = screen.getByAlt("Test image");
     expect(img).toBeInTheDocument();
-    expect(img).toHaveAttribute("src", "/test-image.jpg");
+    expect(img).toHaveAttribute("src", "/test-image.webp");
     expect(img).toHaveAttribute("loading", "lazy");
     expect(img).toHaveAttribute("decoding", "async");
   });
