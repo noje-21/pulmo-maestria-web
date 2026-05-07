@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { toast } from "sonner";
 import { motion } from "framer-motion";
 import { Mail, Lock, ArrowRight, GraduationCap } from "lucide-react";
-import logoMaestria from "@/assets/logo-maestria.jpg";
+import logoMaestria from "@/assets/logo-maestria.webp";
 
 const Auth = () => {
   const [email, setEmail] = useState("");

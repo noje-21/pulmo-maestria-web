@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import NotificationBell from "@/components/common/NotificationBell";
-import logoMaestria from "@/assets/logo-maestria.jpg";
+import logoMaestria from "@/assets/logo-maestria.webp";
 import { useScrollToSection } from "@/hooks/useScrollToSection";
 
 // Navegación simplificada para funnel de conversión

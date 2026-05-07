@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { LogOut, GraduationCap, Menu, Home } from "lucide-react";
 import { toast } from "sonner";
-import logoMaestria from "@/assets/logo-maestria.jpg";
+import logoMaestria from "@/assets/logo-maestria.webp";
 
 interface AdminHeaderProps {
   onMenuToggle?: () => void;

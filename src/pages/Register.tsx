@@ -9,7 +9,7 @@ import { toast } from "sonner";
 import { z } from "zod";
 import { motion } from "framer-motion";
 import { User, Mail, Lock, ArrowRight, GraduationCap } from "lucide-react";
-import logoMaestria from "@/assets/logo-maestria.jpg";
+import logoMaestria from "@/assets/logo-maestria.webp";
 
 const registerSchema = z.object({
   fullName: z.string().trim().min(2, "El nombre debe tener al menos 2 caracteres").max(100, "El nombre es muy largo"),
