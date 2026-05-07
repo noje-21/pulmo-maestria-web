@@ -233,9 +233,18 @@ export const Testimonios = () => {
     document.body.style.overflow = "";
   }, []);
 
-  const scrollToContact = useCallback(() => {
-    document.getElementById("contacto")?.scrollIntoView({ behavior: "smooth" });
-  }, []);
+  // Keyboard: Escape to close modal
+  useEffect(() => {
+    if (!activeVideo) return;
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === "Escape") closeVideo();
+    };
+    window.addEventListener("keydown", handler);
+    return () => {
+      window.removeEventListener("keydown", handler);
+      document.body.style.overflow = ""; // cleanup on unmount
+    };
+  }, [activeVideo, closeVideo]);
 
   return (
     <Section id="testimonios" background="default" pattern="none" padding="large">
@@ -307,7 +316,12 @@ export const Testimonios = () => {
       {/* Cinema Modal */}
       <AnimatePresence>
         {activeVideo && (
-          <div className="fixed inset-0 z-[200] flex items-center justify-center p-4">
+          <div
+            className="fixed inset-0 z-[200] flex items-center justify-center p-4"
+            role="dialog"
+            aria-modal="true"
+            aria-label={`Testimonio de ${activeVideo.nombre}`}
+          >
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}

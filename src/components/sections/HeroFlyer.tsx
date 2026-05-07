@@ -115,6 +115,7 @@ const VideoPlayer = memo(function VideoPlayer({
   const [opacities, setOpacities] = useState<{ a: number; b: number }>({ a: 1, b: 0 });
   const initializedSrc = useRef<string>("");
   const [transitioning, setTransitioning] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const v = refA.current;
@@ -124,6 +125,26 @@ const VideoPlayer = memo(function VideoPlayer({
     v.load();
     v.play().catch(() => {});
   // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Pause/resume videos based on viewport visibility
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        const active = activeRef.current === "A" ? refA.current : refB.current;
+        if (!active) return;
+        if (entry.isIntersecting) {
+          active.play().catch(() => {});
+        } else {
+          active.pause();
+        }
+      },
+      { threshold: 0.1 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
   }, []);
 
   useEffect(() => {
@@ -160,6 +181,7 @@ const VideoPlayer = memo(function VideoPlayer({
 
   return (
     <motion.div
+      ref={containerRef}
       className="relative w-full aspect-[4/3] sm:aspect-video rounded-2xl overflow-hidden border border-white/10 bg-black transform-gpu"
       style={{
         contain: "layout style paint",

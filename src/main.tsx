@@ -28,3 +28,6 @@ createRoot(document.getElementById("root")!).render(
     </BrowserRouter>
   </React.StrictMode>
 );
+
+// Report Web Vitals (async, non-blocking)
+import("./lib/vitals").then(({ reportWebVitals }) => reportWebVitals());

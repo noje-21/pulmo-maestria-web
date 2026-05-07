@@ -11,6 +11,7 @@ import { format, formatDistanceToNow } from "date-fns";
 import { es } from "date-fns/locale";
 import ImageLazy from "@/components/common/ImageLazy";
 import DOMPurify from "dompurify";
+import { SEO } from "@/components/common/SEO";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
 
@@ -140,6 +141,30 @@ const NovedadDetail = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background via-muted/20 to-background">
+      <SEO
+        title={`${novedad.title} - Novedades | Maestría en Circulación Pulmonar`}
+        description={novedad.content.replace(/<[^>]*>/g, "").slice(0, 155)}
+        ogImage={novedad.image_url || undefined}
+        canonicalUrl={`https://www.maestriacp.com/novedades/${slug}`}
+        ogType="article"
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": "Article",
+          headline: novedad.title,
+          datePublished: novedad.published_at,
+          author: {
+            "@type": "Person",
+            name: novedad.profiles?.full_name || "Maestría CP",
+          },
+          publisher: {
+            "@type": "Organization",
+            name: "Maestría Latinoamericana en Circulación Pulmonar",
+            url: "https://www.maestriacp.com",
+          },
+          image: novedad.image_url || undefined,
+          mainEntityOfPage: `https://www.maestriacp.com/novedades/${slug}`,
+        }}
+      />
       <Navigation />
       
       <main className="pt-24 sm:pt-28 pb-16 sm:pb-20 px-4 sm:px-6 lg:px-8">
