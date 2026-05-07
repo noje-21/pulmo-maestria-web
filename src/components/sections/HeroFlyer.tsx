@@ -409,7 +409,8 @@ export const HeroFlyer = () => {
         preloadedSet.current.add(next);
         const link = document.createElement("link");
         link.rel = "preload";
-        link.as = "video";
+        link.as = "fetch";
+        link.setAttribute("crossorigin", "anonymous");
         link.href = flyerVideos[next].src;
         document.head.appendChild(link);
       }

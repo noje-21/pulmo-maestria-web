@@ -36,6 +36,13 @@
     <meta name="googlebot" content="index, follow" />
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
     <link rel="apple-touch-icon" href="/favicon.ico" />
+
+    <!-- Preload critical first video for LCP -->
+    <link rel="preload" as="fetch" crossorigin="anonymous" href="/videos/flyer-1.mp4" />
+    
+    <!-- Preconnect to Supabase -->
+    <link rel="preconnect" href="https://tvgkinrbtnbtseooaiex.supabase.co" />
+    <link rel="dns-prefetch" href="https://tvgkinrbtnbtseooaiex.supabase.co" />
   </head>
 
   <body>
