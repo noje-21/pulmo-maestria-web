@@ -18,7 +18,7 @@ import {
   ShieldCheck
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import logoMaestria from "@/assets/logo-maestria.jpg";
+import logoMaestria from "@/assets/logo-maestria.webp";
 
 const menuItems = [
   { to: "/admin", label: "Dashboard", icon: LayoutDashboard, end: true },
