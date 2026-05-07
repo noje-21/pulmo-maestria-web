@@ -3,16 +3,11 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Home, ArrowLeft, Search, Sparkles } from "lucide-react";
 import Navigation from "@/components/common/Navigation";
-import { useEffect } from "react";
 import { SEO } from "@/components/common/SEO";
 
 const NotFound = () => {
   const location = useLocation();
   const navigate = useNavigate();
-
-  useEffect(() => {
-    console.error("404 Error: User attempted to access non-existent route:", location.pathname);
-  }, [location.pathname]);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background via-muted/30 to-background">
