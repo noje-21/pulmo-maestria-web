@@ -67,6 +67,7 @@ const ImageLazy = memo(function ImageLazy({
           alt={alt}
           loading={priority ? "eager" : "lazy"}
           decoding="async"
+          fetchPriority={priority ? "high" : "auto"}
           onLoad={() => setLoaded(true)}
           className={cn(
             "transition-all duration-500 w-full h-full",
