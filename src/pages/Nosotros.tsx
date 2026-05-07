@@ -15,7 +15,7 @@ import {
   trabajosData,
   publicacionesData,
 } from "@/data/nosotros";
-import heroImage from "@/assets/secion/maestria_2025_1.jpg";
+import heroImage from "@/assets/secion/maestria_2025_1.webp";
 import type { Publicacion } from "@/data/nosotros";
 
 const fadeUp = {

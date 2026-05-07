@@ -1,10 +1,10 @@
-import gallery1 from "@/assets/secion/maestria1.jpg";
-import gallery3 from "@/assets/secion/maestria3.jpg";
-import gallery32 from "@/assets/secion/maestria32.jpg";
-import gallery33 from "@/assets/secion/maestria33.jpg";
-import gallery34 from "@/assets/secion/maestria34.jpg";
-import gallery35 from "@/assets/secion/maestria35.jpg";
-import gallery36 from "@/assets/secion/maestria36.jpg";
+import gallery1 from "@/assets/secion/maestria1.webp";
+import gallery3 from "@/assets/secion/maestria3.webp";
+import gallery32 from "@/assets/secion/maestria32.webp";
+import gallery33 from "@/assets/secion/maestria33.webp";
+import gallery34 from "@/assets/secion/maestria34.webp";
+import gallery35 from "@/assets/secion/maestria35.webp";
+import gallery36 from "@/assets/secion/maestria36.webp";
 import type { YearGallery } from "../types";
 
 export const gallery2024: YearGallery = {

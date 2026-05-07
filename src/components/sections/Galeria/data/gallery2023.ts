@@ -1,9 +1,9 @@
-import gallery2 from "@/assets/secion/maestria2.jpg";
-import gallery22 from "@/assets/secion/maestria22.jpg";
-import gallery23 from "@/assets/secion/maestria23.jpg";
-import gallery24 from "@/assets/secion/maestria24.jpg";
-import gallery25 from "@/assets/secion/maestria25.jpg";
-import gallery26 from "@/assets/secion/maestria26.jpg";
+import gallery2 from "@/assets/secion/maestria2.webp";
+import gallery22 from "@/assets/secion/maestria22.webp";
+import gallery23 from "@/assets/secion/maestria23.webp";
+import gallery24 from "@/assets/secion/maestria24.webp";
+import gallery25 from "@/assets/secion/maestria25.webp";
+import gallery26 from "@/assets/secion/maestria26.webp";
 import type { YearGallery } from "../types";
 
 export const gallery2023: YearGallery = {

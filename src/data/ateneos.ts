@@ -1,9 +1,9 @@
-import maestria1 from "@/assets/secion/maestria1.jpg";
-import maestria2 from "@/assets/secion/maestria2.jpg";
-import maestria12 from "@/assets/secion/maestria12.jpg";
-import maestria13 from "@/assets/secion/maestria13.jpg";
-import maestria14 from "@/assets/secion/maestria14.jpg";
-import maestria15 from "@/assets/secion/maestria15.jpg";
+import maestria1 from "@/assets/secion/maestria1.webp";
+import maestria2 from "@/assets/secion/maestria2.webp";
+import maestria12 from "@/assets/secion/maestria12.webp";
+import maestria13 from "@/assets/secion/maestria13.webp";
+import maestria14 from "@/assets/secion/maestria14.webp";
+import maestria15 from "@/assets/secion/maestria15.webp";
 
 export interface Ateneo {
   id: string;

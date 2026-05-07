@@ -7,10 +7,10 @@ import Alejo from "@/assets/alejandro.jpg";
 import Julie from "@/assets/julieta.jpg";
 import GuilleS from "@/assets/guillermina.jpg";
 import Dora from "@/assets/dora.jpg";
-import gallery1 from "@/assets/secion/maestria1.jpg";
-import gallery3 from "@/assets/secion/maestria3.jpg";
-import gallery32 from "@/assets/secion/maestria32.jpg";
-import gallery34 from "@/assets/secion/maestria34.jpg";
+import gallery1 from "@/assets/secion/maestria1.webp";
+import gallery3 from "@/assets/secion/maestria3.webp";
+import gallery32 from "@/assets/secion/maestria32.webp";
+import gallery34 from "@/assets/secion/maestria34.webp";
 
 export interface Trabajo {
   id: string;

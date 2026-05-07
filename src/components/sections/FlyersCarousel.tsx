@@ -2,11 +2,11 @@ import { useRef, useState, useCallback, useEffect, useMemo } from "react";
 import { motion, useMotionValue, useTransform, animate } from "framer-motion";
 
 // Representative hero images from each year gallery
-import img2022 from "@/assets/secion/maestria1.jpg";
-import img2023 from "@/assets/secion/maestria2.jpg";
-import img2024 from "@/assets/secion/maestria3.jpg";
-import img2025a from "@/assets/secion/maestria_2025_13.jpg";
-import img2025b from "@/assets/secion/maestria_2025_1.jpg";
+import img2022 from "@/assets/secion/maestria1.webp";
+import img2023 from "@/assets/secion/maestria2.webp";
+import img2024 from "@/assets/secion/maestria3.webp";
+import img2025a from "@/assets/secion/maestria_2025_13.webp";
+import img2025b from "@/assets/secion/maestria_2025_1.webp";
 
 interface FlyerSlide {
   src: string;

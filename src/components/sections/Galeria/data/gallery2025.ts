@@ -1,20 +1,20 @@
-import g2025_1 from "@/assets/secion/maestria_2025_1.jpg";
-import g2025_2 from "@/assets/secion/maestria_2025_2.jpg";
-import g2025_3 from "@/assets/secion/maestria_2025_3.jpg";
-import g2025_4 from "@/assets/secion/maestria_2025_4.jpg";
-import g2025_5 from "@/assets/secion/maestria_2025_5.jpg";
-import g2025_6 from "@/assets/secion/maestria_2025_6.jpg";
-import g2025_7 from "@/assets/secion/maestria_2025_7.jpg";
-import g2025_8 from "@/assets/secion/maestria_2025_8.jpg";
-import g2025_9 from "@/assets/secion/maestria_2025_9.jpg";
-import g2025_11 from "@/assets/secion/maestria_2025_11.jpg";
-import g2025_12 from "@/assets/secion/maestria_2025_12.jpg";
-import g2025_13 from "@/assets/secion/maestria_2025_13.jpg";
-import g2025_14 from "@/assets/secion/maestria_2025_14.jpg";
-import g2025_15 from "@/assets/secion/maestria_2025_15.jpg";
-import g2025_16 from "@/assets/secion/maestria_2025_16.jpg";
-import g2025_17 from "@/assets/secion/maestria_2025_17.jpg";
-import g2025_18 from "@/assets/secion/maestria_2025_18.jpg";
+import g2025_1 from "@/assets/secion/maestria_2025_1.webp";
+import g2025_2 from "@/assets/secion/maestria_2025_2.webp";
+import g2025_3 from "@/assets/secion/maestria_2025_3.webp";
+import g2025_4 from "@/assets/secion/maestria_2025_4.webp";
+import g2025_5 from "@/assets/secion/maestria_2025_5.webp";
+import g2025_6 from "@/assets/secion/maestria_2025_6.webp";
+import g2025_7 from "@/assets/secion/maestria_2025_7.webp";
+import g2025_8 from "@/assets/secion/maestria_2025_8.webp";
+import g2025_9 from "@/assets/secion/maestria_2025_9.webp";
+import g2025_11 from "@/assets/secion/maestria_2025_11.webp";
+import g2025_12 from "@/assets/secion/maestria_2025_12.webp";
+import g2025_13 from "@/assets/secion/maestria_2025_13.webp";
+import g2025_14 from "@/assets/secion/maestria_2025_14.webp";
+import g2025_15 from "@/assets/secion/maestria_2025_15.webp";
+import g2025_16 from "@/assets/secion/maestria_2025_16.webp";
+import g2025_17 from "@/assets/secion/maestria_2025_17.webp";
+import g2025_18 from "@/assets/secion/maestria_2025_18.webp";
 import type { YearGallery } from "../types";
 
 export const gallery2025: YearGallery = {
