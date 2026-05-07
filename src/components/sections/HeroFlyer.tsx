@@ -431,7 +431,7 @@ export const HeroFlyer = () => {
   return (
     <section
       id="hero-flyer"
-      className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-[hsl(229,80%,8%)] via-[hsl(229,60%,12%)] to-[hsl(229,50%,6%)]"
+      className="relative min-h-[100svh] flex items-center justify-center overflow-hidden bg-gradient-to-br from-[hsl(229,80%,8%)] via-[hsl(229,60%,12%)] to-[hsl(229,50%,6%)]"
       aria-label="Presentación de la Maestría en Circulación Pulmonar"
       style={{ contain: "layout style" }}
     >

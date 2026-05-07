@@ -37,8 +37,8 @@
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
     <link rel="apple-touch-icon" href="/favicon.ico" />
 
-    <!-- Preload critical first video for LCP -->
-    <link rel="preload" as="fetch" crossorigin="anonymous" href="/videos/flyer-1.mp4" />
+    <!-- Preload critical first video for LCP (desktop only — mobile saves bandwidth) -->
+    <link rel="preload" as="video" href="/videos/flyer-1.mp4" media="(min-width: 1024px)" />
     
     <!-- Preconnect to Supabase -->
     <link rel="preconnect" href="https://tvgkinrbtnbtseooaiex.supabase.co" />
