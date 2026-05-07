@@ -109,16 +109,6 @@ const ForoDetail = () => {
       if (error) throw error;
       setPost(data as any);
 
-      // Debug mode (admin): log profile join result
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session) {
-        const { data: adminCheck } = await supabase.rpc('is_admin', { check_user_id: session.user.id });
-        if (adminCheck) {
-          console.group('[Forum Debug] Post detail');
-          console.log(`Post "${data.title}" | user_id: ${data.user_id} | profile:`, data.profiles || 'NULL');
-          console.groupEnd();
-        }
-      }
     } catch (error: any) {
       console.error("Error loading post:", error);
       toast.error("No encontramos esta publicación. Puede que haya sido eliminada.");
@@ -140,21 +130,6 @@ const ForoDetail = () => {
         .order("created_at", { ascending: true });
 
       if (error) throw error;
-      
-      // Debug mode (admin): log comment profiles
-      const { data: { session: sess } } = await supabase.auth.getSession();
-      let debugAdmin = false;
-      if (sess) {
-        const { data: adminCheck } = await supabase.rpc('is_admin', { check_user_id: sess.user.id });
-        debugAdmin = !!adminCheck;
-      }
-      if (debugAdmin && data) {
-        console.group('[Forum Debug] Comments loaded');
-        data.forEach((c: any) => {
-          console.log(`Comment ${c.id.slice(0,8)} | user_id: ${c.user_id} | profile: ${c.profiles ? JSON.stringify(c.profiles) : 'NULL'}`);
-        });
-        console.groupEnd();
-      }
 
       const commentMap = new Map<string, Comment>();
       const rootComments: Comment[] = [];

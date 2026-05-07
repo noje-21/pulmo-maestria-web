@@ -3,6 +3,70 @@ import { useEffect } from "react";
 const SITE_NAME = "Maestría Latinoamericana en Circulación Pulmonar";
 const SITE_URL = "https://www.maestriacp.com";
 
+const DEFAULT_JSON_LD = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "EducationalOrganization",
+      "@id": `${SITE_URL}/#organization`,
+      name: SITE_NAME,
+      url: SITE_URL,
+      logo: `${SITE_URL}/favicon.ico`,
+      sameAs: [
+        "https://www.facebook.com/share/16s5MUKG3C/",
+        "https://instagram.com/magisterenhipertensionpulmonar",
+        "https://www.linkedin.com/in/hipertension-pulmonar-655a43253",
+      ],
+      contactPoint: {
+        "@type": "ContactPoint",
+        telephone: "+54-9-11-5906-4234",
+        contactType: "customer service",
+        availableLanguage: ["Spanish"],
+      },
+    },
+    {
+      "@type": "EducationEvent",
+      name: "Maestría Latinoamericana en Circulación Pulmonar 2026",
+      startDate: "2026-11-02",
+      endDate: "2026-11-16",
+      eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
+      eventStatus: "https://schema.org/EventScheduled",
+      location: {
+        "@type": "Place",
+        name: "Centro Gallego de Buenos Aires",
+        address: {
+          "@type": "PostalAddress",
+          addressLocality: "Buenos Aires",
+          addressCountry: "AR",
+        },
+      },
+      organizer: {
+        "@type": "Organization",
+        "@id": `${SITE_URL}/#organization`,
+        name: SITE_NAME,
+        url: SITE_URL,
+      },
+      description:
+        "Formación intensiva en circulación pulmonar dirigida a internistas, cardiólogos, reumatólogos y neumonólogos.",
+      maximumAttendeeCapacity: 15,
+      inLanguage: "es",
+      offers: {
+        "@type": "Offer",
+        availability: "https://schema.org/LimitedAvailability",
+        url: `${SITE_URL}/#contacto`,
+      },
+    },
+    {
+      "@type": "WebSite",
+      "@id": `${SITE_URL}/#website`,
+      url: SITE_URL,
+      name: SITE_NAME,
+      inLanguage: "es",
+      publisher: { "@id": `${SITE_URL}/#organization` },
+    },
+  ],
+};
+
 interface SEOProps {
   title?: string;
   description?: string;
@@ -69,30 +133,7 @@ export const SEO = ({
       document.head.appendChild(canonical);
     }
 
-    // JSON-LD structured data
-    const defaultJsonLd = {
-      "@context": "https://schema.org",
-      "@type": "EducationalOrganization",
-      name: SITE_NAME,
-      url: SITE_URL,
-      description,
-      event: {
-        "@type": "EducationEvent",
-        name: "Maestría Latinoamericana en Circulación Pulmonar 2026",
-        startDate: "2026-11-02",
-        endDate: "2026-11-16",
-        eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
-        eventStatus: "https://schema.org/EventScheduled",
-        location: {
-          "@type": "Place",
-          name: "Buenos Aires",
-          address: { "@type": "PostalAddress", addressLocality: "Buenos Aires", addressCountry: "AR" },
-        },
-        organizer: { "@type": "Organization", name: SITE_NAME, url: SITE_URL },
-      },
-    };
-
-    const ld = jsonLd || defaultJsonLd;
+    const ld = jsonLd || DEFAULT_JSON_LD;
     let script = document.querySelector('script[data-seo-jsonld]') as HTMLScriptElement | null;
     if (!script) {
       script = document.createElement("script");

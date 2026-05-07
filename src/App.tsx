@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Routes, Route } from "react-router-dom";
 import { ProtectedRoute } from "@/components/common/ProtectedRoute";
 import ScrollToTop from "@/components/common/ScrollToTop";
+import { ErrorBoundary } from "@/components/common/ErrorBoundary";
 import Index from "./pages/Index";
 
 // Lazy-loaded pages — only Index is eagerly loaded (landing page)
@@ -46,32 +47,34 @@ const App = () => {
         <Toaster />
         <Sonner />
         <ScrollToTop />
-        <Suspense fallback={<PageFallback />}>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/auth" element={<Auth />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/profile" element={<ProtectedRoute requireAuth={true}><Profile /></ProtectedRoute>} />
-            <Route path="/admin" element={<ProtectedRoute requireAdmin={true}><Admin /></ProtectedRoute>} />
-            <Route path="/admin/contactos" element={<ProtectedRoute requireAdmin={true}><AdminContactos /></ProtectedRoute>} />
-            <Route path="/admin/content" element={<ProtectedRoute requireAdmin={true}><AdminContent /></ProtectedRoute>} />
-            <Route path="/admin/stats" element={<ProtectedRoute requireAdmin={true}><AdminDashboard /></ProtectedRoute>} />
-            <Route path="/admin/foro" element={<ProtectedRoute requireAdmin={true}><AdminForo /></ProtectedRoute>} />
-            <Route path="/admin/novedades" element={<ProtectedRoute requireAdmin={true}><AdminNovedades /></ProtectedRoute>} />
-            <Route path="/admin/media" element={<ProtectedRoute requireAdmin={true}><AdminMedia /></ProtectedRoute>} />
-            <Route path="/admin/ateneos" element={<ProtectedRoute requireAdmin={true}><AdminAteneos /></ProtectedRoute>} />
-            <Route path="/admin/audit" element={<ProtectedRoute requireAdmin={true}><AdminSiteAudit /></ProtectedRoute>} />
-            <Route path="/ateneos" element={<Ateneos />} />
-            <Route path="/ateneos/:id" element={<AteneoDetail />} />
-            <Route path="/nosotros" element={<Nosotros />} />
-            <Route path="/foro" element={<Foro />} />
-            <Route path="/foro/:id" element={<ForoDetail />} />
-            <Route path="/foro/stats" element={<ForoStats />} />
-            <Route path="/novedades" element={<Novedades />} />
-            <Route path="/novedades/:slug" element={<NovedadDetail />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </Suspense>
+        <ErrorBoundary>
+          <Suspense fallback={<PageFallback />}>
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/auth" element={<Auth />} />
+              <Route path="/register" element={<Register />} />
+              <Route path="/profile" element={<ProtectedRoute requireAuth={true}><Profile /></ProtectedRoute>} />
+              <Route path="/admin" element={<ProtectedRoute requireAdmin={true}><Admin /></ProtectedRoute>} />
+              <Route path="/admin/contactos" element={<ProtectedRoute requireAdmin={true}><AdminContactos /></ProtectedRoute>} />
+              <Route path="/admin/content" element={<ProtectedRoute requireAdmin={true}><AdminContent /></ProtectedRoute>} />
+              <Route path="/admin/stats" element={<ProtectedRoute requireAdmin={true}><AdminDashboard /></ProtectedRoute>} />
+              <Route path="/admin/foro" element={<ProtectedRoute requireAdmin={true}><AdminForo /></ProtectedRoute>} />
+              <Route path="/admin/novedades" element={<ProtectedRoute requireAdmin={true}><AdminNovedades /></ProtectedRoute>} />
+              <Route path="/admin/media" element={<ProtectedRoute requireAdmin={true}><AdminMedia /></ProtectedRoute>} />
+              <Route path="/admin/ateneos" element={<ProtectedRoute requireAdmin={true}><AdminAteneos /></ProtectedRoute>} />
+              <Route path="/admin/audit" element={<ProtectedRoute requireAdmin={true}><AdminSiteAudit /></ProtectedRoute>} />
+              <Route path="/ateneos" element={<Ateneos />} />
+              <Route path="/ateneos/:id" element={<AteneoDetail />} />
+              <Route path="/nosotros" element={<Nosotros />} />
+              <Route path="/foro" element={<Foro />} />
+              <Route path="/foro/:id" element={<ForoDetail />} />
+              <Route path="/foro/stats" element={<ForoStats />} />
+              <Route path="/novedades" element={<Novedades />} />
+              <Route path="/novedades/:slug" element={<NovedadDetail />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </Suspense>
+        </ErrorBoundary>
       </TooltipProvider>
     </QueryClientProvider>
   );

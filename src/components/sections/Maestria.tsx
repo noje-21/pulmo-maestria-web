@@ -124,7 +124,7 @@ export const Maestria = memo(function Maestria() {
                     title="Video de la Maestría"
                     className="w-full h-full min-h-[280px] sm:min-h-[360px] lg:min-h-[420px]"
                     allow="autoplay; fullscreen; picture-in-picture"
-                    allowFullScreen
+                    loading="lazy"
                   />
                 </div>
                 
