@@ -9,14 +9,34 @@ import { CampusVirtualButton } from "@/components/common/CampusVirtualButton";
 
 interface FlyerVideo {
   id: number;
-  src: string;
+  srcMobile: string;
+  srcDesktop: string;
+  poster: string;
   label: string;
 }
 
 const flyerVideos: FlyerVideo[] = [
-  { id: 0, src: "/videos/flyer-1.mp4", label: "Experiencia académica presencial" },
-  { id: 1, src: "/videos/flyer-2.mp4", label: "Formación con referentes internacionales" },
-  { id: 2, src: "/videos/flyer-3.mp4", label: "Impacto clínico real" },
+  {
+    id: 0,
+    srcMobile: "/videos/flyer-1-mobile.mp4",
+    srcDesktop: "/videos/flyer-1-desktop.mp4",
+    poster: "/videos/flyer-1-poster.jpg",
+    label: "Experiencia académica presencial",
+  },
+  {
+    id: 1,
+    srcMobile: "/videos/flyer-2-mobile.mp4",
+    srcDesktop: "/videos/flyer-2-desktop.mp4",
+    poster: "/videos/flyer-2-poster.jpg",
+    label: "Formación con referentes internacionales",
+  },
+  {
+    id: 2,
+    srcMobile: "/videos/flyer-3-mobile.mp4",
+    srcDesktop: "/videos/flyer-3-desktop.mp4",
+    poster: "/videos/flyer-3-poster.jpg",
+    label: "Impacto clínico real",
+  },
 ];
 
 const ROTATION_INTERVAL = 15_000;
