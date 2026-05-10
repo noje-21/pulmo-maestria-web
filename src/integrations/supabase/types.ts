@@ -543,6 +543,48 @@ export type Database = {
         }
         Relationships: []
       }
+      web_vitals: {
+        Row: {
+          created_at: string
+          device_type: string | null
+          id: string
+          metric_delta: number | null
+          metric_id: string | null
+          metric_name: string
+          metric_rating: string | null
+          metric_value: number
+          navigation_type: string | null
+          page_url: string | null
+          user_agent: string | null
+        }
+        Insert: {
+          created_at?: string
+          device_type?: string | null
+          id?: string
+          metric_delta?: number | null
+          metric_id?: string | null
+          metric_name: string
+          metric_rating?: string | null
+          metric_value: number
+          navigation_type?: string | null
+          page_url?: string | null
+          user_agent?: string | null
+        }
+        Update: {
+          created_at?: string
+          device_type?: string | null
+          id?: string
+          metric_delta?: number | null
+          metric_id?: string | null
+          metric_name?: string
+          metric_rating?: string | null
+          metric_value?: number
+          navigation_type?: string | null
+          page_url?: string | null
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

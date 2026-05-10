@@ -73,7 +73,8 @@ const FlyersCarousel = () => {
 
   // Initial center
   useEffect(() => {
-    setTimeout(() => scrollToIdx(0), 100);
+    const t = setTimeout(() => scrollToIdx(0), 100);
+    return () => clearTimeout(t);
   }, [scrollToIdx]);
 
   return (

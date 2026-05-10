@@ -9,14 +9,34 @@ import { CampusVirtualButton } from "@/components/common/CampusVirtualButton";
 
 interface FlyerVideo {
   id: number;
-  src: string;
+  srcMobile: string;
+  srcDesktop: string;
+  poster: string;
   label: string;
 }
 
 const flyerVideos: FlyerVideo[] = [
-  { id: 0, src: "/videos/flyer-1.mp4", label: "Experiencia académica presencial" },
-  { id: 1, src: "/videos/flyer-2.mp4", label: "Formación con referentes internacionales" },
-  { id: 2, src: "/videos/flyer-3.mp4", label: "Impacto clínico real" },
+  {
+    id: 0,
+    srcMobile: "/videos/flyer-1-mobile.mp4",
+    srcDesktop: "/videos/flyer-1-desktop.mp4",
+    poster: "/videos/flyer-1-poster.jpg",
+    label: "Experiencia académica presencial",
+  },
+  {
+    id: 1,
+    srcMobile: "/videos/flyer-2-mobile.mp4",
+    srcDesktop: "/videos/flyer-2-desktop.mp4",
+    poster: "/videos/flyer-2-poster.jpg",
+    label: "Formación con referentes internacionales",
+  },
+  {
+    id: 2,
+    srcMobile: "/videos/flyer-3-mobile.mp4",
+    srcDesktop: "/videos/flyer-3-desktop.mp4",
+    poster: "/videos/flyer-3-poster.jpg",
+    label: "Impacto clínico real",
+  },
 ];
 
 const ROTATION_INTERVAL = 15_000;
@@ -98,12 +118,14 @@ const CountdownTimer = memo(function CountdownTimer() {
 /* ─── Video Player — A/B crossfade, self-contained ─── */
 const VideoPlayer = memo(function VideoPlayer({
   currentSrc,
+  poster,
   currentLabel,
   isMobile,
   onHoverStart,
   onHoverEnd,
 }: {
   currentSrc: string;
+  poster: string;
   currentLabel: string;
   isMobile: boolean;
   onHoverStart?: () => void;
@@ -205,6 +227,7 @@ const VideoPlayer = memo(function VideoPlayer({
           loop
           playsInline
           preload="metadata"
+          poster={poster}
           className="absolute inset-0 w-full h-full object-cover"
           style={{ opacity: opacities.a, transition: crossfadeTransition, willChange: videoWillChange }}
           aria-hidden="true"
@@ -215,6 +238,7 @@ const VideoPlayer = memo(function VideoPlayer({
           loop
           playsInline
           preload="none"
+          poster={poster}
           className="absolute inset-0 w-full h-full object-cover"
           style={{ opacity: opacities.b, transition: crossfadeTransition, willChange: videoWillChange }}
           aria-hidden="true"
@@ -433,7 +457,7 @@ export const HeroFlyer = () => {
         link.rel = "preload";
         link.as = "fetch";
         link.setAttribute("crossorigin", "anonymous");
-        link.href = flyerVideos[next].src;
+      link.href = isMobile ? flyerVideos[next].srcMobile : flyerVideos[next].srcDesktop;
         document.head.appendChild(link);
       }
     }, ROTATION_INTERVAL - PRELOAD_AHEAD);
@@ -475,7 +499,8 @@ export const HeroFlyer = () => {
             style={{ willChange: "auto" }}
           >
             <VideoPlayer
-              currentSrc={currentVideo.src}
+              currentSrc={currentVideo.srcDesktop}
+              poster={currentVideo.poster}
               currentLabel={currentVideo.label}
               isMobile={false}
               onHoverStart={handleHoverStart}
@@ -494,7 +519,8 @@ export const HeroFlyer = () => {
             style={{ willChange: "auto" }}
           >
             <VideoPlayer
-              currentSrc={currentVideo.src}
+              currentSrc={currentVideo.srcMobile}
+              poster={currentVideo.poster}
               currentLabel={currentVideo.label}
               isMobile={true}
             />
