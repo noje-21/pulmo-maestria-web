@@ -118,12 +118,14 @@ const CountdownTimer = memo(function CountdownTimer() {
 /* ─── Video Player — A/B crossfade, self-contained ─── */
 const VideoPlayer = memo(function VideoPlayer({
   currentSrc,
+  poster,
   currentLabel,
   isMobile,
   onHoverStart,
   onHoverEnd,
 }: {
   currentSrc: string;
+  poster: string;
   currentLabel: string;
   isMobile: boolean;
   onHoverStart?: () => void;
@@ -225,6 +227,7 @@ const VideoPlayer = memo(function VideoPlayer({
           loop
           playsInline
           preload="metadata"
+          poster={poster}
           className="absolute inset-0 w-full h-full object-cover"
           style={{ opacity: opacities.a, transition: crossfadeTransition, willChange: videoWillChange }}
           aria-hidden="true"
@@ -235,6 +238,7 @@ const VideoPlayer = memo(function VideoPlayer({
           loop
           playsInline
           preload="none"
+          poster={poster}
           className="absolute inset-0 w-full h-full object-cover"
           style={{ opacity: opacities.b, transition: crossfadeTransition, willChange: videoWillChange }}
           aria-hidden="true"
@@ -453,7 +457,7 @@ export const HeroFlyer = () => {
         link.rel = "preload";
         link.as = "fetch";
         link.setAttribute("crossorigin", "anonymous");
-        link.href = flyerVideos[next].src;
+      link.href = isMobile ? flyerVideos[next].srcMobile : flyerVideos[next].srcDesktop;
         document.head.appendChild(link);
       }
     }, ROTATION_INTERVAL - PRELOAD_AHEAD);
@@ -495,7 +499,8 @@ export const HeroFlyer = () => {
             style={{ willChange: "auto" }}
           >
             <VideoPlayer
-              currentSrc={currentVideo.src}
+              currentSrc={currentVideo.srcDesktop}
+              poster={currentVideo.poster}
               currentLabel={currentVideo.label}
               isMobile={false}
               onHoverStart={handleHoverStart}
@@ -514,7 +519,8 @@ export const HeroFlyer = () => {
             style={{ willChange: "auto" }}
           >
             <VideoPlayer
-              currentSrc={currentVideo.src}
+              currentSrc={currentVideo.srcMobile}
+              poster={currentVideo.poster}
               currentLabel={currentVideo.label}
               isMobile={true}
             />
