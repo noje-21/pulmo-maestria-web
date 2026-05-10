@@ -30,11 +30,15 @@ export const MobileFunnelCTA = () => {
   // Pulse effect every few seconds
   useEffect(() => {
     if (!isVisible) return;
+    let pulseTimer: ReturnType<typeof setTimeout> | undefined;
     const interval = setInterval(() => {
       setShowPulse(true);
-      setTimeout(() => setShowPulse(false), 1000);
+      pulseTimer = setTimeout(() => setShowPulse(false), 1000);
     }, 5000);
-    return () => clearInterval(interval);
+    return () => {
+      clearInterval(interval);
+      if (pulseTimer) clearTimeout(pulseTimer);
+    };
   }, [isVisible]);
 
   const scrollToContact = () => {
