@@ -1,5 +1,7 @@
 import type { Metric } from "web-vitals";
 
+const VITALS_ENDPOINT = `https://${import.meta.env.VITE_SUPABASE_PROJECT_ID}.functions.supabase.co/vitals`;
+
 /**
  * Lightweight Web Vitals reporter.
  * Sends metrics via `navigator.sendBeacon` to avoid blocking navigation.
@@ -8,7 +10,6 @@ import type { Metric } from "web-vitals";
 function sendToAnalytics(metric: Metric) {
   if (import.meta.env.DEV) return; // silent in dev
 
-  // Beacon to analytics endpoint (configure when ready)
   const body = JSON.stringify({
     name: metric.name,
     value: metric.value,
@@ -19,10 +20,21 @@ function sendToAnalytics(metric: Metric) {
     url: window.location.pathname,
   });
 
-  // Use sendBeacon for non-blocking delivery
-  if (navigator.sendBeacon) {
-    // Placeholder: replace with your analytics endpoint
-    // navigator.sendBeacon("/api/vitals", body);
+  try {
+    if (navigator.sendBeacon) {
+      const blob = new Blob([body], { type: "application/json" });
+      navigator.sendBeacon(VITALS_ENDPOINT, blob);
+      return;
+    }
+    // Fallback for browsers without sendBeacon
+    fetch(VITALS_ENDPOINT, {
+      method: "POST",
+      body,
+      headers: { "Content-Type": "application/json" },
+      keepalive: true,
+    }).catch(() => {});
+  } catch {
+    /* swallow — never let analytics break the app */
   }
 }
 
