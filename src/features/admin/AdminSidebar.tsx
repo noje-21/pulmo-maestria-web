@@ -15,7 +15,8 @@ import {
   Home,
   GraduationCap,
   BookOpen,
-  ShieldCheck
+  ShieldCheck,
+  Activity
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import logoMaestria from "@/assets/logo-maestria.webp";
@@ -29,6 +30,7 @@ const menuItems = [
   { to: "/admin/novedades", label: "Novedades", icon: Newspaper },
   { to: "/admin/ateneos", label: "Ateneos", icon: BookOpen },
   { to: "/admin/media", label: "Archivos", icon: Image },
+  { to: "/admin/vitals", label: "Web Vitals", icon: Activity },
   { to: "/admin/audit", label: "Auditoría", icon: ShieldCheck },
 ];
 
