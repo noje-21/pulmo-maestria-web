@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { AdminLayout } from "@/features/admin/AdminLayout";
+import AdminLayout from "@/features/admin/AdminLayout";
 import { Card } from "@/components/ui/card";
 import { Activity, Smartphone, Monitor } from "lucide-react";
 
