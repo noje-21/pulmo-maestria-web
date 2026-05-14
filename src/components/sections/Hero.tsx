@@ -150,12 +150,10 @@ export const Hero = memo(function Hero() {
             aria-label="Desplazarse hacia abajo"
           >
             Descubre lo que te espera
-            <motion.div
-              animate={{ y: [0, 8, 0] }}
-              transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-            >
-              <ChevronDown className="w-6 h-6" />
-            </motion.div>
+            {/* CSS-driven bounce — no JS RAF loop, GPU transform only,
+                disabled on mobile to save battery + CPU. */}
+            <ChevronDown className="w-6 h-6 hidden md:block hero-bounce" />
+            <ChevronDown className="w-6 h-6 md:hidden" />
           </button>
         </motion.div>
       </div>
