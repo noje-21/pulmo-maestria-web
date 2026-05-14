@@ -947,3 +947,21 @@
   color: hsl(var(--foreground));
 }
 
+
+/* ============================================
+   PERFORMANT BOUNCE — pure CSS, GPU transform only
+   Replaces framer-motion repeat:Infinity loops to
+   stop wasting RAF + battery on idle "scroll down" cues.
+   Auto-disabled on prefers-reduced-motion.
+   ============================================ */
+@keyframes hero-bounce-kf {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50%      { transform: translate3d(0, 6px, 0); }
+}
+.hero-bounce {
+  animation: hero-bounce-kf 1.6s ease-in-out infinite;
+  will-change: transform;
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-bounce { animation: none; }
+}
