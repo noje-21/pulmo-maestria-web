@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useIsIOS } from "@/hooks/useIsIOS";
+import { useDeferredMount } from "@/hooks/useDeferredMount";
 import { ReservarPopup } from "./ReservarPopup";
 import { CampusVirtualButton } from "@/components/common/CampusVirtualButton";
 import { instrumentVideo, preloadPoster } from "@/lib/videoMetrics";
@@ -509,6 +510,10 @@ export const HeroFlyer = () => {
   const hoveringRef = useRef(false);
   const isMobile = useIsMobile();
   const isIOSDevice = useIsIOS();
+  // Defer the heavy <VideoPlayer> on mobile/iOS so the first paint contains
+  // only the static poster, navbar, headline and CTA. Desktop mounts immediately.
+  const deferred = useDeferredMount(700);
+  const heavyReady = !isMobile && !isIOSDevice ? true : deferred;
 
   const currentVideo = flyerVideos[idx];
 
@@ -601,13 +606,33 @@ export const HeroFlyer = () => {
             transition={{ duration: 0.45, ease: [0.4, 0, 0.2, 1] }}
             style={{ willChange: "auto" }}
           >
-            <VideoPlayer
-              currentSrc={currentVideo.srcMobile}
-              poster={currentVideo.poster}
-              currentLabel={currentVideo.label}
-              isMobile={true}
-              isIOS={isIOSDevice}
-            />
+            {heavyReady ? (
+              <VideoPlayer
+                currentSrc={currentVideo.srcMobile}
+                poster={currentVideo.poster}
+                currentLabel={currentVideo.label}
+                isMobile={true}
+                isIOS={isIOSDevice}
+              />
+            ) : (
+              /* Hero-lite placeholder: identical box, just the poster. No
+                 <video>, no IntersectionObserver, no Framer Motion children.
+                 Mounts in <16 ms so iOS WebKit paints the first frame instantly. */
+              <div
+                className="relative w-full aspect-[4/3] sm:aspect-video rounded-2xl overflow-hidden border border-white/10 bg-black"
+                style={{ contain: "layout style paint", boxShadow: "0 30px 100px rgba(0,0,0,0.8)" }}
+                aria-label={currentVideo.label}
+              >
+                <img
+                  src={currentVideo.poster}
+                  alt=""
+                  decoding="async"
+                  fetchPriority="high"
+                  className="absolute inset-0 w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-transparent pointer-events-none" />
+              </div>
+            )}
             <ProgressDots total={flyerVideos.length} current={idx} onSelect={goTo} />
           </motion.div>
 
