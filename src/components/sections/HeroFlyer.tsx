@@ -7,6 +7,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { useIsIOS } from "@/hooks/useIsIOS";
 import { ReservarPopup } from "./ReservarPopup";
 import { CampusVirtualButton } from "@/components/common/CampusVirtualButton";
+import { instrumentVideo, preloadPoster } from "@/lib/videoMetrics";
 
 interface FlyerVideo {
   id: number;
@@ -175,6 +176,15 @@ const VideoPlayer = memo(function VideoPlayer({
   // iOS: render only one <video>. Two simultaneous decoders cause stutter,
   // memory spikes and thermal throttling on Safari.
   const singleVideoMode = !!isIOS;
+  const variant: "mobile" | "desktop" = isMobile ? "mobile" : "desktop";
+  // Active perf instrumentation handle — replaced on every src swap.
+  const metricsRef = useRef<{ dispose: () => void } | null>(null);
+
+  // Preload the current poster as high-priority image so the <video>
+  // paints its first frame immediately on slow mobile networks.
+  useEffect(() => {
+    preloadPoster(poster);
+  }, [poster]);
 
   useEffect(() => {
     const v = refA.current;
@@ -183,6 +193,8 @@ const VideoPlayer = memo(function VideoPlayer({
     v.src = currentSrc;
     v.load();
     v.play().catch(() => {});
+    metricsRef.current?.dispose();
+    metricsRef.current = instrumentVideo(v, { src: currentSrc, variant });
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -221,6 +233,8 @@ const VideoPlayer = memo(function VideoPlayer({
         v.load();
         v.play().catch(() => {});
         v.style.opacity = "1";
+        metricsRef.current?.dispose();
+        metricsRef.current = instrumentVideo(v, { src: currentSrc, variant });
       }, 360);
       const done = window.setTimeout(() => setTransitioning(false), 900);
       return () => {
@@ -236,6 +250,8 @@ const VideoPlayer = memo(function VideoPlayer({
     incoming.src = currentSrc;
     incoming.load();
     incoming.play().catch(() => {});
+    metricsRef.current?.dispose();
+    metricsRef.current = instrumentVideo(incoming, { src: currentSrc, variant });
 
     setTransitioning(true);
 
@@ -250,7 +266,15 @@ const VideoPlayer = memo(function VideoPlayer({
     // Clear willChange after crossfade completes
     const tid = setTimeout(() => setTransitioning(false), 1500);
     return () => clearTimeout(tid);
-  }, [currentSrc, singleVideoMode]);
+  }, [currentSrc, singleVideoMode, variant]);
+
+  // Final cleanup: flush stall counter when the player unmounts.
+  useEffect(() => {
+    return () => {
+      metricsRef.current?.dispose();
+      metricsRef.current = null;
+    };
+  }, []);
 
   const crossfadeTransition = "opacity 1.4s cubic-bezier(0.4, 0, 0.2, 1)";
 
@@ -282,7 +306,7 @@ const VideoPlayer = memo(function VideoPlayer({
           muted
           loop
           playsInline
-          preload="metadata"
+          preload={isMobile ? "none" : "metadata"}
           poster={poster}
           className="absolute inset-0 w-full h-full object-cover"
           style={{ opacity: opacities.a, transition: crossfadeTransition, willChange: videoWillChange }}

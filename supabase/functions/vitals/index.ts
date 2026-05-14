@@ -7,7 +7,19 @@ const corsHeaders = {
   "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
 
-const ALLOWED_METRICS = new Set(["CLS", "INP", "LCP", "FCP", "TTFB", "FID"]);
+const ALLOWED_METRICS = new Set([
+  "CLS",
+  "INP",
+  "LCP",
+  "FCP",
+  "TTFB",
+  "FID",
+  // Video delivery metrics (instrumented in src/lib/videoMetrics.ts)
+  "VIDEO_TTFB",
+  "VIDEO_TTFF",
+  "VIDEO_REBUFFER",
+  "VIDEO_STALLS",
+]);
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
