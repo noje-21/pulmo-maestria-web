@@ -32,15 +32,16 @@ export const ScrollInvitation = ({
         {text}
       </p>
       {targetId && (
-        <motion.button
+        <button
           onClick={handleClick}
-          animate={{ y: [0, 6, 0] }}
-          transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
           className="p-2 rounded-full hover:bg-muted transition-colors cursor-pointer"
           aria-label="Scroll hacia abajo"
         >
-          <ChevronDown className="w-5 h-5 text-primary/60" />
-        </motion.button>
+          {/* CSS bounce on desktop only; mobile gets a static chevron to
+              avoid keeping framer-motion's RAF loop alive off-screen. */}
+          <ChevronDown className="w-5 h-5 text-primary/60 hidden md:block hero-bounce" />
+          <ChevronDown className="w-5 h-5 text-primary/60 md:hidden" />
+        </button>
       )}
     </motion.div>
   );

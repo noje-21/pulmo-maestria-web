@@ -21,11 +21,8 @@ export const CentralMessage = () => (
         <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-3xl bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center shadow-lg shadow-primary/20">
           <Heart className="w-8 h-8 sm:w-10 sm:h-10 text-primary" />
         </div>
-        <motion.div 
-          animate={{ scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5] }}
-          transition={{ duration: 2, repeat: Infinity }}
-          className="absolute -top-1 -right-1 w-4 h-4 bg-accent rounded-full"
-        />
+        {/* Static dot on mobile (saves an infinite RAF loop); CSS pulse on desktop. */}
+        <div className="absolute -top-1 -right-1 w-4 h-4 bg-accent rounded-full md:animate-pulse" />
       </div>
     </motion.div>
     
