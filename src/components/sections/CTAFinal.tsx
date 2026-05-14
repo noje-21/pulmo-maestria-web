@@ -39,7 +39,7 @@ export const CTAFinal = memo(function CTAFinal() {
             className="text-center lg:text-left"
           >
             {/* Badge */}
-            <span className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/10 backdrop-blur-md text-white text-sm font-semibold border border-white/20 mb-6 shadow-lg">
+            <span className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/10 lg:backdrop-blur-md text-white text-sm font-semibold border border-white/20 mb-6 shadow-lg">
               <Sparkles className="w-4 h-4 text-accent-light" />
               Edición 2026
             </span>
@@ -102,7 +102,7 @@ export const CTAFinal = memo(function CTAFinal() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="bg-white/10 backdrop-blur-xl rounded-3xl p-8 md:p-10 border border-white/20 shadow-2xl brand-accent-bar"
+            className="bg-white/10 lg:backdrop-blur-xl rounded-3xl p-8 md:p-10 border border-white/20 shadow-2xl brand-accent-bar"
           >
             <div className="text-center">
               <div className="inline-flex items-center gap-2 text-accent-light font-semibold mb-4">

@@ -4,6 +4,7 @@ import { ExternalLink, Phone, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useIsIOS } from "@/hooks/useIsIOS";
 import { ReservarPopup } from "./ReservarPopup";
 import { CampusVirtualButton } from "@/components/common/CampusVirtualButton";
 
@@ -72,7 +73,21 @@ function getTimeLeft() {
 }
 
 /* ─── Ambient glows — memoized, GPU-composited ─── */
-const AmbientGlows = memo(function AmbientGlows() {
+const AmbientGlows = memo(function AmbientGlows({ light = false }: { light?: boolean }) {
+  // iOS Safari paints `filter: blur(150px)` on every compositor pass — kills FPS
+  // and triggers thermal throttling. Fall back to a static radial-gradient.
+  if (light) {
+    return (
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background:
+            "radial-gradient(60% 50% at 30% 20%, hsl(var(--primary)/0.10), transparent 70%), radial-gradient(50% 45% at 75% 85%, hsl(var(--accent)/0.07), transparent 70%)",
+        }}
+      />
+    );
+  }
   return (
     <>
       <div
@@ -138,6 +153,7 @@ const VideoPlayer = memo(function VideoPlayer({
   poster,
   currentLabel,
   isMobile,
+  isIOS,
   onHoverStart,
   onHoverEnd,
 }: {
@@ -145,6 +161,7 @@ const VideoPlayer = memo(function VideoPlayer({
   poster: string;
   currentLabel: string;
   isMobile: boolean;
+  isIOS?: boolean;
   onHoverStart?: () => void;
   onHoverEnd?: () => void;
 }) {
@@ -155,6 +172,9 @@ const VideoPlayer = memo(function VideoPlayer({
   const initializedSrc = useRef<string>("");
   const [transitioning, setTransitioning] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  // iOS: render only one <video>. Two simultaneous decoders cause stutter,
+  // memory spikes and thermal throttling on Safari.
+  const singleVideoMode = !!isIOS;
 
   useEffect(() => {
     const v = refA.current;
@@ -190,6 +210,25 @@ const VideoPlayer = memo(function VideoPlayer({
     if (!initializedSrc.current || currentSrc === initializedSrc.current) return;
     initializedSrc.current = currentSrc;
 
+    if (singleVideoMode) {
+      const v = refA.current;
+      if (!v) return;
+      setTransitioning(true);
+      v.style.transition = "opacity 350ms ease";
+      v.style.opacity = "0";
+      const swap = window.setTimeout(() => {
+        v.src = currentSrc;
+        v.load();
+        v.play().catch(() => {});
+        v.style.opacity = "1";
+      }, 360);
+      const done = window.setTimeout(() => setTransitioning(false), 900);
+      return () => {
+        clearTimeout(swap);
+        clearTimeout(done);
+      };
+    }
+
     const isA = activeRef.current === "A";
     const incoming = isA ? refB.current : refA.current;
     if (!incoming) return;
@@ -211,7 +250,7 @@ const VideoPlayer = memo(function VideoPlayer({
     // Clear willChange after crossfade completes
     const tid = setTimeout(() => setTransitioning(false), 1500);
     return () => clearTimeout(tid);
-  }, [currentSrc]);
+  }, [currentSrc, singleVideoMode]);
 
   const crossfadeTransition = "opacity 1.4s cubic-bezier(0.4, 0, 0.2, 1)";
 
@@ -249,17 +288,19 @@ const VideoPlayer = memo(function VideoPlayer({
           style={{ opacity: opacities.a, transition: crossfadeTransition, willChange: videoWillChange }}
           aria-hidden="true"
         />
-        <video
-          ref={refB}
-          muted
-          loop
-          playsInline
-          preload="none"
-          poster={poster}
-          className="absolute inset-0 w-full h-full object-cover"
-          style={{ opacity: opacities.b, transition: crossfadeTransition, willChange: videoWillChange }}
-          aria-hidden="true"
-        />
+        {!singleVideoMode && (
+          <video
+            ref={refB}
+            muted
+            loop
+            playsInline
+            preload="none"
+            poster={poster}
+            className="absolute inset-0 w-full h-full object-cover"
+            style={{ opacity: opacities.b, transition: crossfadeTransition, willChange: videoWillChange }}
+            aria-hidden="true"
+          />
+        )}
       </motion.div>
 
       {/* Cinematic overlay */}
@@ -443,6 +484,7 @@ export const HeroFlyer = () => {
   const preloadedSet = useRef<Set<number>>(new Set([0]));
   const hoveringRef = useRef(false);
   const isMobile = useIsMobile();
+  const isIOSDevice = useIsIOS();
 
   const currentVideo = flyerVideos[idx];
 
@@ -498,7 +540,7 @@ export const HeroFlyer = () => {
       aria-label="Presentación de la Maestría en Circulación Pulmonar"
       style={{ contain: "layout style" }}
     >
-      <AmbientGlows />
+      <AmbientGlows light={isMobile || isIOSDevice} />
 
       <div className="relative z-10 w-full mx-auto px-2 sm:px-4 lg:px-6 py-8 sm:py-10 lg:py-12">
 
@@ -540,6 +582,7 @@ export const HeroFlyer = () => {
               poster={currentVideo.poster}
               currentLabel={currentVideo.label}
               isMobile={true}
+              isIOS={isIOSDevice}
             />
             <ProgressDots total={flyerVideos.length} current={idx} onSelect={goTo} />
           </motion.div>

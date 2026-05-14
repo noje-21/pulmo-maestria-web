@@ -63,7 +63,7 @@ export const MobileFunnelCTA = () => {
           className="fixed bottom-0 left-0 right-0 z-50 p-3 pb-safe lg:hidden"
         >
           {/* Glassmorphism container */}
-          <div className="relative bg-gradient-to-r from-primary to-primary-dark rounded-2xl shadow-2xl shadow-primary/40 p-4 border border-primary-light/20 backdrop-blur-lg overflow-hidden">
+          <div className="relative bg-gradient-to-r from-primary to-primary-dark rounded-2xl shadow-2xl shadow-primary/40 p-4 border border-primary-light/20 overflow-hidden">
             {/* Animated glow effect */}
             {showPulse && (
               <motion.div
@@ -85,13 +85,9 @@ export const MobileFunnelCTA = () => {
 
             <div className="relative flex items-center gap-3">
               {/* Icon with animation */}
-              <motion.div 
-                className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center flex-shrink-0"
-                animate={{ rotate: [0, -5, 5, 0] }}
-                transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-              >
+              <div className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center flex-shrink-0">
                 <GraduationCap className="w-6 h-6 text-white" />
-              </motion.div>
+              </div>
               
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-1.5">

@@ -141,7 +141,7 @@ const Navigation = () => {
       aria-label="Navegación principal"
       className={`fixed top-0 w-full z-50 transition-[background-color,box-shadow,border-color] duration-300 ${
         isScrolled 
-          ? "bg-background/95 backdrop-blur-xl shadow-md border-b border-border/50" 
+          ? "bg-background/98 lg:backdrop-blur-xl shadow-md border-b border-border/50" 
           : "bg-transparent"
       }`}
     >
