@@ -627,7 +627,7 @@ export const HeroFlyer = () => {
                   src={currentVideo.poster}
                   alt=""
                   decoding="async"
-                  fetchPriority="high"
+                  {...({ fetchpriority: "high" } as any)}
                   className="absolute inset-0 w-full h-full object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-transparent pointer-events-none" />
