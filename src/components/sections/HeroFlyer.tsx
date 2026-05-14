@@ -42,6 +42,23 @@ const flyerVideos: FlyerVideo[] = [
 const ROTATION_INTERVAL = 15_000;
 const PRELOAD_AHEAD = 5_000;
 
+/* iOS Safari + Save-Data detection — used to skip aggressive video preloading
+   that iOS does not honor (it re-downloads on <video> creation anyway). */
+const isIOS = typeof navigator !== "undefined" &&
+  (/iPad|iPhone|iPod/.test(navigator.userAgent) ||
+    (navigator.platform === "MacIntel" && (navigator as any).maxTouchPoints > 1));
+
+function shouldSkipPreload(): boolean {
+  if (typeof navigator === "undefined") return false;
+  const conn = (navigator as any).connection;
+  if (conn?.saveData) return true;
+  if (conn?.effectiveType && /(^2g$|^slow-2g$|^3g$)/.test(conn.effectiveType)) return true;
+  // iOS Safari ignores prefetched video bytes for <video> playback,
+  // so prefetching only wastes mobile data and CPU.
+  if (isIOS) return true;
+  return false;
+}
+
 // Inscription deadline: day before the program begins (Buenos Aires UTC-3)
 const INSCRIPTION_DEADLINE = new Date("2026-11-01T23:59:59-03:00");
 
@@ -451,11 +468,11 @@ export const HeroFlyer = () => {
     const next = (idx + 1) % flyerVideos.length;
 
     const preloadTimer = setTimeout(() => {
-      if (!preloadedSet.current.has(next)) {
+      if (!preloadedSet.current.has(next) && !shouldSkipPreload()) {
         preloadedSet.current.add(next);
         const link = document.createElement("link");
         link.rel = "preload";
-        link.as = "fetch";
+        link.as = "video";
         link.setAttribute("crossorigin", "anonymous");
       link.href = isMobile ? flyerVideos[next].srcMobile : flyerVideos[next].srcDesktop;
         document.head.appendChild(link);
