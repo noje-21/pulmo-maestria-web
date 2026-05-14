@@ -81,7 +81,7 @@ export const Hero = memo(function Hero() {
           className="flex flex-col xs:flex-row gap-3 sm:gap-4 items-center justify-center mb-10 sm:mb-12 px-2"
         >
           <div
-            className="flex items-center gap-3 bg-white/10 backdrop-blur-md px-4 sm:px-6 py-3 sm:py-4 rounded-2xl border border-white/20 hover:bg-white/15 hover:border-white/30 transition-all duration-400 group cursor-default w-full xs:w-auto justify-center"
+            className="flex items-center gap-3 bg-white/10 lg:backdrop-blur-md px-4 sm:px-6 py-3 sm:py-4 rounded-2xl border border-white/20 hover:bg-white/15 hover:border-white/30 transition-all duration-400 group cursor-default w-full xs:w-auto justify-center"
             role="group"
             aria-label="Fecha del evento: 2 al 16 de noviembre 2026"
           >
@@ -94,7 +94,7 @@ export const Hero = memo(function Hero() {
           </div>
 
           <div
-            className="flex items-center gap-3 bg-white/10 backdrop-blur-md px-4 sm:px-6 py-3 sm:py-4 rounded-2xl border border-white/20 hover:bg-white/15 hover:border-white/30 transition-all duration-400 group cursor-default w-full xs:w-auto justify-center"
+            className="flex items-center gap-3 bg-white/10 lg:backdrop-blur-md px-4 sm:px-6 py-3 sm:py-4 rounded-2xl border border-white/20 hover:bg-white/15 hover:border-white/30 transition-all duration-400 group cursor-default w-full xs:w-auto justify-center"
             role="group"
             aria-label="Ubicación del evento: Buenos Aires, Argentina"
           >
@@ -120,7 +120,7 @@ export const Hero = memo(function Hero() {
             return (
               <div
                 key={index}
-                className="bg-white/10 backdrop-blur-md rounded-xl sm:rounded-2xl p-3 sm:p-5 md:p-6 border border-white/20 hover:bg-white/15 hover:border-white/30 transition-all duration-400 group"
+                className="bg-white/10 lg:backdrop-blur-md rounded-xl sm:rounded-2xl p-3 sm:p-5 md:p-6 border border-white/20 hover:bg-white/15 hover:border-white/30 transition-all duration-400 group"
                 role="figure"
                 aria-label={`${stat.value} ${stat.label}`}
               >
