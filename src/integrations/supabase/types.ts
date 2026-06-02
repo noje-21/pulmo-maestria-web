@@ -69,6 +69,7 @@ export type Database = {
         Row: {
           country: string
           created_at: string
+          cv_url: string | null
           email: string
           id: string
           message: string
@@ -78,6 +79,7 @@ export type Database = {
         Insert: {
           country: string
           created_at?: string
+          cv_url?: string | null
           email: string
           id?: string
           message: string
@@ -87,6 +89,7 @@ export type Database = {
         Update: {
           country?: string
           created_at?: string
+          cv_url?: string | null
           email?: string
           id?: string
           message?: string
