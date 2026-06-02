@@ -405,6 +405,62 @@ export const Contacto = () => {
                     aria-label="Mensaje"
                     className="input-modern resize-none"
                   />
+
+                  {/* CV Upload */}
+                  <div>
+                    <label
+                      htmlFor="cv-upload"
+                      className="flex items-center justify-between gap-3 p-3 sm:p-4 rounded-xl border-2 border-dashed border-input hover:border-accent hover:bg-accent/5 transition-colors cursor-pointer"
+                    >
+                      <div className="flex items-center gap-3 min-w-0">
+                        <div className="p-2 rounded-lg bg-accent/10 flex-shrink-0">
+                          {cvFile ? (
+                            <FileText className="w-4 h-4 sm:w-5 sm:h-5 text-accent" />
+                          ) : (
+                            <Upload className="w-4 h-4 sm:w-5 sm:h-5 text-accent" />
+                          )}
+                        </div>
+                        <div className="min-w-0">
+                          <p className="text-sm font-medium text-foreground truncate">
+                            {cvFile ? cvFile.name : "Adjunta tu Hoja de Vida (opcional)"}
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            {cvFile
+                              ? `${(cvFile.size / 1024 / 1024).toFixed(2)} MB · Click para cambiar`
+                              : "PDF o Word (.pdf, .doc, .docx) · Máx 5 MB"}
+                          </p>
+                        </div>
+                      </div>
+                      {cvFile && (
+                        <button
+                          type="button"
+                          onClick={(ev) => {
+                            ev.preventDefault();
+                            setCvFile(null);
+                            setCvError(null);
+                          }}
+                          aria-label="Quitar archivo"
+                          className="p-1.5 hover:bg-muted rounded-lg transition-colors flex-shrink-0"
+                        >
+                          <X className="w-4 h-4" />
+                        </button>
+                      )}
+                    </label>
+                    <input
+                      id="cv-upload"
+                      type="file"
+                      accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                      onChange={handleCvChange}
+                      className="sr-only"
+                    />
+                    {cvError && (
+                      <p role="alert" className="mt-1.5 text-xs text-destructive flex items-center gap-1.5">
+                        <AlertTriangle className="w-3.5 h-3.5" />
+                        {cvError}
+                      </p>
+                    )}
+                  </div>
+
                   <Button type="submit" className="w-full btn-accent py-6 text-base font-semibold" disabled={loading}>
                     {loading ? (
                       <span className="flex items-center gap-2">
