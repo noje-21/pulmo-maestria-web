@@ -422,7 +422,7 @@ export const Contacto = () => {
                         </div>
                         <div className="min-w-0">
                           <p className="text-sm font-medium text-foreground truncate">
-                            {cvFile ? cvFile.name : "Adjunta tu Hoja de Vida (opcional)"}
+                            {cvFile ? cvFile.name : "Adjunta tu Currículum (opcional)"}
                           </p>
                           <p className="text-xs text-muted-foreground">
                             {cvFile
