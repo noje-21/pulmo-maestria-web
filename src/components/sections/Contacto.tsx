@@ -7,7 +7,14 @@ import { Card, CardContent } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { z } from "zod";
-import { X, Mail, Phone, Linkedin, Facebook, Instagram, Globe, Send, CheckCircle, AlertTriangle } from "lucide-react";
+import { X, Mail, Phone, Linkedin, Facebook, Instagram, Globe, Send, CheckCircle, AlertTriangle, Upload, FileText } from "lucide-react";
+
+const MAX_CV_SIZE = 5 * 1024 * 1024; // 5 MB
+const ALLOWED_CV_TYPES = [
+  "application/pdf",
+  "application/msword",
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+];
 
 const COMMON_DOMAIN_TYPOS: Record<string, string> = {
   "gmial.com": "gmail.com",
@@ -100,6 +107,8 @@ export const Contacto = () => {
   const [successMsg, setSuccessMsg] = useState(false);
   const [emailSuggestion, setEmailSuggestion] = useState<string | null>(null);
   const [emailMismatch, setEmailMismatch] = useState(false);
+  const [cvFile, setCvFile] = useState<File | null>(null);
+  const [cvError, setCvError] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -129,6 +138,21 @@ export const Contacto = () => {
         message: formData.message.trim(),
       };
       const validated = contactSchema.parse(trimmedData);
+
+      // Upload CV if provided
+      let cvUrl: string | null = null;
+      if (cvFile) {
+        const ext = cvFile.name.split(".").pop()?.toLowerCase() || "pdf";
+        const safeName = validated.name.replace(/[^a-zA-Z0-9-_]/g, "_").slice(0, 40);
+        const path = `${Date.now()}-${safeName}.${ext}`;
+        const { error: uploadError } = await supabase.storage
+          .from("cvs")
+          .upload(path, cvFile, { contentType: cvFile.type, upsert: false });
+        if (uploadError) throw uploadError;
+        const { data: publicData } = supabase.storage.from("cvs").getPublicUrl(path);
+        cvUrl = publicData.publicUrl;
+      }
+
       const { error } = await supabase.from("contact_submissions").insert([
         {
           name: validated.name,
@@ -136,6 +160,7 @@ export const Contacto = () => {
           country: validated.country,
           specialty: validated.specialty,
           message: validated.message,
+          cv_url: cvUrl,
         },
       ]);
       if (error) throw error;
@@ -149,6 +174,7 @@ export const Contacto = () => {
             country: validated.country,
             specialty: validated.specialty,
             message: validated.message,
+            cvUrl,
             adminEmail: 'magisterenhipertensionpulmonar@gmail.com',
           },
         });
@@ -160,6 +186,8 @@ export const Contacto = () => {
       setFormData({ name: "", email: "", confirmEmail: "", country: "", specialty: "", message: "" });
       setEmailSuggestion(null);
       setEmailMismatch(false);
+      setCvFile(null);
+      setCvError(null);
     } catch (error) {
       if (error instanceof z.ZodError) {
         toast.error(error.errors[0].message);
@@ -169,6 +197,26 @@ export const Contacto = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleCvChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0] ?? null;
+    setCvError(null);
+    if (!file) {
+      setCvFile(null);
+      return;
+    }
+    if (!ALLOWED_CV_TYPES.includes(file.type)) {
+      setCvError("Solo se permiten archivos PDF o Word (.pdf, .doc, .docx)");
+      e.target.value = "";
+      return;
+    }
+    if (file.size > MAX_CV_SIZE) {
+      setCvError("El archivo no puede superar los 5 MB");
+      e.target.value = "";
+      return;
+    }
+    setCvFile(file);
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
