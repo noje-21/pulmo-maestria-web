@@ -1,6 +1,6 @@
 import { memo } from "react";
-import { motion } from "framer-motion";
 import { ChevronDown, Calendar, MapPin, Award, Users, Clock, Globe } from "lucide-react";
+import { useInView } from "@/hooks/useInView";
 
 const stats = [
   { value: "9+", label: "Expertos Internacionales", icon: Users },
@@ -13,6 +13,9 @@ export const Hero = memo(function Hero() {
   const scrollToSection = (id: string) => {
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
   };
+  // Single observer for the whole hero — children stagger via CSS delays.
+  const { ref, inView } = useInView<HTMLDivElement>({ rootMargin: "0px" });
+  const cls = (extra = "") => `reveal-up${inView ? " is-visible" : ""} ${extra}`;
 
   return (
     <section
@@ -24,44 +27,34 @@ export const Hero = memo(function Hero() {
       <div className="absolute top-20 left-10 w-72 h-72 bg-primary/10 rounded-full blur-[100px]" />
       <div className="absolute bottom-20 right-10 w-96 h-96 bg-accent/8 rounded-full blur-[120px]" />
 
-      <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <div ref={ref} className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         {/* Problem Statement - Emotional Hook */}
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-          className="text-white/85 text-sm sm:text-base mb-5 sm:mb-6 max-w-2xl mx-auto px-3 leading-relaxed"
+        <p
+          className={cls("text-white/85 text-sm sm:text-base mb-5 sm:mb-6 max-w-2xl mx-auto px-3 leading-relaxed")}
         >
           Cada día, miles de pacientes con hipertensión pulmonar en Latinoamérica
           necesitan médicos que entiendan su complejidad.{" "}
           <span className="font-semibold text-primary-foreground">
             Tú puedes ser ese profesional.
           </span>
-        </motion.p>
+        </p>
 
         {/* Title */}
-        <motion.h2
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.1 }}
-          className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 sm:mb-6 leading-[1.1] text-balance px-2"
+        <h2
+          style={{ transitionDelay: inView ? "100ms" : "0ms" }}
+          className={cls("text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 sm:mb-6 leading-[1.1] text-balance px-2")}
         >
           Forma parte del cambio en
           <br className="hidden xs:block" />
           <span className="block sm:inline text-primary-foreground">
             Circulación Pulmonar
           </span>
-        </motion.h2>
+        </h2>
 
         {/* Subtitle */}
-        <motion.p
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.15 }}
-          className="text-sm xs:text-base sm:text-lg md:text-xl text-white/90 mb-6 sm:mb-10 max-w-3xl mx-auto leading-relaxed px-3"
+        <p
+          style={{ transitionDelay: inView ? "150ms" : "0ms" }}
+          className={cls("text-sm xs:text-base sm:text-lg md:text-xl text-white/90 mb-6 sm:mb-10 max-w-3xl mx-auto leading-relaxed px-3")}
         >
           <span className="font-semibold">
             Una formación diseñada para quienes creen
@@ -70,15 +63,12 @@ export const Hero = memo(function Hero() {
           <span className="block mt-2 sm:mt-3 text-accent-light font-medium text-sm sm:text-base md:text-lg">
             12 días que marcarán tu carrera y la vida de tus pacientes.
           </span>
-        </motion.p>
+        </p>
 
         {/* Event Info Cards */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="flex flex-col xs:flex-row gap-3 sm:gap-4 items-center justify-center mb-10 sm:mb-12 px-2"
+        <div
+          style={{ transitionDelay: inView ? "200ms" : "0ms" }}
+          className={cls("flex flex-col xs:flex-row gap-3 sm:gap-4 items-center justify-center mb-10 sm:mb-12 px-2")}
         >
           <div
             className="flex items-center gap-3 bg-white/10 lg:backdrop-blur-md px-4 sm:px-6 py-3 sm:py-4 rounded-2xl border border-white/20 hover:bg-white/15 hover:border-white/30 transition-all duration-400 group cursor-default w-full xs:w-auto justify-center"
@@ -105,15 +95,12 @@ export const Hero = memo(function Hero() {
               Buenos Aires, Argentina
             </span>
           </div>
-        </motion.div>
+        </div>
 
         {/* Stats */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.3 }}
-          className="grid grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-4 md:gap-5 max-w-4xl mx-auto px-2"
+        <div
+          style={{ transitionDelay: inView ? "300ms" : "0ms" }}
+          className={cls("grid grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-4 md:gap-5 max-w-4xl mx-auto px-2")}
         >
           {stats.map((stat, index) => {
             const Icon = stat.icon;
@@ -134,15 +121,12 @@ export const Hero = memo(function Hero() {
               </div>
             );
           })}
-        </motion.div>
+        </div>
 
         {/* Scroll indicator */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.5 }}
-          className="mt-10 sm:mt-14"
+        <div
+          style={{ transitionDelay: inView ? "500ms" : "0ms" }}
+          className={cls("mt-10 sm:mt-14")}
         >
           <button
             onClick={() => scrollToSection("diferenciales")}
@@ -155,7 +139,7 @@ export const Hero = memo(function Hero() {
             <ChevronDown className="w-6 h-6 hidden md:block hero-bounce" />
             <ChevronDown className="w-6 h-6 md:hidden" />
           </button>
-        </motion.div>
+        </div>
       </div>
     </section>
   );

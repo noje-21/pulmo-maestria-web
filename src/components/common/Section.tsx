@@ -1,5 +1,5 @@
-import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { useInView } from "@/hooks/useInView";
 
 interface SectionProps {
   id?: string;
@@ -75,14 +75,13 @@ export const SectionHeader = ({
   centered = true,
   className
 }: SectionHeaderProps) => {
+  const { ref, inView } = useInView<HTMLDivElement>();
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.5 }}
+    <div
+      ref={ref}
       className={cn(
-        "mb-12 md:mb-16",
+        "mb-12 md:mb-16 reveal-up",
+        inView && "is-visible",
         centered && "text-center",
         className
       )}
@@ -105,6 +104,6 @@ export const SectionHeader = ({
           {subtitle}
         </p>
       )}
-    </motion.div>
+    </div>
   );
 };

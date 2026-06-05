@@ -905,6 +905,63 @@
     50% { opacity: 0.8; }
   }
 
+  /* Reveal-on-scroll: paired with useInView. Element starts hidden+offset
+     and animates in once `.is-visible` is toggled on. GPU-only props. */
+  .reveal-up {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 450ms cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                transform 450ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    will-change: opacity, transform;
+  }
+  .reveal-up.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .reveal-left {
+    opacity: 0;
+    transform: translateX(-24px);
+    transition: opacity 500ms cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                transform 500ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    will-change: opacity, transform;
+  }
+  .reveal-left.is-visible { opacity: 1; transform: translateX(0); }
+  .reveal-right {
+    opacity: 0;
+    transform: translateX(24px);
+    transition: opacity 500ms cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                transform 500ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    will-change: opacity, transform;
+  }
+  .reveal-right.is-visible { opacity: 1; transform: translateX(0); }
+  .reveal-scaleX {
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 800ms ease-out;
+    will-change: transform;
+  }
+  .reveal-scaleX.is-visible { transform: scaleX(1); }
+
+  /* Ken Burns: subtle infinite zoom for the desktop flyer video. */
+  @keyframes kenburns {
+    0%, 100% { transform: scale(1); }
+    50%      { transform: scale(1.02); }
+  }
+  .kenburns { animation: kenburns 8s cubic-bezier(0.4, 0, 0.2, 1) infinite; }
+
+  /* Nav slide-in used on the homepage (replaces motion.nav initial/animate). */
+  @keyframes nav-slide-down {
+    from { transform: translateY(-80px); }
+    to   { transform: translateY(0); }
+  }
+  .nav-slide-down { animation: nav-slide-down 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) both; }
+
+  /* Hover scale used in the Flyer wrapper (desktop only). */
+  .hover-scale-3 { transition: transform 500ms cubic-bezier(0.4, 0, 0.2, 1); }
+  @media (hover: hover) {
+    .hover-scale-3:hover { transform: scale(1.03); }
+  }
+
   /* Stagger Animation Delays */
   .delay-100 { animation-delay: 100ms; }
   .delay-200 { animation-delay: 200ms; }

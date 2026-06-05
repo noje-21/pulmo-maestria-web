@@ -1,5 +1,5 @@
-import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { useInView } from "@/hooks/useInView";
 
 interface SectionDividerProps {
   variant?: "gradient" | "dots" | "wave";
@@ -7,28 +7,31 @@ interface SectionDividerProps {
 }
 
 export const SectionDivider = ({ variant = "gradient", className }: SectionDividerProps) => {
+  const { ref, inView } = useInView<HTMLDivElement>();
   if (variant === "dots") {
     return (
-      <motion.div
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true }}
-        className={cn("flex items-center justify-center gap-2 py-4", className)}
+      <div
+        ref={ref}
+        className={cn(
+          "flex items-center justify-center gap-2 py-4 transition-opacity duration-500",
+          inView ? "opacity-100" : "opacity-0",
+          className,
+        )}
       >
         {[...Array(5)].map((_, i) => (
-          <motion.div
+          <div
             key={i}
-            initial={{ scale: 0 }}
-            whileInView={{ scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: i * 0.1 }}
+            style={{
+              transform: inView ? "scale(1)" : "scale(0)",
+              transition: `transform 300ms ease-out ${i * 100}ms`,
+            }}
             className={cn(
               "rounded-full",
               i === 2 ? "w-3 h-3 bg-primary" : "w-2 h-2 bg-primary/30"
             )}
           />
         ))}
-      </motion.div>
+      </div>
     );
   }
 
@@ -48,13 +51,11 @@ export const SectionDivider = ({ variant = "gradient", className }: SectionDivid
 
   // Default gradient
   return (
-    <motion.div
-      initial={{ scaleX: 0 }}
-      whileInView={{ scaleX: 1 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.8, ease: "easeOut" }}
+    <div
+      ref={ref}
       className={cn(
-        "h-px w-full max-w-md mx-auto bg-gradient-to-r from-transparent via-primary/30 to-transparent",
+        "h-px w-full max-w-md mx-auto bg-gradient-to-r from-transparent via-primary/30 to-transparent reveal-scaleX",
+        inView && "is-visible",
         className
       )}
     />

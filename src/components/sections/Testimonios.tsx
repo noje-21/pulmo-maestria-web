@@ -1,6 +1,6 @@
 import { useState, useRef, useCallback, useEffect, memo } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import { Section } from "@/components/common/Section";
+import { useInView } from "@/hooks/useInView";
 import { Play, X, MapPin, Stethoscope, ArrowRight, Users, Globe, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -74,43 +74,20 @@ const VideoCard = memo(function VideoCard({
   onPlay: (t: VideoTestimonio) => void;
 }) {
   const [ready, setReady] = useState(false);
-  // Only start loading (preload="metadata") once card enters viewport
-  const [inView, setInView] = useState(false);
+  // Single observer drives both metadata preload and reveal animation.
+  const { ref: containerRef, inView } = useInView<HTMLDivElement>({ rootMargin: "150px" });
   const thumbRef = useRef<HTMLVideoElement>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
   const isFeatured = testimonio.featured;
 
-  useEffect(() => {
-    const el = containerRef.current;
-    if (!el) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setInView(true);
-          observer.disconnect();
-        }
-      },
-      { rootMargin: "150px" }
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, []);
-
   return (
-    <motion.article
+    <article
       ref={containerRef}
-      initial={{ opacity: 0, y: 14 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-32px" }}
-      transition={{
-        duration: 0.35,
-        delay: testimonio.id * 0.06,
-        ease: [0.25, 0.46, 0.45, 0.94],
-      }}
       className={cn(
-        "group relative",
+        "group relative reveal-up",
+        inView && "is-visible",
         isFeatured && "md:col-span-2 md:row-span-2"
       )}
+      style={{ transitionDelay: inView ? `${testimonio.id * 60}ms` : "0ms" }}
       aria-label={`Testimonio de ${testimonio.nombre}`}
     >
       <div
@@ -161,11 +138,10 @@ const VideoCard = memo(function VideoCard({
 
           {/* Play */}
           <div className="absolute inset-0 flex items-center justify-center">
-            <motion.div
-              whileHover={{ scale: 1.12 }}
-              whileTap={{ scale: 0.95 }}
+            <div
               className={cn(
                 "rounded-full bg-accent/90 backdrop-blur-sm flex items-center justify-center",
+                "transition-transform duration-300 ease-out group-hover:scale-110 active:scale-95",
                 "shadow-[var(--shadow-accent)] group-hover:shadow-[0_0_40px_hsl(var(--accent)/0.5)]",
                 "transition-shadow duration-400",
                 isFeatured ? "w-20 h-20" : "w-16 h-16"
@@ -175,7 +151,7 @@ const VideoCard = memo(function VideoCard({
                 className={cn("text-white ml-1", isFeatured ? "w-9 h-9" : "w-7 h-7")}
                 fill="currentColor"
               />
-            </motion.div>
+            </div>
           </div>
 
           {/* Quote overlay on featured */}
@@ -213,7 +189,7 @@ const VideoCard = memo(function VideoCard({
           </div>
         </div>
       </div>
-    </motion.article>
+    </article>
   );
 });
 
@@ -221,6 +197,9 @@ const VideoCard = memo(function VideoCard({
 export const Testimonios = () => {
   const [activeVideo, setActiveVideo] = useState<VideoTestimonio | null>(null);
   const modalVideoRef = useRef<HTMLVideoElement>(null);
+  const header = useInView<HTMLDivElement>();
+  const metricsView = useInView<HTMLDivElement>();
+  const closing = useInView<HTMLParagraphElement>();
 
   const openVideo = useCallback((t: VideoTestimonio) => {
     setActiveVideo(t);
@@ -249,12 +228,9 @@ export const Testimonios = () => {
   return (
     <Section id="testimonios" background="default" pattern="none" padding="large">
       {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.5 }}
-        className="text-center mb-12 md:mb-16"
+      <div
+        ref={header.ref}
+        className={`text-center mb-12 md:mb-16 reveal-up${header.inView ? " is-visible" : ""}`}
       >
         <div className="mb-4 flex justify-center">
           <span className="brand-badge">Voces reales</span>
@@ -265,15 +241,13 @@ export const Testimonios = () => {
         <p className="text-lg md:text-xl text-muted-foreground mt-8 max-w-2xl mx-auto">
           Profesionales que hoy aplican este conocimiento en su práctica real.
         </p>
-      </motion.div>
+      </div>
 
       {/* Metrics */}
-      <motion.div
-        initial={{ opacity: 0, y: 16 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.5, delay: 0.15 }}
-        className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 max-w-3xl mx-auto mb-14 md:mb-18"
+      <div
+        ref={metricsView.ref}
+        style={{ transitionDelay: metricsView.inView ? "150ms" : "0ms" }}
+        className={`grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 max-w-3xl mx-auto mb-14 md:mb-18 reveal-up${metricsView.inView ? " is-visible" : ""}`}
       >
         {metrics.map((m, i) => {
           const Icon = m.icon;
@@ -288,7 +262,7 @@ export const Testimonios = () => {
             </div>
           );
         })}
-      </motion.div>
+      </div>
 
       {/* Grid: featured + rest */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-5 lg:gap-6">
@@ -303,39 +277,32 @@ export const Testimonios = () => {
       </div>
 
       {/* Subtle closing line */}
-      <motion.p
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.5, delay: 0.3 }}
-        className="mt-12 md:mt-16 text-center text-muted-foreground text-sm"
+      <p
+        ref={closing.ref}
+        className={`mt-12 md:mt-16 text-center text-muted-foreground text-sm transition-opacity duration-500 ${closing.inView ? "opacity-100" : "opacity-0"}`}
+        style={{ transitionDelay: "300ms" }}
       >
         Más de 300 profesionales ya vivieron esta experiencia.
-      </motion.p>
+      </p>
 
-      {/* Cinema Modal */}
-      <AnimatePresence>
-        {activeVideo && (
+      {/* Cinema Modal — mount/unmount with CSS fade-in. Exit anim removed
+          (negligible perceptual change vs. the framer-motion savings). */}
+      {activeVideo && (
+        <div
+          className="fixed inset-0 z-[200] flex items-center justify-center p-4"
+          role="dialog"
+          aria-modal="true"
+          aria-label={`Testimonio de ${activeVideo.nombre}`}
+        >
           <div
-            className="fixed inset-0 z-[200] flex items-center justify-center p-4"
-            role="dialog"
-            aria-modal="true"
-            aria-label={`Testimonio de ${activeVideo.nombre}`}
+            className="absolute inset-0 bg-black/90 backdrop-blur-md animate-fade-in"
+            style={{ animationDuration: "200ms" }}
+            onClick={closeVideo}
+          />
+          <div
+            className="relative z-10 w-full max-w-4xl rounded-2xl overflow-hidden bg-black shadow-[0_0_80px_rgba(0,0,0,0.8)] animate-scale-in"
+            style={{ animationDuration: "300ms" }}
           >
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="absolute inset-0 bg-black/90 backdrop-blur-md"
-              onClick={closeVideo}
-            />
-            <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              transition={{ duration: 0.3 }}
-              className="relative z-10 w-full max-w-4xl rounded-2xl overflow-hidden bg-black shadow-[0_0_80px_rgba(0,0,0,0.8)]"
-            >
               <button
                 onClick={closeVideo}
                 className="absolute top-3 right-3 z-20 w-10 h-10 rounded-full bg-black/60 backdrop-blur-sm flex items-center justify-center text-white hover:bg-black/80 transition-colors"
@@ -373,10 +340,9 @@ export const Testimonios = () => {
                   <ArrowRight className="w-5 h-5" />
                 </Button>
               </div>
-            </motion.div>
           </div>
-        )}
-      </AnimatePresence>
+        </div>
+      )}
     </Section>
   );
 };

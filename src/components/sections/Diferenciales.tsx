@@ -1,6 +1,6 @@
 import { memo } from "react";
-import { motion } from "framer-motion";
 import { Section, SectionHeader } from "@/components/common/Section";
+import { useInView } from "@/hooks/useInView";
 import { 
   GraduationCap, 
   Globe, 
@@ -49,26 +49,8 @@ const diferenciales = [
   }
 ];
 
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.08
-    }
-  }
-};
-
-const cardVariants = {
-  hidden: { opacity: 0, y: 24 },
-  visible: { 
-    opacity: 1, 
-    y: 0,
-    transition: { duration: 0.5 }
-  }
-};
-
 export const Diferenciales = memo(function Diferenciales() {
+  const { ref, inView } = useInView<HTMLDivElement>({ rootMargin: "-50px" });
   return (
     <Section id="diferenciales" background="gradient" pattern="dots" padding="large">
       <SectionHeader
@@ -77,18 +59,15 @@ export const Diferenciales = memo(function Diferenciales() {
         subtitle="Entendemos la frustración de formaciones genéricas. Por eso creamos algo diferente, pensado por y para profesionales como tú."
       />
 
-      <motion.div
-        variants={containerVariants}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, margin: "-50px" }}
+      <div
+        ref={ref}
         className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6"
       >
         {diferenciales.map((item, index) => (
-          <motion.div 
-            key={index} 
-            variants={cardVariants}
-            className="group"
+          <div
+            key={index}
+            className={`group reveal-up${inView ? " is-visible" : ""}`}
+            style={{ transitionDelay: inView ? `${index * 80}ms` : "0ms" }}
           >
             <div className="card-base card-hover h-full p-6 md:p-7 brand-card-signature">
               {/* Icon with gradient background */}
@@ -112,9 +91,9 @@ export const Diferenciales = memo(function Diferenciales() {
                 {item.description}
               </p>
             </div>
-          </motion.div>
+          </div>
         ))}
-      </motion.div>
+      </div>
     </Section>
   );
 });
