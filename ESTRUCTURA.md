@@ -1,163 +1,71 @@
-# 📁 Estructura del Proyecto - Maestría CP 2025
+# 📁 Estructura del Proyecto — Maestría CP 2026
 
-## 🎯 Arquitectura Implementada
-**Estructura Híbrida**: Componentes comunes + Features modulares
+> Última actualización: 2026-06-05 (Fase 6 del roadmap técnico).
 
-```
-/src
-├── assets/                    # Recursos estáticos organizados por sección
-│   ├── experts/              # Imágenes de expertos
-│   ├── gallery/              # Imágenes de galería
-│   ├── sections/             # Imágenes de secciones
-│   └── logo-maestria.jpg     # Logo principal
-│
-├── components/
-│   ├── common/               # Componentes reutilizables globales
-│   │   ├── Navigation.tsx
-│   │   ├── GlobalLoader.tsx
-│   │   ├── ImageLazy.tsx
-│   │   ├── Popup.tsx
-│   │   ├── SEO.tsx
-│   │   ├── ScrollToTop.tsx
-│   │   ├── AnimatedOnView.tsx
-│   │   ├── LoadingSkeleton.tsx
-│   │   ├── Pagination.tsx
-│   │   ├── NotificationBell.tsx
-│   │   ├── ImageUpload.tsx
-│   │   ├── RichTextEditor.tsx
-│   │   └── ProtectedRoute.tsx
-│   │
-│   ├── sections/             # Secciones específicas del landing
-│   │   ├── Hero.tsx
-│   │   ├── Maestria.tsx
-│   │   ├── Expertos.tsx
-│   │   ├── Eventos.tsx
-│   │   ├── QuienesSomos.tsx
-│   │   ├── Galeria.tsx
-│   │   ├── Contacto.tsx
-│   │   └── Footer.tsx
-│   │
-│   └── ui/                   # Componentes shadcn/ui
-│       └── (multiple UI components)
-│
-├── features/                 # Features modulares por dominio
-│   ├── admin/
-│   │   └── AdminSidebar.tsx
-│   └── forum/
-│       ├── ReactionButton.tsx
-│       └── TagInput.tsx
-│
-├── pages/                    # Páginas/Rutas principales
-│   ├── Index.tsx
-│   ├── Auth.tsx
-│   ├── Register.tsx
-│   ├── Profile.tsx
-│   ├── Admin.tsx
-│   ├── AdminContactos.tsx
-│   ├── AdminContent.tsx
-│   ├── AdminDashboard.tsx
-│   ├── AdminForo.tsx
-│   ├── AdminNovedades.tsx
-│   ├── AdminMedia.tsx
-│   ├── Foro.tsx
-│   ├── ForoDetail.tsx
-│   ├── ForoStats.tsx
-│   ├── Novedades.tsx
-│   ├── NovedadDetail.tsx
-│   └── NotFound.tsx
-│
-├── hooks/                    # Custom React hooks
-│   ├── useScrollToSection.ts
-│   ├── useScrollDirection.ts
-│   ├── use-mobile.tsx
-│   └── use-toast.ts
-│
-├── integrations/             # Integraciones externas
-│   └── supabase/
-│       ├── client.ts
-│       └── types.ts
-│
-├── lib/                      # Utilidades generales
-│   └── utils.ts
-│
-├── styles/                   # Estilos globales
-│   └── animations.css
-│
-└── App.tsx                   # Router principal
-└── main.tsx                  # Entry point
-└── index.css                 # Estilos globales Tailwind
+## 🎯 Arquitectura actual
+Estructura **híbrida** organizada por responsabilidad y dominio:
+
+- **`components/common/`** — componentes reutilizables transversales (Navigation, SEO, ProtectedRoute, ImageLazy, NotificationBell…).
+- **`components/sections/`** — secciones del landing, autocontenidas (Hero, HeroFlyer, Maestria, Ejes, Galeria, Contacto…). Las grandes están agrupadas en carpetas (`HeroFlyer/`, `Contacto/`).
+- **`components/ui/`** — shadcn/ui (base).
+- **`features/`** — lógica de negocio por dominio:
+  - `admin/` — layout y sidebar del panel.
+  - `forum/` — hooks (`useForumPosts`, `useForumPost`), helpers, tipos y sub-componentes (`ForumPostCard`, `CommentItem`).
+  - `novedades/` — hooks (`useNovedades`, `useNovedad`), tipos y `NovedadCard` / `NovedadFeatured`.
+  - `ateneos/` — hooks (`useAteneosList`, `useAteneo`), helpers y `AteneoCard` / `AteneoFeatured`.
+- **`pages/`** — rutas (BrowserRouter). `Index` se carga eager; el resto vía `React.lazy` con Suspense.
+- **`hooks/`** — hooks globales (`use-mobile`, `useScrollToSection`, `useScrollDirection`, `use-toast`).
+- **`integrations/supabase/`** — cliente y tipos autogenerados (no editar).
+- **`lib/`** — utilidades puras: `utils`, `logger`, `vitals`, `imageCdn`, `uploadCv`, `videoSource`, `videoMetrics`.
+- **`assets/`** — imágenes organizadas por uso (`experts/`, `gallery/`, `sections/`).
+- **`types/`** — declaraciones globales y módulos sin tipos.
+- **`test/setup.ts`** — bootstrap de Vitest + RTL.
+
+```text
+src/
+├── components/{common,sections,ui}
+├── features/{admin,forum,novedades,ateneos}
+├── pages/
+├── hooks/
+├── integrations/supabase/
+├── lib/{logger,utils,vitals,imageCdn,...}
+├── assets/{experts,gallery,sections}
+├── styles/animations.css
+├── types/
+└── test/setup.ts
+supabase/{functions,migrations}
+scripts/generate-sitemap.ts
+public/{robots.txt,sitemap.xml,og-image.jpg}
 ```
 
-## 📋 Principios de Organización
+## 🧱 Backend (Lovable Cloud / Supabase)
+- **Tablas clave:** `profiles`, `user_roles`, `forum_posts`, `forum_comments`, `forum_post_tags`, `tags`, `novedades`, `novedad_tags`, `ateneos`, `post_reactions`, `notifications`, `contact_submissions`, `contact_rate_limits`, `media_files`, `site_content`, `web_vitals`, `audit_log`.
+- **Seguridad:** RLS habilitado en todas las tablas. Roles centralizados en `user_roles` + función `is_admin()` security-definer.
+- **Edge functions:** `submit-contact`, `reply-contact`, `get-cv-url`, asistente IA, etc.
+- **Almacenamiento:** buckets `forum-images`, `email-assets`, `site-images` (públicos) y `cvs` (privado, acceso vía URL firmada).
+- **Mantenimiento:** `prune_web_vitals(_days)` + cron diario (pg_cron) limpia métricas > 30 días. `admin_stats()` agrega contadores para el dashboard.
 
-### 1. **Componentes Comunes** (`/components/common/`)
-Componentes reutilizables en todo el proyecto:
-- Navegación y layout
-- Loaders y skeletons
-- SEO y optimizaciones
-- Utilidades de imagen
-- Protección de rutas
+## 🛠️ Calidad técnica (Fase 6)
+- **TypeScript:** `noImplicitAny: true` activo. `strictNullChecks` queda pendiente (5 puntos a resolver, documentados en el plan).
+- **ESLint:** advertencias activas para `no-unused-vars` (prefijo `_` ignorado), `react-hooks/exhaustive-deps` y `no-console` (permitidos `warn`/`error`). Logger, tests y scripts exentos de `no-console`.
+- **Logger central:** `src/lib/logger.ts`. Reemplazar `console.log` por `logger.debug` (silencioso en producción) o `logger.warn` / `logger.error`. Activación manual en prod: `localStorage.setItem('debug','1')`.
+- **Testing:** Vitest + Testing Library. Tests existentes para `Navigation`, `Contacto`, `ReservarPopup`, `Galeria/*` y `lib/logger`. Convención: `*.test.ts(x)` colocado junto al sujeto o en `__tests__/`.
+- **CI:** GitHub Actions ejecuta lint + typecheck + build + tests.
 
-### 2. **Features Modulares** (`/features/`)
-Funcionalidad específica agrupada por dominio:
-- **admin/**: Componentes exclusivos del panel administrativo
-- **forum/**: Componentes específicos del foro (reacciones, tags)
+## 📐 Guías para mantener el orden
+- Componente reutilizable global → `components/common/`.
+- Componente de una feature → `features/<dominio>/components/`.
+- Sección del landing → `components/sections/<Nombre>/`.
+- UI base (shadcn) → `components/ui/`.
+- Hook reutilizable global → `hooks/`. Hook de dominio → `features/<dominio>/hooks/`.
+- Utilidad pura → `lib/`.
+- Asset estático → `assets/<categoría>/`.
+- Nueva ruta → `pages/<Nombre>.tsx` (PascalCase) + registrar en `App.tsx` con `React.lazy`.
+- Cambio de schema → nueva migración en `supabase/migrations/` (nunca editar las existentes).
 
-### 3. **Secciones** (`/components/sections/`)
-Secciones completas del landing page, autocontenidas y especializadas.
-
-### 4. **Assets Organizados** (`/assets/`)
-Imágenes clasificadas por uso:
-- experts/ → Fotos de equipo médico
-- gallery/ → Galería de eventos
-- sections/ → Imágenes de secciones específicas
-
-## 🔄 Migraciones Realizadas
-
-### Componentes Movidos:
-- `Navigation.tsx` → `common/Navigation.tsx`
-- `AdminSidebar.tsx` → `features/admin/AdminSidebar.tsx`
-- `ReactionButton.tsx` → `features/forum/ReactionButton.tsx`
-- `TagInput.tsx` → `features/forum/TagInput.tsx`
-- Todos los componentes comunes → `common/`
-
-### Imports Actualizados:
-✅ App.tsx
-✅ Todas las páginas Admin
-✅ Páginas del Foro
-✅ Páginas de Novedades
-✅ Index.tsx
-
-## 🚀 Ventajas de la Nueva Estructura
-
-1. **Modularidad**: Cada feature tiene sus propios componentes
-2. **Escalabilidad**: Fácil agregar nuevas features sin contaminar common/
-3. **Claridad**: Ubicación predecible de archivos
-4. **Mantenibilidad**: Componentes relacionados agrupados lógicamente
-5. **Performance**: Mejor tree-shaking y code splitting
-
-## 📝 Guías para Mantener el Orden
-
-### Al agregar un nuevo componente:
-
-**¿Es reutilizable globalmente?** → `/components/common/`
-**¿Es específico de una feature?** → `/features/{feature-name}/`
-**¿Es una sección completa del landing?** → `/components/sections/`
-**¿Es UI base (shadcn)?** → `/components/ui/`
-
-### Al agregar una nueva página:
-Siempre en `/pages/` con nombre descriptivo en PascalCase.
-
-### Al agregar assets:
-Organizar por tipo y uso en `/assets/{category}/`
-
-## 🎨 Diseño del Sistema
-
-- **Design tokens**: `/src/index.css` y `tailwind.config.ts`
-- **Componentes UI**: Todos en `/components/ui/` (shadcn)
-- **Animaciones**: `/src/styles/animations.css`
-
----
-
-**Última actualización**: 2025-11-28
-**Mantenido por**: Equipo de Desarrollo Maestría CP
+## 🚦 Convenciones operativas
+- Navegación con BrowserRouter (sin hash).
+- CTAs activos solo en HeroFlyer, modales de testimonios y CTA Final.
+- Animaciones con Framer Motion, GPU-friendly.
+- Mobile nav: overlay 100dvh, z-[101].
+- Imágenes: lazy nativo + `srcset`. Sin `vite-imagetools`.
