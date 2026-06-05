@@ -1,6 +1,6 @@
 import { memo } from "react";
-import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
+import { useInView } from "@/hooks/useInView";
 import { ArrowRight, Calendar, MapPin, ExternalLink, Sparkles, CheckCircle, Users, Award } from "lucide-react";
 
 const benefits = [
@@ -11,6 +11,7 @@ const benefits = [
 ];
 
 export const CTAFinal = memo(function CTAFinal() {
+  const { ref, inView } = useInView<HTMLDivElement>({ rootMargin: "-32px" });
   const scrollToContact = () => {
     document.getElementById("contacto")?.scrollIntoView({
       behavior: "smooth",
@@ -28,16 +29,10 @@ export const CTAFinal = memo(function CTAFinal() {
       <div className="absolute bottom-0 right-0 w-[600px] h-[600px] bg-accent/10 rounded-full blur-[180px] translate-x-1/2 translate-y-1/2" />
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-dots-pattern opacity-5" />
 
-      <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div ref={ref} className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
           {/* Left - Content */}
-          <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="text-center lg:text-left"
-          >
+          <div className={`text-center lg:text-left reveal-left${inView ? " is-visible" : ""}`}>
             {/* Badge */}
             <span className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/10 lg:backdrop-blur-md text-white text-sm font-semibold border border-white/20 mb-6 shadow-lg">
               <Sparkles className="w-4 h-4 text-accent-light" />
@@ -62,17 +57,14 @@ export const CTAFinal = memo(function CTAFinal() {
             {/* Benefits list */}
             <ul className="space-y-3 mb-8">
               {benefits.map((benefit, index) => (
-                <motion.li
+                <li
                   key={index}
-                  initial={{ opacity: 0, x: -20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.2 + index * 0.1 }}
-                  className="flex items-center gap-3 text-white/90"
+                  className={`flex items-center gap-3 text-white/90 reveal-left${inView ? " is-visible" : ""}`}
+                  style={{ transitionDelay: inView ? `${200 + index * 100}ms` : "0ms" }}
                 >
                   <CheckCircle className="w-5 h-5 text-accent-light flex-shrink-0" />
                   <span>{benefit}</span>
-                </motion.li>
+                </li>
               ))}
             </ul>
 
@@ -94,16 +86,10 @@ export const CTAFinal = memo(function CTAFinal() {
                 formados en 2024
               </div>
             </div>
-          </motion.div>
+          </div>
 
           {/* Right - CTA Card */}
-          <motion.div
-            initial={{ opacity: 0, x: 30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="bg-white/10 lg:backdrop-blur-xl rounded-3xl p-8 md:p-10 border border-white/20 shadow-2xl brand-accent-bar"
-          >
+          <div className={`bg-white/10 lg:backdrop-blur-xl rounded-3xl p-8 md:p-10 border border-white/20 shadow-2xl brand-accent-bar reveal-right${inView ? " is-visible" : ""}`}>
             <div className="text-center">
               <div className="inline-flex items-center gap-2 text-accent-light font-semibold mb-4">
                 <Award className="w-5 h-5" />
@@ -156,7 +142,7 @@ export const CTAFinal = memo(function CTAFinal() {
 
               <p className="text-white/60 text-sm mt-6">Sin compromiso · Respuesta en 24h</p>
             </div>
-          </motion.div>
+          </div>
         </div>
       </div>
     </section>
