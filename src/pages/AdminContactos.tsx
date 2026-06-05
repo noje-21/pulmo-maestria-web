@@ -192,6 +192,26 @@ const AdminContactos = () => {
                     <p className="text-foreground text-sm">{submission.message}</p>
                   </div>
 
+                  {submission.cv_url && (
+                    <div className="mb-4">
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant="outline"
+                        onClick={() => handleViewCv(submission)}
+                        disabled={cvLoadingId === submission.id}
+                        className="gap-2"
+                      >
+                        {cvLoadingId === submission.id ? (
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                        ) : (
+                          <FileText className="w-4 h-4" />
+                        )}
+                        Ver currículum (enlace válido 5 min)
+                      </Button>
+                    </div>
+                  )}
+
                   {/* Reply section */}
                   <div className="mb-4 p-4 rounded-xl border border-border/50 bg-card">
                     <p className="text-xs text-muted-foreground mb-2 font-medium flex items-center gap-1.5">
