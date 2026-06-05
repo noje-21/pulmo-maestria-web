@@ -1,22 +1,17 @@
 import { memo, PropsWithChildren } from "react";
-import { motion } from "framer-motion";
+import { useInView } from "@/hooks/useInView";
 
 /**
- * Lightweight viewport-triggered animation.
- * - Uses whileInView (no controls/useAnimation overhead)
- * - once:true → never re-animates on scroll up/down
- * - will-change handled by framer-motion automatically
+ * Lightweight viewport-triggered fade-up.
+ * Pure IntersectionObserver + CSS transition — keeps framer-motion out of
+ * the critical bundle on the landing page.
  */
 const AnimatedOnView = memo(function AnimatedOnView({ children }: PropsWithChildren) {
+  const { ref, inView } = useInView<HTMLDivElement>({ rootMargin: "-48px" });
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 24 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-48px" }}
-      transition={{ duration: 0.45, ease: [0.25, 0.46, 0.45, 0.94] }}
-    >
+    <div ref={ref} className={`reveal-up${inView ? " is-visible" : ""}`}>
       {children}
-    </motion.div>
+    </div>
   );
 });
 
