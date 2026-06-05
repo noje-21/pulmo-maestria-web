@@ -65,6 +65,27 @@ export type Database = {
         }
         Relationships: []
       }
+      contact_rate_limits: {
+        Row: {
+          created_at: string
+          id: string
+          identifier: string
+          kind: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          identifier: string
+          kind: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          identifier?: string
+          kind?: string
+        }
+        Relationships: []
+      }
       contact_submissions: {
         Row: {
           country: string
@@ -593,6 +614,16 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      check_contact_rate_limit: {
+        Args: {
+          _email: string
+          _email_limit?: number
+          _ip: string
+          _ip_limit?: number
+          _window?: string
+        }
+        Returns: Json
+      }
       increment_post_views: { Args: { post_id: string }; Returns: undefined }
       is_admin: { Args: { check_user_id: string }; Returns: boolean }
     }

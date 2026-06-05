@@ -5,3 +5,12 @@ verify_jwt = true
 
 [functions.mlcp-assistant]
 verify_jwt = false
+
+[functions.submit-contact]
+verify_jwt = false
+
+[functions.send-contact-email]
+verify_jwt = false
+
+[functions.get-cv-url]
+verify_jwt = false
