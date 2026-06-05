@@ -32,21 +32,13 @@ export default defineConfig(({ mode }) => ({
     chunkSizeWarningLimit: 800,
     rollupOptions: {
       output: {
+        // Only split chunks that are actually used on the landing page (Index).
+        // Vite emits <link rel="modulepreload"> for every entry in manualChunks,
+        // so listing admin-only deps (recharts, tiptap) or lazy-only deps
+        // (supabase) here would force mobile users to download them up front.
         manualChunks: {
           "react-vendor": ["react", "react-dom", "react-router-dom"],
           "framer-motion": ["framer-motion"],
-          swiper: ["swiper", "swiper/react", "swiper/modules"],
-          recharts: ["recharts"],
-          tiptap: [
-            "@tiptap/react",
-            "@tiptap/starter-kit",
-            "@tiptap/extension-image",
-            "@tiptap/extension-table",
-            "@tiptap/extension-table-cell",
-            "@tiptap/extension-table-header",
-            "@tiptap/extension-table-row",
-          ],
-          supabase: ["@supabase/supabase-js"],
         },
       },
     },
