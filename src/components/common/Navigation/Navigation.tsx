@@ -1,24 +1,28 @@
 import { Link } from "react-router-dom";
 import { Menu, X } from "lucide-react";
-import { motion } from "framer-motion";
+import { lazy, Suspense } from "react";
 import logoMaestria from "@/assets/logo-maestria.webp";
 import { DesktopNav } from "./DesktopNav";
-import { MobileNav } from "./MobileNav";
 import { useNavState } from "./useNavState";
+
+// MobileNav keeps Framer Motion (overlay enter/exit animation), so we lazy-load
+// it to keep framer-motion out of the landing's critical bundle. The component
+// only renders meaningful UI when the menu is open, so a null fallback is safe.
+const MobileNav = lazy(() =>
+  import("./MobileNav").then((m) => ({ default: m.MobileNav })),
+);
 
 const Navigation = () => {
   const api = useNavState();
   const { isHomePage, isScrolled, isMenuOpen, toggleMenu } = api;
 
   return (
-    <motion.nav
-      initial={{ y: isHomePage ? -80 : 0 }}
-      animate={{ y: 0 }}
-      transition={{ duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
-      style={{ willChange: "transform" }}
+    <nav
       role="navigation"
       aria-label="Navegación principal"
       className={`fixed top-0 w-full z-50 transition-[background-color,box-shadow,border-color] duration-300 ${
+        isHomePage ? "nav-slide-down" : ""
+      } ${
         isScrolled
           ? "bg-background/98 lg:backdrop-blur-xl shadow-md border-b border-border/50"
           : "bg-transparent"
@@ -62,9 +66,11 @@ const Navigation = () => {
         </div>
       </div>
 
-      {/* Mobile Navigation - Full Screen Overlay */}
-      <MobileNav api={api} />
-    </motion.nav>
+      {/* Mobile Navigation - Full Screen Overlay (lazy: framer-motion only loaded on demand) */}
+      <Suspense fallback={null}>
+        <MobileNav api={api} />
+      </Suspense>
+    </nav>
   );
 };
 
