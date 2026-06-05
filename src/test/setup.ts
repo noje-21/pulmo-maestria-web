@@ -14,7 +14,7 @@ afterEach(() => {
   constructor() {}
   disconnect() {}
   observe() {}
-  takeRecords() {
+  takeRecords(): unknown[] {
     return [];
   }
   unobserve() {}
