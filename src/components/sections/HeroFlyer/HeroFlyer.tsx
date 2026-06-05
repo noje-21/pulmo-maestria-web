@@ -1,4 +1,9 @@
-import { ReservarPopup } from "../ReservarPopup";
+import { lazy, Suspense } from "react";
+// Lazy: ReservarPopup pulls in framer-motion. Loading it on demand keeps
+// framer-motion out of the landing's critical bundle.
+const ReservarPopup = lazy(() =>
+  import("../ReservarPopup").then((m) => ({ default: m.ReservarPopup })),
+);
 import { AmbientGlows, FlyerVideo, FlyerPoster } from "./FlyerVideo";
 import { FlyerControls } from "./FlyerControls";
 import { FlyerIndicators } from "./FlyerIndicators";
@@ -81,7 +86,11 @@ export const HeroFlyer = () => {
 
       </div>
 
-      <ReservarPopup isOpen={showReservar} onClose={closeReservar} />
+      {showReservar && (
+        <Suspense fallback={null}>
+          <ReservarPopup isOpen={showReservar} onClose={closeReservar} />
+        </Suspense>
+      )}
     </section>
   );
 };
