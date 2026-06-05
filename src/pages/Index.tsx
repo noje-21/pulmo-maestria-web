@@ -1,10 +1,8 @@
 import { lazy, Suspense } from "react";
-import Navigation from "@/components/common/Navigation";
 import AnimatedOnView from "@/components/common/AnimatedOnView";
 import { SEO } from "@/components/common/SEO";
 import { SkipLink } from "@/components/common/SkipLink";
 import { HeroFlyer } from "@/components/sections/HeroFlyer";
-import { Footer } from "@/components/sections/Footer";
 
 // Lazy-loaded sections (below the fold)
 const Hero = lazy(() => import("@/components/sections/Hero").then(m => ({ default: m.Hero })));
@@ -18,6 +16,7 @@ const Galeria = lazy(() => import("@/components/sections/Galeria"));
 const Contacto = lazy(() => import("@/components/sections/Contacto").then(m => ({ default: m.Contacto })));
 const ScrollInvitation = lazy(() => import("@/components/common/ScrollInvitation").then(m => ({ default: m.ScrollInvitation })));
 const SectionDivider = lazy(() => import("@/components/common/SectionDivider").then(m => ({ default: m.SectionDivider })));
+const Footer = lazy(() => import("@/components/sections/Footer").then(m => ({ default: m.Footer })));
 
 // Lazy-loaded floating widgets (deferred until after first paint to keep TBT/LCP low)
 const MobileFunnelCTA = lazy(() => import("@/components/common/MobileFunnelCTA"));
@@ -29,8 +28,6 @@ const Index = () => {
     <div className="min-h-screen">
       <SEO />
       <SkipLink />
-      <Navigation />
-      
       <main id="main-content">
         {/* PASO 1: Entrada - Hero Flyer (protagonista) */}
         <HeroFlyer />
@@ -75,10 +72,9 @@ const Index = () => {
         </Suspense>
       </main>
       
-      <Footer />
-      
       {/* Floating widgets — non-critical, loaded after main content */}
       <Suspense fallback={null}>
+        <Footer />
         <MobileFunnelCTA />
         <WhatsAppButton />
         <AIAssistant />
