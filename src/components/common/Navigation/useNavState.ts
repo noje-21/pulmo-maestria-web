@@ -107,7 +107,9 @@ export function useNavState() {
     const ric = (window as any).requestIdleCallback as
       | ((cb: () => void, opts?: { timeout: number }) => number)
       | undefined;
-    const handle = ric ? ric(() => void init(), { timeout: 1500 }) : window.setTimeout(() => void init(), 200);
+    const handle: number = ric
+      ? ric((): void => { void init(); }, { timeout: 1500 })
+      : window.setTimeout((): void => { void init(); }, 200);
 
     return () => {
       cancelled = true;
