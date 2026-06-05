@@ -1,5 +1,3 @@
-import { supabase } from "@/integrations/supabase/client";
-
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL as string;
 const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY as string;
 
@@ -16,6 +14,9 @@ export interface UploadOptions {
  * Upload a file to Supabase Storage via XHR so we can report real upload
  * progress (the JS SDK does not expose progress events).
  * Retries transient failures with exponential backoff.
+ *
+ * Returns the storage path (NOT a public URL). The `cvs` bucket is private;
+ * the admin UI fetches a short-lived signed URL on demand via an edge function.
  */
 export async function uploadFileWithProgress(opts: UploadOptions): Promise<string> {
   const { bucket, path, file, onProgress, signal, maxRetries = 2 } = opts;
@@ -63,8 +64,7 @@ export async function uploadFileWithProgress(opts: UploadOptions): Promise<strin
         xhr.send(file);
       });
 
-      const { data } = supabase.storage.from(bucket).getPublicUrl(path);
-      return data.publicUrl;
+      return path;
     } catch (err) {
       lastError = err as Error;
       if ((err as DOMException)?.name === "AbortError") throw err;
