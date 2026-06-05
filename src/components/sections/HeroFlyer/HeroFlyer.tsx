@@ -1,4 +1,3 @@
-import { motion } from "framer-motion";
 import { ReservarPopup } from "../ReservarPopup";
 import { AmbientGlows, FlyerVideo, FlyerPoster } from "./FlyerVideo";
 import { FlyerControls } from "./FlyerControls";
@@ -39,12 +38,9 @@ export const HeroFlyer = () => {
             <FlyerControls onReservar={openReservar} />
           </div>
 
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5, delay: 0.15, ease: [0.4, 0, 0.2, 1] }}
-            className="lg:col-span-5 h-full flex flex-col items-center justify-center"
-            style={{ willChange: "auto" }}
+          <div
+            className="lg:col-span-5 h-full flex flex-col items-center justify-center animate-slide-in-right"
+            style={{ animationDelay: "150ms", animationDuration: "500ms" }}
           >
             <FlyerVideo
               currentSrc={currentVideo.srcDesktop}
@@ -55,17 +51,12 @@ export const HeroFlyer = () => {
               onHoverEnd={handleHoverEnd}
             />
             <FlyerIndicators total={total} current={idx} onSelect={goTo} />
-          </motion.div>
+          </div>
         </div>
 
         {/* Mobile layout */}
         <div className="lg:hidden flex flex-col gap-6">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.45, ease: [0.4, 0, 0.2, 1] }}
-            style={{ willChange: "auto" }}
-          >
+          <div className="animate-fade-in-up" style={{ animationDuration: "450ms" }}>
             {heavyReady ? (
               <FlyerVideo
                 currentSrc={currentVideo.srcMobile}
@@ -81,7 +72,7 @@ export const HeroFlyer = () => {
               <FlyerPoster poster={currentVideo.poster} label={currentVideo.label} />
             )}
             <FlyerIndicators total={total} current={idx} onSelect={goTo} />
-          </motion.div>
+          </div>
 
           <div className="text-center px-2">
             <FlyerControls onReservar={openReservar} />
