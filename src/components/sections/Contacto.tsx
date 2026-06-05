@@ -7,7 +7,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { z } from "zod";
-import { X, Mail, Phone, Linkedin, Facebook, Instagram, Globe, Send, CheckCircle, AlertTriangle, Upload, FileText } from "lucide-react";
+import { X, Mail, Phone, Linkedin, Facebook, Instagram, Globe, Send, CheckCircle, AlertTriangle, Upload, FileText, RefreshCw, CheckCircle2 } from "lucide-react";
+import { uploadFileWithProgress } from "@/lib/uploadCv";
 
 const MAX_CV_SIZE = 5 * 1024 * 1024; // 5 MB
 const ALLOWED_CV_TYPES = [
@@ -15,6 +16,13 @@ const ALLOWED_CV_TYPES = [
   "application/msword",
   "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
 ];
+const ALLOWED_CV_EXTS = [".pdf", ".doc", ".docx"];
+
+const formatBytes = (bytes: number) => {
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+  return `${(bytes / 1024 / 1024).toFixed(2)} MB`;
+};
 
 const COMMON_DOMAIN_TYPOS: Record<string, string> = {
   "gmial.com": "gmail.com",
@@ -109,6 +117,10 @@ export const Contacto = () => {
   const [emailMismatch, setEmailMismatch] = useState(false);
   const [cvFile, setCvFile] = useState<File | null>(null);
   const [cvError, setCvError] = useState<string | null>(null);
+  const [uploading, setUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [uploadError, setUploadError] = useState<string | null>(null);
+  const [uploadedUrl, setUploadedUrl] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -127,6 +139,7 @@ export const Contacto = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (uploading) return;
     setLoading(true);
     try {
       const trimmedData = {
@@ -139,18 +152,14 @@ export const Contacto = () => {
       };
       const validated = contactSchema.parse(trimmedData);
 
-      // Upload CV if provided
-      let cvUrl: string | null = null;
-      if (cvFile) {
-        const ext = cvFile.name.split(".").pop()?.toLowerCase() || "pdf";
-        const safeName = validated.name.replace(/[^a-zA-Z0-9-_]/g, "_").slice(0, 40);
-        const path = `${Date.now()}-${safeName}.${ext}`;
-        const { error: uploadError } = await supabase.storage
-          .from("cvs")
-          .upload(path, cvFile, { contentType: cvFile.type, upsert: false });
-        if (uploadError) throw uploadError;
-        const { data: publicData } = supabase.storage.from("cvs").getPublicUrl(path);
-        cvUrl = publicData.publicUrl;
+      // Upload CV if provided (with progress + retries)
+      let cvUrl: string | null = uploadedUrl;
+      if (cvFile && !cvUrl) {
+        cvUrl = await uploadCvFile(cvFile, validated.name);
+        if (!cvUrl) {
+          setLoading(false);
+          return; // upload failed; user can retry from the UI
+        }
       }
 
       const { error } = await supabase.from("contact_submissions").insert([
@@ -188,6 +197,9 @@ export const Contacto = () => {
       setEmailMismatch(false);
       setCvFile(null);
       setCvError(null);
+      setUploadedUrl(null);
+      setUploadProgress(0);
+      setUploadError(null);
     } catch (error) {
       if (error instanceof z.ZodError) {
         toast.error(error.errors[0].message);
@@ -199,24 +211,73 @@ export const Contacto = () => {
     }
   };
 
+  const uploadCvFile = async (file: File, name: string): Promise<string | null> => {
+    setUploading(true);
+    setUploadError(null);
+    setUploadProgress(0);
+    try {
+      const ext = file.name.split(".").pop()?.toLowerCase() || "pdf";
+      const safeName = (name || "cv").replace(/[^a-zA-Z0-9-_]/g, "_").slice(0, 40) || "cv";
+      const path = `${Date.now()}-${safeName}.${ext}`;
+      const url = await uploadFileWithProgress({
+        bucket: "cvs",
+        path,
+        file,
+        onProgress: (pct) => setUploadProgress(pct),
+        maxRetries: 2,
+      });
+      setUploadedUrl(url);
+      return url;
+    } catch (err) {
+      const msg =
+        err instanceof Error && /network|timed out/i.test(err.message)
+          ? "Falló la conexión al subir el archivo. Revisa tu internet e intenta de nuevo."
+          : "No pudimos subir tu currículum. Intenta nuevamente.";
+      setUploadError(msg);
+      return null;
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const retryUpload = () => {
+    if (cvFile) void uploadCvFile(cvFile, formData.name.trim());
+  };
+
   const handleCvChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0] ?? null;
     setCvError(null);
+    setUploadError(null);
+    setUploadedUrl(null);
+    setUploadProgress(0);
     if (!file) {
       setCvFile(null);
       return;
     }
-    if (!ALLOWED_CV_TYPES.includes(file.type)) {
-      setCvError("Solo se permiten archivos PDF o Word (.pdf, .doc, .docx)");
+    const ext = "." + (file.name.split(".").pop()?.toLowerCase() ?? "");
+    const typeOk = ALLOWED_CV_TYPES.includes(file.type) || ALLOWED_CV_EXTS.includes(ext);
+    if (!typeOk) {
+      setCvError(
+        `Formato no permitido (${ext || "desconocido"}). Sube tu currículum en PDF o Word: .pdf, .doc o .docx.`,
+      );
+      e.target.value = "";
+      return;
+    }
+    if (file.size === 0) {
+      setCvError("El archivo está vacío (0 KB). Selecciona un currículum válido.");
       e.target.value = "";
       return;
     }
     if (file.size > MAX_CV_SIZE) {
-      setCvError("El archivo no puede superar los 5 MB");
+      setCvError(
+        `El archivo pesa ${formatBytes(file.size)} y supera el límite de 5 MB. Comprímelo o exporta como PDF más liviano.`,
+      );
       e.target.value = "";
       return;
     }
     setCvFile(file);
+    // Start upload immediately so the user sees progress in real time
+    void uploadCvFile(file, formData.name.trim());
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -410,11 +471,19 @@ export const Contacto = () => {
                   <div>
                     <label
                       htmlFor="cv-upload"
-                      className="flex items-center justify-between gap-3 p-3 sm:p-4 rounded-xl border-2 border-dashed border-input hover:border-accent hover:bg-accent/5 transition-colors cursor-pointer"
+                      className={`flex items-center justify-between gap-3 p-3 sm:p-4 rounded-xl border-2 border-dashed transition-colors ${
+                        cvError || uploadError
+                          ? "border-destructive/60 bg-destructive/5"
+                          : uploadedUrl
+                            ? "border-green-500/60 bg-green-500/5"
+                            : "border-input hover:border-accent hover:bg-accent/5"
+                      } ${uploading ? "cursor-wait opacity-90" : "cursor-pointer"}`}
                     >
                       <div className="flex items-center gap-3 min-w-0">
                         <div className="p-2 rounded-lg bg-accent/10 flex-shrink-0">
-                          {cvFile ? (
+                          {uploadedUrl ? (
+                            <CheckCircle2 className="w-4 h-4 sm:w-5 sm:h-5 text-green-600" />
+                          ) : cvFile ? (
                             <FileText className="w-4 h-4 sm:w-5 sm:h-5 text-accent" />
                           ) : (
                             <Upload className="w-4 h-4 sm:w-5 sm:h-5 text-accent" />
@@ -426,18 +495,25 @@ export const Contacto = () => {
                           </p>
                           <p className="text-xs text-muted-foreground">
                             {cvFile
-                              ? `${(cvFile.size / 1024 / 1024).toFixed(2)} MB · Click para cambiar`
+                              ? uploading
+                                ? `Subiendo… ${uploadProgress}%`
+                                : uploadedUrl
+                                  ? `${formatBytes(cvFile.size)} · Listo para enviar`
+                                  : `${formatBytes(cvFile.size)} · Click para cambiar`
                               : "PDF o Word (.pdf, .doc, .docx) · Máx 5 MB"}
                           </p>
                         </div>
                       </div>
-                      {cvFile && (
+                      {cvFile && !uploading && (
                         <button
                           type="button"
                           onClick={(ev) => {
                             ev.preventDefault();
                             setCvFile(null);
                             setCvError(null);
+                            setUploadError(null);
+                            setUploadedUrl(null);
+                            setUploadProgress(0);
                           }}
                           aria-label="Quitar archivo"
                           className="p-1.5 hover:bg-muted rounded-lg transition-colors flex-shrink-0"
@@ -451,18 +527,61 @@ export const Contacto = () => {
                       type="file"
                       accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
                       onChange={handleCvChange}
+                      disabled={uploading}
                       className="sr-only"
                     />
+                    {uploading && (
+                      <div className="mt-2" aria-live="polite">
+                        <div
+                          role="progressbar"
+                          aria-valuemin={0}
+                          aria-valuemax={100}
+                          aria-valuenow={uploadProgress}
+                          aria-label="Progreso de subida del currículum"
+                          className="h-1.5 w-full rounded-full bg-muted overflow-hidden"
+                        >
+                          <div
+                            className="h-full bg-accent transition-all duration-200"
+                            style={{ width: `${uploadProgress}%` }}
+                          />
+                        </div>
+                      </div>
+                    )}
                     {cvError && (
                       <p role="alert" className="mt-1.5 text-xs text-destructive flex items-center gap-1.5">
                         <AlertTriangle className="w-3.5 h-3.5" />
                         {cvError}
                       </p>
                     )}
+                    {uploadError && !cvError && (
+                      <div role="alert" className="mt-1.5 flex items-center justify-between gap-2 text-xs text-destructive">
+                        <span className="flex items-center gap-1.5">
+                          <AlertTriangle className="w-3.5 h-3.5" />
+                          {uploadError}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={retryUpload}
+                          className="flex items-center gap-1 font-medium text-accent hover:underline"
+                        >
+                          <RefreshCw className="w-3 h-3" />
+                          Reintentar
+                        </button>
+                      </div>
+                    )}
                   </div>
 
-                  <Button type="submit" className="w-full btn-accent py-6 text-base font-semibold" disabled={loading}>
-                    {loading ? (
+                  <Button
+                    type="submit"
+                    className="w-full btn-accent py-6 text-base font-semibold"
+                    disabled={loading || uploading}
+                  >
+                    {uploading ? (
+                      <span className="flex items-center gap-2">
+                        <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                        Subiendo currículum… {uploadProgress}%
+                      </span>
+                    ) : loading ? (
                       <span className="flex items-center gap-2">
                         <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                         Enviando tu mensaje...
