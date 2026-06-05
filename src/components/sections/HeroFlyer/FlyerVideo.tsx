@@ -1,5 +1,4 @@
 import { memo, useEffect, useRef, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
 import { instrumentVideo, preloadPoster } from "@/lib/videoMetrics";
 
 /* ─── Ambient glows — memoized, GPU-composited ─── */
@@ -164,24 +163,20 @@ export const FlyerVideo = memo(function FlyerVideo({
   const videoWillChange = transitioning ? "opacity" : "auto";
 
   return (
-    <motion.div
+    <div
       ref={containerRef}
-      className="relative w-full aspect-[4/3] sm:aspect-video rounded-2xl overflow-hidden border border-white/10 bg-black transform-gpu"
+      className={`relative w-full aspect-[4/3] sm:aspect-video rounded-2xl overflow-hidden border border-white/10 bg-black transform-gpu ${
+        isMobile ? "" : "hover-scale-3"
+      }`}
       style={{
         contain: "layout style paint",
         boxShadow: "0 30px 100px rgba(0,0,0,0.8)",
       }}
       onMouseEnter={onHoverStart}
       onMouseLeave={onHoverEnd}
-      whileHover={isMobile ? undefined : { scale: 1.03 }}
-      transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
     >
       {/* Ken Burns — disabled on mobile for GPU savings */}
-      <motion.div
-        className="absolute inset-0 transform-gpu"
-        animate={isMobile ? undefined : { scale: [1, 1.02, 1] }}
-        transition={isMobile ? undefined : { duration: 8, repeat: Infinity, ease: [0.4, 0, 0.2, 1] }}
-      >
+      <div className={`absolute inset-0 transform-gpu ${isMobile ? "" : "kenburns"}`}>
         <video
           ref={refA}
           autoPlay
@@ -207,27 +202,24 @@ export const FlyerVideo = memo(function FlyerVideo({
             aria-hidden="true"
           />
         )}
-      </motion.div>
+      </div>
 
       {/* Cinematic overlay */}
       <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-transparent pointer-events-none" />
 
-      {/* Dynamic video label */}
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={currentLabel}
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -6 }}
-          transition={{ duration: 0.45, ease: [0.4, 0, 0.2, 1] }}
-          className="absolute bottom-4 left-4 z-10 pointer-events-none"
-        >
-          <span className="inline-block px-3 py-1.5 rounded-lg text-white/70 text-xs font-medium bg-black/40 border border-white/5 lg:backdrop-blur-md lg:bg-black/30">
-            {currentLabel}
-          </span>
-        </motion.div>
-      </AnimatePresence>
-    </motion.div>
+      {/* Dynamic video label — re-mounts on label change via key, CSS fade-in
+          replaces the previous AnimatePresence wrapper. Exit anim is dropped:
+          the new label simply fades over the previous (~250 ms perceptual gap). */}
+      <div
+        key={currentLabel}
+        className="absolute bottom-4 left-4 z-10 pointer-events-none animate-fade-in-up"
+        style={{ animationDuration: "450ms" }}
+      >
+        <span className="inline-block px-3 py-1.5 rounded-lg text-white/70 text-xs font-medium bg-black/40 border border-white/5 lg:backdrop-blur-md lg:bg-black/30">
+          {currentLabel}
+        </span>
+      </div>
+    </div>
   );
 });
 
