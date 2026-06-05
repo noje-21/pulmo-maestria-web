@@ -3,7 +3,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { motion, AnimatePresence } from "framer-motion";
-import Navigation from "@/components/common/Navigation";
 import { SEO } from "@/components/common/SEO";
 import { useNavigate } from "react-router-dom";
 import { MessageSquare, Plus, Search, Filter, Sparkles } from "lucide-react";
@@ -110,7 +109,6 @@ const Foro = () => {
         description="Participa en discusiones, comparte experiencias y conecta con otros profesionales de la salud en nuestro foro comunitario."
         keywords="foro, comunidad, discusiones, circulación pulmonar, profesionales de la salud"
       />
-      <Navigation />
 
       <main className="pt-24 sm:pt-28 pb-16 sm:pb-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-5xl mx-auto">

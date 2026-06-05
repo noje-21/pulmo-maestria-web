@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { z } from "zod";
 import { toast } from "sonner";
-import { supabase } from "@/integrations/supabase/client";
 import { uploadFileWithProgress } from "@/lib/uploadCv";
 import {
   contactSchema,
@@ -164,6 +163,7 @@ export function useContactForm() {
       }
 
       // Go through the edge function: anti-spam + rate-limit + insert + email.
+      const { supabase } = await import("@/integrations/supabase/client");
       const { data: respData, error: fnError } = await supabase.functions.invoke("submit-contact", {
         body: {
           name: validated.name,

@@ -2,7 +2,6 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { motion } from "framer-motion";
-import Navigation from "@/components/common/Navigation";
 import ReactionButton from "@/features/forum/ReactionButton";
 import { Calendar, ArrowLeft, Clock, Share2, Sparkles, Newspaper } from "lucide-react";
 import { format, formatDistanceToNow } from "date-fns";
@@ -64,7 +63,6 @@ const NovedadDetail = () => {
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-background via-muted/20 to-background">
-        <Navigation />
         <main className="pt-24 sm:pt-28 pb-16 px-4 sm:px-6 lg:px-8">
           <div className="max-w-4xl mx-auto">
             <Skeleton className="h-10 w-40 mb-8" />
@@ -103,7 +101,6 @@ const NovedadDetail = () => {
           mainEntityOfPage: `https://www.maestriacp.com/novedades/${slug}`,
         }}
       />
-      <Navigation />
 
       <main className="pt-24 sm:pt-28 pb-16 sm:pb-20 px-4 sm:px-6 lg:px-8">
         <article className="max-w-4xl mx-auto">

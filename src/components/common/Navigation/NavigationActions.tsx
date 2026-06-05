@@ -1,6 +1,10 @@
+import { lazy, Suspense } from "react";
 import { Button } from "@/components/ui/button";
-import NotificationBell from "@/components/common/NotificationBell";
 import type { NavStateApi } from "./useNavState";
+
+// Lazy: NotificationBell pulls Supabase. Only renders for signed-in users,
+// so we keep it out of the initial bundle entirely.
+const NotificationBell = lazy(() => import("@/components/common/NotificationBell"));
 
 /** Right-side desktop cluster: Admin button, NotificationBell, auth button. */
 export function NavigationActions({ api }: { api: NavStateApi }) {
@@ -18,7 +22,11 @@ export function NavigationActions({ api }: { api: NavStateApi }) {
         </Button>
       )}
 
-      <NotificationBell />
+      {user && (
+        <Suspense fallback={null}>
+          <NotificationBell />
+        </Suspense>
+      )}
 
       {user ? (
         <Button

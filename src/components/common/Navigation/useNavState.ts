@@ -1,7 +1,11 @@
 import { useCallback, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
 import { useScrollToSection } from "@/hooks/useScrollToSection";
+
+// Lazy-loaded to avoid pulling Supabase into the initial bundle.
+// The Navigation component renders on first paint, but its auth lookup can
+// wait until after the browser is idle.
+const loadSupabase = () => import("@/integrations/supabase/client").then((m) => m.supabase);
 
 /**
  * Owns navigation state: scroll-triggered translucent bg, mobile menu open
@@ -65,43 +69,60 @@ export function useNavState() {
   }, []);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null);
-      if (session?.user) {
+    let unsub: (() => void) | null = null;
+    let cancelled = false;
+
+    const init = async () => {
+      const supabase = await loadSupabase();
+      if (cancelled) return;
+
+      const fetchRole = (userId: string) => {
         supabase
           .from("user_roles")
           .select("role")
-          .eq("user_id", session.user.id)
+          .eq("user_id", userId)
           .single()
           .then(({ data }) => {
-            setIsAdmin(data?.role === "admin");
+            if (!cancelled) setIsAdmin(data?.role === "admin");
           });
-      }
-    });
+      };
 
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (cancelled) return;
       setUser(session?.user ?? null);
-      if (session?.user) {
-        supabase
-          .from("user_roles")
-          .select("role")
-          .eq("user_id", session.user.id)
-          .single()
-          .then(({ data }) => {
-            setIsAdmin(data?.role === "admin");
-          });
-      } else {
-        setIsAdmin(false);
-      }
-    });
+      if (session?.user) fetchRole(session.user.id);
 
-    return () => subscription.unsubscribe();
+      const { data: { subscription } } = supabase.auth.onAuthStateChange(
+        (_event, session) => {
+          if (cancelled) return;
+          setUser(session?.user ?? null);
+          if (session?.user) fetchRole(session.user.id);
+          else setIsAdmin(false);
+        },
+      );
+      unsub = () => subscription.unsubscribe();
+    };
+
+    // Defer to idle so it never competes with first paint.
+    const ric = (window as any).requestIdleCallback as
+      | ((cb: () => void, opts?: { timeout: number }) => number)
+      | undefined;
+    const handle: number = ric
+      ? ric((): void => { void init(); }, { timeout: 1500 })
+      : window.setTimeout((): void => { void init(); }, 200);
+
+    return () => {
+      cancelled = true;
+      if (unsub) unsub();
+      const cic = (window as any).cancelIdleCallback as ((id: number) => void) | undefined;
+      if (ric && cic) cic(handle as number);
+      else clearTimeout(handle as number);
+    };
   }, []);
 
   const handleLogout = async () => {
     setIsMenuOpen(false);
+    const supabase = await loadSupabase();
     await supabase.auth.signOut();
     navigate("/");
   };

@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
-import Navigation from "@/components/common/Navigation";
 import { Footer } from "@/components/sections/Footer";
 import { SEO } from "@/components/common/SEO";
 import ImageLazy from "@/components/common/ImageLazy";
@@ -69,7 +68,6 @@ const Nosotros = () => {
           },
         }}
       />
-      <Navigation />
 
       <main>
         {/* Hero */}
