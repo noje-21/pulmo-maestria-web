@@ -1,5 +1,4 @@
 import { memo, useEffect, useState } from "react";
-import { motion } from "framer-motion";
 import { ExternalLink, Phone, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -24,13 +23,10 @@ const CountdownTimer = memo(function CountdownTimer() {
   ];
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 15 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, delay: 0.45, ease: [0.4, 0, 0.2, 1] }}
-      className="mb-5"
+    <div
+      className="mb-5 animate-fade-in-up"
       aria-label="Tiempo restante para el cierre de inscripciones"
-      style={{ willChange: "auto" }}
+      style={{ animationDelay: "450ms", animationDuration: "400ms" }}
     >
       <div className="inline-flex items-center divide-x divide-white/10 rounded-xl border border-white/10 bg-black/20 overflow-hidden max-w-full">
         {units.map(({ value, label }) => (
@@ -47,7 +43,7 @@ const CountdownTimer = memo(function CountdownTimer() {
       <p className="mt-1.5 text-white/30 text-[10px] font-medium tracking-wide uppercase">
         hasta el cierre de inscripciones
       </p>
-    </motion.div>
+    </div>
   );
 });
 
@@ -98,27 +94,21 @@ export const FlyerControls = memo(function FlyerControls({ onReservar }: { onRes
   return (
     <div style={{ contain: "layout style" }}>
       {/* Badge: Edición 2026 · Cupos limitados */}
-      <motion.div
-        initial={{ opacity: 0, y: 15 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4, delay: 0.1, ease: [0.4, 0, 0.2, 1] }}
-        className="mb-3"
-        style={{ willChange: "auto" }}
+      <div
+        className="mb-3 animate-fade-in-up"
+        style={{ animationDelay: "100ms", animationDuration: "400ms" }}
       >
         <span className="inline-flex items-center gap-2 bg-accent/15 border border-accent/25 text-accent-foreground px-3 py-1.5 rounded-full text-xs font-semibold">
           <Sparkles className="w-3 h-3 text-accent-light animate-pulse" />
           <span className="text-white/90">Edición 2026 · Cupos limitados</span>
         </span>
-      </motion.div>
+      </div>
 
       {/* Scarcity badge */}
-      <motion.div
-        initial={{ opacity: 0, y: 15 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4, delay: 0.2, ease: [0.4, 0, 0.2, 1] }}
-        className="mb-4"
+      <div
+        className="mb-4 animate-fade-in-up"
         aria-label="Solo 15 cupos anuales disponibles"
-        style={{ willChange: "auto" }}
+        style={{ animationDelay: "200ms", animationDuration: "400ms" }}
       >
         <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-accent/40 bg-accent/10 shadow-[0_0_16px_hsl(var(--accent)/0.15)]">
           <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse shrink-0" />
@@ -126,29 +116,23 @@ export const FlyerControls = memo(function FlyerControls({ onReservar }: { onRes
             Solo 15 cupos anuales
           </span>
         </span>
-      </motion.div>
+      </div>
 
       {/* H1 */}
-      <motion.h1
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.45, delay: 0.3, ease: [0.4, 0, 0.2, 1] }}
-        className="text-[1.35rem] xs:text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold text-white leading-[1.15] mb-4 break-words hyphens-auto"
-        style={{ willChange: "auto" }}
+      <h1
+        className="text-[1.35rem] xs:text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold text-white leading-[1.15] mb-4 break-words hyphens-auto animate-fade-in-up"
+        style={{ animationDelay: "300ms", animationDuration: "450ms" }}
       >
         La experiencia que está transformando la{" "}
         <span className="bg-gradient-to-r from-accent-light to-accent bg-clip-text text-transparent">
           circulación pulmonar
         </span>
-      </motion.h1>
+      </h1>
 
       {/* Date */}
-      <motion.div
-        initial={{ opacity: 0, y: 15 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4, delay: 0.35, ease: [0.4, 0, 0.2, 1] }}
-        className="mb-5 space-y-1"
-        style={{ willChange: "auto" }}
+      <div
+        className="mb-5 space-y-1 animate-fade-in-up"
+        style={{ animationDelay: "350ms", animationDuration: "400ms" }}
       >
         <p className="text-white/60 text-[11px] xs:text-xs sm:text-sm font-medium leading-snug">
           2 al 16 de noviembre de 2026 · Buenos Aires, Argentina
@@ -156,20 +140,18 @@ export const FlyerControls = memo(function FlyerControls({ onReservar }: { onRes
         <p className="text-white/45 text-[11px] xs:text-xs sm:text-sm leading-snug">
           Formación presencial intensiva + campus virtual.
         </p>
-      </motion.div>
+      </div>
 
       {/* Countdown */}
       <CountdownTimer />
 
       {/* CTAs */}
-      <motion.div
-        initial={{ opacity: 0, y: 15 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4, delay: 0.5, ease: [0.4, 0, 0.2, 1] }}
-        style={{ willChange: "auto" }}
+      <div
+        className="animate-fade-in-up"
+        style={{ animationDelay: "500ms", animationDuration: "400ms" }}
       >
         <HeroCTAs onReservar={onReservar} />
-      </motion.div>
+      </div>
     </div>
   );
 });
