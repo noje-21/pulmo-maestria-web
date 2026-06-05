@@ -152,43 +152,41 @@ export const Contacto = () => {
       };
       const validated = contactSchema.parse(trimmedData);
 
-      // Upload CV if provided (with progress + retries)
-      let cvUrl: string | null = uploadedUrl;
-      if (cvFile && !cvUrl) {
-        cvUrl = await uploadCvFile(cvFile, validated.name);
-        if (!cvUrl) {
+      // Upload CV if provided (with progress + retries). Stores the *path* only.
+      let cvPath: string | null = uploadedUrl;
+      if (cvFile && !cvPath) {
+        cvPath = await uploadCvFile(cvFile, validated.name);
+        if (!cvPath) {
           setLoading(false);
           return; // upload failed; user can retry from the UI
         }
       }
 
-      const { error } = await supabase.from("contact_submissions").insert([
-        {
+      // Go through the edge function: anti-spam + rate-limit + insert + email.
+      const { data: respData, error: fnError } = await supabase.functions.invoke('submit-contact', {
+        body: {
           name: validated.name,
           email: validated.email,
           country: validated.country,
           specialty: validated.specialty,
           message: validated.message,
-          cv_url: cvUrl,
+          cvPath,
         },
-      ]);
-      if (error) throw error;
-
-      // Send notification email to admin via Resend
-      try {
-        await supabase.functions.invoke('send-contact-email', {
-          body: {
-            name: validated.name,
-            email: validated.email,
-            country: validated.country,
-            specialty: validated.specialty,
-            message: validated.message,
-            cvUrl,
-            adminEmail: 'magisterenhipertensionpulmonar@gmail.com',
-          },
-        });
-      } catch (emailError) {
-        // Don't block form success if email fails
+      });
+      if (fnError) {
+        const msg = (respData as { error?: string } | null)?.error;
+        if (typeof fnError.message === 'string' && /429|demasiados/i.test(fnError.message)) {
+          toast.error('Has enviado demasiados mensajes. Intenta nuevamente en una hora.');
+        } else {
+          toast.error(msg || 'No pudimos enviar tu mensaje. Intenta de nuevo.');
+        }
+        setLoading(false);
+        return;
+      }
+      if (respData && (respData as { error?: string }).error) {
+        toast.error((respData as { error: string }).error);
+        setLoading(false);
+        return;
       }
 
       setSuccessMsg(true);
@@ -469,17 +467,19 @@ export const Contacto = () => {
 
                   {/* CV Upload */}
                   <div>
-                    <label
-                      htmlFor="cv-upload"
-                      className={`flex items-center justify-between gap-3 p-3 sm:p-4 rounded-xl border-2 border-dashed transition-colors ${
+                    <div
+                      className={`relative flex items-center justify-between gap-3 p-3 sm:p-4 rounded-xl border-2 border-dashed transition-colors ${
                         cvError || uploadError
                           ? "border-destructive/60 bg-destructive/5"
                           : uploadedUrl
                             ? "border-green-500/60 bg-green-500/5"
                             : "border-input hover:border-accent hover:bg-accent/5"
-                      } ${uploading ? "cursor-wait opacity-90" : "cursor-pointer"}`}
+                      } ${uploading ? "cursor-wait opacity-90" : ""}`}
                     >
-                      <div className="flex items-center gap-3 min-w-0">
+                      <label
+                        htmlFor="cv-upload"
+                        className={`flex items-center gap-3 min-w-0 flex-1 ${uploading ? "cursor-wait" : "cursor-pointer"}`}
+                      >
                         <div className="p-2 rounded-lg bg-accent/10 flex-shrink-0">
                           {uploadedUrl ? (
                             <CheckCircle2 className="w-4 h-4 sm:w-5 sm:h-5 text-green-600" />
@@ -503,12 +503,11 @@ export const Contacto = () => {
                               : "PDF o Word (.pdf, .doc, .docx) · Máx 5 MB"}
                           </p>
                         </div>
-                      </div>
+                      </label>
                       {cvFile && !uploading && (
                         <button
                           type="button"
-                          onClick={(ev) => {
-                            ev.preventDefault();
+                          onClick={() => {
                             setCvFile(null);
                             setCvError(null);
                             setUploadError(null);
@@ -521,7 +520,7 @@ export const Contacto = () => {
                           <X className="w-4 h-4" />
                         </button>
                       )}
-                    </label>
+                    </div>
                     <input
                       id="cv-upload"
                       type="file"

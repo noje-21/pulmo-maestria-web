@@ -7,7 +7,7 @@ import { toast } from "sonner";
 import { motion } from "framer-motion";
 import AdminLayout from "@/features/admin/AdminLayout";
 import { TableSkeleton } from "@/components/common/LoadingSkeleton";
-import { Trash2, Mail, MapPin, Briefcase, User, Send, Loader2 } from "lucide-react";
+import { Trash2, Mail, MapPin, Briefcase, User, Send, Loader2, FileText } from "lucide-react";
 
 interface ContactSubmission {
   id: string;
@@ -17,6 +17,7 @@ interface ContactSubmission {
   specialty: string;
   message: string;
   created_at: string;
+  cv_url: string | null;
 }
 
 const AdminContactos = () => {
@@ -24,6 +25,7 @@ const AdminContactos = () => {
   const [submissions, setSubmissions] = useState<ContactSubmission[]>([]);
   const [replyTexts, setReplyTexts] = useState<Record<string, string>>({});
   const [sendingReply, setSendingReply] = useState<string | null>(null);
+  const [cvLoadingId, setCvLoadingId] = useState<string | null>(null);
 
   useEffect(() => {
     loadSubmissions();
@@ -88,6 +90,24 @@ const AdminContactos = () => {
       toast.error("Error al enviar la respuesta");
     } finally {
       setSendingReply(null);
+    }
+  };
+
+  const handleViewCv = async (submission: ContactSubmission) => {
+    if (!submission.cv_url) return;
+    setCvLoadingId(submission.id);
+    try {
+      const { data, error } = await supabase.functions.invoke('get-cv-url', {
+        body: { path: submission.cv_url, expiresIn: 300 },
+      });
+      if (error) throw error;
+      const url = (data as { url?: string } | null)?.url;
+      if (!url) throw new Error('No URL');
+      window.open(url, '_blank', 'noopener,noreferrer');
+    } catch {
+      toast.error('No pudimos generar el enlace al currículum.');
+    } finally {
+      setCvLoadingId(null);
     }
   };
 
