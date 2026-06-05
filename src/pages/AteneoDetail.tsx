@@ -1,6 +1,5 @@
 import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
-import Navigation from "@/components/common/Navigation";
 import { Footer } from "@/components/sections/Footer";
 import { SEO } from "@/components/common/SEO";
 import { Button } from "@/components/ui/button";
@@ -24,7 +23,6 @@ const AteneoDetail = () => {
   if (loading) {
     return (
       <div className="min-h-screen bg-background">
-        <Navigation />
         <main className="pt-24 sm:pt-28 pb-16 px-4 sm:px-6 lg:px-8">
           <div className="max-w-4xl mx-auto">
             <Skeleton className="h-10 w-40 mb-8" />
@@ -41,7 +39,6 @@ const AteneoDetail = () => {
   if (!ateneo) {
     return (
       <div className="min-h-screen bg-background">
-        <Navigation />
         <main className="pt-24 sm:pt-28 pb-16 px-4 sm:px-6 lg:px-8 text-center">
           <h1 className="text-2xl font-bold mb-4">Ateneo no encontrado</h1>
           <Button onClick={() => navigate("/ateneos")} variant="outline">
@@ -71,7 +68,6 @@ const AteneoDetail = () => {
           },
         }}
       />
-      <Navigation />
 
       <main className="pt-24 sm:pt-28 pb-16 sm:pb-20 px-4 sm:px-6 lg:px-8">
         {isPreview && (

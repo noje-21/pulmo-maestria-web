@@ -2,7 +2,6 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Home, ArrowLeft, Search, Sparkles } from "lucide-react";
-import Navigation from "@/components/common/Navigation";
 import { SEO } from "@/components/common/SEO";
 
 const NotFound = () => {
@@ -15,7 +14,6 @@ const NotFound = () => {
         title="Página no encontrada - Maestría en Circulación Pulmonar"
         description="La página que buscas no existe o ha sido movida."
       />
-      <Navigation />
       
       <main className="flex min-h-[80vh] items-center justify-center px-4 pt-20">
         <motion.div

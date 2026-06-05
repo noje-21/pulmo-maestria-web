@@ -1,6 +1,5 @@
 import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
-import Navigation from "@/components/common/Navigation";
 import { Footer } from "@/components/sections/Footer";
 import { SEO } from "@/components/common/SEO";
 import { Input } from "@/components/ui/input";
@@ -65,7 +64,6 @@ const Ateneos = () => {
         keywords="ateneos, casos clínicos, circulación pulmonar, hipertensión pulmonar, discusión académica"
         jsonLd={jsonLd}
       />
-      <Navigation />
 
       <main className="pt-24 sm:pt-28 pb-16 sm:pb-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-6xl mx-auto">

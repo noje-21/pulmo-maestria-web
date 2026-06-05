@@ -3,7 +3,6 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
-import Navigation from "@/components/common/Navigation";
 import { SEO } from "@/components/common/SEO";
 import { useNavigate } from "react-router-dom";
 import { Search, ArrowRight, Filter, Newspaper, Sparkles } from "lucide-react";
@@ -41,7 +40,6 @@ const Novedades = () => {
         description="Mantente al día con las últimas noticias, artículos y actualizaciones de la Maestría en Circulación Pulmonar."
         keywords="novedades, noticias, circulación pulmonar, actualizaciones, artículos médicos"
       />
-      <Navigation />
 
       <main className="pt-24 sm:pt-28 pb-16 sm:pb-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-6xl mx-auto">
