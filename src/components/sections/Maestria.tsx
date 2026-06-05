@@ -1,6 +1,6 @@
 import { memo } from "react";
-import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
+import { useInView } from "@/hooks/useInView";
 import { Card, CardContent } from "@/components/ui/card";
 import { BookOpen, MapPin, Calendar, Play, ExternalLink, Building, CheckCircle } from "lucide-react";
 
@@ -40,34 +40,27 @@ const features = [
 ];
 
 export const Maestria = memo(function Maestria() {
+  const { ref, inView } = useInView<HTMLDivElement>({ rootMargin: "-32px" });
+  const cls = (extra = "") => `reveal-up${inView ? " is-visible" : ""} ${extra}`;
   return (
     <section id="maestria" className="py-20 md:py-28 bg-gradient-to-b from-muted/50 to-background relative overflow-hidden">
       <div className="absolute inset-0 bg-grid-pattern opacity-50" />
       
-      <div className="section-container relative z-10">
+      <div ref={ref} className="section-container relative z-10">
         {/* Section Header with Purpose */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-          className="section-header"
-        >
+        <div className={cls("section-header")}>
           <h2 className="section-title">¿Por qué esta Maestría?</h2>
           <div className="section-divider" />
           <p className="section-subtitle max-w-3xl mx-auto">
             Porque la circulación pulmonar requiere un enfoque integral que pocos programas ofrecen. 
             Aquí encontrarás la profundidad clínica que tus pacientes merecen.
           </p>
-        </motion.div>
+        </div>
 
         {/* Features Grid */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.1 }}
-          className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-16"
+        <div
+          style={{ transitionDelay: inView ? "100ms" : "0ms" }}
+          className={cls("grid sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-16")}
         >
           {features.map((feature, index) => (
             <Card 
@@ -104,15 +97,12 @@ export const Maestria = memo(function Maestria() {
               </CardContent>
             </Card>
           ))}
-        </motion.div>
+        </div>
 
         {/* Video Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="mb-16"
+        <div
+          style={{ transitionDelay: inView ? "200ms" : "0ms" }}
+          className={cls("mb-16")}
         >
           <Card className="card-base overflow-hidden bg-card">
             <CardContent className="p-0">
@@ -152,7 +142,7 @@ export const Maestria = memo(function Maestria() {
               </div>
             </CardContent>
           </Card>
-        </motion.div>
+        </div>
 
       </div>
     </section>
