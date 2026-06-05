@@ -3,11 +3,36 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
 import AdminLayout from "@/features/admin/AdminLayout";
 import { TableSkeleton } from "@/components/common/LoadingSkeleton";
-import { Trash2, Mail, MapPin, Briefcase, User, Send, Loader2, FileText } from "lucide-react";
+import { Trash2, Mail, MapPin, Briefcase, User, Send, Loader2, FileText, Search } from "lucide-react";
+
+type ContactStatus = "nuevo" | "leido" | "respondido" | "spam";
+
+const STATUS_LABEL: Record<ContactStatus, string> = {
+  nuevo: "Nuevo",
+  leido: "Leído",
+  respondido: "Respondido",
+  spam: "Spam",
+};
+
+const STATUS_BADGE: Record<ContactStatus, string> = {
+  nuevo: "bg-blue-500/10 text-blue-600 border-blue-500/30",
+  leido: "bg-amber-500/10 text-amber-600 border-amber-500/30",
+  respondido: "bg-green-500/10 text-green-600 border-green-500/30",
+  spam: "bg-destructive/10 text-destructive border-destructive/30",
+};
 
 interface ContactSubmission {
   id: string;
@@ -18,6 +43,8 @@ interface ContactSubmission {
   message: string;
   created_at: string;
   cv_url: string | null;
+  status: ContactStatus;
+  updated_at: string;
 }
 
 const AdminContactos = () => {
@@ -26,6 +53,8 @@ const AdminContactos = () => {
   const [replyTexts, setReplyTexts] = useState<Record<string, string>>({});
   const [sendingReply, setSendingReply] = useState<string | null>(null);
   const [cvLoadingId, setCvLoadingId] = useState<string | null>(null);
+  const [search, setSearch] = useState("");
+  const [statusFilter, setStatusFilter] = useState<"all" | ContactStatus>("all");
 
   useEffect(() => {
     loadSubmissions();
@@ -47,6 +76,26 @@ const AdminContactos = () => {
     }
   };
 
+  const updateStatus = async (id: string, status: ContactStatus) => {
+    const prev = submissions;
+    setSubmissions((s) => s.map((x) => (x.id === id ? { ...x, status } : x)));
+    const { error } = await supabase
+      .from("contact_submissions")
+      .update({ status })
+      .eq("id", id);
+    if (error) {
+      setSubmissions(prev);
+      toast.error("No se pudo actualizar el estado");
+      return;
+    }
+    await supabase.rpc("log_audit_event", {
+      _action: "contact.status_changed",
+      _entity_type: "contact_submission",
+      _entity_id: id,
+      _metadata: { status },
+    });
+  };
+
   const handleDelete = async (id: string) => {
     if (!confirm("¿Estás seguro de eliminar este envío?")) return;
 
@@ -59,6 +108,12 @@ const AdminContactos = () => {
       toast.error("Error al eliminar");
     } else {
       toast.success("Envío eliminado");
+      await supabase.rpc("log_audit_event", {
+        _action: "contact.deleted",
+        _entity_type: "contact_submission",
+        _entity_id: id,
+        _metadata: {},
+      });
       loadSubmissions();
     }
   };
@@ -85,6 +140,7 @@ const AdminContactos = () => {
 
       toast.success(`Respuesta enviada a ${submission.email}`);
       setReplyTexts((prev) => ({ ...prev, [submission.id]: "" }));
+      await updateStatus(submission.id, "respondido");
     } catch (error) {
       console.error('Reply error:', error);
       toast.error("Error al enviar la respuesta");
@@ -119,12 +175,54 @@ const AdminContactos = () => {
     );
   }
 
+  const q = search.trim().toLowerCase();
+  const filtered = submissions.filter((s) => {
+    if (statusFilter !== "all" && s.status !== statusFilter) return false;
+    if (!q) return true;
+    return (
+      s.name.toLowerCase().includes(q) ||
+      s.email.toLowerCase().includes(q) ||
+      s.country?.toLowerCase().includes(q) ||
+      s.specialty?.toLowerCase().includes(q) ||
+      s.message?.toLowerCase().includes(q)
+    );
+  });
+
+  const counts = submissions.reduce(
+    (acc, s) => ({ ...acc, [s.status]: (acc[s.status] || 0) + 1 }),
+    {} as Record<string, number>
+  );
+
   return (
     <AdminLayout 
       title="Envíos de Contacto" 
       subtitle="Gestiona las consultas e inscripciones recibidas"
     >
-      {submissions.length === 0 ? (
+      <div className="mb-6 flex flex-col md:flex-row gap-3">
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+          <Input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Buscar por nombre, email, país, mensaje…"
+            className="pl-9"
+          />
+        </div>
+        <Select value={statusFilter} onValueChange={(v) => setStatusFilter(v as typeof statusFilter)}>
+          <SelectTrigger className="md:w-56">
+            <SelectValue placeholder="Filtrar por estado" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">Todos ({submissions.length})</SelectItem>
+            <SelectItem value="nuevo">Nuevo ({counts.nuevo || 0})</SelectItem>
+            <SelectItem value="leido">Leído ({counts.leido || 0})</SelectItem>
+            <SelectItem value="respondido">Respondido ({counts.respondido || 0})</SelectItem>
+            <SelectItem value="spam">Spam ({counts.spam || 0})</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+
+      {filtered.length === 0 ? (
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -132,22 +230,50 @@ const AdminContactos = () => {
           <Card className="bg-card border-border/50">
             <CardContent className="pt-12 pb-12 text-center text-muted-foreground">
               <Mail className="w-16 h-16 mx-auto mb-4 opacity-50" />
-              <p className="text-lg font-medium">No hay envíos aún</p>
-              <p className="text-sm mt-1">Las consultas aparecerán aquí</p>
+              <p className="text-lg font-medium">
+                {submissions.length === 0 ? "No hay envíos aún" : "Sin resultados"}
+              </p>
+              <p className="text-sm mt-1">
+                {submissions.length === 0
+                  ? "Las consultas aparecerán aquí"
+                  : "Probá con otros términos o filtros"}
+              </p>
             </CardContent>
           </Card>
         </motion.div>
       ) : (
         <div className="space-y-4">
-          {submissions.map((submission, index) => (
+          {filtered.map((submission, index) => (
             <motion.div
               key={submission.id}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.05 }}
+              onViewportEnter={() => {
+                if (submission.status === "nuevo") updateStatus(submission.id, "leido");
+              }}
             >
               <Card className="border-border/50 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300 overflow-hidden">
                 <CardContent className="p-4 md:p-6">
+                  <div className="flex items-center justify-between mb-4 gap-3 flex-wrap">
+                    <Badge variant="outline" className={STATUS_BADGE[submission.status]}>
+                      {STATUS_LABEL[submission.status]}
+                    </Badge>
+                    <Select
+                      value={submission.status}
+                      onValueChange={(v) => updateStatus(submission.id, v as ContactStatus)}
+                    >
+                      <SelectTrigger className="h-8 w-40 text-xs">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="nuevo">Nuevo</SelectItem>
+                        <SelectItem value="leido">Leído</SelectItem>
+                        <SelectItem value="respondido">Respondido</SelectItem>
+                        <SelectItem value="spam">Spam</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
