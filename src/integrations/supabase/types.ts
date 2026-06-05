@@ -65,6 +65,45 @@ export type Database = {
         }
         Relationships: []
       }
+      audit_log: {
+        Row: {
+          action: string
+          actor_email: string | null
+          actor_id: string | null
+          created_at: string
+          entity_id: string | null
+          entity_type: string | null
+          id: string
+          ip: string | null
+          metadata: Json
+          user_agent: string | null
+        }
+        Insert: {
+          action: string
+          actor_email?: string | null
+          actor_id?: string | null
+          created_at?: string
+          entity_id?: string | null
+          entity_type?: string | null
+          id?: string
+          ip?: string | null
+          metadata?: Json
+          user_agent?: string | null
+        }
+        Update: {
+          action?: string
+          actor_email?: string | null
+          actor_id?: string | null
+          created_at?: string
+          entity_id?: string | null
+          entity_type?: string | null
+          id?: string
+          ip?: string | null
+          metadata?: Json
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
       contact_rate_limits: {
         Row: {
           created_at: string
@@ -96,6 +135,8 @@ export type Database = {
           message: string
           name: string
           specialty: string
+          status: Database["public"]["Enums"]["contact_status"]
+          updated_at: string
         }
         Insert: {
           country: string
@@ -106,6 +147,8 @@ export type Database = {
           message: string
           name: string
           specialty: string
+          status?: Database["public"]["Enums"]["contact_status"]
+          updated_at?: string
         }
         Update: {
           country?: string
@@ -116,6 +159,8 @@ export type Database = {
           message?: string
           name?: string
           specialty?: string
+          status?: Database["public"]["Enums"]["contact_status"]
+          updated_at?: string
         }
         Relationships: []
       }
@@ -614,6 +659,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      admin_stats: { Args: never; Returns: Json }
       check_contact_rate_limit: {
         Args: {
           _email: string
@@ -626,6 +672,16 @@ export type Database = {
       }
       increment_post_views: { Args: { post_id: string }; Returns: undefined }
       is_admin: { Args: { check_user_id: string }; Returns: boolean }
+      log_audit_event: {
+        Args: {
+          _action: string
+          _entity_id?: string
+          _entity_type?: string
+          _metadata?: Json
+        }
+        Returns: string
+      }
+      prune_web_vitals: { Args: { _days?: number }; Returns: number }
     }
     Enums: {
       app_role: "admin" | "user"
@@ -637,6 +693,7 @@ export type Database = {
         | "imaging"
         | "general"
       ateneo_status: "draft" | "published" | "archived"
+      contact_status: "nuevo" | "leido" | "respondido" | "spam"
       forum_category:
         | "general"
         | "clinical_questions"
@@ -780,6 +837,7 @@ export const Constants = {
         "general",
       ],
       ateneo_status: ["draft", "published", "archived"],
+      contact_status: ["nuevo", "leido", "respondido", "spam"],
       forum_category: [
         "general",
         "clinical_questions",
