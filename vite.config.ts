@@ -30,6 +30,12 @@ export default defineConfig(({ mode }) => ({
     target: "es2020",
     cssCodeSplit: true,
     chunkSizeWarningLimit: 800,
+    // Vite's default modulepreload eagerly preloads transitive deps of every
+    // dynamic import found in the entry chunk — that's how `supabase-*.js`
+    // and `recharts-*.js` end up requested on the landing page even though
+    // they're only used in lazy routes. Resolving to [] makes the browser
+    // fetch them only when the actual dynamic import runs.
+    modulePreload: { polyfill: true, resolveDependencies: () => [] },
     rollupOptions: {
       output: {
         // Only split chunks that are actually used on the landing page (Index).
