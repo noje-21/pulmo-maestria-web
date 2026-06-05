@@ -24,10 +24,24 @@ const FilmStripCarousel = memo(function FilmStripCarousel({
   // Duplicate images for seamless loop
   const loopImages = [...gallery.images, ...gallery.images];
 
-  // Auto-scroll loop
+  // Auto-scroll loop — only runs while the carousel is in the viewport.
+  // Off-screen strips were burning ~60 fps of main-thread work for nothing,
+  // which hurts INP and battery on iPhone.
+  const [inView, setInView] = useState(false);
   useEffect(() => {
     const el = stripRef.current;
-    if (!el || isPaused) return;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      ([entry]) => setInView(entry.isIntersecting),
+      { threshold: 0.05 },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
+  useEffect(() => {
+    const el = stripRef.current;
+    if (!el || isPaused || !inView) return;
 
     const halfWidth = el.scrollWidth / 2;
 
@@ -42,7 +56,7 @@ const FilmStripCarousel = memo(function FilmStripCarousel({
 
     rafRef.current = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(rafRef.current);
-  }, [isPaused]);
+  }, [isPaused, inView]);
 
   const handleMouseEnter = useCallback(() => setIsPaused(true), []);
   const handleMouseLeave = useCallback(() => {

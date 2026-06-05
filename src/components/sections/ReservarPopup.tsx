@@ -1,5 +1,4 @@
 import { memo, useEffect, useRef } from "react";
-import confetti from "canvas-confetti";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Calendar, MapPin, Sparkles, CheckCircle, Users, Award, X } from "lucide-react";
@@ -23,16 +22,25 @@ export const ReservarPopup = memo(function ReservarPopup({ isOpen, onClose }: Re
   const previouslyFocused = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
-    if (isOpen) {
+    if (!isOpen) return;
+    let cancelled = false;
+    // Lazy-load canvas-confetti only when the popup actually opens.
+    // Keeps ~7 KB gz out of the initial bundle.
+    import("canvas-confetti").then(({ default: confetti }) => {
+      if (cancelled) return;
       const duration = 800;
       const end = Date.now() + duration;
       const frame = () => {
+        if (cancelled) return;
         confetti({ particleCount: 3, angle: 60, spread: 55, origin: { x: 0, y: 0.7 }, colors: ["#213ECC", "#CE2020", "#FFFFFF"] });
         confetti({ particleCount: 3, angle: 120, spread: 55, origin: { x: 1, y: 0.7 }, colors: ["#213ECC", "#CE2020", "#FFFFFF"] });
         if (Date.now() < end) requestAnimationFrame(frame);
       };
       requestAnimationFrame(frame);
-    }
+    });
+    return () => {
+      cancelled = true;
+    };
   }, [isOpen]);
 
   // Body scroll lock + focus management + keyboard handling

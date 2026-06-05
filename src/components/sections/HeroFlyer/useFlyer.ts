@@ -12,6 +12,10 @@ import { flyerVideos, ROTATION_INTERVAL, PRELOAD_AHEAD, shouldSkipPreload } from
 export function useFlyer() {
   const [idx, setIdx] = useState(0);
   const preloadedSet = useRef<Set<number>>(new Set([0]));
+  // Track <link rel="preload"> elements we inject so we can remove them on
+  // unmount. Without this the head grows by one node per rotation, leaking
+  // memory and DOM weight in long sessions.
+  const preloadLinks = useRef<HTMLLinkElement[]>([]);
   const hoveringRef = useRef(false);
   const isMobile = useIsMobile();
   const isIOSDevice = useIsIOS();
@@ -47,6 +51,7 @@ export function useFlyer() {
         link.setAttribute("crossorigin", "anonymous");
         link.href = isMobile ? flyerVideos[next].srcMobile : flyerVideos[next].srcDesktop;
         document.head.appendChild(link);
+        preloadLinks.current.push(link);
       }
     }, ROTATION_INTERVAL - PRELOAD_AHEAD);
 
@@ -61,6 +66,17 @@ export function useFlyer() {
       clearTimeout(rotateTimer);
     };
   }, [idx, isMobile]);
+
+  // Final cleanup: remove all preload <link> tags injected during the
+  // component's lifetime so they don't outlive the page.
+  useEffect(() => {
+    return () => {
+      for (const link of preloadLinks.current) {
+        link.parentNode?.removeChild(link);
+      }
+      preloadLinks.current = [];
+    };
+  }, []);
 
   return {
     idx,
