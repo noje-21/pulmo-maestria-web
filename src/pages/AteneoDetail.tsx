@@ -1,6 +1,4 @@
-import { useMemo, useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { useSearchParams } from "react-router-dom";
+import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import Navigation from "@/components/common/Navigation";
 import { Footer } from "@/components/sections/Footer";
@@ -13,103 +11,15 @@ import {
 } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
-import { ateneosData, type Ateneo } from "@/data/ateneos";
-import { supabase } from "@/integrations/supabase/client";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useAteneo } from "@/features/ateneos/hooks/useAteneo";
 
 const AteneoDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const isPreview = searchParams.get("preview") === "true";
-  const [ateneo, setAteneo] = useState<Ateneo | null>(null);
-  const [related, setRelated] = useState<Ateneo[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [isAdmin, setIsAdmin] = useState(false);
-
-  useEffect(() => {
-    const load = async () => {
-      setLoading(true);
-      try {
-        // If preview mode, verify admin auth first
-        let adminVerified = false;
-        if (isPreview) {
-          const { data: { session } } = await supabase.auth.getSession();
-          if (session) {
-            const { data: roleData } = await supabase.rpc('is_admin', {
-              check_user_id: session.user.id,
-            });
-            adminVerified = !!roleData;
-            setIsAdmin(!!roleData);
-          }
-          if (!adminVerified) {
-            // Not admin — fall back to normal published-only view
-            navigate(`/ateneos/${id}`, { replace: true });
-            return;
-          }
-        }
-
-        let query = supabase
-          .from("ateneos")
-          .select("*")
-          .eq("id", id!);
-
-        if (!isPreview || !adminVerified) {
-          query = query.eq("status", "published");
-        }
-
-        const { data, error } = await query.single();
-
-        if (data && !error) {
-          setAteneo({
-            id: data.id,
-            titulo: data.titulo,
-            descripcion: data.descripcion,
-            contenido: data.contenido,
-            fecha: data.fecha,
-            imagen: data.imagen || "",
-            imagenes: data.imagenes || [],
-            videoUrl: data.video_url || undefined,
-            pdfUrl: data.pdf_url || undefined,
-          });
-
-          const { data: relData } = await supabase
-            .from("ateneos")
-            .select("*")
-            .eq("status", "published")
-            .neq("id", id!)
-            .order("fecha", { ascending: false })
-            .limit(3);
-
-          setRelated(
-            (relData || []).map((a) => ({
-              id: a.id,
-              titulo: a.titulo,
-              descripcion: a.descripcion,
-              contenido: a.contenido,
-              fecha: a.fecha,
-              imagen: a.imagen || "",
-              imagenes: a.imagenes || [],
-              videoUrl: a.video_url || undefined,
-              pdfUrl: a.pdf_url || undefined,
-            }))
-          );
-        } else {
-          // Fallback to mock data
-          const mock = ateneosData.find((a) => a.id === id);
-          setAteneo(mock || null);
-          setRelated(ateneosData.filter((a) => a.id !== id).slice(0, 3));
-        }
-      } catch {
-        const mock = ateneosData.find((a) => a.id === id);
-        setAteneo(mock || null);
-        setRelated(ateneosData.filter((a) => a.id !== id).slice(0, 3));
-      } finally {
-        setLoading(false);
-      }
-    };
-    load();
-  }, [id, isPreview]);
+  const { ateneo, related, loading } = useAteneo(id, isPreview);
 
   if (loading) {
     return (
@@ -183,18 +93,13 @@ const AteneoDetail = () => {
               Volver a Ateneos
             </Button>
 
-            {/* Hero Image */}
             <motion.div
               initial={{ opacity: 0, scale: 0.98 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.1 }}
               className="relative aspect-[21/9] sm:aspect-[2/1] lg:aspect-[21/9] rounded-2xl sm:rounded-3xl overflow-hidden mb-8 sm:mb-10"
             >
-              <ImageLazy
-                src={ateneo.imagen}
-                alt={ateneo.titulo}
-                className="w-full h-full object-cover"
-              />
+              <ImageLazy src={ateneo.imagen} alt={ateneo.titulo} className="w-full h-full object-cover" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
               <span className="absolute top-4 left-4 px-3 py-1.5 bg-primary/90 backdrop-blur-sm text-primary-foreground text-xs font-medium rounded-full flex items-center gap-1.5">
                 <BookOpen className="w-3 h-3" />
@@ -202,7 +107,6 @@ const AteneoDetail = () => {
               </span>
             </motion.div>
 
-            {/* Content */}
             <div className="max-w-3xl mx-auto">
               <header className="mb-8">
                 <motion.h1
@@ -226,7 +130,6 @@ const AteneoDetail = () => {
                 </motion.div>
               </header>
 
-              {/* Body */}
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -235,7 +138,6 @@ const AteneoDetail = () => {
                 dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(ateneo.contenido) }}
               />
 
-              {/* Video */}
               {ateneo.videoUrl && (
                 <motion.div
                   initial={{ opacity: 0 }}
@@ -258,7 +160,6 @@ const AteneoDetail = () => {
                 </motion.div>
               )}
 
-              {/* PDF */}
               {ateneo.pdfUrl && (
                 <motion.div
                   initial={{ opacity: 0 }}
@@ -279,7 +180,6 @@ const AteneoDetail = () => {
                 </motion.div>
               )}
 
-              {/* Gallery */}
               {ateneo.imagenes && ateneo.imagenes.length > 1 && (
                 <motion.div
                   initial={{ opacity: 0 }}
@@ -298,7 +198,6 @@ const AteneoDetail = () => {
                 </motion.div>
               )}
 
-              {/* Related */}
               {related.length > 0 && (
                 <motion.div
                   initial={{ opacity: 0 }}
