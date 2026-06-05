@@ -1,7 +1,9 @@
-import { useEffect } from "react";
+import { Helmet } from "react-helmet-async";
+import { useLocation } from "react-router-dom";
 
 const SITE_NAME = "Maestría Latinoamericana en Circulación Pulmonar";
 const SITE_URL = "https://www.maestriacp.com";
+const DEFAULT_OG_IMAGE = `${SITE_URL}/og-image.jpg`;
 
 const DEFAULT_JSON_LD = {
   "@context": "https://schema.org",
@@ -12,6 +14,8 @@ const DEFAULT_JSON_LD = {
       name: SITE_NAME,
       url: SITE_URL,
       logo: `${SITE_URL}/favicon.ico`,
+      description:
+        "Programa académico latinoamericano de formación intensiva en circulación pulmonar e hipertensión pulmonar.",
       sameAs: [
         "https://www.facebook.com/share/16s5MUKG3C/",
         "https://instagram.com/magisterenhipertensionpulmonar",
@@ -22,6 +26,47 @@ const DEFAULT_JSON_LD = {
         telephone: "+54-9-11-5906-4234",
         contactType: "customer service",
         availableLanguage: ["Spanish"],
+      },
+    },
+    {
+      "@type": ["Course", "EducationalOccupationalProgram"],
+      "@id": `${SITE_URL}/#course`,
+      name: "Maestría Latinoamericana en Circulación Pulmonar 2026",
+      description:
+        "Programa académico intensivo de 12 días sobre circulación pulmonar e hipertensión pulmonar, dirigido a internistas, cardiólogos, reumatólogos y neumonólogos. 30 módulos y 131 horas académicas.",
+      url: SITE_URL,
+      inLanguage: "es",
+      educationalLevel: "Postgrado",
+      occupationalCategory: ["Cardiología", "Neumonología", "Medicina Interna", "Reumatología"],
+      timeRequired: "P12D",
+      programType: "Maestría",
+      provider: { "@id": `${SITE_URL}/#organization` },
+      hasCourseInstance: {
+        "@type": "CourseInstance",
+        courseMode: "Blended",
+        startDate: "2026-11-02",
+        endDate: "2026-11-16",
+        location: {
+          "@type": "Place",
+          name: "Centro Gallego de Buenos Aires",
+          address: {
+            "@type": "PostalAddress",
+            addressLocality: "Buenos Aires",
+            addressCountry: "AR",
+          },
+        },
+        instructor: {
+          "@type": "Person",
+          name: "Dr. Adrián Lescano",
+        },
+      },
+      offers: {
+        "@type": "Offer",
+        category: "Inscripción sin costo",
+        availability: "https://schema.org/LimitedAvailability",
+        url: `${SITE_URL}/#contacto`,
+        price: "0",
+        priceCurrency: "USD",
       },
     },
     {
@@ -75,74 +120,62 @@ interface SEOProps {
   canonicalUrl?: string;
   ogType?: string;
   jsonLd?: Record<string, unknown>;
+  breadcrumbs?: { name: string; url: string }[];
+  noindex?: boolean;
 }
 
 export const SEO = ({
   title = "Maestría Latinoamericana en Circulación Pulmonar 2026",
   description = "Formación intensiva en circulación pulmonar dirigida a internistas, cardiólogos, reumatólogos y neumonólogos. Del 2 al 16 de noviembre 2026 en Buenos Aires.",
   keywords = "maestría, circulación pulmonar, hipertensión pulmonar, cardiología, Buenos Aires, medicina, formación médica",
-  ogImage = `${SITE_URL}/og-image.jpg`,
-  canonicalUrl = `${SITE_URL}/`,
+  ogImage = DEFAULT_OG_IMAGE,
+  canonicalUrl,
   ogType = "website",
   jsonLd,
+  breadcrumbs,
+  noindex = false,
 }: SEOProps) => {
-  useEffect(() => {
-    // Update title
-    document.title = title;
-
-    // Update or create meta tags
-    const updateMetaTag = (name: string, content: string, attribute = "name") => {
-      let element = document.querySelector(`meta[${attribute}="${name}"]`);
-      if (element) {
-        element.setAttribute("content", content);
-      } else {
-        element = document.createElement("meta");
-        element.setAttribute(attribute, name);
-        element.setAttribute("content", content);
-        document.head.appendChild(element);
+  const location = useLocation();
+  const canonical = canonicalUrl ?? `${SITE_URL}${location.pathname}`;
+  const ld = jsonLd || DEFAULT_JSON_LD;
+  const breadcrumbLd = breadcrumbs && breadcrumbs.length > 0
+    ? {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        itemListElement: breadcrumbs.map((b, i) => ({
+          "@type": "ListItem",
+          position: i + 1,
+          name: b.name,
+          item: b.url.startsWith("http") ? b.url : `${SITE_URL}${b.url}`,
+        })),
       }
-    };
+    : null;
 
-    // Standard meta tags
-    updateMetaTag("description", description);
-    updateMetaTag("keywords", keywords);
-
-    // Open Graph tags
-    updateMetaTag("og:title", title, "property");
-    updateMetaTag("og:description", description, "property");
-    updateMetaTag("og:image", ogImage, "property");
-    updateMetaTag("og:url", canonicalUrl, "property");
-    updateMetaTag("og:type", ogType, "property");
-    updateMetaTag("og:site_name", SITE_NAME, "property");
-    updateMetaTag("og:locale", "es_AR", "property");
-
-    // Twitter tags
-    updateMetaTag("twitter:card", "summary_large_image");
-    updateMetaTag("twitter:title", title);
-    updateMetaTag("twitter:description", description);
-    updateMetaTag("twitter:image", ogImage);
-
-    // Canonical URL
-    let canonical = document.querySelector('link[rel="canonical"]') as HTMLLinkElement;
-    if (canonical) {
-      canonical.href = canonicalUrl;
-    } else {
-      canonical = document.createElement("link");
-      canonical.rel = "canonical";
-      canonical.href = canonicalUrl;
-      document.head.appendChild(canonical);
-    }
-
-    const ld = jsonLd || DEFAULT_JSON_LD;
-    let script = document.querySelector('script[data-seo-jsonld]') as HTMLScriptElement | null;
-    if (!script) {
-      script = document.createElement("script");
-      script.type = "application/ld+json";
-      script.setAttribute("data-seo-jsonld", "");
-      document.head.appendChild(script);
-    }
-    script.textContent = JSON.stringify(ld);
-  }, [title, description, keywords, ogImage, canonicalUrl, ogType, jsonLd]);
-
-  return null;
+  return (
+    <Helmet>
+      <title>{title}</title>
+      <meta name="description" content={description} />
+      {keywords && <meta name="keywords" content={keywords} />}
+      <link rel="canonical" href={canonical} />
+      {noindex && <meta name="robots" content="noindex, nofollow" />}
+      {/* Open Graph */}
+      <meta property="og:title" content={title} />
+      <meta property="og:description" content={description} />
+      <meta property="og:image" content={ogImage} />
+      <meta property="og:url" content={canonical} />
+      <meta property="og:type" content={ogType} />
+      <meta property="og:site_name" content={SITE_NAME} />
+      <meta property="og:locale" content="es_AR" />
+      {/* Twitter */}
+      <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:title" content={title} />
+      <meta name="twitter:description" content={description} />
+      <meta name="twitter:image" content={ogImage} />
+      {/* JSON-LD */}
+      <script type="application/ld+json">{JSON.stringify(ld)}</script>
+      {breadcrumbLd && (
+        <script type="application/ld+json">{JSON.stringify(breadcrumbLd)}</script>
+      )}
+    </Helmet>
+  );
 };
