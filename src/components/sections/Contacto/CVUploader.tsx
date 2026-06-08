@@ -2,10 +2,12 @@ import {
   AlertTriangle,
   CheckCircle2,
   FileText,
+  Paperclip,
   RefreshCw,
   Upload,
   X,
 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { formatBytes } from "./validation";
 import type { ContactFormApi } from "./useContactForm";
 
@@ -27,7 +29,21 @@ export function CVUploader({ api }: { api: ContactFormApi }) {
   } = api;
 
   return (
-    <div>
+    <div className="space-y-2">
+      <div className="flex items-center justify-between gap-3">
+        <div>
+          <p className="text-sm font-semibold text-foreground">Currículum</p>
+          <p className="text-xs text-muted-foreground">Opcional · PDF o Word (.pdf, .doc, .docx) · Máx 5 MB</p>
+        </div>
+        <label htmlFor="cv-upload" className={uploading ? "pointer-events-none" : "cursor-pointer"}>
+          <Button type="button" variant="outline" size="sm" className="gap-2" asChild>
+            <span>
+              <Paperclip className="w-4 h-4" />
+              {cvFile ? "Cambiar archivo" : "Adjuntar CV"}
+            </span>
+          </Button>
+        </label>
+      </div>
       <div
         className={`relative flex items-center justify-between gap-3 p-3 sm:p-4 rounded-xl border-2 border-dashed transition-colors ${
           cvError || uploadError
@@ -52,7 +68,7 @@ export function CVUploader({ api }: { api: ContactFormApi }) {
           </div>
           <div className="min-w-0">
             <p className="text-sm font-medium text-foreground truncate">
-              {cvFile ? cvFile.name : "Adjunta tu Currículum (opcional)"}
+              {cvFile ? cvFile.name : "Ningún archivo seleccionado"}
             </p>
             <p className="text-xs text-muted-foreground">
               {cvFile
@@ -61,7 +77,7 @@ export function CVUploader({ api }: { api: ContactFormApi }) {
                   : uploadedUrl
                     ? `${formatBytes(cvFile.size)} · Listo para enviar`
                     : `${formatBytes(cvFile.size)} · Click para cambiar`
-                : "PDF o Word (.pdf, .doc, .docx) · Máx 5 MB"}
+                : "Toca “Adjuntar CV” para seleccionar tu currículum"}
             </p>
           </div>
         </label>
