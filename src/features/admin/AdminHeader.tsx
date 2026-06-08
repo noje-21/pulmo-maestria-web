@@ -49,9 +49,9 @@ export default function AdminHeader({ onMenuToggle, showMenuButton = false }: Ad
               />
             </div>
             <div className="hidden sm:block">
-              <h1 className="text-lg font-bold text-foreground leading-tight">
+              <span className="block text-lg font-bold text-foreground leading-tight">
                 Command Center
-              </h1>
+              </span>
               <p className="text-xs text-muted-foreground">
                 Panel MLCP
               </p>
