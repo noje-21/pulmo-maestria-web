@@ -35,14 +35,17 @@ export function CVUploader({ api }: { api: ContactFormApi }) {
           <p className="text-sm font-semibold text-foreground">Currículum</p>
           <p className="text-xs text-muted-foreground">Opcional · PDF o Word (.pdf, .doc, .docx) · Máx 5 MB</p>
         </div>
-        <label htmlFor="cv-upload" className={uploading ? "pointer-events-none" : "cursor-pointer"}>
-          <Button type="button" variant="outline" size="sm" className="gap-2" asChild>
-            <span>
-              <Paperclip className="w-4 h-4" />
-              {cvFile ? "Cambiar archivo" : "Adjuntar CV"}
-            </span>
-          </Button>
-        </label>
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          className="gap-2 shrink-0"
+          disabled={uploading}
+          onClick={() => document.getElementById("cv-upload")?.click()}
+        >
+          <Paperclip className="w-4 h-4" />
+          {cvFile ? "Cambiar archivo" : "Adjuntar CV"}
+        </Button>
       </div>
       <div
         className={`relative flex items-center justify-between gap-3 p-3 sm:p-4 rounded-xl border-2 border-dashed transition-colors ${
