@@ -29,7 +29,11 @@ export function CVUploader({ api }: { api: ContactFormApi }) {
   } = api;
 
   return (
-    <div className="space-y-2">
+    <div
+      className="space-y-2"
+      data-cv-uploader="forced-visible"
+      style={{ display: "block", visibility: "visible", opacity: 1 }}
+    >
       <div className="flex items-center justify-between gap-3">
         <div>
           <p className="text-sm font-semibold text-foreground">Currículum</p>

@@ -1,4 +1,3 @@
-import { motion } from "framer-motion";
 import { ContactForm } from "./ContactForm";
 import { ContactInfo } from "./ContactInfo";
 import { useContactForm } from "./useContactForm";
@@ -15,36 +14,20 @@ export const Contacto = () => {
 
       <div className="section-container relative z-10">
         {/* Section Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-          className="section-header"
-        >
+        <div className="section-header">
           <h2 className="section-title">Contáctanos</h2>
           <div className="section-divider" />
           <p className="section-subtitle">¿Tienes dudas? Escríbenos y te respondemos personalmente</p>
-        </motion.div>
+        </div>
 
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-12">
-          <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-          >
+          <div>
             <ContactForm api={api} />
-          </motion.div>
+          </div>
 
-          <motion.div
-            initial={{ opacity: 0, x: 30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-          >
+          <div>
             <ContactInfo />
-          </motion.div>
+          </div>
         </div>
       </div>
     </section>
