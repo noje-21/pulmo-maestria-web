@@ -94,6 +94,7 @@ Deno.serve(async (req) => {
           country,
           specialty,
           message,
+          cvPath: cvPath ?? null,
           adminEmail: 'magisterenhipertensionpulmonar@gmail.com',
         },
       })
