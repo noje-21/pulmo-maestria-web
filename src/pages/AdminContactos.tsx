@@ -88,12 +88,6 @@ const AdminContactos = () => {
       toast.error("No se pudo actualizar el estado");
       return;
     }
-    await supabase.rpc("log_audit_event", {
-      _action: "contact.status_changed",
-      _entity_type: "contact_submission",
-      _entity_id: id,
-      _metadata: { status },
-    });
   };
 
   const handleDelete = async (id: string) => {
@@ -108,12 +102,6 @@ const AdminContactos = () => {
       toast.error("Error al eliminar");
     } else {
       toast.success("Envío eliminado");
-      await supabase.rpc("log_audit_event", {
-        _action: "contact.deleted",
-        _entity_type: "contact_submission",
-        _entity_id: id,
-        _metadata: {},
-      });
       loadSubmissions();
     }
   };
