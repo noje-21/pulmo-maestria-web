@@ -153,6 +153,7 @@ const AdminContactos = () => {
     if (!submission.cv_url) return;
     const cvWindow = window.open("", "_blank");
     if (cvWindow) {
+      cvWindow.opener = null;
       cvWindow.document.write("<p style='font-family: system-ui; padding: 24px;'>Abriendo currículum seguro…</p>");
       cvWindow.document.close();
     }
