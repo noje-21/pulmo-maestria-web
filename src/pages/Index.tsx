@@ -2,6 +2,7 @@ import { lazy, Suspense } from "react";
 import AnimatedOnView from "@/components/common/AnimatedOnView";
 import { SEO } from "@/components/common/SEO";
 import { SkipLink } from "@/components/common/SkipLink";
+import { Contacto } from "@/components/sections/Contacto";
 import { HeroFlyer } from "@/components/sections/HeroFlyer";
 
 // Lazy-loaded sections (below the fold)
@@ -12,8 +13,6 @@ const Eventos = lazy(() => import("@/components/sections/Eventos").then(m => ({ 
 const Testimonios = lazy(() => import("@/components/sections/Testimonios").then(m => ({ default: m.Testimonios })));
 const Galeria = lazy(() => import("@/components/sections/Galeria"));
 
-
-const Contacto = lazy(() => import("@/components/sections/Contacto").then(m => ({ default: m.Contacto })));
 const ScrollInvitation = lazy(() => import("@/components/common/ScrollInvitation").then(m => ({ default: m.ScrollInvitation })));
 const SectionDivider = lazy(() => import("@/components/common/SectionDivider").then(m => ({ default: m.SectionDivider })));
 const Footer = lazy(() => import("@/components/sections/Footer").then(m => ({ default: m.Footer })));
@@ -66,9 +65,7 @@ const Index = () => {
           
           
           {/* PASO 5: Acción - Contacto/Inscripción */}
-          <AnimatedOnView>
-            <Contacto />
-          </AnimatedOnView>
+          <Contacto />
         </Suspense>
       </main>
       
