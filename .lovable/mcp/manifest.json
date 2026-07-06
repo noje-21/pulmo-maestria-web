@@ -1,0 +1,128 @@
+{
+  "version": 1,
+  "sdk_version": "0.20.0",
+  "path": "/functions/v1/mcp",
+  "auth": {
+    "type": "oauth",
+    "issuer": "https://tvgkinrbtnbtseooaiex.supabase.co/auth/v1",
+    "accepted_audiences": [
+      "authenticated"
+    ]
+  },
+  "mcp": {
+    "server": {
+      "name": "maestria-cp-mcp",
+      "version": "0.1.0",
+      "title": "Maestría CP – Agent Tools"
+    },
+    "tools": [
+      {
+        "name": "list_novedades",
+        "title": "Listar novedades publicadas",
+        "description": "Devuelve las últimas novedades publicadas de la Maestría en Circulación Pulmonar.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "limit": {
+              "default": 10,
+              "description": "Máximo de novedades a devolver.",
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 50
+            }
+          }
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "list_ateneos",
+        "title": "Listar ateneos",
+        "description": "Devuelve los ateneos académicos disponibles.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "limit": {
+              "default": 10,
+              "description": "Máximo de ateneos a devolver.",
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 50
+            }
+          }
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "get_my_profile",
+        "title": "Obtener mi perfil",
+        "description": "Devuelve el perfil del usuario autenticado en el Campus de la Maestría.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {}
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "create_forum_post",
+        "title": "Crear publicación en el foro",
+        "description": "Crea una nueva publicación en el foro académico como el usuario autenticado.",
+        "annotations": {
+          "readOnlyHint": false,
+          "destructiveHint": false,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "title": {
+              "type": "string",
+              "minLength": 3,
+              "maxLength": 200,
+              "description": "Título de la publicación."
+            },
+            "content": {
+              "type": "string",
+              "minLength": 10,
+              "description": "Contenido de la publicación."
+            },
+            "category": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Categoría del foro (por ejemplo: general, casos, investigacion)."
+            },
+            "excerpt": {
+              "description": "Resumen breve opcional.",
+              "type": "string",
+              "maxLength": 300
+            }
+          },
+          "required": [
+            "title",
+            "content",
+            "category"
+          ]
+        },
+        "outputSchema": null
+      }
+    ]
+  }
+}

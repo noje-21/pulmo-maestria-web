@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, useSearchParams, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -15,18 +15,30 @@ const Auth = () => {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const [params] = useSearchParams();
+
+  // Preserve `next` (e.g. OAuth consent URL) through the sign-in round-trip.
+  // Only accept same-origin relative paths.
+  const rawNext = params.get("next") ?? "";
+  const nextPath = rawNext.startsWith("/") && !rawNext.startsWith("//") ? rawNext : "";
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session) navigate("/admin");
+      if (session) {
+        if (nextPath) window.location.href = nextPath;
+        else navigate("/admin");
+      }
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (session) navigate("/admin");
+      if (session) {
+        if (nextPath) window.location.href = nextPath;
+        else navigate("/admin");
+      }
     });
 
     return () => subscription.unsubscribe();
-  }, [navigate]);
+  }, [navigate, nextPath]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -38,6 +50,11 @@ const Auth = () => {
       if (error) throw error;
 
       if (data.user) {
+        if (nextPath) {
+          toast.success("¡Bienvenido!");
+          window.location.href = nextPath;
+          return;
+        }
         const { data: isAdminData } = await supabase.rpc('is_admin', { 
           check_user_id: data.user.id 
         });

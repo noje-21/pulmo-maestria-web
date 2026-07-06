@@ -15,6 +15,7 @@ const ProtectedRoute = lazy(() =>
 );
 const Auth = lazy(() => import("./pages/Auth"));
 const Register = lazy(() => import("./pages/Register"));
+const OAuthConsent = lazy(() => import("./pages/OAuthConsent"));
 const Profile = lazy(() => import("./pages/Profile"));
 const Admin = lazy(() => import("./pages/Admin"));
 const AdminContactos = lazy(() => import("./pages/AdminContactos"));
@@ -76,6 +77,7 @@ const App = () => {
             <Routes>
               <Route path="/auth" element={<Auth />} />
               <Route path="/register" element={<Register />} />
+              <Route path="/.lovable/oauth/consent" element={<OAuthConsent />} />
               <Route path="/admin" element={<ProtectedRoute requireAdmin={true}><Admin /></ProtectedRoute>} />
               <Route path="/admin/contactos" element={<ProtectedRoute requireAdmin={true}><AdminContactos /></ProtectedRoute>} />
               <Route path="/admin/content" element={<ProtectedRoute requireAdmin={true}><AdminContent /></ProtectedRoute>} />
