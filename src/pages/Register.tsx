@@ -56,7 +56,7 @@ const Register = () => {
       setTimeout(() => navigate("/auth"), 2000);
     } catch (error: any) {
       if (error instanceof z.ZodError) {
-        toast.error(error.errors[0].message);
+        toast.error(error.issues[0].message);
       } else {
         toast.error(error.message || "Algo salió mal. Por favor, intenta de nuevo.");
       }

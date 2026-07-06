@@ -79,7 +79,7 @@ export function useForumPost(id: string | undefined) {
       return true;
     } catch (error: any) {
       if (error instanceof z.ZodError) {
-        toast.error(error.errors[0].message);
+        toast.error(error.issues[0].message);
       } else {
         console.error("Error adding comment:", error);
         toast.error("No pudimos publicar tu comentario. Intenta de nuevo.");
