@@ -9,8 +9,9 @@ import { auth, defineMcp } from "npm:@lovable.dev/mcp-js@0.20.0";
 import { createClient } from "npm:@supabase/supabase-js@^2.76.1";
 import { defineTool } from "npm:@lovable.dev/mcp-js@0.20.0";
 import { z } from "npm:zod@^4.4.3";
+var env = globalThis.process?.env ?? {};
 function anonClient() {
-  return createClient(process.env.SUPABASE_URL, process.env.SUPABASE_PUBLISHABLE_KEY, {
+  return createClient(env.SUPABASE_URL, env.SUPABASE_PUBLISHABLE_KEY, {
     auth: { persistSession: false, autoRefreshToken: false }
   });
 }
@@ -36,8 +37,9 @@ var list_novedades_default = defineTool({
 import { createClient as createClient2 } from "npm:@supabase/supabase-js@^2.76.1";
 import { defineTool as defineTool2 } from "npm:@lovable.dev/mcp-js@0.20.0";
 import { z as z2 } from "npm:zod@^4.4.3";
+var env2 = globalThis.process?.env ?? {};
 function anonClient2() {
-  return createClient2(process.env.SUPABASE_URL, process.env.SUPABASE_PUBLISHABLE_KEY, {
+  return createClient2(env2.SUPABASE_URL, env2.SUPABASE_PUBLISHABLE_KEY, {
     auth: { persistSession: false, autoRefreshToken: false }
   });
 }
@@ -62,8 +64,9 @@ var list_ateneos_default = defineTool2({
 // src/lib/mcp/tools/get_my_profile.ts
 import { createClient as createClient3 } from "npm:@supabase/supabase-js@^2.76.1";
 import { defineTool as defineTool3 } from "npm:@lovable.dev/mcp-js@0.20.0";
+var env3 = globalThis.process?.env ?? {};
 function userClient(ctx) {
-  return createClient3(process.env.SUPABASE_URL, process.env.SUPABASE_PUBLISHABLE_KEY, {
+  return createClient3(env3.SUPABASE_URL, env3.SUPABASE_PUBLISHABLE_KEY, {
     global: { headers: { Authorization: `Bearer ${ctx.getToken()}` } },
     auth: { persistSession: false, autoRefreshToken: false }
   });
@@ -91,8 +94,9 @@ var get_my_profile_default = defineTool3({
 import { createClient as createClient4 } from "npm:@supabase/supabase-js@^2.76.1";
 import { defineTool as defineTool4 } from "npm:@lovable.dev/mcp-js@0.20.0";
 import { z as z3 } from "npm:zod@^4.4.3";
+var env4 = globalThis.process?.env ?? {};
 function userClient2(ctx) {
-  return createClient4(process.env.SUPABASE_URL, process.env.SUPABASE_PUBLISHABLE_KEY, {
+  return createClient4(env4.SUPABASE_URL, env4.SUPABASE_PUBLISHABLE_KEY, {
     global: { headers: { Authorization: `Bearer ${ctx.getToken()}` } },
     auth: { persistSession: false, autoRefreshToken: false }
   });

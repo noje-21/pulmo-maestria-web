@@ -15,6 +15,7 @@ const BodySchema = z.object({
   specialty: z.string().min(1).max(100),
   message: z.string().min(1).max(2000),
   adminEmail: z.string().email().max(255),
+  cvPath: z.string().max(500).nullable().optional(),
 })
 
 function escapeHtml(str: string): string {
@@ -46,13 +47,14 @@ Deno.serve(async (req) => {
       })
     }
 
-    const { name, email, country, specialty, message, adminEmail } = parsed.data
+    const { name, email, country, specialty, message, adminEmail, cvPath } = parsed.data
 
     const safeName = escapeHtml(name)
     const safeEmail = escapeHtml(email)
     const safeCountry = escapeHtml(country)
     const safeSpecialty = escapeHtml(specialty)
     const safeMessage = escapeHtml(message)
+    const hasCv = !!cvPath
 
     const response = await fetch(`${GATEWAY_URL}/emails`, {
       method: 'POST',
@@ -121,6 +123,13 @@ Deno.serve(async (req) => {
               <p style="font-size:11px;color:#8890a4;margin:0 0 6px;text-transform:uppercase;letter-spacing:0.5px;">Mensaje</p>
               <p style="font-size:14px;color:#333;margin:0;line-height:1.6;">${safeMessage}</p>
             </div>
+
+            ${hasCv ? `
+            <div style="margin-top:14px;padding:14px 16px;background:#fff7f7;border:1px solid #f4cccc;border-radius:12px;">
+              <p style="font-size:11px;color:#CE2020;margin:0 0 4px;text-transform:uppercase;letter-spacing:0.5px;font-weight:700;">Currículum recibido</p>
+              <p style="font-size:13px;color:#555;margin:0;line-height:1.5;">El postulante cargó un CV. Para abrirlo de forma segura, ingresa al panel de administración y usa el botón “Ver currículum”.</p>
+            </div>
+            ` : ''}
 
             <!-- Tip -->
             <p style="font-size:12px;color:#8890a4;margin:20px 0 0;text-align:center;">

@@ -88,12 +88,6 @@ const AdminContactos = () => {
       toast.error("No se pudo actualizar el estado");
       return;
     }
-    await supabase.rpc("log_audit_event", {
-      _action: "contact.status_changed",
-      _entity_type: "contact_submission",
-      _entity_id: id,
-      _metadata: { status },
-    });
   };
 
   const handleDelete = async (id: string) => {
@@ -108,12 +102,6 @@ const AdminContactos = () => {
       toast.error("Error al eliminar");
     } else {
       toast.success("Envío eliminado");
-      await supabase.rpc("log_audit_event", {
-        _action: "contact.deleted",
-        _entity_type: "contact_submission",
-        _entity_id: id,
-        _metadata: {},
-      });
       loadSubmissions();
     }
   };
@@ -151,6 +139,12 @@ const AdminContactos = () => {
 
   const handleViewCv = async (submission: ContactSubmission) => {
     if (!submission.cv_url) return;
+    const cvWindow = window.open("", "_blank");
+    if (cvWindow) {
+      cvWindow.opener = null;
+      cvWindow.document.write("<p style='font-family: system-ui; padding: 24px;'>Abriendo currículum seguro…</p>");
+      cvWindow.document.close();
+    }
     setCvLoadingId(submission.id);
     try {
       const { data, error } = await supabase.functions.invoke('get-cv-url', {
@@ -159,8 +153,13 @@ const AdminContactos = () => {
       if (error) throw error;
       const url = (data as { url?: string } | null)?.url;
       if (!url) throw new Error('No URL');
-      window.open(url, '_blank', 'noopener,noreferrer');
+      if (cvWindow) {
+        cvWindow.location.href = url;
+      } else {
+        window.location.assign(url);
+      }
     } catch {
+      cvWindow?.close();
       toast.error('No pudimos generar el enlace al currículum.');
     } finally {
       setCvLoadingId(null);
