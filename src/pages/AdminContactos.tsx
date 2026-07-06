@@ -151,6 +151,11 @@ const AdminContactos = () => {
 
   const handleViewCv = async (submission: ContactSubmission) => {
     if (!submission.cv_url) return;
+    const cvWindow = window.open("", "_blank");
+    if (cvWindow) {
+      cvWindow.document.write("<p style='font-family: system-ui; padding: 24px;'>Abriendo currículum seguro…</p>");
+      cvWindow.document.close();
+    }
     setCvLoadingId(submission.id);
     try {
       const { data, error } = await supabase.functions.invoke('get-cv-url', {
@@ -159,8 +164,13 @@ const AdminContactos = () => {
       if (error) throw error;
       const url = (data as { url?: string } | null)?.url;
       if (!url) throw new Error('No URL');
-      window.open(url, '_blank', 'noopener,noreferrer');
+      if (cvWindow) {
+        cvWindow.location.href = url;
+      } else {
+        window.location.assign(url);
+      }
     } catch {
+      cvWindow?.close();
       toast.error('No pudimos generar el enlace al currículum.');
     } finally {
       setCvLoadingId(null);
