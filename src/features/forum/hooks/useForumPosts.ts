@@ -22,8 +22,7 @@ export function useForumPosts({ searchQuery, categoryFilter, authorFilter, sortB
           .from("forum_posts")
           .select(`
             *,
-            profiles!forum_posts_user_id_fkey(full_name),
-            forum_comments!post_id(count)
+            profiles!forum_posts_user_id_fkey(full_name)
           `)
           .eq("status", "published");
 
@@ -40,7 +39,7 @@ export function useForumPosts({ searchQuery, categoryFilter, authorFilter, sortB
         if (sortBy === "popular") {
           query = query.order("views_count", { ascending: false });
         } else if (sortBy === "commented") {
-          query = query.order("reactions_count", { ascending: false });
+          query = query.order("comments_count", { ascending: false });
         } else {
           query = query
             .order("featured", { ascending: false })
@@ -96,7 +95,7 @@ export function useIsAdmin() {
           .from("user_roles")
           .select("role")
           .eq("user_id", session.user.id)
-          .single();
+          .maybeSingle();
         setIsAdmin(data?.role === "admin");
       }
     })();
