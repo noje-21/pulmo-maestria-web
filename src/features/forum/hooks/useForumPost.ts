@@ -13,10 +13,15 @@ export function useForumPost(id: string | undefined) {
   const [post, setPost] = useState<ForumPost | null>(null);
   const [comments, setComments] = useState<ForumComment[]>([]);
   const [loading, setLoading] = useState(true);
+  const [commentsLoading, setCommentsLoading] = useState(true);
+  const [postError, setPostError] = useState<"not-found" | "network" | null>(null);
+  const [commentsError, setCommentsError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
   const loadPost = useCallback(async () => {
     if (!id) return;
+    setLoading(true);
+    setPostError(null);
     try {
       const { data, error } = await supabase
         .from("forum_posts")
@@ -26,22 +31,22 @@ export function useForumPost(id: string | undefined) {
         .maybeSingle();
       if (error) throw error;
       if (!data) {
-        toast.error("No encontramos esta publicación. Puede que haya sido eliminada.");
-        navigate("/foro");
+        setPostError("not-found");
         return;
       }
       setPost(data as any);
     } catch (error: any) {
       console.error("Error loading post:", error);
-      toast.error("No encontramos esta publicación. Puede que haya sido eliminada.");
-      navigate("/foro");
+      setPostError("network");
     } finally {
       setLoading(false);
     }
-  }, [id, navigate]);
+  }, [id]);
 
   const loadComments = useCallback(async () => {
     if (!id) return;
+    setCommentsLoading(true);
+    setCommentsError(null);
     try {
       const { data, error } = await supabase
         .from("forum_comments")
@@ -52,6 +57,9 @@ export function useForumPost(id: string | undefined) {
       setComments(buildCommentTree(data || []));
     } catch (error: any) {
       console.error("Error loading comments:", error);
+      setCommentsError("No pudimos cargar los comentarios.");
+    } finally {
+      setCommentsLoading(false);
     }
   }, [id]);
 
@@ -103,5 +111,17 @@ export function useForumPost(id: string | undefined) {
     }
   };
 
-  return { post, comments, loading, user, submitting, addComment };
+  return {
+    post,
+    comments,
+    loading,
+    commentsLoading,
+    postError,
+    commentsError,
+    user,
+    submitting,
+    addComment,
+    reloadPost: loadPost,
+    reloadComments: loadComments,
+  };
 }
