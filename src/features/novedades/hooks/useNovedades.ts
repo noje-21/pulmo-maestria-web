@@ -47,10 +47,10 @@ export function useNovedadesAuthors() {
       try {
         const { data, error } = await supabase
           .from("profiles")
-          .select("id, full_name")
+          .select("user_id, full_name")
           .order("full_name");
         if (error) throw error;
-        setAuthors(data?.map((p) => ({ id: p.id, name: p.full_name })) || []);
+        setAuthors(data?.map((p) => ({ id: p.user_id, name: p.full_name })) || []);
       } catch (error: any) {
         console.error("Error loading authors:", error);
       }

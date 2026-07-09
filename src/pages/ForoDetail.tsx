@@ -42,12 +42,15 @@ const ForoDetail = () => {
     });
   };
 
-  const handleSubmit = async (parentId: string | null) => {
-    const ok = await addComment(newComment, parentId);
-    if (ok) {
-      setNewComment("");
-      setReplyingTo(null);
-    }
+  const handleSubmitMain = async () => {
+    const ok = await addComment(newComment, null);
+    if (ok) setNewComment("");
+  };
+
+  const handleSubmitReply = async (parentId: string, content: string) => {
+    const ok = await addComment(content, parentId);
+    if (ok) setReplyingTo(null);
+    return ok;
   };
 
   if (loading) {
@@ -148,7 +151,7 @@ const ForoDetail = () => {
                         className="min-h-[100px] resize-none rounded-xl bg-background"
                       />
                       <Button
-                        onClick={() => handleSubmit(null)}
+                        onClick={handleSubmitMain}
                         disabled={submitting || !newComment.trim()}
                         className="gap-2"
                       >
@@ -180,10 +183,8 @@ const ForoDetail = () => {
                       setReplyingTo={setReplyingTo}
                       expandedReplies={expandedReplies}
                       toggleReplies={toggleReplies}
-                      newComment={newComment}
-                      setNewComment={setNewComment}
                       submitting={submitting}
-                      onSubmitReply={(parentId) => handleSubmit(parentId)}
+                      onSubmitReply={handleSubmitReply}
                     />
                   ))
                 ) : (

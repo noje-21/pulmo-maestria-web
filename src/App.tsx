@@ -97,7 +97,7 @@ const App = () => {
                 <Route path="/nosotros" element={<Nosotros />} />
                 <Route path="/foro" element={<Foro />} />
                 <Route path="/foro/:id" element={<ForoDetail />} />
-                <Route path="/foro/stats" element={<ForoStats />} />
+                <Route path="/foro/stats" element={<ProtectedRoute requireAdmin={true}><ForoStats /></ProtectedRoute>} />
                 <Route path="/novedades" element={<Novedades />} />
                 <Route path="/novedades/:slug" element={<NovedadDetail />} />
                 <Route path="*" element={<NotFound />} />

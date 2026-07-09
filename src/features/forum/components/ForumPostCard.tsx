@@ -18,7 +18,9 @@ export default function ForumPostCard({ post, index }: Props) {
   const navigate = useNavigate();
   const activity = getActivityStatus(post);
   const ActivityIcon = activity.icon;
-  const commentsCount = Array.isArray(post.forum_comments) ? post.forum_comments.length : 0;
+  const commentsCount = Array.isArray(post.forum_comments)
+    ? Number((post.forum_comments as any[])[0]?.count ?? 0)
+    : 0;
 
   return (
     <motion.article

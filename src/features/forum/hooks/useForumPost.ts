@@ -21,6 +21,7 @@ export function useForumPost(id: string | undefined) {
         .from("forum_posts")
         .select(`*, profiles!forum_posts_user_id_fkey(full_name)`)
         .eq("id", id)
+        .eq("status", "published")
         .single();
       if (error) throw error;
       setPost(data as any);

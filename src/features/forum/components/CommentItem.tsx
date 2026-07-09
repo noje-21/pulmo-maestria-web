@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -15,10 +16,8 @@ interface Props {
   setReplyingTo: (id: string | null) => void;
   expandedReplies: Set<string>;
   toggleReplies: (id: string) => void;
-  newComment: string;
-  setNewComment: (v: string) => void;
   submitting: boolean;
-  onSubmitReply: (parentId: string) => void;
+  onSubmitReply: (parentId: string, content: string) => Promise<boolean> | boolean;
 }
 
 export default function CommentItem({
@@ -29,13 +28,18 @@ export default function CommentItem({
   setReplyingTo,
   expandedReplies,
   toggleReplies,
-  newComment,
-  setNewComment,
   submitting,
   onSubmitReply,
 }: Props) {
   const hasReplies = comment.replies && comment.replies.length > 0;
   const isExpanded = expandedReplies.has(comment.id);
+  const [replyText, setReplyText] = useState("");
+  const isReplying = replyingTo === comment.id;
+
+  const handleReply = async () => {
+    const ok = await onSubmitReply(comment.id, replyText);
+    if (ok) setReplyText("");
+  };
 
   return (
     <motion.div
@@ -105,15 +109,15 @@ export default function CommentItem({
                   className="mt-4 space-y-3"
                 >
                   <Textarea
-                    value={newComment}
-                    onChange={(e) => setNewComment(e.target.value)}
+                    value={replyText}
+                    onChange={(e) => setReplyText(e.target.value)}
                     placeholder="¿Qué opinas sobre esto?"
                     className="min-h-[80px] resize-none rounded-xl"
                   />
                   <Button
-                    onClick={() => onSubmitReply(comment.id)}
+                    onClick={handleReply}
                     size="sm"
-                    disabled={submitting || !newComment.trim()}
+                    disabled={submitting || !replyText.trim()}
                     className="gap-2"
                   >
                     <Send className="w-4 h-4" />
@@ -143,8 +147,6 @@ export default function CommentItem({
                 setReplyingTo={setReplyingTo}
                 expandedReplies={expandedReplies}
                 toggleReplies={toggleReplies}
-                newComment={newComment}
-                setNewComment={setNewComment}
                 submitting={submitting}
                 onSubmitReply={onSubmitReply}
               />
