@@ -3,6 +3,7 @@ import { Heart } from "lucide-react";
 import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { useAuth } from "@/hooks/useAuth";
 
 interface ReactionButtonProps {
   postType: "forum" | "novedad";
@@ -19,6 +20,7 @@ export default function ReactionButton({
   initialCount = 0,
   initialHasReacted,
 }: ReactionButtonProps) {
+  const { user } = useAuth();
   const [hasReacted, setHasReacted] = useState(!!initialHasReacted);
   const [count, setCount] = useState(initialCount);
   const [loading, setLoading] = useState(false);
@@ -28,20 +30,17 @@ export default function ReactionButton({
       setHasReacted(initialHasReacted);
       return;
     }
-    checkUserReaction();
+    if (!user) return;
+    checkUserReaction(user.id);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [postId, initialHasReacted]);
+  }, [postId, initialHasReacted, user?.id]);
 
-  const checkUserReaction = async () => {
+  const checkUserReaction = async (userId: string) => {
     try {
-      // getSession() reads from local storage — no network round-trip.
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) return;
-
       const { data } = await supabase
         .from("post_reactions")
         .select("id")
-        .eq("user_id", session.user.id)
+        .eq("user_id", userId)
         .eq("post_type", postType)
         .eq("post_id", postId)
         .maybeSingle();
@@ -57,9 +56,6 @@ export default function ReactionButton({
 
     try {
       setLoading(true);
-      const { data: { session } } = await supabase.auth.getSession();
-      const user = session?.user;
-
       if (!user) {
         toast.error("Debes iniciar sesión para reaccionar");
         return;
