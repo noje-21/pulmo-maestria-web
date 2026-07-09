@@ -7,7 +7,7 @@ import { motion } from "framer-motion";
 import ReactionButton from "@/features/forum/ReactionButton";
 import RichContent, { htmlToPlainText } from "@/components/common/RichContent";
 import { SEO } from "@/components/common/SEO";
-import { Calendar, ArrowLeft, MessageSquare, Send, Eye } from "lucide-react";
+import { Calendar, ArrowLeft, MessageSquare, Send, Eye, AlertCircle, RefreshCw, SearchX } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -27,10 +27,38 @@ const PostSkeleton = () => (
   </div>
 );
 
+const CommentSkeleton = () => (
+  <div className="bg-muted/30 rounded-xl p-4 sm:p-5">
+    <div className="flex items-start gap-3 sm:gap-4">
+      <Skeleton className="w-9 h-9 sm:w-10 sm:h-10 rounded-full flex-shrink-0" />
+      <div className="flex-1 space-y-2">
+        <div className="flex gap-2">
+          <Skeleton className="h-4 w-32" />
+          <Skeleton className="h-4 w-20" />
+        </div>
+        <Skeleton className="h-4 w-full" />
+        <Skeleton className="h-4 w-3/4" />
+      </div>
+    </div>
+  </div>
+);
+
 const ForoDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { post, comments, loading, user, submitting, addComment } = useForumPost(id);
+  const {
+    post,
+    comments,
+    loading,
+    commentsLoading,
+    postError,
+    commentsError,
+    user,
+    submitting,
+    addComment,
+    reloadPost,
+    reloadComments,
+  } = useForumPost(id);
   const [newComment, setNewComment] = useState("");
   const [replyingTo, setReplyingTo] = useState<string | null>(null);
   const [expandedReplies, setExpandedReplies] = useState<Set<string>>(new Set());
@@ -71,7 +99,63 @@ const ForoDetail = () => {
     );
   }
 
-  if (!post) return null;
+  if (postError || !post) {
+    const notFound = postError === "not-found";
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-background via-muted/20 to-background">
+        <main className="pt-24 sm:pt-28 pb-16 px-4 sm:px-6 lg:px-8">
+          <div className="max-w-3xl mx-auto">
+            <Button
+              onClick={() => navigate("/foro")}
+              variant="ghost"
+              size="sm"
+              className="mb-6 -ml-2 gap-2 text-muted-foreground hover:text-foreground"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              Volver al Foro
+            </Button>
+            <div
+              role="alert"
+              className="bg-card rounded-2xl border border-border/50 p-8 sm:p-12 text-center"
+            >
+              <div className={`w-14 h-14 mx-auto mb-4 rounded-2xl flex items-center justify-center ${
+                notFound ? "bg-muted" : "bg-destructive/10"
+              }`}>
+                {notFound ? (
+                  <SearchX className="w-7 h-7 text-muted-foreground" />
+                ) : (
+                  <AlertCircle className="w-7 h-7 text-destructive" />
+                )}
+              </div>
+              <h1 className="text-xl sm:text-2xl font-semibold mb-2">
+                {notFound ? "Publicación no encontrada" : "No pudimos cargar la publicación"}
+              </h1>
+              <p className="text-muted-foreground mb-6 max-w-md mx-auto">
+                {notFound
+                  ? "Puede haber sido eliminada o el enlace es incorrecto."
+                  : "Puede ser un problema temporal de conexión. Intenta nuevamente."}
+              </p>
+              <div className="flex flex-wrap justify-center gap-3">
+                {!notFound && (
+                  <Button onClick={() => reloadPost()} className="gap-2 rounded-xl">
+                    <RefreshCw className="w-4 h-4" />
+                    Reintentar
+                  </Button>
+                )}
+                <Button
+                  onClick={() => navigate("/foro")}
+                  variant={notFound ? "default" : "outline"}
+                  className="rounded-xl"
+                >
+                  Ir al foro
+                </Button>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    );
+  }
 
   const plainContent = htmlToPlainText(post.content || "");
   const seoDescription =
@@ -166,7 +250,9 @@ const ForoDetail = () => {
             <section className="bg-card rounded-2xl border border-border/50 p-6 sm:p-8">
               <div className="flex items-center gap-3 mb-6">
                 <MessageSquare className="w-5 h-5 text-primary" />
-                <h2 className="text-xl font-semibold">Comentarios ({comments.length})</h2>
+                <h2 className="text-xl font-semibold">
+                  Comentarios {commentsLoading ? "" : `(${comments.length})`}
+                </h2>
               </div>
 
               {user ? (
@@ -207,7 +293,30 @@ const ForoDetail = () => {
               )}
 
               <div className="space-y-2">
-                {comments.length > 0 ? (
+                {commentsLoading ? (
+                  <div className="space-y-3" aria-hidden="true">
+                    <CommentSkeleton />
+                    <CommentSkeleton />
+                    <CommentSkeleton />
+                  </div>
+                ) : commentsError ? (
+                  <div
+                    role="alert"
+                    className="text-center py-10 px-4 bg-destructive/5 rounded-xl border border-destructive/20"
+                  >
+                    <AlertCircle className="w-10 h-10 mx-auto mb-3 text-destructive/60" />
+                    <p className="text-sm text-foreground mb-4">{commentsError}</p>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => reloadComments()}
+                      className="gap-2"
+                    >
+                      <RefreshCw className="w-3.5 h-3.5" />
+                      Reintentar
+                    </Button>
+                  </div>
+                ) : comments.length > 0 ? (
                   comments.map((comment) => (
                     <CommentItem
                       key={comment.id}
