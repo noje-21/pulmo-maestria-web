@@ -23,7 +23,7 @@ export function useForumPosts({ searchQuery, categoryFilter, authorFilter, sortB
           .select(`
             *,
             profiles!forum_posts_user_id_fkey(full_name),
-            forum_comments(count)
+            forum_comments!post_id(count)
           `)
           .eq("status", "published");
 
