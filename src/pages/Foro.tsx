@@ -82,7 +82,7 @@ const Foro = () => {
     fetchNextPage,
     reactedIds,
   } = useForumPosts({
-    debouncedSearch: debouncedSearch,
+    searchQuery: debouncedSearch,
     categoryFilter,
     authorFilter,
     sortBy,
