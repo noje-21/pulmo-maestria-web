@@ -89,19 +89,21 @@ const AteneoDetail = () => {
               Volver a Ateneos
             </Button>
 
-            <motion.div
-              initial={{ opacity: 0, scale: 0.98 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.1 }}
-              className="relative aspect-[21/9] sm:aspect-[2/1] lg:aspect-[21/9] rounded-2xl sm:rounded-3xl overflow-hidden mb-8 sm:mb-10"
-            >
-              <ImageLazy src={ateneo.imagen} alt={ateneo.titulo} className="w-full h-full object-cover" />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
-              <span className="absolute top-4 left-4 px-3 py-1.5 bg-primary/90 backdrop-blur-sm text-primary-foreground text-xs font-medium rounded-full flex items-center gap-1.5">
-                <BookOpen className="w-3 h-3" />
-                Ateneo
-              </span>
-            </motion.div>
+            {ateneo.imagen && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.98 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.1 }}
+                className="relative aspect-[21/9] sm:aspect-[2/1] lg:aspect-[21/9] rounded-2xl sm:rounded-3xl overflow-hidden mb-8 sm:mb-10"
+              >
+                <ImageLazy src={ateneo.imagen} alt={ateneo.titulo} className="w-full h-full object-cover" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+                <span className="absolute top-4 left-4 px-3 py-1.5 bg-primary/90 backdrop-blur-sm text-primary-foreground text-xs font-medium rounded-full flex items-center gap-1.5">
+                  <BookOpen className="w-3 h-3" />
+                  Ateneo
+                </span>
+              </motion.div>
+            )}
 
             <div className="max-w-3xl mx-auto">
               <header className="mb-8">
