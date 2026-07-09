@@ -5,7 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { motion, AnimatePresence } from "framer-motion";
 import { SEO } from "@/components/common/SEO";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { MessageSquare, Plus, Search, Filter, Sparkles } from "lucide-react";
+import { MessageSquare, Plus, Search, Filter, Sparkles, AlertCircle, RefreshCw } from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -81,6 +81,9 @@ const Foro = () => {
     isFetchingNextPage,
     fetchNextPage,
     reactedIds,
+    error,
+    refetch,
+    isRefetching,
   } = useForumPosts({
     searchQuery: debouncedSearch,
     categoryFilter,
@@ -273,12 +276,46 @@ const Foro = () => {
             </div>
           </motion.header>
 
+          <div role="status" aria-live="polite" aria-busy={loading || isRefetching} className="sr-only">
+            {loading
+              ? "Cargando publicaciones"
+              : error
+                ? "Error al cargar publicaciones"
+                : `${posts.length} publicaciones cargadas`}
+          </div>
+
           <AnimatePresence mode="wait">
             {loading ? (
-              <motion.div className="space-y-4" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+              <motion.div key="loading" className="space-y-4" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
                 {[...Array(4)].map((_, i) => (
                   <ForumCardSkeleton key={i} />
                 ))}
+              </motion.div>
+            ) : error ? (
+              <motion.div
+                key="error"
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="card-base p-8 sm:p-10 text-center"
+                role="alert"
+              >
+                <div className="w-14 h-14 mx-auto mb-4 rounded-2xl bg-destructive/10 flex items-center justify-center">
+                  <AlertCircle className="w-7 h-7 text-destructive" />
+                </div>
+                <h3 className="text-lg sm:text-xl font-semibold mb-2">
+                  No pudimos cargar las publicaciones
+                </h3>
+                <p className="text-muted-foreground text-sm mb-6 max-w-md mx-auto">
+                  Puede ser un problema temporal de conexión. Intenta nuevamente en unos segundos.
+                </p>
+                <Button
+                  onClick={() => refetch()}
+                  disabled={isRefetching}
+                  className="gap-2 rounded-xl"
+                >
+                  <RefreshCw className={`w-4 h-4 ${isRefetching ? "animate-spin" : ""}`} />
+                  {isRefetching ? "Reintentando..." : "Reintentar"}
+                </Button>
               </motion.div>
             ) : posts.length > 0 ? (
               <motion.div key="list" className="space-y-4" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
@@ -290,6 +327,13 @@ const Foro = () => {
                     hasReacted={reactedIds.has(post.id)}
                   />
                 ))}
+                {isFetchingNextPage && (
+                  <div className="space-y-4 pt-2" aria-hidden="true">
+                    {[...Array(2)].map((_, i) => (
+                      <ForumCardSkeleton key={`more-${i}`} />
+                    ))}
+                  </div>
+                )}
                 {hasNextPage && (
                   <div className="pt-6 flex justify-center">
                     <Button
@@ -303,9 +347,15 @@ const Foro = () => {
                     </Button>
                   </div>
                 )}
+                {!hasNextPage && posts.length >= 20 && (
+                  <p className="text-center text-sm text-muted-foreground pt-6">
+                    Llegaste al final del foro. ¡Buen día explorando!
+                  </p>
+                )}
               </motion.div>
             ) : (
               <motion.div
+                key="empty"
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 className="text-center py-16 sm:py-20"
