@@ -5,7 +5,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { motion } from "framer-motion";
 import ReactionButton from "@/features/forum/ReactionButton";
-import RichContent from "@/components/common/RichContent";
+import RichContent, { htmlToPlainText } from "@/components/common/RichContent";
+import { SEO } from "@/components/common/SEO";
 import { Calendar, ArrowLeft, MessageSquare, Send, Eye } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
@@ -69,8 +70,41 @@ const ForoDetail = () => {
 
   if (!post) return null;
 
+  const plainContent = htmlToPlainText(post.content || "");
+  const seoDescription =
+    (post.excerpt?.trim() || plainContent).slice(0, 155).trim();
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-background via-muted/20 to-background">
+      <SEO
+        title={`${post.title} — Foro`}
+        description={seoDescription}
+        ogType="article"
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": "DiscussionForumPosting",
+          headline: post.title,
+          articleBody: plainContent.slice(0, 5000),
+          datePublished: post.created_at,
+          dateModified: post.updated_at ?? post.created_at,
+          author: {
+            "@type": "Person",
+            name: post.profiles?.full_name || "Usuario",
+          },
+          interactionStatistic: [
+            {
+              "@type": "InteractionCounter",
+              interactionType: "https://schema.org/CommentAction",
+              userInteractionCount: comments.length,
+            },
+            {
+              "@type": "InteractionCounter",
+              interactionType: "https://schema.org/ViewAction",
+              userInteractionCount: post.views_count,
+            },
+          ],
+        }}
+      />
 
       <main className="pt-24 sm:pt-28 pb-16 sm:pb-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-3xl mx-auto">

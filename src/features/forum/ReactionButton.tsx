@@ -8,26 +8,40 @@ interface ReactionButtonProps {
   postType: "forum" | "novedad";
   postId: string;
   initialCount?: number;
+  /** When provided, skips the per-mount "did I react?" lookup — the parent
+   *  list already resolved this in a single batched RPC. */
+  initialHasReacted?: boolean;
 }
 
-export default function ReactionButton({ postType, postId, initialCount = 0 }: ReactionButtonProps) {
-  const [hasReacted, setHasReacted] = useState(false);
+export default function ReactionButton({
+  postType,
+  postId,
+  initialCount = 0,
+  initialHasReacted,
+}: ReactionButtonProps) {
+  const [hasReacted, setHasReacted] = useState(!!initialHasReacted);
   const [count, setCount] = useState(initialCount);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    if (initialHasReacted !== undefined) {
+      setHasReacted(initialHasReacted);
+      return;
+    }
     checkUserReaction();
-  }, [postId]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [postId, initialHasReacted]);
 
   const checkUserReaction = async () => {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
+      // getSession() reads from local storage — no network round-trip.
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) return;
 
       const { data } = await supabase
         .from("post_reactions")
         .select("id")
-        .eq("user_id", user.id)
+        .eq("user_id", session.user.id)
         .eq("post_type", postType)
         .eq("post_id", postId)
         .maybeSingle();
@@ -43,8 +57,9 @@ export default function ReactionButton({ postType, postId, initialCount = 0 }: R
 
     try {
       setLoading(true);
-      const { data: { user } } = await supabase.auth.getUser();
-      
+      const { data: { session } } = await supabase.auth.getSession();
+      const user = session?.user;
+
       if (!user) {
         toast.error("Debes iniciar sesión para reaccionar");
         return;

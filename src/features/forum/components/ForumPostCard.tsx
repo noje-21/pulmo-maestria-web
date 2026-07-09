@@ -1,5 +1,6 @@
+import { memo } from "react";
 import { motion } from "framer-motion";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Avatar } from "@/components/common/Avatar";
 import { CategoryBadge } from "@/components/common/CategoryBadge";
 import ReactionButton from "@/features/forum/ReactionButton";
@@ -12,30 +13,27 @@ import type { ForumPost } from "../types";
 interface Props {
   post: ForumPost;
   index: number;
+  hasReacted?: boolean;
 }
 
-export default function ForumPostCard({ post, index }: Props) {
-  const navigate = useNavigate();
+function ForumPostCardImpl({ post, index, hasReacted }: Props) {
   const activity = getActivityStatus(post);
   const ActivityIcon = activity.icon;
-  const commentsCount =
-    typeof post.comments_count === "number"
-      ? post.comments_count
-      : Array.isArray(post.forum_comments)
-        ? Number((post.forum_comments as any[])[0]?.count ?? 0)
-        : 0;
+  const commentsCount = typeof post.comments_count === "number" ? post.comments_count : 0;
 
   return (
     <motion.article
       key={post.id}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.04, duration: 0.3 }}
-      onClick={() => navigate(`/foro/${post.id}`)}
-      className="group cursor-pointer"
-      role="article"
-      aria-label={`Publicación: ${post.title}`}
+      transition={{ delay: Math.min(index, 8) * 0.03, duration: 0.25 }}
+      className="group"
     >
+      <Link
+        to={`/foro/${post.id}`}
+        aria-label={`Publicación: ${post.title}`}
+        className="block focus:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-2xl"
+      >
       <div className={`
         card-base card-hover p-4 sm:p-5 md:p-6 transition-all duration-400 relative overflow-hidden
         ${post.featured ? 'ring-2 ring-accent/30 bg-gradient-to-br from-accent/[0.03] to-transparent' : ''}
@@ -109,11 +107,12 @@ export default function ForumPostCard({ post, index }: Props) {
             </div>
 
             <div className="flex items-center justify-between mt-4 pt-4 border-t border-border/30">
-              <div onClick={(e) => e.stopPropagation()}>
+              <div onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}>
                 <ReactionButton
                   postType="forum"
                   postId={post.id}
                   initialCount={post.reactions_count || 0}
+                  initialHasReacted={hasReacted}
                 />
               </div>
               <span className="inline-flex items-center gap-2 text-primary font-medium text-sm group-hover:gap-3 transition-all">
@@ -124,6 +123,10 @@ export default function ForumPostCard({ post, index }: Props) {
           </div>
         </div>
       </div>
+      </Link>
     </motion.article>
   );
 }
+
+const ForumPostCard = memo(ForumPostCardImpl);
+export default ForumPostCard;
