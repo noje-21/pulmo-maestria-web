@@ -104,6 +104,8 @@ export default function ReactionButton({
       whileTap={{ scale: 0.9 }}
       onClick={handleReaction}
       disabled={loading}
+      aria-pressed={hasReacted}
+      aria-label={hasReacted ? "Quitar me gusta" : "Me gusta"}
       className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-all duration-300 ${
         hasReacted
           ? "bg-primary/20 text-primary"
