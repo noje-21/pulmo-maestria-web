@@ -409,7 +409,7 @@ const AdminForo = () => {
                       )}
                     </div>
                     <h3 className="text-lg font-bold mb-1 line-clamp-1">{post.title}</h3>
-                    <p className="text-muted-foreground text-sm mb-2 line-clamp-2">{post.excerpt || post.content}</p>
+                    <p className="text-muted-foreground text-sm mb-2 line-clamp-2">{post.excerpt || post.content?.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim()}</p>
                     <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
                       <span>Por: {post.profiles?.full_name || "Usuario"}</span>
                       <span>{format(new Date(post.created_at), "dd MMM yyyy", { locale: es })}</span>
