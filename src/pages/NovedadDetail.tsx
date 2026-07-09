@@ -79,7 +79,7 @@ const NovedadDetail = () => {
     <div className="min-h-screen bg-gradient-to-b from-background via-muted/20 to-background">
       <SEO
         title={`${novedad.title} - Novedades | Maestría en Circulación Pulmonar`}
-        description={novedad.content.replace(/<[^>]*>/g, "").slice(0, 155)}
+        description={(novedad.excerpt || novedad.content.replace(/<[^>]*>/g, "").replace(/&[a-z#0-9]+;/gi, " ").replace(/\s+/g, " ").trim()).slice(0, 155)}
         ogImage={novedad.image_url || undefined}
         canonicalUrl={`https://www.maestriacp.com/novedades/${slug}`}
         ogType="article"
