@@ -17,6 +17,7 @@ import {
   useForumPosts,
   useForumAuthors,
   useIsAdmin,
+  useDebouncedValue,
 } from "@/features/forum/hooks/useForumPosts";
 import type { SortBy } from "@/features/forum/types";
 import ForumCardSkeleton from "@/features/forum/components/ForumCardSkeleton";
@@ -25,6 +26,7 @@ import ForumPostCard from "@/features/forum/components/ForumPostCard";
 const Foro = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
+  const debouncedSearch = useDebouncedValue(searchQuery, 300);
   const [categoryFilter, setCategoryFilter] = useState<string>("all");
   const [authorFilter, setAuthorFilter] = useState<string>("all");
   const [sortBy, setSortBy] = useState<SortBy>("recent");
@@ -32,7 +34,19 @@ const Foro = () => {
 
   const isAdmin = useIsAdmin();
   const authors = useForumAuthors();
-  const { posts, loading } = useForumPosts({ searchQuery, categoryFilter, authorFilter, sortBy });
+  const {
+    posts,
+    loading,
+    hasNextPage,
+    isFetchingNextPage,
+    fetchNextPage,
+    reactedIds,
+  } = useForumPosts({
+    searchQuery: debouncedSearch,
+    categoryFilter,
+    authorFilter,
+    sortBy,
+  });
 
   const activeFiltersCount = [
     categoryFilter !== "all",
@@ -217,10 +231,28 @@ const Foro = () => {
                 ))}
               </motion.div>
             ) : posts.length > 0 ? (
-              <motion.div className="space-y-4" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+              <motion.div key="list" className="space-y-4" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
                 {posts.map((post, index) => (
-                  <ForumPostCard key={post.id} post={post} index={index} />
+                  <ForumPostCard
+                    key={post.id}
+                    post={post}
+                    index={index}
+                    hasReacted={reactedIds.has(post.id)}
+                  />
                 ))}
+                {hasNextPage && (
+                  <div className="pt-6 flex justify-center">
+                    <Button
+                      variant="outline"
+                      size="lg"
+                      onClick={() => fetchNextPage()}
+                      disabled={isFetchingNextPage}
+                      className="rounded-xl min-w-[220px]"
+                    >
+                      {isFetchingNextPage ? "Cargando..." : "Cargar más publicaciones"}
+                    </Button>
+                  </div>
+                )}
               </motion.div>
             ) : (
               <motion.div
