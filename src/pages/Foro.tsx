@@ -82,7 +82,7 @@ const Foro = () => {
     fetchNextPage,
     reactedIds,
   } = useForumPosts({
-    searchQuery: debouncedSearch,
+    debouncedSearch: debouncedSearch,
     categoryFilter,
     authorFilter,
     sortBy,
@@ -213,8 +213,8 @@ const Foro = () => {
                 <Input
                   type="text"
                   placeholder="Buscar publicaciones..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
+                  value={searchDraft}
+                  onChange={(e) => setSearchDraft(e.target.value)}
                   className="pl-10 sm:pl-12 h-11 sm:h-12 text-sm sm:text-base rounded-xl border-border/50 bg-card"
                 />
               </div>
@@ -317,22 +317,22 @@ const Foro = () => {
                   </div>
                 </div>
                 <h3 className="text-xl sm:text-2xl font-bold mb-2">
-                  {searchQuery || categoryFilter !== "all" || authorFilter !== "all"
+                  {debouncedSearch || categoryFilter !== "all" || authorFilter !== "all"
                     ? "No se encontraron publicaciones"
                     : "¡Bienvenido al Foro!"}
                 </h3>
                 <p className="text-muted-foreground mb-2 max-w-md mx-auto">
-                  {searchQuery || categoryFilter !== "all" || authorFilter !== "all"
+                  {debouncedSearch || categoryFilter !== "all" || authorFilter !== "all"
                     ? "Intenta ajustar los filtros de búsqueda"
                     : "Aquí podrás discutir casos clínicos, compartir recursos y conectar con otros profesionales."}
                 </p>
-                {!searchQuery && categoryFilter === "all" && authorFilter === "all" && (
+                {!debouncedSearch && categoryFilter === "all" && authorFilter === "all" && (
                   <p className="text-sm text-accent font-medium mb-6 flex items-center justify-center gap-2">
                     <Sparkles className="w-4 h-4" />
                     ¡Sé el primero en iniciar la conversación!
                   </p>
                 )}
-                {isAdmin && !searchQuery && categoryFilter === "all" && authorFilter === "all" && (
+                {isAdmin && !debouncedSearch && categoryFilter === "all" && authorFilter === "all" && (
                   <Button onClick={() => navigate("/admin/foro")} size="lg" className="btn-accent gap-2 mt-4">
                     <Plus className="w-5 h-5" />
                     Crear Primera Publicación
