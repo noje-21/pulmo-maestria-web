@@ -98,7 +98,8 @@ const ForoStats = () => {
       // Total posts
       const { count: postsCount } = await supabase
         .from("forum_posts")
-        .select("*", { count: "exact", head: true });
+        .select("*", { count: "exact", head: true })
+        .eq("status", "published");
       
       // Total comments
       const { count: commentsCount } = await supabase
@@ -108,13 +109,15 @@ const ForoStats = () => {
       // Total views
       const { data: viewsData } = await supabase
         .from("forum_posts")
-        .select("views_count");
+        .select("views_count")
+        .eq("status", "published");
       const totalViews = viewsData?.reduce((sum, post) => sum + post.views_count, 0) || 0;
       
       // Total active users
       const { data: usersData } = await supabase
         .from("forum_posts")
-        .select("user_id");
+        .select("user_id")
+        .eq("status", "published");
       const uniqueUsers = new Set(usersData?.map(p => p.user_id) || []);
       
       setStats({
@@ -139,6 +142,7 @@ const ForoStats = () => {
           reactions_count,
           profiles!forum_posts_user_id_fkey(full_name)
         `)
+        .eq("status", "published")
         .order("views_count", { ascending: false })
         .limit(5);
       
@@ -153,7 +157,8 @@ const ForoStats = () => {
     try {
       const { data: postsData } = await supabase
         .from("forum_posts")
-        .select("user_id, profiles!forum_posts_user_id_fkey(full_name)");
+        .select("user_id, profiles!forum_posts_user_id_fkey(full_name)")
+        .eq("status", "published");
       
       const { data: commentsData } = await supabase
         .from("forum_comments")
@@ -206,6 +211,7 @@ const ForoStats = () => {
           const { count: postsCount } = await supabase
             .from("forum_posts")
             .select("*", { count: "exact", head: true })
+            .eq("status", "published")
             .gte("created_at", start.toISOString())
             .lte("created_at", end.toISOString());
           
@@ -233,7 +239,8 @@ const ForoStats = () => {
     try {
       const { data } = await supabase
         .from("forum_posts")
-        .select("category");
+        .select("category")
+        .eq("status", "published");
       
       const categoryMap = new Map<string, number>();
       data?.forEach(post => {
