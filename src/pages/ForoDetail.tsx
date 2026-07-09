@@ -5,6 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { motion } from "framer-motion";
 import ReactionButton from "@/features/forum/ReactionButton";
+import RichContent from "@/components/common/RichContent";
 import { Calendar, ArrowLeft, MessageSquare, Send, Eye } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
@@ -113,11 +114,7 @@ const ForoDetail = () => {
                   </div>
                 </div>
 
-                <div className="prose prose-sm sm:prose-base dark:prose-invert max-w-none mb-6">
-                  <p className="whitespace-pre-wrap text-foreground/90 leading-relaxed">
-                    {post.content}
-                  </p>
-                </div>
+                <RichContent html={post.content} size="lg" className="mb-6" />
 
                 <div className="pt-4 border-t border-border/50">
                   <ReactionButton

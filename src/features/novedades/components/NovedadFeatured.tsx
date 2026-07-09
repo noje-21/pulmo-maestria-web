@@ -7,6 +7,7 @@ import { Calendar, ArrowRight, Sparkles, Newspaper } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import type { Novedad } from "../types";
+import { htmlToPlainText } from "@/components/common/RichContent";
 
 interface Props {
   novedad: Novedad;
@@ -63,7 +64,7 @@ export default function NovedadFeatured({ novedad }: Props) {
             </h2>
 
             <p className="text-muted-foreground text-base sm:text-lg mb-6 line-clamp-3">
-              {novedad.excerpt || novedad.content.substring(0, 200)}
+              {novedad.excerpt || htmlToPlainText(novedad.content).slice(0, 200)}
             </p>
 
             <div className="flex items-center justify-between">

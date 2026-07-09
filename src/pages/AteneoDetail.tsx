@@ -4,7 +4,7 @@ import { Footer } from "@/components/sections/Footer";
 import { SEO } from "@/components/common/SEO";
 import { Button } from "@/components/ui/button";
 import ImageLazy from "@/components/common/ImageLazy";
-import DOMPurify from "dompurify";
+import RichContent from "@/components/common/RichContent";
 import {
   Calendar, ArrowLeft, Video, FileText, ExternalLink, BookOpen,
 } from "lucide-react";
@@ -132,9 +132,10 @@ const AteneoDetail = () => {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.25 }}
-                className="prose prose-lg dark:prose-invert max-w-none mb-10"
-                dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(ateneo.contenido) }}
-              />
+                className="mb-10"
+              >
+                <RichContent html={ateneo.contenido} size="lg" />
+              </motion.div>
 
               {ateneo.videoUrl && (
                 <motion.div

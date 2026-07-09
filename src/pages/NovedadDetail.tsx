@@ -7,8 +7,8 @@ import { Calendar, ArrowLeft, Clock, Share2, Sparkles, Newspaper } from "lucide-
 import { format, formatDistanceToNow } from "date-fns";
 import { es } from "date-fns/locale";
 import ImageLazy from "@/components/common/ImageLazy";
-import DOMPurify from "dompurify";
 import { SEO } from "@/components/common/SEO";
+import RichContent, { htmlToPlainText } from "@/components/common/RichContent";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
 import { useNovedad } from "@/features/novedades/hooks/useNovedad";
@@ -79,7 +79,7 @@ const NovedadDetail = () => {
     <div className="min-h-screen bg-gradient-to-b from-background via-muted/20 to-background">
       <SEO
         title={`${novedad.title} - Novedades | Maestría en Circulación Pulmonar`}
-        description={(novedad.excerpt || novedad.content.replace(/<[^>]*>/g, "").replace(/&[a-z#0-9]+;/gi, " ").replace(/\s+/g, " ").trim()).slice(0, 155)}
+        description={(novedad.excerpt || htmlToPlainText(novedad.content)).slice(0, 155)}
         ogImage={novedad.image_url || undefined}
         canonicalUrl={`https://www.maestriacp.com/novedades/${slug}`}
         ogType="article"
@@ -175,9 +175,10 @@ const NovedadDetail = () => {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.25 }}
-                className="prose prose-lg dark:prose-invert max-w-none mb-10"
-                dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(novedad.content) }}
-              />
+                className="mb-10"
+              >
+                <RichContent html={novedad.content} size="lg" />
+              </motion.div>
 
               <motion.footer
                 initial={{ opacity: 0 }}
