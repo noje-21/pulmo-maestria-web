@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { motion, AnimatePresence } from "framer-motion";
 import { SEO } from "@/components/common/SEO";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { MessageSquare, Plus, Search, Filter, Sparkles } from "lucide-react";
 import {
   Sheet,
@@ -23,14 +23,54 @@ import type { SortBy } from "@/features/forum/types";
 import ForumCardSkeleton from "@/features/forum/components/ForumCardSkeleton";
 import ForumPostCard from "@/features/forum/components/ForumPostCard";
 
+const SORT_VALUES: SortBy[] = ["recent", "popular", "commented"];
+
 const Foro = () => {
   const navigate = useNavigate();
-  const [searchQuery, setSearchQuery] = useState("");
-  const debouncedSearch = useDebouncedValue(searchQuery, 300);
-  const [categoryFilter, setCategoryFilter] = useState<string>("all");
-  const [authorFilter, setAuthorFilter] = useState<string>("all");
-  const [sortBy, setSortBy] = useState<SortBy>("recent");
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  // Filters derived from the URL — shareable, bookmarkable, back/forward works.
+  const categoryFilter = searchParams.get("cat") ?? "all";
+  const authorFilter = searchParams.get("author") ?? "all";
+  const sortFromUrl = searchParams.get("sort");
+  const sortBy: SortBy = (SORT_VALUES as string[]).includes(sortFromUrl ?? "")
+    ? (sortFromUrl as SortBy)
+    : "recent";
+  const searchFromUrl = searchParams.get("q") ?? "";
+
+  // Local draft keeps the input responsive; debounced value is pushed to the URL.
+  const [searchDraft, setSearchDraft] = useState(searchFromUrl);
+  const debouncedSearch = useDebouncedValue(searchDraft, 300);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+
+  const updateParams = useCallback(
+    (patch: Record<string, string | null>) => {
+      setSearchParams(
+        (prev) => {
+          const next = new URLSearchParams(prev);
+          for (const [key, value] of Object.entries(patch)) {
+            const isDefault =
+              value == null ||
+              value === "" ||
+              value === "all" ||
+              (key === "sort" && value === "recent");
+            if (isDefault) next.delete(key);
+            else next.set(key, value);
+          }
+          return next;
+        },
+        { replace: true },
+      );
+    },
+    [setSearchParams],
+  );
+
+  // Push debounced search back to the URL.
+  useEffect(() => {
+    if (debouncedSearch !== searchFromUrl) {
+      updateParams({ q: debouncedSearch || null });
+    }
+  }, [debouncedSearch, searchFromUrl, updateParams]);
 
   const isAdmin = useIsAdmin();
   const authors = useForumAuthors();
@@ -48,16 +88,26 @@ const Foro = () => {
     sortBy,
   });
 
-  const activeFiltersCount = [
-    categoryFilter !== "all",
-    authorFilter !== "all",
-  ].filter(Boolean).length;
+  const activeFiltersCount = useMemo(
+    () => [categoryFilter !== "all", authorFilter !== "all"].filter(Boolean).length,
+    [categoryFilter, authorFilter],
+  );
 
-  const clearFilters = () => {
-    setCategoryFilter("all");
-    setAuthorFilter("all");
-    setSortBy("recent");
-  };
+  const setCategoryFilter = useCallback(
+    (v: string) => updateParams({ cat: v }),
+    [updateParams],
+  );
+  const setAuthorFilter = useCallback(
+    (v: string) => updateParams({ author: v }),
+    [updateParams],
+  );
+  const setSortBy = useCallback(
+    (v: SortBy) => updateParams({ sort: v }),
+    [updateParams],
+  );
+  const clearFilters = useCallback(() => {
+    updateParams({ cat: null, author: null, sort: null });
+  }, [updateParams]);
 
   const FilterContent = () => (
     <div className="space-y-6">
