@@ -25,10 +25,4 @@
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
-  <url>
-    <loc>https://www.maestriacp.com/foro/9e9337d9-fa1e-452b-bb16-12443f48bdad</loc>
-    <lastmod>2026-06-05</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
 </urlset>
