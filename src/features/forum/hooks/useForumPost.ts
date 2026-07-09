@@ -22,8 +22,13 @@ export function useForumPost(id: string | undefined) {
         .select(`*, profiles!forum_posts_user_id_fkey(full_name)`)
         .eq("id", id)
         .eq("status", "published")
-        .single();
+        .maybeSingle();
       if (error) throw error;
+      if (!data) {
+        toast.error("No encontramos esta publicación. Puede que haya sido eliminada.");
+        navigate("/foro");
+        return;
+      }
       setPost(data as any);
     } catch (error: any) {
       console.error("Error loading post:", error);
