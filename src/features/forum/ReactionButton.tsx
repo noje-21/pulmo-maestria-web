@@ -30,7 +30,7 @@ export default function ReactionButton({ postType, postId, initialCount = 0 }: R
         .eq("user_id", user.id)
         .eq("post_type", postType)
         .eq("post_id", postId)
-        .single();
+        .maybeSingle();
 
       setHasReacted(!!data);
     } catch (error) {

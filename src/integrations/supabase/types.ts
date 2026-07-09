@@ -255,6 +255,7 @@ export type Database = {
       forum_posts: {
         Row: {
           category: Database["public"]["Enums"]["forum_category"]
+          comments_count: number
           content: string
           created_at: string
           excerpt: string | null
@@ -271,6 +272,7 @@ export type Database = {
         }
         Insert: {
           category?: Database["public"]["Enums"]["forum_category"]
+          comments_count?: number
           content: string
           created_at?: string
           excerpt?: string | null
@@ -287,6 +289,7 @@ export type Database = {
         }
         Update: {
           category?: Database["public"]["Enums"]["forum_category"]
+          comments_count?: number
           content?: string
           created_at?: string
           excerpt?: string | null
@@ -670,6 +673,10 @@ export type Database = {
         }
         Returns: Json
       }
+      get_user_reactions: {
+        Args: { _post_ids: string[]; _post_type: string }
+        Returns: string[]
+      }
       increment_post_views: { Args: { post_id: string }; Returns: undefined }
       is_admin: { Args: { check_user_id: string }; Returns: boolean }
       log_audit_event: {
@@ -682,6 +689,8 @@ export type Database = {
         Returns: string
       }
       prune_web_vitals: { Args: { _days?: number }; Returns: number }
+      show_limit: { Args: never; Returns: number }
+      show_trgm: { Args: { "": string }; Returns: string[] }
     }
     Enums: {
       app_role: "admin" | "user"
