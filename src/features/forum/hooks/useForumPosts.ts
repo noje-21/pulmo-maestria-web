@@ -6,6 +6,7 @@ import {
 } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { useAuth } from "@/hooks/useAuth";
 import type { ForumPost, SortBy } from "../types";
 
 export const FORUM_PAGE_SIZE = 20;
@@ -87,6 +88,7 @@ async function fetchForumPage(
  * the N+1 that used to fire from each ReactionButton.
  */
 export function useForumPosts(params: Params) {
+  const { user } = useAuth();
   const query = useInfiniteQuery({
     queryKey: ["forum-posts", params],
     queryFn: ({ pageParam = 0 }) => fetchForumPage(params, pageParam as number),
@@ -109,12 +111,10 @@ export function useForumPosts(params: Params) {
   const postIds = useMemo(() => posts.map((p) => p.id), [posts]);
 
   const reactionsQuery = useQuery({
-    queryKey: ["forum-user-reactions", postIds],
-    enabled: postIds.length > 0,
+    queryKey: ["forum-user-reactions", user?.id ?? null, postIds],
+    enabled: !!user && postIds.length > 0,
     staleTime: 30_000,
     queryFn: async () => {
-      const { data: sessionRes } = await supabase.auth.getSession();
-      if (!sessionRes.session) return new Set<string>();
       const { data, error } = await supabase.rpc("get_user_reactions", {
         _post_type: "forum",
         _post_ids: postIds,
@@ -151,17 +151,17 @@ export function useForumAuthors() {
 }
 
 export function useIsAdmin() {
+  const { user } = useAuth();
   const { data } = useQuery({
-    queryKey: ["is-admin"],
+    queryKey: ["is-admin", user?.id ?? null],
+    enabled: !!user,
     staleTime: 5 * 60_000,
     queryFn: async () => {
-      const { data: sessionRes } = await supabase.auth.getSession();
-      const uid = sessionRes.session?.user.id;
-      if (!uid) return false;
+      if (!user) return false;
       const { data, error } = await supabase
         .from("user_roles")
         .select("role")
-        .eq("user_id", uid)
+        .eq("user_id", user.id)
         .maybeSingle();
       if (error) return false;
       return data?.role === "admin";
