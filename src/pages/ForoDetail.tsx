@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
@@ -35,25 +35,28 @@ const ForoDetail = () => {
   const [replyingTo, setReplyingTo] = useState<string | null>(null);
   const [expandedReplies, setExpandedReplies] = useState<Set<string>>(new Set());
 
-  const toggleReplies = (commentId: string) => {
+  const toggleReplies = useCallback((commentId: string) => {
     setExpandedReplies((prev) => {
       const next = new Set(prev);
       if (next.has(commentId)) next.delete(commentId);
       else next.add(commentId);
       return next;
     });
-  };
+  }, []);
 
   const handleSubmitMain = async () => {
     const ok = await addComment(newComment, null);
     if (ok) setNewComment("");
   };
 
-  const handleSubmitReply = async (parentId: string, content: string) => {
-    const ok = await addComment(content, parentId);
-    if (ok) setReplyingTo(null);
-    return ok;
-  };
+  const handleSubmitReply = useCallback(
+    async (parentId: string, content: string) => {
+      const ok = await addComment(content, parentId);
+      if (ok) setReplyingTo(null);
+      return ok;
+    },
+    [addComment],
+  );
 
   if (loading) {
     return (

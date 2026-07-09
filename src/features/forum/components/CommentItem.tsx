@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { memo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -20,7 +20,7 @@ interface Props {
   onSubmitReply: (parentId: string, content: string) => Promise<boolean> | boolean;
 }
 
-export default function CommentItem({
+function CommentItemImpl({
   comment,
   depth = 0,
   user,
@@ -157,3 +157,6 @@ export default function CommentItem({
     </motion.div>
   );
 }
+
+const CommentItem = memo(CommentItemImpl);
+export default CommentItem;

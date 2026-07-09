@@ -4,14 +4,15 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { z } from "zod";
 import { buildCommentTree, commentSchema } from "../helpers";
+import { useAuth } from "@/hooks/useAuth";
 import type { ForumComment, ForumPost } from "../types";
 
 export function useForumPost(id: string | undefined) {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [post, setPost] = useState<ForumPost | null>(null);
   const [comments, setComments] = useState<ForumComment[]>([]);
   const [loading, setLoading] = useState(true);
-  const [user, setUser] = useState<any>(null);
   const [submitting, setSubmitting] = useState(false);
 
   const loadPost = useCallback(async () => {
@@ -55,13 +56,19 @@ export function useForumPost(id: string | undefined) {
   }, [id]);
 
   useEffect(() => {
-    (async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      setUser(session?.user ?? null);
-    })();
     loadPost();
     loadComments();
-    if (id) supabase.rpc("increment_post_views", { post_id: id }).then(() => {}, () => {});
+    if (id) {
+      // Dedupe view increment per session so refresh + StrictMode don't inflate counts.
+      const viewKey = `forum-viewed-${id}`;
+      if (!sessionStorage.getItem(viewKey)) {
+        sessionStorage.setItem(viewKey, "1");
+        supabase.rpc("increment_post_views", { post_id: id }).then(
+          () => {},
+          () => sessionStorage.removeItem(viewKey),
+        );
+      }
+    }
   }, [id, loadPost, loadComments]);
 
   const addComment = async (content: string, parentId: string | null = null) => {
