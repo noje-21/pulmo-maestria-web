@@ -6,6 +6,7 @@ import { User, Newspaper, Clock } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { es } from "date-fns/locale";
 import type { Novedad } from "../types";
+import { htmlToPlainText } from "@/components/common/RichContent";
 
 interface Props {
   novedad: Novedad;
