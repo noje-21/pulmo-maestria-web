@@ -99,7 +99,6 @@ export function useForumPosts(params: Params) {
   useEffect(() => {
     if (query.error) {
       console.error("Error loading posts:", query.error);
-      toast.error("No pudimos cargar las publicaciones. Intenta refrescar.");
     }
   }, [query.error]);
 
@@ -131,6 +130,9 @@ export function useForumPosts(params: Params) {
     hasNextPage: !!query.hasNextPage,
     fetchNextPage: query.fetchNextPage,
     reactedIds: reactionsQuery.data ?? new Set<string>(),
+    error: query.error as Error | null,
+    refetch: query.refetch,
+    isRefetching: query.isRefetching,
   };
 }
 
