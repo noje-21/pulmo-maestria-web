@@ -57,7 +57,7 @@ export default function NovedadCard({ novedad, index }: Props) {
           </h3>
 
           <p className="text-muted-foreground text-sm line-clamp-2 mb-4 flex-1">
-            {novedad.excerpt || novedad.content.substring(0, 120)}
+            {novedad.excerpt || htmlToPlainText(novedad.content).slice(0, 120)}
           </p>
 
           <div className="flex items-center justify-between pt-4 border-t border-border/30 mt-auto">
