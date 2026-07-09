@@ -13,6 +13,7 @@ export interface ForumPost {
   featured?: boolean;
   status?: string;
   user_id: string;
+  comments_count?: number;
   profiles?: {
     full_name: string;
   };
