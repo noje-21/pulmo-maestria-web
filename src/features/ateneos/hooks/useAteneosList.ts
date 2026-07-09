@@ -22,7 +22,8 @@ export function useAteneosList() {
         } else {
           setAteneos(ateneosData);
         }
-      } catch {
+      } catch (error: any) {
+        console.error("Error loading ateneos:", error);
         setAteneos(ateneosData);
       } finally {
         setLoading(false);
