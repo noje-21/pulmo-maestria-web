@@ -11,6 +11,7 @@ export function useNovedad(slug: string | undefined) {
 
   useEffect(() => {
     if (!slug) return;
+    let cancelled = false;
     (async () => {
       try {
         const { data, error } = await supabase
@@ -18,8 +19,13 @@ export function useNovedad(slug: string | undefined) {
           .select(`*, profiles!novedades_author_id_fkey(full_name)`)
           .eq("slug", slug)
           .eq("status", "published")
-          .single();
+          .maybeSingle();
         if (error) throw error;
+        if (!data) {
+          if (!cancelled) navigate("/novedades");
+          return;
+        }
+        if (cancelled) return;
         setNovedad(data as any);
 
         const { data: relData } = await supabase
@@ -29,14 +35,17 @@ export function useNovedad(slug: string | undefined) {
           .neq("slug", slug)
           .order("published_at", { ascending: false })
           .limit(3);
-        setRelated((relData as RelatedNovedad[]) || []);
+        if (!cancelled) setRelated((relData as RelatedNovedad[]) || []);
       } catch (error: any) {
         console.error("Error loading novedad:", error);
-        navigate("/novedades");
+        if (!cancelled) navigate("/novedades");
       } finally {
-        setLoading(false);
+        if (!cancelled) setLoading(false);
       }
     })();
+    return () => {
+      cancelled = true;
+    };
   }, [slug, navigate]);
 
   return { novedad, related, loading };
