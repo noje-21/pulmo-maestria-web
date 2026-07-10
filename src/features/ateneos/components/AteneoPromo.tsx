@@ -1,9 +1,12 @@
 import { motion } from "framer-motion";
-import { Calendar, Clock, Video, ArrowRight, Sparkles } from "lucide-react";
+import { Calendar, Clock, MapPin } from "lucide-react";
 import flyerAsset from "@/assets/ateneo-flyer-2025.png.asset.json";
 
 const ZOOM_URL =
   "https://us02web.zoom.us/j/85220631979?pwd=M3l1WjNqc0N3Y1h2aTVvWDNYR0crdz09";
+
+// Navy tone matching the flyer's institutional blue.
+const FLYER_NAVY = "#1e2f6b";
 
 export default function AteneoPromo() {
   return (
@@ -11,72 +14,69 @@ export default function AteneoPromo() {
       initial={{ opacity: 0, y: 24 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, ease: "easeOut" }}
-      className="relative overflow-hidden rounded-3xl border border-border/60 bg-card shadow-[0_10px_40px_-15px_hsl(var(--primary)/0.35)]"
+      className="relative overflow-hidden rounded-3xl border border-border/60 bg-white shadow-[0_10px_40px_-15px_rgba(30,47,107,0.35)]"
     >
       <div className="grid lg:grid-cols-2 gap-0">
-        {/* Content */}
-        <div className="order-2 lg:order-1 p-6 sm:p-8 lg:p-10 flex flex-col justify-center bg-gradient-to-br from-[hsl(229,80%,10%)] via-[hsl(229,70%,14%)] to-[hsl(229,60%,18%)] text-white">
-          <span className="inline-flex items-center gap-1.5 self-start px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wide bg-accent/20 text-accent-light border border-accent/30 mb-4">
-            <Sparkles className="w-3 h-3" />
-            En vivo cada semana
-          </span>
-
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold leading-[1.05] tracking-tight mb-2">
+        {/* Content — mirrors the flyer's layout on white */}
+        <div className="order-2 lg:order-1 p-6 sm:p-8 lg:p-12 flex flex-col justify-center bg-white">
+          <h2
+            className="text-3xl sm:text-4xl lg:text-5xl font-extrabold leading-[1.02] tracking-tight uppercase mb-1"
+            style={{ color: FLYER_NAVY }}
+          >
             Hipertensión Pulmonar
           </h2>
-          <p className="text-accent-light text-base sm:text-lg font-semibold mb-5 sm:mb-6">
+          <p className="text-xl sm:text-2xl lg:text-3xl font-extrabold uppercase text-neutral-900 mb-6 sm:mb-8 leading-tight">
             Ateneos Latinoamericanos 2025
           </p>
 
-          <ul className="space-y-1.5 text-white/85 text-sm sm:text-base mb-4">
-            <li className="flex items-start gap-2">
-              <span className="text-accent-light mt-1">•</span>
-              <span>Discusión de casos clínicos</span>
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="text-accent-light mt-1">•</span>
-              <span>Abordaje multidisciplinario</span>
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="text-accent-light mt-1">•</span>
-              <span>Últimas novedades</span>
-            </li>
+          <ul className="space-y-1.5 text-neutral-800 text-base sm:text-lg mb-2">
+            <li>- Discusión de casos clínicos</li>
+            <li>- Abordaje multidisciplinario</li>
+            <li>- Últimas novedades</li>
           </ul>
-
-          <p className="text-white font-semibold text-base sm:text-lg mb-6">
+          <p className="text-neutral-900 font-bold text-base sm:text-lg mb-8">
             ¡Te invitamos a participar!
           </p>
 
-          {/* Info grid */}
-          <div className="grid sm:grid-cols-3 gap-3 sm:gap-4 mb-6">
-            <InfoTile icon={<Calendar className="w-4 h-4" />} label="Día" value="Todos los lunes" />
-            <InfoTile icon={<Clock className="w-4 h-4" />} label="Hora" value="13:00 hs ARG" />
-            <InfoTile icon={<Video className="w-4 h-4" />} label="Plataforma" value="Zoom" />
+          {/* Info rows — icon + label + value like the flyer */}
+          <div className="space-y-4 sm:space-y-5 mb-8">
+            <InfoRow
+              icon={<Calendar className="w-6 h-6" strokeWidth={1.75} />}
+              label="Día"
+              value="Todos los lunes"
+            />
+            <InfoRow
+              icon={<Clock className="w-6 h-6" strokeWidth={1.75} />}
+              label="Hora"
+              value="13:00 hs ARG"
+            />
+            <InfoRow
+              icon={<MapPin className="w-6 h-6" strokeWidth={1.75} />}
+              label="Plataforma"
+              value="Zoom"
+            />
           </div>
 
-          {/* Zoom access */}
-          <div className="rounded-2xl border border-white/15 bg-white/5 px-4 py-3 mb-6 text-sm">
-            <div className="flex flex-wrap gap-x-6 gap-y-1">
-              <div>
-                <span className="text-white/60">ID de reunión: </span>
-                <span className="font-semibold text-white tracking-wide">852 2063 1979</span>
-              </div>
-              <div>
-                <span className="text-white/60">Código: </span>
-                <span className="font-semibold text-white tracking-wide">532924</span>
-              </div>
-            </div>
-          </div>
-
+          {/* UNITE pill button */}
           <a
             href={ZOOM_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="group inline-flex items-center justify-center gap-2 self-start px-6 sm:px-7 py-3.5 rounded-2xl bg-accent text-accent-foreground font-semibold text-sm sm:text-base shadow-lg shadow-accent/25 hover:shadow-accent/40 hover:-translate-y-0.5 transition-all duration-300"
+            className="group inline-flex items-center justify-center self-start px-10 sm:px-12 py-3 rounded-full text-white font-bold tracking-widest text-base sm:text-lg shadow-md hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 mb-4"
+            style={{ backgroundColor: FLYER_NAVY }}
+            aria-label="Unirme al ateneo por Zoom"
           >
-            Unirme al ateneo
-            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            UNIRME AL ATENEO
           </a>
+
+          <div className="text-sm sm:text-base text-neutral-800 leading-relaxed">
+            <p>
+              <span className="font-bold">ID de reunión:</span> 852 2063 1979
+            </p>
+            <p>
+              <span className="font-bold">Código de acceso:</span> 532924
+            </p>
+          </div>
         </div>
 
         {/* Flyer */}
@@ -85,7 +85,7 @@ export default function AteneoPromo() {
             src={flyerAsset.url}
             alt="Flyer Ateneos Latinoamericanos de Hipertensión Pulmonar 2025"
             loading="lazy"
-            className="w-full h-auto max-h-[560px] object-contain rounded-xl"
+            className="w-full h-auto max-h-[640px] object-contain rounded-xl"
           />
         </div>
       </div>
@@ -93,7 +93,7 @@ export default function AteneoPromo() {
   );
 }
 
-function InfoTile({
+function InfoRow({
   icon,
   label,
   value,
@@ -103,12 +103,16 @@ function InfoTile({
   value: string;
 }) {
   return (
-    <div className="rounded-xl border border-white/10 bg-white/5 px-3 py-2.5">
-      <div className="flex items-center gap-1.5 text-accent-light text-xs font-semibold uppercase tracking-wide mb-0.5">
+    <div className="flex items-center gap-4">
+      <div className="shrink-0" style={{ color: FLYER_NAVY }}>
         {icon}
-        {label}
       </div>
-      <div className="text-white text-sm font-medium leading-snug">{value}</div>
+      <div className="leading-tight">
+        <div className="font-bold text-base sm:text-lg" style={{ color: FLYER_NAVY }}>
+          {label}
+        </div>
+        <div className="text-neutral-800 text-sm sm:text-base">{value}</div>
+      </div>
     </div>
   );
 }
