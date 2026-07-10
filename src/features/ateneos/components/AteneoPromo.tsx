@@ -24,6 +24,13 @@ export default function AteneoPromo() {
         aria-hidden="true"
         className="absolute inset-0 w-full h-full object-cover select-none pointer-events-none"
         draggable={false}
+        onError={(e) => {
+          const img = e.currentTarget;
+          if (!img.dataset.fallback) {
+            img.dataset.fallback = "1";
+            img.src = "/ateneo-flyer-blank.png";
+          }
+        }}
       />
 
       {/* Overlay — constrained to the flyer's white left column */}
@@ -90,23 +97,23 @@ export default function AteneoPromo() {
           className="absolute inline-flex items-center justify-center rounded-full text-white font-bold tracking-[0.15em] shadow-md hover:shadow-xl hover:-translate-y-[0.2cqw] transition-all duration-300 whitespace-nowrap"
           style={{
             backgroundColor: FLYER_NAVY,
-            top: "79.5%",
+            top: "80.5%",
             left: "9%",
-            padding: "1.1cqw 2.6cqw",
-            fontSize: "2.2cqw",
+            padding: "0.8cqw 2.2cqw",
+            fontSize: "1.8cqw",
           }}
           aria-label="Unirme al ateneo por Zoom"
         >
           <Video
             strokeWidth={2}
-            style={{ width: "2.6cqw", height: "2.6cqw", marginRight: "0.9cqw" }}
+            style={{ width: "2.1cqw", height: "2.1cqw", marginRight: "0.8cqw" }}
           />
           UNIRME AL ATENEO
         </a>
 
         <div
           className="absolute text-neutral-900 leading-[1.4]"
-          style={{ top: "87%", left: "9%", width: "55%", fontSize: "2cqw" }}
+          style={{ top: "88%", left: "9%", width: "55%", fontSize: "1.9cqw" }}
         >
           <p>
             <span className="font-bold">ID de reunión:</span> 852 2063 1979
