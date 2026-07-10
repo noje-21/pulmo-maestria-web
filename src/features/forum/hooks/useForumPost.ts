@@ -111,6 +111,60 @@ export function useForumPost(id: string | undefined) {
     }
   };
 
+  const editComment = async (commentId: string, content: string) => {
+    if (!user) {
+      toast.error("Inicia sesión para editar tu comentario");
+      return false;
+    }
+    try {
+      setSubmitting(true);
+      const validated = commentSchema.parse({ content });
+      const { error } = await supabase
+        .from("forum_comments")
+        .update({ content: validated.content })
+        .eq("id", commentId)
+        .eq("user_id", user.id);
+      if (error) throw error;
+      toast.success("Comentario actualizado");
+      await loadComments();
+      return true;
+    } catch (error: any) {
+      if (error instanceof z.ZodError) {
+        toast.error(error.issues[0].message);
+      } else {
+        console.error("Error editing comment:", error);
+        toast.error("No pudimos actualizar tu comentario.");
+      }
+      return false;
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const deleteComment = async (commentId: string) => {
+    if (!user) {
+      toast.error("Inicia sesión para eliminar tu comentario");
+      return false;
+    }
+    try {
+      setSubmitting(true);
+      const { error } = await supabase
+        .from("forum_comments")
+        .delete()
+        .eq("id", commentId);
+      if (error) throw error;
+      toast.success("Comentario eliminado");
+      await loadComments();
+      return true;
+    } catch (error: any) {
+      console.error("Error deleting comment:", error);
+      toast.error("No pudimos eliminar el comentario.");
+      return false;
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   return {
     post,
     comments,
@@ -121,6 +175,8 @@ export function useForumPost(id: string | undefined) {
     user,
     submitting,
     addComment,
+    editComment,
+    deleteComment,
     reloadPost: loadPost,
     reloadComments: loadComments,
   };
