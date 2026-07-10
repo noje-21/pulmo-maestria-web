@@ -97,23 +97,23 @@ export default function AteneoPromo() {
           className="absolute inline-flex items-center justify-center rounded-full text-white font-bold tracking-[0.15em] shadow-md hover:shadow-xl hover:-translate-y-[0.2cqw] transition-all duration-300 whitespace-nowrap"
           style={{
             backgroundColor: FLYER_NAVY,
-            top: "80.5%",
+            top: "79%",
             left: "9%",
-            padding: "0.8cqw 2.2cqw",
-            fontSize: "1.8cqw",
+            padding: "0.7cqw 2cqw",
+            fontSize: "1.7cqw",
           }}
           aria-label="Unirme al ateneo por Zoom"
         >
           <Video
             strokeWidth={2}
-            style={{ width: "2.1cqw", height: "2.1cqw", marginRight: "0.8cqw" }}
+            style={{ width: "1.9cqw", height: "1.9cqw", marginRight: "0.7cqw" }}
           />
           UNIRME AL ATENEO
         </a>
 
         <div
           className="absolute text-neutral-900 leading-[1.4]"
-          style={{ top: "88%", left: "9%", width: "55%", fontSize: "1.9cqw" }}
+          style={{ top: "86.5%", left: "9%", width: "55%", fontSize: "1.8cqw" }}
         >
           <p>
             <span className="font-bold">ID de reunión:</span> 852 2063 1979
