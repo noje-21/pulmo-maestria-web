@@ -78,7 +78,7 @@ const Ateneos = () => {
                 Formación Continua
               </span>
               <h1 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold tracking-tight mb-2 sm:mb-3">
-                Ateneos Académicos
+                Ateneos MCP
               </h1>
               <p className="text-muted-foreground text-sm sm:text-base lg:text-lg max-w-2xl mx-auto leading-relaxed px-2">
                 Casos clínicos, actualizaciones y discusiones académicas para mantenerte al día
