@@ -26,44 +26,45 @@ export default function AteneoPromo() {
         draggable={false}
       />
 
-      {/* Overlaid content — mirrors the flyer's layout */}
-      {/* Overlay — sized in cqw so it scales with the card, matching the flyer exactly */}
+      {/* Overlay — constrained to the flyer's white left column */}
       <div className="absolute inset-0 z-10">
-        {/* Titles — placed just under the logo, aligned to left edge like the flyer */}
         <h2
-          className="absolute font-extrabold uppercase leading-[0.95] tracking-tight whitespace-nowrap"
+          className="absolute font-extrabold uppercase leading-[0.9] tracking-tight"
           style={{
             color: FLYER_NAVY,
-            fontSize: "6.8cqw",
-            top: "13.5%",
-            left: "4.5%",
+            fontSize: "5.4cqw",
+            top: "7%",
+            left: "5%",
+            width: "56%",
             letterSpacing: "-0.01em",
           }}
         >
-          HIPERTENSIÓN PULMONAR
+          HIPERTENSIÓN
+          <br />
+          PULMONAR
         </h2>
         <p
-          className="absolute font-extrabold uppercase text-neutral-900 leading-[1] whitespace-nowrap"
-          style={{ fontSize: "5.2cqw", top: "21%", left: "4.5%" }}
+          className="absolute font-extrabold uppercase text-neutral-900 leading-[1.05]"
+          style={{ fontSize: "3.5cqw", top: "23%", left: "5%", width: "54%" }}
         >
           ATENEOS LATINOAMERICANOS 2026
         </p>
 
-        {/* Bullet list */}
         <div
           className="absolute text-neutral-900"
-          style={{ top: "30%", left: "8%", fontSize: "3.4cqw", lineHeight: 1.35 }}
+          style={{ top: "34%", left: "6%", width: "55%", fontSize: "2.6cqw", lineHeight: 1.35 }}
         >
-          <p>-Discusión de casos clínicos</p>
-          <p>-Abordaje multidisciplinario</p>
-          <p>-Últimas novedades</p>
-          <p className="font-bold mt-[0.4cqw]">¡Te invitamos a participar!</p>
+          <p>- Discusión de casos clínicos</p>
+          <p>- Abordaje multidisciplinario</p>
+          <p>- Últimas novedades</p>
+          <p className="font-bold" style={{ marginTop: "0.8cqw" }}>
+            ¡Te invitamos a participar!
+          </p>
         </div>
 
-        {/* Info rows */}
         <div
           className="absolute flex flex-col"
-          style={{ top: "52%", left: "14%", fontSize: "2.9cqw", gap: "2cqw" }}
+          style={{ top: "52%", left: "8%", width: "52%", fontSize: "2.4cqw", gap: "1.4cqw" }}
         >
           <InfoRow
             icon={<Calendar strokeWidth={1.75} className="w-full h-full" />}
@@ -82,32 +83,30 @@ export default function AteneoPromo() {
           />
         </div>
 
-        {/* Zoom CTA — sits on the navy pill area */}
         <a
           href={ZOOM_URL}
           target="_blank"
           rel="noopener noreferrer"
-          className="absolute inline-flex items-center justify-center rounded-full text-white font-bold tracking-[0.18em] shadow-md hover:shadow-xl hover:-translate-y-[0.2cqw] transition-all duration-300 whitespace-nowrap"
+          className="absolute inline-flex items-center justify-center rounded-full text-white font-bold tracking-[0.15em] shadow-md hover:shadow-xl hover:-translate-y-[0.2cqw] transition-all duration-300 whitespace-nowrap"
           style={{
             backgroundColor: FLYER_NAVY,
-            top: "78.5%",
-            left: "8%",
-            padding: "1.2cqw 3cqw",
-            fontSize: "2.6cqw",
+            top: "79.5%",
+            left: "9%",
+            padding: "1.1cqw 2.6cqw",
+            fontSize: "2.2cqw",
           }}
           aria-label="Unirme al ateneo por Zoom"
         >
           <Video
             strokeWidth={2}
-            style={{ width: "3cqw", height: "3cqw", marginRight: "1cqw" }}
+            style={{ width: "2.6cqw", height: "2.6cqw", marginRight: "0.9cqw" }}
           />
           UNIRME AL ATENEO
         </a>
 
-        {/* Credentials */}
         <div
-          className="absolute text-neutral-900 leading-[1.35]"
-          style={{ top: "86.5%", left: "17%", fontSize: "2.3cqw" }}
+          className="absolute text-neutral-900 leading-[1.4]"
+          style={{ top: "87%", left: "9%", width: "55%", fontSize: "2cqw" }}
         >
           <p>
             <span className="font-bold">ID de reunión:</span> 852 2063 1979
