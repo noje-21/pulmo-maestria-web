@@ -191,7 +191,7 @@ const Foro = () => {
                   Comunidad
                 </span>
                 <h1 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold tracking-tight mb-1.5 sm:mb-2">
-                  Foro Profesional
+                  Foro MCP
                 </h1>
                 <p className="text-muted-foreground text-sm sm:text-base lg:text-lg max-w-lg leading-relaxed">
                   Donde las preguntas difíciles encuentran respuestas. Comparte, aprende y crece con colegas.
