@@ -14,7 +14,7 @@ export default function AteneoPromo() {
       initial={{ opacity: 0, y: 24 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, ease: "easeOut" }}
-      className="relative mx-auto w-full max-w-[900px] overflow-hidden rounded-3xl border border-border/60 bg-white shadow-[0_10px_40px_-15px_rgba(30,47,107,0.4)]"
+      className="relative mx-auto w-full max-w-[820px] overflow-hidden rounded-3xl border border-border/60 bg-white shadow-[0_10px_40px_-15px_rgba(30,47,107,0.4)] [container-type:inline-size]"
       style={{ aspectRatio: "850 / 1200" }}
     >
       {/* Background flyer imagery (blank — text erased) */}
@@ -27,43 +27,43 @@ export default function AteneoPromo() {
       />
 
       {/* Overlaid content — mirrors the flyer's layout */}
-      <div className="relative z-10 w-full h-full flex flex-col px-[5%] py-[4%]">
-        {/* Titles */}
-        <div className="text-left">
-          <h2
-            className="font-extrabold uppercase tracking-tight leading-[1]"
-            style={{
-              color: FLYER_NAVY,
-              fontSize: "clamp(1.4rem, 4.6vw, 3rem)",
-            }}
-          >
-            Hipertensión Pulmonar
-          </h2>
-          <p
-            className="font-extrabold uppercase text-neutral-900 leading-tight mt-1"
-            style={{ fontSize: "clamp(1rem, 3.2vw, 2rem)" }}
-          >
-            Ateneos Latinoamericanos 2025
-          </p>
-        </div>
+      {/* Overlay — sized in cqw so it scales with the card, matching the flyer exactly */}
+      <div className="absolute inset-0 z-10">
+        {/* Titles — placed just under the logo, aligned to left edge like the flyer */}
+        <h2
+          className="absolute font-extrabold uppercase leading-[0.95] tracking-tight whitespace-nowrap"
+          style={{
+            color: FLYER_NAVY,
+            fontSize: "6.8cqw",
+            top: "13.5%",
+            left: "4.5%",
+            letterSpacing: "-0.01em",
+          }}
+        >
+          HIPERTENSIÓN PULMONAR
+        </h2>
+        <p
+          className="absolute font-extrabold uppercase text-neutral-900 leading-[1] whitespace-nowrap"
+          style={{ fontSize: "5.2cqw", top: "21%", left: "4.5%" }}
+        >
+          ATENEOS LATINOAMERICANOS 2025
+        </p>
 
         {/* Bullet list */}
         <div
-          className="mt-[5%] text-neutral-900"
-          style={{ fontSize: "clamp(0.75rem, 1.9vw, 1.15rem)" }}
+          className="absolute text-neutral-900"
+          style={{ top: "30%", left: "8%", fontSize: "3.4cqw", lineHeight: 1.35 }}
         >
-          <ul className="space-y-1">
-            <li>- Discusión de casos clínicos</li>
-            <li>- Abordaje multidisciplinario</li>
-            <li>- Últimas novedades</li>
-          </ul>
-          <p className="font-bold mt-2">¡Te invitamos a participar!</p>
+          <p>-Discusión de casos clínicos</p>
+          <p>-Abordaje multidisciplinario</p>
+          <p>-Últimas novedades</p>
+          <p className="font-bold mt-[0.4cqw]">¡Te invitamos a participar!</p>
         </div>
 
         {/* Info rows */}
         <div
-          className="mt-[6%] space-y-[2.5%] max-w-[55%]"
-          style={{ fontSize: "clamp(0.7rem, 1.7vw, 1.05rem)" }}
+          className="absolute flex flex-col"
+          style={{ top: "52%", left: "14%", fontSize: "2.9cqw", gap: "2cqw" }}
         >
           <InfoRow
             icon={<Calendar strokeWidth={1.75} className="w-full h-full" />}
@@ -82,34 +82,39 @@ export default function AteneoPromo() {
           />
         </div>
 
-        {/* Zoom CTA + credentials at bottom-left, avoiding the right-side echocardiogram */}
-        <div className="mt-auto pt-[6%] max-w-[62%]">
-          <a
-            href={ZOOM_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="group inline-flex items-center justify-center gap-2 px-6 sm:px-8 py-2.5 sm:py-3 rounded-full text-white font-bold tracking-[0.15em] shadow-md hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300"
-            style={{
-              backgroundColor: FLYER_NAVY,
-              fontSize: "clamp(0.7rem, 1.55vw, 0.95rem)",
-            }}
-            aria-label="Unirme al ateneo por Zoom"
-          >
-            <Video className="w-4 h-4" strokeWidth={2} />
-            UNIRME AL ATENEO
-          </a>
+        {/* Zoom CTA — sits on the navy pill area */}
+        <a
+          href={ZOOM_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="absolute inline-flex items-center justify-center rounded-full text-white font-bold tracking-[0.18em] shadow-md hover:shadow-xl hover:-translate-y-[0.2cqw] transition-all duration-300 whitespace-nowrap"
+          style={{
+            backgroundColor: FLYER_NAVY,
+            top: "78.5%",
+            left: "8%",
+            padding: "1.2cqw 3cqw",
+            fontSize: "2.6cqw",
+          }}
+          aria-label="Unirme al ateneo por Zoom"
+        >
+          <Video
+            strokeWidth={2}
+            style={{ width: "3cqw", height: "3cqw", marginRight: "1cqw" }}
+          />
+          UNIRME AL ATENEO
+        </a>
 
-          <div
-            className="mt-3 text-neutral-900 leading-snug"
-            style={{ fontSize: "clamp(0.65rem, 1.4vw, 0.9rem)" }}
-          >
-            <p>
-              <span className="font-bold">ID de reunión:</span> 852 2063 1979
-            </p>
-            <p>
-              <span className="font-bold">Código de acceso:</span> 532924
-            </p>
-          </div>
+        {/* Credentials */}
+        <div
+          className="absolute text-neutral-900 leading-[1.35]"
+          style={{ top: "86.5%", left: "17%", fontSize: "2.3cqw" }}
+        >
+          <p>
+            <span className="font-bold">ID de reunión:</span> 852 2063 1979
+          </p>
+          <p>
+            <span className="font-bold">Código de acceso:</span> 532924
+          </p>
         </div>
       </div>
     </motion.article>
@@ -126,14 +131,14 @@ function InfoRow({
   value: string;
 }) {
   return (
-    <div className="flex items-center gap-3">
+    <div className="flex items-center" style={{ gap: "1.5cqw" }}>
       <div
-        className="shrink-0 w-[clamp(1.25rem,3vw,2rem)] h-[clamp(1.25rem,3vw,2rem)]"
-        style={{ color: FLYER_NAVY }}
+        className="shrink-0"
+        style={{ color: FLYER_NAVY, width: "4.5cqw", height: "4.5cqw" }}
       >
         {icon}
       </div>
-      <div className="leading-tight">
+      <div className="leading-[1.15]">
         <div className="font-bold" style={{ color: FLYER_NAVY }}>
           {label}
         </div>
