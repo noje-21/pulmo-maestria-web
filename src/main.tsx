@@ -24,6 +24,23 @@ if ("serviceWorker" in navigator) {
   });
 }
 
+// Recover from stale dynamic-import chunks after a redeploy.
+// If a lazy route fails to fetch (very common on mobile with stale index.html cached),
+// reload once so the fresh chunk hashes are picked up.
+const CHUNK_RELOAD_KEY = "__chunk_reload_at";
+const handleChunkError = (message: string) => {
+  if (!/Failed to fetch dynamically imported module|Importing a module script failed|ChunkLoadError/i.test(message)) return;
+  const last = Number(sessionStorage.getItem(CHUNK_RELOAD_KEY) || 0);
+  if (Date.now() - last < 10_000) return;
+  sessionStorage.setItem(CHUNK_RELOAD_KEY, String(Date.now()));
+  window.location.reload();
+};
+window.addEventListener("error", (e) => handleChunkError(e.message || ""));
+window.addEventListener("unhandledrejection", (e) => {
+  const msg = e.reason?.message || String(e.reason || "");
+  handleChunkError(msg);
+});
+
 createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <HelmetProvider>
