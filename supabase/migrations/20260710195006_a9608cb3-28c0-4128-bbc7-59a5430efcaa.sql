@@ -1,0 +1,1 @@
+GRANT SELECT, INSERT, DELETE ON public.post_reactions TO authenticated; GRANT ALL ON public.post_reactions TO service_role;
