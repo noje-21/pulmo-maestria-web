@@ -2,43 +2,69 @@ import { memo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Clock, Reply, ChevronDown, ChevronUp, Send } from "lucide-react";
+import { Clock, Reply, ChevronDown, ChevronUp, Send, Pencil, Trash2, X } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { es } from "date-fns/locale";
 import { getInitials } from "../helpers";
 import type { ForumComment } from "../types";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 interface Props {
   comment: ForumComment;
   depth?: number;
   user: any;
+  isAdmin?: boolean;
   replyingTo: string | null;
   setReplyingTo: (id: string | null) => void;
   expandedReplies: Set<string>;
   toggleReplies: (id: string) => void;
   submitting: boolean;
   onSubmitReply: (parentId: string, content: string) => Promise<boolean> | boolean;
+  onEdit: (commentId: string, content: string) => Promise<boolean> | boolean;
+  onDelete: (commentId: string) => Promise<boolean> | boolean;
 }
 
 function CommentItemImpl({
   comment,
   depth = 0,
   user,
+  isAdmin = false,
   replyingTo,
   setReplyingTo,
   expandedReplies,
   toggleReplies,
   submitting,
   onSubmitReply,
+  onEdit,
+  onDelete,
 }: Props) {
   const hasReplies = comment.replies && comment.replies.length > 0;
   const isExpanded = expandedReplies.has(comment.id);
   const [replyText, setReplyText] = useState("");
-  const isReplying = replyingTo === comment.id;
+  const [isEditing, setIsEditing] = useState(false);
+  const [editText, setEditText] = useState(comment.content);
+  const isOwner = !!user && user.id === comment.user_id;
+  const canEdit = isOwner;
+  const canDelete = isOwner || isAdmin;
 
   const handleReply = async () => {
     const ok = await onSubmitReply(comment.id, replyText);
     if (ok) setReplyText("");
+  };
+
+  const handleEdit = async () => {
+    const ok = await onEdit(comment.id, editText);
+    if (ok) setIsEditing(false);
   };
 
   return (
@@ -66,11 +92,44 @@ function CommentItemImpl({
               </span>
             </div>
 
-            <p className="text-sm sm:text-base text-foreground/90 whitespace-pre-wrap leading-relaxed mb-3">
-              {comment.content}
-            </p>
+            {isEditing ? (
+              <div className="space-y-3 mb-3">
+                <Textarea
+                  value={editText}
+                  onChange={(e) => setEditText(e.target.value)}
+                  className="min-h-[80px] resize-none rounded-xl"
+                />
+                <div className="flex gap-2">
+                  <Button
+                    onClick={handleEdit}
+                    size="sm"
+                    disabled={submitting || !editText.trim() || editText === comment.content}
+                    className="gap-2"
+                  >
+                    <Send className="w-4 h-4" />
+                    {submitting ? "Guardando..." : "Guardar"}
+                  </Button>
+                  <Button
+                    onClick={() => {
+                      setIsEditing(false);
+                      setEditText(comment.content);
+                    }}
+                    size="sm"
+                    variant="ghost"
+                    className="gap-2"
+                  >
+                    <X className="w-4 h-4" />
+                    Cancelar
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              <p className="text-sm sm:text-base text-foreground/90 whitespace-pre-wrap leading-relaxed mb-3">
+                {comment.content}
+              </p>
+            )}
 
-            <div className="flex items-center gap-4">
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
               {user && (
                 <button
                   onClick={() => setReplyingTo(replyingTo === comment.id ? null : comment.id)}
@@ -79,6 +138,47 @@ function CommentItemImpl({
                   <Reply className="w-3.5 h-3.5" />
                   {replyingTo === comment.id ? "Cancelar" : "Responder"}
                 </button>
+              )}
+              {canEdit && !isEditing && (
+                <button
+                  onClick={() => {
+                    setIsEditing(true);
+                    setEditText(comment.content);
+                  }}
+                  className="text-xs sm:text-sm text-muted-foreground hover:text-primary font-medium flex items-center gap-1.5 transition-colors"
+                >
+                  <Pencil className="w-3.5 h-3.5" />
+                  Editar
+                </button>
+              )}
+              {canDelete && (
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <button
+                      className="text-xs sm:text-sm text-muted-foreground hover:text-destructive font-medium flex items-center gap-1.5 transition-colors"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                      Eliminar
+                    </button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>¿Eliminar este comentario?</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        Esta acción no se puede deshacer. El comentario y sus respuestas asociadas se eliminarán definitivamente.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                      <AlertDialogAction
+                        onClick={() => onDelete(comment.id)}
+                        className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                      >
+                        Eliminar
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
               )}
               {hasReplies && (
                 <button
@@ -143,12 +243,15 @@ function CommentItemImpl({
                 comment={reply}
                 depth={depth + 1}
                 user={user}
+                isAdmin={isAdmin}
                 replyingTo={replyingTo}
                 setReplyingTo={setReplyingTo}
                 expandedReplies={expandedReplies}
                 toggleReplies={toggleReplies}
                 submitting={submitting}
                 onSubmitReply={onSubmitReply}
+                onEdit={onEdit}
+                onDelete={onDelete}
               />
             ))}
           </motion.div>
