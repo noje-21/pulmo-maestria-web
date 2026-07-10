@@ -17,7 +17,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useAteneosList } from "@/features/ateneos/hooks/useAteneosList";
 import { categoryLabels, yearOptions } from "@/features/ateneos/types";
 import AteneoCard from "@/features/ateneos/components/AteneoCard";
-import AteneoFeatured from "@/features/ateneos/components/AteneoFeatured";
+import AteneoPromo from "@/features/ateneos/components/AteneoPromo";
 
 const Ateneos = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -43,8 +43,7 @@ const Ateneos = () => {
     return result;
   }, [searchQuery, categoryFilter, yearFilter, ateneos]);
 
-  const featured = filtered[0];
-  const rest = filtered.slice(1);
+  const rest = filtered;
   const hasActiveFilter = categoryFilter !== "all" || yearFilter !== "all";
 
   const jsonLd = {
@@ -203,7 +202,7 @@ const Ateneos = () => {
             </motion.div>
           ) : (
             <div className="space-y-10 sm:space-y-14">
-              {featured && <AteneoFeatured ateneo={featured} />}
+              <AteneoPromo />
 
               {rest.length > 0 && (
                 <div>
