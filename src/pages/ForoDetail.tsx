@@ -13,6 +13,7 @@ import { es } from "date-fns/locale";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useForumPost } from "@/features/forum/hooks/useForumPost";
 import CommentItem from "@/features/forum/components/CommentItem";
+import { useIsAdmin } from "@/features/forum/hooks/useForumPosts";
 import { getCategoryLabel, getCategoryStyles, getInitials } from "@/features/forum/helpers";
 
 const PostSkeleton = () => (
@@ -56,9 +57,12 @@ const ForoDetail = () => {
     user,
     submitting,
     addComment,
+    editComment,
+    deleteComment,
     reloadPost,
     reloadComments,
   } = useForumPost(id);
+  const isAdmin = useIsAdmin();
   const [newComment, setNewComment] = useState("");
   const [replyingTo, setReplyingTo] = useState<string | null>(null);
   const [expandedReplies, setExpandedReplies] = useState<Set<string>>(new Set());
@@ -322,12 +326,15 @@ const ForoDetail = () => {
                       key={comment.id}
                       comment={comment}
                       user={user}
+                      isAdmin={isAdmin}
                       replyingTo={replyingTo}
                       setReplyingTo={setReplyingTo}
                       expandedReplies={expandedReplies}
                       toggleReplies={toggleReplies}
                       submitting={submitting}
                       onSubmitReply={handleSubmitReply}
+                      onEdit={editComment}
+                      onDelete={deleteComment}
                     />
                   ))
                 ) : (
