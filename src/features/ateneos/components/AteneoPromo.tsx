@@ -46,7 +46,7 @@ export default function AteneoPromo() {
           className="absolute font-extrabold uppercase text-neutral-900 leading-[1] whitespace-nowrap"
           style={{ fontSize: "5.2cqw", top: "21%", left: "4.5%" }}
         >
-          ATENEOS LATINOAMERICANOS 2025
+          ATENEOS LATINOAMERICANOS 2026
         </p>
 
         {/* Bullet list */}
