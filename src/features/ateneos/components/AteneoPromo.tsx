@@ -90,41 +90,39 @@ export default function AteneoPromo() {
           />
         </div>
 
-        {/* Botón + credenciales alineados al mismo ancho */}
-        <div
-          className="absolute flex flex-col z-10"
-          style={{ top: "79%", left: "9%", width: "55%", gap: "2cqw" }}
+        {/* Botón compacto tipo píldora, tamaño del flyer */}
+        <a
+          href={ZOOM_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="absolute inline-flex items-center justify-center rounded-full text-white font-bold tracking-[0.12em] shadow-md hover:shadow-xl hover:-translate-y-[0.2cqw] transition-all duration-300 whitespace-nowrap z-10"
+          style={{
+            top: "79%",
+            left: "9%",
+            width: "42cqw",
+            backgroundColor: FLYER_NAVY,
+            padding: "0.9cqw 1.6cqw",
+            fontSize: "1.55cqw",
+          }}
+          aria-label="Unirme al ateneo por Zoom"
         >
-          <a
-            href={ZOOM_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex w-full items-center justify-center rounded-full text-white font-bold tracking-[0.15em] shadow-md hover:shadow-xl hover:-translate-y-[0.2cqw] transition-all duration-300 whitespace-nowrap"
-            style={{
-              backgroundColor: FLYER_NAVY,
-              padding: "0.7cqw 2cqw",
-              fontSize: "1.7cqw",
-            }}
-            aria-label="Unirme al ateneo por Zoom"
-          >
-            <Video
-              strokeWidth={2}
-              style={{ width: "1.9cqw", height: "1.9cqw", marginRight: "0.7cqw" }}
-            />
-            UNIRME AL ATENEO
-          </a>
+          <Video
+            strokeWidth={2}
+            style={{ width: "1.6cqw", height: "1.6cqw", marginRight: "0.6cqw" }}
+          />
+          UNIRME AL ATENEO
+        </a>
 
-          <div
-            className="w-full text-neutral-900 leading-[1.4]"
-            style={{ fontSize: "1.8cqw" }}
-          >
+        <div
+          className="absolute text-neutral-900 leading-[1.4] z-10"
+          style={{ top: "87%", left: "9%", width: "52cqw", fontSize: "1.8cqw" }}
+        >
             <p>
               <span className="font-bold">ID de reunión:</span> 852 2063 1979
             </p>
             <p>
               <span className="font-bold">Código de acceso:</span> 532924
             </p>
-          </div>
         </div>
 
       </div>
