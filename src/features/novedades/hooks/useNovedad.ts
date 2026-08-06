@@ -26,7 +26,7 @@ export function useNovedad(slug: string | undefined) {
           return;
         }
         if (cancelled) return;
-        setNovedad(data as any);
+        setNovedad(data as unknown as Novedad);
 
         const { data: relData } = await supabase
           .from("novedades")
