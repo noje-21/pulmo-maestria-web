@@ -92,7 +92,7 @@ export default function ReactionButton({
         setCount(prev => prev + 1);
         toast.success("¡Te gusta esta publicación!");
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       toast.error("Error al procesar la reacción");
     } finally {
       setLoading(false);

@@ -35,7 +35,7 @@ const TagInput = ({ selectedTags, onTagsChange, placeholder }: TagInputProps) =>
       
       if (error) throw error;
       setAllTags(data || []);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error loading tags:", error);
     }
   };
@@ -77,7 +77,7 @@ const TagInput = ({ selectedTags, onTagsChange, placeholder }: TagInputProps) =>
       
       setInputValue("");
       setSuggestions([]);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error adding tag:", error);
       toast.error("Error al agregar etiqueta");
     }

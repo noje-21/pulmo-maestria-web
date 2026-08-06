@@ -25,7 +25,7 @@ export function useNovedadesList(searchQuery: string, authorFilter: string) {
         const { data, error } = await query;
         if (error) throw error;
         if (!cancelled) setNovedades((data as any) || []);
-      } catch (error: any) {
+      } catch (error: unknown) {
         console.error("Error loading novedades:", error);
         if (!cancelled) toast.error("No pudimos cargar las novedades. Intenta de nuevo.");
       } finally {
@@ -51,7 +51,7 @@ export function useNovedadesAuthors() {
           .order("full_name");
         if (error) throw error;
         setAuthors(data?.map((p) => ({ id: p.user_id, name: p.full_name })) || []);
-      } catch (error: any) {
+      } catch (error: unknown) {
         console.error("Error loading authors:", error);
       }
     })();

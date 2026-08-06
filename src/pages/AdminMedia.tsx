@@ -29,7 +29,7 @@ const AdminMedia = () => {
 
       if (error) throw error;
       setFiles(data || []);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error loading files:", error);
       toast.error("Error al cargar archivos");
     } finally {

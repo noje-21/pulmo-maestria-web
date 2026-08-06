@@ -35,7 +35,7 @@ export function useForumPost(id: string | undefined) {
         return;
       }
       setPost(data as any);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error loading post:", error);
       setPostError("network");
     } finally {
@@ -55,7 +55,7 @@ export function useForumPost(id: string | undefined) {
         .order("created_at", { ascending: true });
       if (error) throw error;
       setComments(buildCommentTree(data || []));
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error loading comments:", error);
       setCommentsError("No pudimos cargar los comentarios.");
     } finally {
@@ -98,7 +98,7 @@ export function useForumPost(id: string | undefined) {
       toast.success(parentId ? "¡Respuesta publicada!" : "¡Gracias por tu aporte!");
       await loadComments();
       return true;
-    } catch (error: any) {
+    } catch (error: unknown) {
       if (error instanceof z.ZodError) {
         toast.error(error.issues[0].message);
       } else {
@@ -128,7 +128,7 @@ export function useForumPost(id: string | undefined) {
       toast.success("Comentario actualizado");
       await loadComments();
       return true;
-    } catch (error: any) {
+    } catch (error: unknown) {
       if (error instanceof z.ZodError) {
         toast.error(error.issues[0].message);
       } else {
@@ -156,7 +156,7 @@ export function useForumPost(id: string | undefined) {
       toast.success("Comentario eliminado");
       await loadComments();
       return true;
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error deleting comment:", error);
       toast.error("No pudimos eliminar el comentario.");
       return false;

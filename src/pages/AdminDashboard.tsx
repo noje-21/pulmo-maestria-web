@@ -86,7 +86,7 @@ const AdminDashboard = () => {
       }));
 
       setTopPosts(formattedTopPosts);
-    } catch (error: any) {
+    } catch (error: unknown) {
       toast.error("Error al cargar estadísticas");
     } finally {
       setLoading(false);

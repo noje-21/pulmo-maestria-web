@@ -5,6 +5,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { CheckCircle2, AlertTriangle, XCircle, Loader2, Search, RefreshCw, Clock } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { getErrorMessage } from "@/lib/utils";
 
 interface AuditResult {
   type: "ok" | "warn" | "error";
@@ -24,9 +25,9 @@ async function probe(url: string, timeoutMs = 5000): Promise<{ ok: boolean; stat
       res = await fetch(url, { method: "GET", redirect: "follow", signal: ctrl.signal });
     }
     return { ok: res.ok, status: res.status };
-  } catch (e: any) {
+  } catch (e: unknown) {
     if (e.name === "AbortError") return { ok: false, status: 0, error: "timeout" };
-    return { ok: false, status: 0, error: e.message || "network error" };
+    return { ok: false, status: 0, error: getErrorMessage(e) || "network error" };
   } finally {
     clearTimeout(timer);
   }

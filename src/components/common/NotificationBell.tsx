@@ -48,7 +48,7 @@ const NotificationBell = () => {
       
       if (error) throw error;
       setNotifications(data || []);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error loading notifications:", error);
     }
   };
@@ -85,7 +85,7 @@ const NotificationBell = () => {
       setNotifications(prev => 
         prev.map(n => n.id === notificationId ? { ...n, read: true } : n)
       );
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error marking notification as read:", error);
     }
   };

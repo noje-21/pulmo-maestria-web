@@ -15,6 +15,7 @@ import { Plus, Trash2, Edit, Save, X, Newspaper, Search, ChevronLeft, ChevronRig
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import ImageUpload from "@/components/common/ImageUpload";
+import { getErrorMessage } from "@/lib/utils";
 
 const imageUrlSchema = z.string().url().refine(
   (url) => url.startsWith('http://') || url.startsWith('https://'),
@@ -58,7 +59,7 @@ const AdminNovedades = () => {
 
       if (error) throw error;
       setNovedades(data || []);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error loading novedades:", error);
       toast.error("Error al cargar novedades");
     } finally {
@@ -147,9 +148,9 @@ const AdminNovedades = () => {
 
       resetForm();
       await loadNovedades();
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error saving novedad:", error);
-      toast.error("Error al guardar novedad: " + error.message);
+      toast.error("Error al guardar novedad: " + getErrorMessage(error));
     }
   };
 
@@ -165,7 +166,7 @@ const AdminNovedades = () => {
       if (error) throw error;
       toast.success("Novedad eliminada");
       loadNovedades();
-    } catch (error: any) {
+    } catch (error: unknown) {
       toast.error("Error al eliminar novedad");
     }
   };

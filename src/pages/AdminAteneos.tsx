@@ -14,6 +14,7 @@ import ImageUpload from "@/components/common/ImageUpload";
 import { Plus, Trash2, Edit, Save, X, BookOpen, Search, Video, FileText, Calendar, Eye, ArrowUp, ArrowDown, GripVertical, Image as ImageIcon } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
+import { getErrorMessage } from "@/lib/utils";
 
 type AteneoCategory = "caso_clinico" | "actualizacion" | "investigacion" | "rehabilitacion" | "imaging" | "general";
 type AteneoStatus = "draft" | "published" | "archived";
@@ -60,7 +61,7 @@ const AdminAteneos = () => {
 
       if (error) throw error;
       setAteneos(data || []);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error loading ateneos:", error);
       toast.error("Error al cargar ateneos");
     } finally {
@@ -146,9 +147,9 @@ const AdminAteneos = () => {
 
       resetForm();
       await loadAteneos();
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error saving ateneo:", error);
-      toast.error("Error al guardar: " + error.message);
+      toast.error("Error al guardar: " + getErrorMessage(error));
     }
   };
 
@@ -159,7 +160,7 @@ const AdminAteneos = () => {
       if (error) throw error;
       toast.success("Ateneo eliminado");
       loadAteneos();
-    } catch (error: any) {
+    } catch (error: unknown) {
       toast.error("Error al eliminar ateneo");
     }
   };
