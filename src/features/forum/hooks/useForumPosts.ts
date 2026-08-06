@@ -55,7 +55,10 @@ async function fetchForumPage(
     query = query.or(`title.ilike.%${safe}%,content.ilike.%${safe}%`);
   }
   if (categoryFilter !== "all") {
-    query = query.eq("category", categoryFilter as ForumPost["category"]);
+    query = query.eq(
+      "category",
+      categoryFilter as "case_discussions" | "clinical_questions" | "general" | "shared_resources",
+    );
   }
   if (authorFilter !== "all") {
     query = query.eq("user_id", authorFilter);
