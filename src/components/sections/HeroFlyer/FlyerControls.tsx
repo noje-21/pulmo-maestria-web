@@ -90,7 +90,15 @@ const HeroCTAs = memo(function HeroCTAs({
 });
 
 /* ─── Hero text — memoized: never re-renders on video rotation ─── */
-export const FlyerControls = memo(function FlyerControls({ onReservar }: { onReservar: () => void }) {
+export const FlyerControls = memo(function FlyerControls({
+  onReservar,
+  asHeading = true,
+}: {
+  onReservar: () => void;
+  /** Only one instance per page should render the real <h1> (SEO/a11y) */
+  asHeading?: boolean;
+}) {
+  const Heading = (asHeading ? "h1" : "div") as "h1" | "div";
   return (
     <div style={{ contain: "layout style" }}>
       {/* Badge: Edición 2026 · Cupos limitados */}
@@ -119,7 +127,8 @@ export const FlyerControls = memo(function FlyerControls({ onReservar }: { onRes
       </div>
 
       {/* H1 */}
-      <h1
+      <Heading
+        role={asHeading ? undefined : "presentation"}
         className="text-[1.35rem] xs:text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold text-white leading-[1.15] mb-4 break-words hyphens-auto animate-fade-in-up"
         style={{ animationDelay: "300ms", animationDuration: "450ms" }}
       >
@@ -127,7 +136,7 @@ export const FlyerControls = memo(function FlyerControls({ onReservar }: { onRes
         <span className="bg-gradient-to-r from-accent-light to-accent bg-clip-text text-transparent">
           circulación pulmonar
         </span>
-      </h1>
+      </Heading>
 
       {/* Date */}
       <div
