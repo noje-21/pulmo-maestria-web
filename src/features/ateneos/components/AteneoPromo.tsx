@@ -92,41 +92,47 @@ export default function AteneoPromo() {
           />
         </div>
 
-        {/* Botón compacto tipo píldora, tamaño del flyer */}
-        <a
-          href={ZOOM_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="absolute inline-flex items-center justify-center rounded-full text-white font-bold tracking-[0.12em] shadow-md hover:shadow-xl hover:-translate-y-[0.2cqw] transition-all duration-300 whitespace-nowrap z-10"
-          style={{
-            top: "79%",
-            left: "13%",
-            width: "25cqw",
-            backgroundColor: FLYER_NAVY,
-            padding: "0.7cqw 1cqw",
-            fontSize: "1.25cqw",
-          }}
-          aria-label="Unirme al ateneo por Zoom"
-        >
-          <Video
-            strokeWidth={2}
-            style={{ width: "1.4cqw", height: "1.4cqw", marginRight: "0.5cqw" }}
-          />
-          UNIRME AL ATENEO
-        </a>
-
+        {/* Botón + datos de reunión: columna en flujo, nunca se superponen */}
         <div
-          className="absolute text-neutral-900 leading-[1.4] z-10"
-          style={{ top: "85%", left: "9%", width: "52cqw", fontSize: "1.8cqw" }}
+          className="absolute z-10 flex flex-col"
+          style={{ top: "78%", left: "9%", width: "56cqw", gap: "1.6cqw" }}
         >
+          <a
+            href={ZOOM_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center justify-center rounded-full text-white font-bold tracking-[0.08em] shadow-md hover:shadow-xl transition-all duration-300 whitespace-nowrap leading-none"
+            style={{
+              width: "28cqw",
+              backgroundColor: FLYER_NAVY,
+              padding: "0.9cqw 1cqw",
+              fontSize: "clamp(7px, 1.35cqw, 13px)",
+            }}
+            aria-label="Unirme al ateneo por Zoom"
+          >
+            <Video
+              strokeWidth={2}
+              style={{
+                width: "clamp(8px, 1.6cqw, 15px)",
+                height: "clamp(8px, 1.6cqw, 15px)",
+                marginRight: "0.6cqw",
+              }}
+            />
+            UNIRME AL ATENEO
+          </a>
+
+          <div
+            className="text-neutral-900 leading-[1.4]"
+            style={{ fontSize: "clamp(9px, 1.8cqw, 17px)" }}
+          >
             <p>
               <span className="font-bold">ID de reunión:</span> 852 2063 1979
             </p>
             <p>
               <span className="font-bold">Código de acceso:</span> 532924
             </p>
+          </div>
         </div>
-
       </div>
     </motion.article>
   );

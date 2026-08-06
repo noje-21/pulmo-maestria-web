@@ -52,7 +52,7 @@ const ImageLazy = memo(function ImageLazy({
     <div 
       ref={imgRef}
       className={cn(
-        "relative overflow-hidden bg-muted/30",
+        "relative overflow-hidden bg-muted/30 w-full h-full",
         aspectClasses[aspectRatio]
       )}
     >
