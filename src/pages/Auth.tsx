@@ -109,11 +109,9 @@ const Auth = () => {
               </div>
             </motion.div>
             
-            <CardTitle asChild>
-              <h1 className="text-2xl sm:text-3xl font-bold text-foreground">
+            <h1 className="text-2xl sm:text-3xl font-bold text-foreground leading-none tracking-tight">
               ¡Hola de nuevo!
-              </h1>
-            </CardTitle>
+            </h1>
             <CardDescription className="text-muted-foreground mt-2">
               Ingresa tus datos para continuar donde lo dejaste
             </CardDescription>

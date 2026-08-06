@@ -64,7 +64,7 @@ describe("GalleryYearSection", () => {
     render(
       <GalleryYearSection gallery={mockGallery} galleryIndex={0} onImageClick={onImageClick} />
     );
-    const heroImg = screen.getByAlt("Edición 2024");
+    const heroImg = screen.getByAltText("Edición 2024");
     expect(heroImg).toBeInTheDocument();
     expect(heroImg).toHaveAttribute("src", "/hero-2024.webp");
     expect(heroImg).toHaveAttribute("loading", "lazy");
@@ -90,8 +90,7 @@ describe("GalleryYearSection", () => {
     render(
       <GalleryYearSection gallery={mockGallery} galleryIndex={0} onImageClick={onImageClick} />
     );
-    // BlurUpImage renders alt text both on img and in overlay
-    expect(screen.getAllByText("Imagen 1").length).toBeGreaterThanOrEqual(1);
-    expect(screen.getAllByText("Imagen 2").length).toBeGreaterThanOrEqual(1);
+    expect(screen.getByAltText("Imagen 1")).toBeInTheDocument();
+    expect(screen.getByAltText("Imagen 2")).toBeInTheDocument();
   });
 });
