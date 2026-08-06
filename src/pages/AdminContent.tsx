@@ -92,7 +92,7 @@ const defaultModulos: ModuloItem[] = [
 const AdminContent = () => {
   const [loading, setLoading] = useState(true);
   const [savingSection, setSavingSection] = useState<string | null>(null);
-  const [content, setContent] = useState<Record<string, unknown>>({});
+  const [content, setContent] = useState<Record<string, Record<string, any>>>({});
   const [dirty, setDirty] = useState<Set<string>>(new Set());
   const [modulos, setModulos] = useState<ModuloItem[]>([]);
   const [pdfSource, setPdfSource] = useState("MAESTRIA_CP_2025.pdf");
