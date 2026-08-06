@@ -19,16 +19,18 @@ export default function AteneoPromo() {
     >
       {/* Background flyer imagery (blank — text erased) */}
       <img
-        src={flyerAsset.url}
+        src="/ateneo-flyer-blank.webp"
         alt=""
         aria-hidden="true"
+        width={848}
+        height={1264}
         className="absolute inset-0 w-full h-full object-cover select-none pointer-events-none"
         draggable={false}
         onError={(e) => {
           const img = e.currentTarget;
           if (!img.dataset.fallback) {
             img.dataset.fallback = "1";
-            img.src = "/ateneo-flyer-blank.png";
+            img.src = flyerAsset.url;
           }
         }}
       />
