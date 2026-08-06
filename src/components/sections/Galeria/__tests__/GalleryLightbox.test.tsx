@@ -7,7 +7,7 @@ import GalleryLightbox from "../GalleryLightbox";
 vi.mock("framer-motion", () => ({
   AnimatePresence: ({ children }: { children: React.ReactNode }) => <>{children}</>,
   motion: {
-    div: ({ children, onClick, className, ...props }: any) => (
+    div: ({ children, onClick, className, ...props }: Record<string, unknown> & { children?: React.ReactNode; onClick?: () => void; className?: string }) => (
       <div onClick={onClick} className={className} data-testid={props["data-testid"]}>
         {children}
       </div>

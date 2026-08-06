@@ -7,14 +7,14 @@ import type { YearGallery } from "../types";
 // Mock framer-motion
 vi.mock("framer-motion", () => ({
   motion: {
-    div: ({ children, className }: any) => <div className={className}>{children}</div>,
+    div: ({ children, className }: { children?: React.ReactNode; className?: string }) => <div className={className}>{children}</div>,
   },
 }));
 
 // Mock Swiper components
 vi.mock("swiper/react", () => ({
-  Swiper: ({ children }: any) => <div data-testid="swiper">{children}</div>,
-  SwiperSlide: ({ children }: any) => <div data-testid="swiper-slide">{children}</div>,
+  Swiper: ({ children }: { children?: React.ReactNode }) => <div data-testid="swiper">{children}</div>,
+  SwiperSlide: ({ children }: { children?: React.ReactNode }) => <div data-testid="swiper-slide">{children}</div>,
 }));
 
 vi.mock("swiper/modules", () => ({

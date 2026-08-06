@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useScrollToSection } from "@/hooks/useScrollToSection";
+import type { User } from "@supabase/supabase-js";
 
 type WindowExt = Window & {
   requestIdleCallback?: (cb: () => void, opts?: { timeout?: number }) => number;
@@ -21,7 +22,7 @@ const loadSupabase = () => import("@/integrations/supabase/client").then((m) => 
 export function useNavState() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
 
   const navigate = useNavigate();

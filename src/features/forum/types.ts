@@ -17,7 +17,7 @@ export interface ForumPost {
   profiles?: {
     full_name: string;
   };
-  forum_comments?: any[];
+  forum_comments?: { count: number }[];
 }
 
 export interface ForumComment {

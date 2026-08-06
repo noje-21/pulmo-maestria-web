@@ -10,7 +10,7 @@ afterEach(() => {
 });
 
 // Mock IntersectionObserver
-(globalThis as any).IntersectionObserver = class IntersectionObserver {
+(globalThis as unknown as Record<string, unknown>).IntersectionObserver = class IntersectionObserver {
   constructor() {}
   disconnect() {}
   observe() {}
@@ -18,7 +18,7 @@ afterEach(() => {
     return [];
   }
   unobserve() {}
-} as any;
+} as unknown as MediaQueryList;
 
 // Mock window.matchMedia
 Object.defineProperty(window, 'matchMedia', {

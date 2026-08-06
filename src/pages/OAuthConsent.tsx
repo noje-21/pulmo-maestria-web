@@ -6,9 +6,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 
 // Minimal typed shim: supabase.auth.oauth is a beta namespace not yet in types.
 type OAuthNs = {
-  getAuthorizationDetails: (id: string) => Promise<{ data: any; error: { message: string } | null }>;
-  approveAuthorization: (id: string) => Promise<{ data: any; error: { message: string } | null }>;
-  denyAuthorization: (id: string) => Promise<{ data: any; error: { message: string } | null }>;
+  getAuthorizationDetails: (id: string) => Promise<{ data: unknown; error: { message: string } | null }>;
+  approveAuthorization: (id: string) => Promise<{ data: unknown; error: { message: string } | null }>;
+  denyAuthorization: (id: string) => Promise<{ data: unknown; error: { message: string } | null }>;
 };
 const oauth = (): OAuthNs => (supabase.auth as unknown as { oauth: OAuthNs }).oauth;
 
@@ -25,7 +25,7 @@ function ConsentBody({ children }: { children: React.ReactNode }) {
 export default function OAuthConsent() {
   const [params] = useSearchParams();
   const authorizationId = params.get("authorization_id") ?? "";
-  const [details, setDetails] = useState<any>(null);
+  const [details, setDetails] = useState<Record<string, unknown> | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 

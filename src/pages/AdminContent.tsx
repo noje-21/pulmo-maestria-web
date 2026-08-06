@@ -92,7 +92,7 @@ const defaultModulos: ModuloItem[] = [
 const AdminContent = () => {
   const [loading, setLoading] = useState(true);
   const [savingSection, setSavingSection] = useState<string | null>(null);
-  const [content, setContent] = useState<Record<string, any>>({});
+  const [content, setContent] = useState<Record<string, unknown>>({});
   const [dirty, setDirty] = useState<Set<string>>(new Set());
   const [modulos, setModulos] = useState<ModuloItem[]>([]);
   const [pdfSource, setPdfSource] = useState("MAESTRIA_CP_2025.pdf");
@@ -108,8 +108,8 @@ const AdminContent = () => {
       const { data, error } = await supabase.from("site_content").select("*");
       if (error) throw error;
 
-      const map: Record<string, any> = {};
-      data?.forEach((item: { section: string; content: any }) => {
+      const map: Record<string, unknown> = {};
+      data?.forEach((item: { section: string; content: unknown }) => {
         map[item.section] = item.content;
       });
       setContent(map);
