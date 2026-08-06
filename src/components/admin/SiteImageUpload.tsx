@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { Upload, X, Loader2, Eye, Image as ImageIcon, Zap, CheckCircle2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { getErrorMessage } from "@/lib/utils";
 
 /* ── Responsive breakpoints for auto-generated variants ── */
 const RESPONSIVE_WIDTHS = [480, 768, 1200, 1920] as const;
@@ -175,8 +176,8 @@ export const SiteImageUpload = ({
       toast.success(
         `Imagen optimizada: ${formatBytes(main.blob.size)} (${pct > 0 ? `-${pct}%` : "sin cambios"}) + ${variantResults.length} variantes responsivas`
       );
-    } catch (err: any) {
-      toast.error("Error al subir: " + err.message);
+    } catch (err: unknown) {
+      toast.error("Error al subir: " + getErrorMessage(err));
       URL.revokeObjectURL(localUrl);
       setPreview(null);
       setMeta(null);

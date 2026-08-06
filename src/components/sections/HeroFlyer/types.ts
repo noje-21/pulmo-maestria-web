@@ -1,3 +1,11 @@
+
+type NavigatorExt = Navigator & {
+  platform?: string;
+  maxTouchPoints?: number;
+  deviceMemory?: number;
+  connection?: { effectiveType?: string; saveData?: boolean };
+};
+
 export interface FlyerVideo {
   id: number;
   srcMobile: string;
@@ -41,11 +49,11 @@ export const INSCRIPTION_DEADLINE = new Date("2026-11-01T23:59:59-03:00");
 export const isIOS =
   typeof navigator !== "undefined" &&
   (/iPad|iPhone|iPod/.test(navigator.userAgent) ||
-    (navigator.platform === "MacIntel" && (navigator as any).maxTouchPoints > 1));
+    (navigator.platform === "MacIntel" && (navigator as NavigatorExt).maxTouchPoints > 1));
 
 export function shouldSkipPreload(): boolean {
   if (typeof navigator === "undefined") return false;
-  const conn = (navigator as any).connection;
+  const conn = (navigator as NavigatorExt).connection;
   if (conn?.saveData) return true;
   if (conn?.effectiveType && /(^2g$|^slow-2g$|^3g$)/.test(conn.effectiveType)) return true;
   // iOS Safari ignores prefetched video bytes for <video> playback,

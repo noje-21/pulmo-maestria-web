@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { Upload, X, Loader2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { getErrorMessage } from "@/lib/utils";
 
 interface ImageUploadProps {
   onImageUploaded: (url: string) => void;
@@ -73,9 +74,9 @@ const ImageUpload = ({
       if (generateTitle && onTitleGenerated) {
         await generateImageTitle(file);
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error uploading image:", error);
-      toast.error("Error al subir imagen: " + error.message);
+      toast.error("Error al subir imagen: " + getErrorMessage(error));
     } finally {
       setUploading(false);
       if (fileInputRef.current) {
@@ -108,7 +109,7 @@ const ImageUpload = ({
           onTitleGenerated(data.title);
         }
       };
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error generating title:", error);
       // No mostrar error si falla la generación de título, es opcional
     } finally {

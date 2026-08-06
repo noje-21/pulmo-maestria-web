@@ -7,7 +7,7 @@ import GalleryLightbox from "../GalleryLightbox";
 vi.mock("framer-motion", () => ({
   AnimatePresence: ({ children }: { children: React.ReactNode }) => <>{children}</>,
   motion: {
-    div: ({ children, onClick, className, ...props }: any) => (
+    div: ({ children, onClick, className, ...props }: Record<string, unknown> & { children?: React.ReactNode; onClick?: () => void; className?: string }) => (
       <div onClick={onClick} className={className} data-testid={props["data-testid"]}>
         {children}
       </div>
@@ -41,14 +41,14 @@ describe("GalleryLightbox", () => {
 
   it("renders image when selectedImage is provided", () => {
     render(<GalleryLightbox selectedImage={selectedImage} {...mockHandlers} />);
-    const img = screen.getByAlt("Evaluación Hemodinámica");
+    const img = screen.getByAltText("Evaluación Hemodinámica");
     expect(img).toBeInTheDocument();
     expect(img).toHaveAttribute("src", "/test.webp");
   });
 
-  it("displays caption text", () => {
+  it("exposes the image caption through alt text", () => {
     render(<GalleryLightbox selectedImage={selectedImage} {...mockHandlers} />);
-    expect(screen.getByText("Evaluación Hemodinámica")).toBeInTheDocument();
+    expect(screen.getByAltText("Evaluación Hemodinámica")).toBeInTheDocument();
   });
 
   it("calls onClose when close button is clicked", () => {
@@ -74,7 +74,7 @@ describe("GalleryLightbox", () => {
 
   it("renders image with eager loading for lightbox", () => {
     render(<GalleryLightbox selectedImage={selectedImage} {...mockHandlers} />);
-    const img = screen.getByAlt("Evaluación Hemodinámica");
+    const img = screen.getByAltText("Evaluación Hemodinámica");
     expect(img).toHaveAttribute("loading", "eager");
   });
 

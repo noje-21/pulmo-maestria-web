@@ -6,10 +6,11 @@ import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
 import { MessageSquare, FileText } from "lucide-react";
+import type { User } from "@supabase/supabase-js";
 
 const Profile = () => {
   const [loading, setLoading] = useState(true);
-  const [profile, setProfile] = useState<any>(null);
+  const [profile, setProfile] = useState<User | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {

@@ -17,6 +17,7 @@ import { es } from "date-fns/locale";
 import ImageUpload from "@/components/common/ImageUpload";
 import TagInput from "@/features/forum/TagInput";
 import RichTextEditor from "@/components/common/RichTextEditor";
+import { getErrorMessage } from "@/lib/utils";
 
 const imageUrlSchema = z.string().url().refine(
   (url) => url.startsWith('http://') || url.startsWith('https://'),
@@ -59,7 +60,7 @@ const AdminForo = () => {
 
       if (error) throw error;
       setPosts(data || []);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error loading posts:", error);
       toast.error("Error al cargar publicaciones");
     } finally {
@@ -183,9 +184,9 @@ const AdminForo = () => {
       toast.success(editingId ? "Publicación actualizada" : "Publicación creada");
       resetForm();
       await loadPosts();
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error saving post:", error);
-      toast.error("Error al guardar publicación: " + error.message);
+      toast.error("Error al guardar publicación: " + getErrorMessage(error));
     }
   };
 
@@ -201,7 +202,7 @@ const AdminForo = () => {
       if (error) throw error;
       toast.success("Publicación eliminada");
       loadPosts();
-    } catch (error: any) {
+    } catch (error: unknown) {
       toast.error("Error al eliminar publicación");
     }
   };
@@ -216,7 +217,7 @@ const AdminForo = () => {
       if (error) throw error;
       toast.success(currentPinned ? "Publicación desanclada" : "Publicación anclada");
       loadPosts();
-    } catch (error: any) {
+    } catch (error: unknown) {
       toast.error("Error al actualizar publicación");
     }
   };

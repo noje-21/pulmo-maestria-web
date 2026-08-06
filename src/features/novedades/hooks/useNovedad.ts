@@ -36,7 +36,7 @@ export function useNovedad(slug: string | undefined) {
           .order("published_at", { ascending: false })
           .limit(3);
         if (!cancelled) setRelated((relData as RelatedNovedad[]) || []);
-      } catch (error: any) {
+      } catch (error: unknown) {
         console.error("Error loading novedad:", error);
         if (!cancelled) navigate("/novedades");
       } finally {

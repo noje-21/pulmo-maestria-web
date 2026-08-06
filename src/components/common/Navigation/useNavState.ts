@@ -1,6 +1,13 @@
 import { useCallback, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useScrollToSection } from "@/hooks/useScrollToSection";
+import type { User } from "@supabase/supabase-js";
+
+type WindowExt = Window & {
+  requestIdleCallback?: (cb: () => void, opts?: { timeout?: number }) => number;
+  cancelIdleCallback?: (id: number) => void;
+};
+
 
 // Lazy-loaded to avoid pulling Supabase into the initial bundle.
 // The Navigation component renders on first paint, but its auth lookup can
@@ -15,7 +22,7 @@ const loadSupabase = () => import("@/integrations/supabase/client").then((m) => 
 export function useNavState() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
 
   const navigate = useNavigate();
@@ -104,7 +111,7 @@ export function useNavState() {
     };
 
     // Defer to idle so it never competes with first paint.
-    const ric = (window as any).requestIdleCallback as
+    const ric = (window as WindowExt).requestIdleCallback as
       | ((cb: () => void, opts?: { timeout: number }) => number)
       | undefined;
     const handle: number = ric
@@ -114,7 +121,7 @@ export function useNavState() {
     return () => {
       cancelled = true;
       if (unsub) unsub();
-      const cic = (window as any).cancelIdleCallback as ((id: number) => void) | undefined;
+      const cic = (window as WindowExt).cancelIdleCallback as ((id: number) => void) | undefined;
       if (ric && cic) cic(handle as number);
       else clearTimeout(handle as number);
     };

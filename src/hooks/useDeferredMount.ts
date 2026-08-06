@@ -1,5 +1,11 @@
 import { useEffect, useState } from "react";
 
+type WindowExt = Window & {
+  requestIdleCallback?: (cb: () => void, opts?: { timeout?: number }) => number;
+  cancelIdleCallback?: (id: number) => void;
+};
+
+
 /**
  * Returns false on the first paint, then flips to true once the browser is
  * idle (or after `fallbackMs`). Use to delay mounting heavy components
@@ -22,7 +28,7 @@ export function useDeferredMount(fallbackMs = 600): boolean {
 
     // Wait one paint, then queue idle work.
     const raf = requestAnimationFrame(() => {
-      const ric = (window as any).requestIdleCallback as
+      const ric = (window as WindowExt).requestIdleCallback as
         | ((cb: () => void, opts?: { timeout: number }) => number)
         | undefined;
       if (ric) ric(flip, { timeout: fallbackMs });

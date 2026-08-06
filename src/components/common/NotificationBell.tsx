@@ -8,6 +8,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
+import type { User } from "@supabase/supabase-js";
 
 interface Notification {
   id: string;
@@ -22,7 +23,7 @@ const NotificationBell = () => {
   const navigate = useNavigate();
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [showDropdown, setShowDropdown] = useState(false);
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
     checkAuth();
@@ -48,7 +49,7 @@ const NotificationBell = () => {
       
       if (error) throw error;
       setNotifications(data || []);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error loading notifications:", error);
     }
   };
@@ -85,7 +86,7 @@ const NotificationBell = () => {
       setNotifications(prev => 
         prev.map(n => n.id === notificationId ? { ...n, read: true } : n)
       );
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error marking notification as read:", error);
     }
   };

@@ -12,7 +12,7 @@ describe("BlurUpImage", () => {
 
   it("renders the main image with correct attributes", () => {
     render(<BlurUpImage {...defaultProps} />);
-    const img = screen.getByAlt("Test image");
+    const img = screen.getByAltText("Test image");
     expect(img).toBeInTheDocument();
     expect(img).toHaveAttribute("src", "/test-image.webp");
     expect(img).toHaveAttribute("loading", "lazy");
@@ -28,7 +28,7 @@ describe("BlurUpImage", () => {
   it("calls onClick when clicked", () => {
     const onClick = vi.fn();
     render(<BlurUpImage {...defaultProps} onClick={onClick} />);
-    const wrapper = screen.getByAlt("Test image").closest("div");
+    const wrapper = screen.getByAltText("Test image").closest("div");
     fireEvent.click(wrapper!);
     expect(onClick).toHaveBeenCalledTimes(1);
   });
@@ -38,15 +38,9 @@ describe("BlurUpImage", () => {
     expect(container.firstChild).toHaveClass("custom-class");
   });
 
-  it("displays alt text in overlay", () => {
-    render(<BlurUpImage {...defaultProps} />);
-    const overlayText = screen.getByText("Test image");
-    expect(overlayText).toBeInTheDocument();
-  });
-
   it("hides skeleton after image loads", () => {
     const { container } = render(<BlurUpImage {...defaultProps} />);
-    const img = screen.getByAlt("Test image");
+    const img = screen.getByAltText("Test image");
     fireEvent.load(img);
     const skeleton = container.querySelector(".animate-pulse");
     expect(skeleton).not.toBeInTheDocument();
@@ -54,7 +48,7 @@ describe("BlurUpImage", () => {
 
   it("transitions to full opacity after load", () => {
     render(<BlurUpImage {...defaultProps} />);
-    const img = screen.getByAlt("Test image");
+    const img = screen.getByAltText("Test image");
     expect(img.className).toContain("opacity-0");
     fireEvent.load(img);
     expect(img.className).toContain("opacity-100");

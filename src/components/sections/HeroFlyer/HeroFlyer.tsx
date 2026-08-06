@@ -40,7 +40,7 @@ export const HeroFlyer = () => {
         {/* Desktop layout */}
         <div className="hidden lg:grid lg:grid-cols-7 lg:gap-8 lg:items-center">
           <div className="lg:col-span-2 lg:pt-8 flex flex-col justify-start">
-            <FlyerControls onReservar={openReservar} />
+            <FlyerControls onReservar={openReservar} asHeading={false} />
           </div>
 
           <div

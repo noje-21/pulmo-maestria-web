@@ -11,14 +11,14 @@ vi.mock("framer-motion", () => {
   const actual = vi.importActual("framer-motion");
   return {
     ...actual,
-    AnimatePresence: ({ children }: any) => children,
+    AnimatePresence: ({ children }: { children?: React.ReactNode }) => children,
     motion: new Proxy(
       {},
       {
         get: (_target, prop: string) => {
-          const Component = (props: any) => {
+          const Component = (props: Record<string, unknown>) => {
             const { initial, animate, exit, transition, whileInView, viewport, whileHover, whileTap, style, ...rest } = props;
-            const Tag = prop as any;
+            const Tag = prop as keyof JSX.IntrinsicElements;
             return <Tag style={style} {...rest} />;
           };
           Component.displayName = `motion.${prop}`;

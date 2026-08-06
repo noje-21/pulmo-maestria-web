@@ -10,6 +10,7 @@ import { z } from "zod";
 import { motion } from "framer-motion";
 import { User, Mail, Lock, ArrowRight, GraduationCap } from "lucide-react";
 import logoMaestria from "@/assets/logo-maestria.webp";
+import { getErrorMessage } from "@/lib/utils";
 
 const registerSchema = z.object({
   fullName: z.string().trim().min(2, "El nombre debe tener al menos 2 caracteres").max(100, "El nombre es muy largo"),
@@ -54,11 +55,11 @@ const Register = () => {
 
       toast.success("¡Bienvenido a la comunidad! Ya puedes iniciar sesión.");
       setTimeout(() => navigate("/auth"), 2000);
-    } catch (error: any) {
+    } catch (error: unknown) {
       if (error instanceof z.ZodError) {
         toast.error(error.issues[0].message);
       } else {
-        toast.error(error.message || "Algo salió mal. Por favor, intenta de nuevo.");
+        toast.error(getErrorMessage(error) || "Algo salió mal. Por favor, intenta de nuevo.");
       }
     } finally {
       setLoading(false);

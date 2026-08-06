@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import { motion } from "framer-motion";
 import { Mail, Lock, ArrowRight, GraduationCap } from "lucide-react";
 import logoMaestria from "@/assets/logo-maestria.webp";
+import { getErrorMessage } from "@/lib/utils";
 
 const Auth = () => {
   const [email, setEmail] = useState("");
@@ -67,8 +68,8 @@ const Auth = () => {
           navigate("/foro");
         }
       }
-    } catch (error: any) {
-      toast.error(error.message || "No pudimos iniciar sesión. ¿Verificaste tus datos?");
+    } catch (error: unknown) {
+      toast.error(getErrorMessage(error) || "No pudimos iniciar sesión. ¿Verificaste tus datos?");
     } finally {
       setLoading(false);
     }
@@ -109,9 +110,9 @@ const Auth = () => {
               </div>
             </motion.div>
             
-            <CardTitle className="text-2xl sm:text-3xl font-bold text-foreground">
+            <h1 className="text-2xl sm:text-3xl font-bold text-foreground leading-none tracking-tight">
               ¡Hola de nuevo!
-            </CardTitle>
+            </h1>
             <CardDescription className="text-muted-foreground mt-2">
               Ingresa tus datos para continuar donde lo dejaste
             </CardDescription>
