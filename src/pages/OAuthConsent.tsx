@@ -25,7 +25,12 @@ function ConsentBody({ children }: { children: React.ReactNode }) {
 export default function OAuthConsent() {
   const [params] = useSearchParams();
   const authorizationId = params.get("authorization_id") ?? "";
-  const [details, setDetails] = useState<Record<string, unknown> | null>(null);
+  type ConsentDetails = {
+    redirect_url?: string;
+    redirect_to?: string;
+    client?: { name?: string; redirect_uri?: string };
+  };
+  const [details, setDetails] = useState<ConsentDetails | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
@@ -39,7 +44,8 @@ export default function OAuthConsent() {
         window.location.href = "/auth?next=" + encodeURIComponent(next);
         return;
       }
-      const { data, error } = await oauth().getAuthorizationDetails(authorizationId);
+      const { data: raw, error } = await oauth().getAuthorizationDetails(authorizationId);
+      const data = raw as ConsentDetails | null;
       if (!active) return;
       if (error) return setError(error.message);
       const immediate = data?.redirect_url ?? data?.redirect_to;
@@ -47,7 +53,7 @@ export default function OAuthConsent() {
         window.location.href = immediate;
         return;
       }
-      setDetails(data);
+      setDetails(data as ConsentDetails);
     })();
     return () => {
       active = false;
@@ -63,7 +69,8 @@ export default function OAuthConsent() {
       setBusy(false);
       return setError(res.error.message);
     }
-    const target = res.data?.redirect_url ?? res.data?.redirect_to;
+    const resData = res.data as ConsentDetails | null;
+    const target = resData?.redirect_url ?? resData?.redirect_to;
     if (!target) {
       setBusy(false);
       return setError("El servidor de autorización no devolvió una URL de redirección.");
