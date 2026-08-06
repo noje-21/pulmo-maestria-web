@@ -6,11 +6,11 @@ import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
 import { MessageSquare, FileText } from "lucide-react";
-import type { User } from "@supabase/supabase-js";
+type ProfileRow = { id: string; user_id: string; full_name: string | null; created_at?: string; updated_at?: string };
 
 const Profile = () => {
   const [loading, setLoading] = useState(true);
-  const [profile, setProfile] = useState<User | null>(null);
+  const [profile, setProfile] = useState<ProfileRow | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {

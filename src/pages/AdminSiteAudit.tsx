@@ -26,7 +26,7 @@ async function probe(url: string, timeoutMs = 5000): Promise<{ ok: boolean; stat
     }
     return { ok: res.ok, status: res.status };
   } catch (e: unknown) {
-    if (e.name === "AbortError") return { ok: false, status: 0, error: "timeout" };
+    if ((e as { name?: string })?.name === "AbortError") return { ok: false, status: 0, error: "timeout" };
     return { ok: false, status: 0, error: getErrorMessage(e) || "network error" };
   } finally {
     clearTimeout(timer);
