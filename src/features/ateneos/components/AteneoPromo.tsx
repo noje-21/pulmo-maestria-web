@@ -103,6 +103,7 @@ export default function AteneoPromo() {
             top: "77.06%",
             width: "25%",
             height: "4.67%",
+            minHeight: 0,
             backgroundColor: FLYER_NAVY,
             fontSize: "clamp(6px, 1.2cqw, 12px)",
           }}
