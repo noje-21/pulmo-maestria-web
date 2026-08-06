@@ -139,6 +139,6 @@ export function preloadPoster(href: string): void {
   link.as = "image";
   link.href = href;
   // Hint the browser this is the LCP-class asset of the hero.
-  (link as any).fetchPriority = "high";
+  (link as HTMLLinkElement & { fetchPriority?: string }).fetchPriority = "high";
   document.head.appendChild(link);
 }

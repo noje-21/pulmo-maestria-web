@@ -2,6 +2,12 @@ import { useCallback, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useScrollToSection } from "@/hooks/useScrollToSection";
 
+type WindowExt = Window & {
+  requestIdleCallback?: (cb: () => void, opts?: { timeout?: number }) => number;
+  cancelIdleCallback?: (id: number) => void;
+};
+
+
 // Lazy-loaded to avoid pulling Supabase into the initial bundle.
 // The Navigation component renders on first paint, but its auth lookup can
 // wait until after the browser is idle.
@@ -104,7 +110,7 @@ export function useNavState() {
     };
 
     // Defer to idle so it never competes with first paint.
-    const ric = (window as any).requestIdleCallback as
+    const ric = (window as WindowExt).requestIdleCallback as
       | ((cb: () => void, opts?: { timeout: number }) => number)
       | undefined;
     const handle: number = ric
@@ -114,7 +120,7 @@ export function useNavState() {
     return () => {
       cancelled = true;
       if (unsub) unsub();
-      const cic = (window as any).cancelIdleCallback as ((id: number) => void) | undefined;
+      const cic = (window as WindowExt).cancelIdleCallback as ((id: number) => void) | undefined;
       if (ric && cic) cic(handle as number);
       else clearTimeout(handle as number);
     };

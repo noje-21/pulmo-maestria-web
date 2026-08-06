@@ -1,5 +1,13 @@
 import { useState } from "react";
 
+type NavigatorExt = Navigator & {
+  platform?: string;
+  maxTouchPoints?: number;
+  deviceMemory?: number;
+  connection?: { effectiveType?: string; saveData?: boolean };
+};
+
+
 /**
  * Detects iOS Safari (iPhone/iPad/iPod, including iPadOS reporting as MacIntel
  * with touch). Stable across renders; computed once on mount to avoid SSR
@@ -8,8 +16,8 @@ import { useState } from "react";
 const detectIOS = (): boolean => {
   if (typeof navigator === "undefined") return false;
   const ua = navigator.userAgent || "";
-  const platform = (navigator as any).platform || "";
-  const maxTouch = (navigator as any).maxTouchPoints || 0;
+  const platform = (navigator as NavigatorExt).platform || "";
+  const maxTouch = (navigator as NavigatorExt).maxTouchPoints || 0;
   return /iPad|iPhone|iPod/.test(ua) || (platform === "MacIntel" && maxTouch > 1);
 };
 
@@ -27,11 +35,11 @@ export function useIsIOS(): boolean {
  */
 const detectLowPower = (): boolean => {
   if (typeof navigator === "undefined") return false;
-  const conn = (navigator as any).connection;
+  const conn = (navigator as NavigatorExt).connection;
   const saveData = !!conn?.saveData;
   const slowNet =
     !!conn?.effectiveType && /(^2g$|^slow-2g$|^3g$)/.test(conn.effectiveType);
-  const lowMem = ((navigator as any).deviceMemory ?? 8) <= 4;
+  const lowMem = ((navigator as NavigatorExt).deviceMemory ?? 8) <= 4;
   return detectIOS() || saveData || slowNet || lowMem;
 };
 
