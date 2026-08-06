@@ -34,7 +34,7 @@ export function useForumPost(id: string | undefined) {
         setPostError("not-found");
         return;
       }
-      setPost(data as any);
+      setPost(data as unknown as ForumPost);
     } catch (error: unknown) {
       console.error("Error loading post:", error);
       setPostError("network");

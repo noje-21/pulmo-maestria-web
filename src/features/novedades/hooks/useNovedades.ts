@@ -24,7 +24,7 @@ export function useNovedadesList(searchQuery: string, authorFilter: string) {
         }
         const { data, error } = await query;
         if (error) throw error;
-        if (!cancelled) setNovedades((data as any) || []);
+        if (!cancelled) setNovedades((data as unknown as Novedad[]) || []);
       } catch (error: unknown) {
         console.error("Error loading novedades:", error);
         if (!cancelled) toast.error("No pudimos cargar las novedades. Intenta de nuevo.");

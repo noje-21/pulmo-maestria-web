@@ -51,11 +51,13 @@ export const commentSchema = z.object({
     .max(2000, "El comentario es demasiado largo (máximo 2000 caracteres)"),
 });
 
-export const buildCommentTree = (rows: any[]): ForumComment[] => {
+type CommentRow = Omit<ForumComment, "replies">;
+
+export const buildCommentTree = (rows: CommentRow[]): ForumComment[] => {
   const commentMap = new Map<string, ForumComment>();
   const rootComments: ForumComment[] = [];
 
-  rows.forEach((comment: any) => {
+  rows.forEach((comment) => {
     commentMap.set(comment.id, { ...comment, replies: [] });
   });
 

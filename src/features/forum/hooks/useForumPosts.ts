@@ -55,7 +55,10 @@ async function fetchForumPage(
     query = query.or(`title.ilike.%${safe}%,content.ilike.%${safe}%`);
   }
   if (categoryFilter !== "all") {
-    query = query.eq("category", categoryFilter as any);
+    query = query.eq(
+      "category",
+      categoryFilter as "case_discussions" | "clinical_questions" | "general" | "shared_resources",
+    );
   }
   if (authorFilter !== "all") {
     query = query.eq("user_id", authorFilter);
@@ -75,7 +78,7 @@ async function fetchForumPage(
   const { data, error } = await query;
   if (error) throw error;
 
-  const posts = (data as any as ForumPost[]) || [];
+  const posts = (data as unknown as ForumPost[]) || [];
   return {
     posts,
     nextPage: posts.length < FORUM_PAGE_SIZE ? null : page + 1,
