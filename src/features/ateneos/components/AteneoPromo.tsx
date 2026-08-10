@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Calendar, Clock, MapPin, Video } from "lucide-react";
+import { Calendar, Clock, MapPin, Video, MousePointerClick } from "lucide-react";
 import flyerAsset from "@/assets/ateneo-flyer-blank.png.asset.json";
 
 const ZOOM_URL =
@@ -92,38 +92,69 @@ export default function AteneoPromo() {
           />
         </div>
 
-        {/* Botón: calcado sobre la píldora impresa del flyer (12.97% / 77.06% / 25% x 4.67%) */}
+        {/* Botón principal: ampliado sobre la píldora impresa del flyer */}
         <a
           href={ZOOM_URL}
           target="_blank"
           rel="noopener noreferrer"
-          className="absolute inline-flex items-center justify-center rounded-full text-white font-bold tracking-[0.06em] whitespace-nowrap leading-none overflow-hidden hover:brightness-110 transition-all duration-300"
+          className="group absolute inline-flex items-center justify-center rounded-full text-white font-bold tracking-[0.06em] whitespace-nowrap leading-none overflow-hidden shadow-lg hover:brightness-110 hover:scale-[1.03] transition-all duration-300"
           style={{
-            left: "12.97%",
-            top: "77.06%",
-            width: "25%",
-            height: "4.67%",
+            left: "9%",
+            top: "75.4%",
+            width: "42%",
+            height: "6.6%",
             minHeight: 0,
             backgroundColor: FLYER_NAVY,
-            fontSize: "clamp(6px, 1.2cqw, 12px)",
+            fontSize: "clamp(9px, 2cqw, 20px)",
           }}
           aria-label="Unirme al ateneo por Zoom"
         >
+          <span
+            aria-hidden="true"
+            className="absolute inset-0 rounded-full animate-ping opacity-40"
+            style={{ backgroundColor: FLYER_NAVY }}
+          />
           <Video
             strokeWidth={2}
             style={{
-              width: "clamp(7px, 1.4cqw, 14px)",
-              height: "clamp(7px, 1.4cqw, 14px)",
-              marginRight: "0.5cqw",
+              width: "clamp(10px, 2.2cqw, 22px)",
+              height: "clamp(10px, 2.2cqw, 22px)",
+              marginRight: "0.8cqw",
+            }}
+            className="relative"
+          />
+          <span className="relative">UNIRME AL ATENEO</span>
+          <MousePointerClick
+            strokeWidth={2}
+            aria-hidden="true"
+            className="relative animate-bounce"
+            style={{
+              width: "clamp(9px, 2cqw, 20px)",
+              height: "clamp(9px, 2cqw, 20px)",
+              marginLeft: "0.8cqw",
             }}
           />
-          UNIRME AL ATENEO
         </a>
+
+        {/* Aviso de acción */}
+        <p
+          className="absolute font-semibold uppercase tracking-wide"
+          style={{
+            left: "9%",
+            top: "82.4%",
+            width: "42%",
+            textAlign: "center",
+            color: FLYER_NAVY,
+            fontSize: "clamp(7px, 1.5cqw, 14px)",
+          }}
+        >
+          Hacé click para entrar
+        </p>
 
         <div
           className="absolute text-neutral-900 leading-[1.4]"
           style={{
-            top: "83.5%",
+            top: "86.2%",
             left: "9%",
             width: "55%",
             fontSize: "clamp(9px, 1.75cqw, 17px)",
