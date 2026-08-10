@@ -20,6 +20,20 @@ const AteneoDetail = () => {
   const isPreview = searchParams.get("preview") === "true";
   const { ateneo, related, loading } = useAteneo(id, isPreview);
 
+  /**
+   * Carátula para compartir: debe ser una URL pública y estable.
+   * Los assets empaquetados por Vite (/assets/*-hash.webp) cambian de nombre en
+   * cada build, así que para los ateneos estáticos usamos /og/ateneo-<id>.jpg,
+   * exactamente la misma URL que devuelve el middleware a los crawlers.
+   */
+  const shareImage = ateneo
+    ? /^[1-6]$/.test(ateneo.id)
+      ? `https://www.maestriacp.com/og/ateneo-${ateneo.id}.jpg`
+      : ateneo.imagen?.startsWith("https://")
+        ? ateneo.imagen
+        : undefined
+    : undefined;
+
   if (loading) {
     return (
       <div className="min-h-screen bg-background">
@@ -55,7 +69,7 @@ const AteneoDetail = () => {
       <SEO
         title={`${ateneo.titulo} - Ateneos | Maestría en Circulación Pulmonar`}
         description={ateneo.descripcion}
-        ogImage={ateneo.imagen || undefined}
+        ogImage={shareImage}
         ogType="article"
         canonicalUrl={`https://www.maestriacp.com/ateneos/${ateneo.id}`}
         jsonLd={{
@@ -64,7 +78,7 @@ const AteneoDetail = () => {
           name: ateneo.titulo,
           description: ateneo.descripcion,
           startDate: ateneo.fecha,
-          image: ateneo.imagen || undefined,
+          image: shareImage,
           eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
           organizer: {
             "@type": "Organization",

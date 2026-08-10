@@ -27,6 +27,50 @@ const SITE_URL = "https://www.maestriacp.com";
 const SITE_NAME = "Maestría Latinoamericana en Circulación Pulmonar";
 const DEFAULT_IMAGE = `${SITE_URL}/og-image.jpg`;
 
+/**
+ * Carátulas estables para los ateneos que aún no viven en la base de datos
+ * (contenido estático de `src/data/ateneos.ts`). Se sirven desde /public/og
+ * como JPEG 1200×630, URL pública y permanente — sin firmas ni expiración.
+ */
+const STATIC_ATENEOS: Record<string, { title: string; description: string; image: string }> = {
+  "1": {
+    title: "Ateneo de Hipertensión Arterial Pulmonar: Nuevas Guías 2026",
+    description:
+      "Revisión de las últimas guías internacionales de diagnóstico y tratamiento de la hipertensión arterial pulmonar.",
+    image: `${SITE_URL}/og/ateneo-1.jpg`,
+  },
+  "2": {
+    title: "Caso Clínico: Tromboembolismo Pulmonar Crónico",
+    description:
+      "Presentación y discusión de un caso complejo de CTEPH con abordaje multidisciplinario.",
+    image: `${SITE_URL}/og/ateneo-2.jpg`,
+  },
+  "3": {
+    title: "Actualización en Ecocardiografía y Circulación Pulmonar",
+    description:
+      "Revisión de las técnicas ecocardiográficas más avanzadas para la evaluación de la función ventricular derecha.",
+    image: `${SITE_URL}/og/ateneo-3.jpg`,
+  },
+  "4": {
+    title: "Hipertensión Pulmonar en Enfermedades del Tejido Conectivo",
+    description:
+      "Análisis del screening y manejo de HP en pacientes con esclerosis sistémica y lupus eritematoso.",
+    image: `${SITE_URL}/og/ateneo-4.jpg`,
+  },
+  "5": {
+    title: "Avances en Terapia Génica para Enfermedades Vasculares Pulmonares",
+    description:
+      "Estado actual de la investigación en terapia génica y su potencial aplicación en hipertensión pulmonar.",
+    image: `${SITE_URL}/og/ateneo-5.jpg`,
+  },
+  "6": {
+    title: "Rehabilitación Cardiopulmonar en Hipertensión Pulmonar",
+    description:
+      "Evidencia y experiencia clínica en programas de rehabilitación para pacientes con HP.",
+    image: `${SITE_URL}/og/ateneo-6.jpg`,
+  },
+};
+
 const SUPABASE_URL = "https://tvgkinrbtnbtseooaiex.supabase.co";
 const SUPABASE_ANON_KEY =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR2Z2tpbnJidG5idHNlb29haWV4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjEwODI5MzgsImV4cCI6MjA3NjY1ODkzOH0.ncInMGW1KgaoidXSI9GnsGJ7kIZlORg0Nmn3gIBxBU8";
@@ -88,12 +132,17 @@ function clamp(value: string, max = 200): string {
   return text.length > max ? `${text.slice(0, max - 1).trimEnd()}…` : text;
 }
 
-/** Solo se aceptan imágenes públicas por HTTPS; si no, la institucional. */
-function safeImage(url?: string | null): string {
-  if (!url) return DEFAULT_IMAGE;
+/**
+ * Solo se aceptan imágenes públicas por HTTPS y estables.
+ * Se descartan los bundles de Vite (/assets/*-hash.webp) porque su URL cambia
+ * en cada build y WhatsApp/Facebook cachean la anterior.
+ */
+function safeImage(url: string | null | undefined, fallback: string): string {
+  if (!url) return fallback;
+  if (url.startsWith("/assets/")) return fallback;
   if (url.startsWith("/")) return `${SITE_URL}${url}`;
   if (url.startsWith("https://")) return url;
-  return DEFAULT_IMAGE;
+  return fallback;
 }
 
 async function fetchOne(
@@ -139,6 +188,8 @@ async function resolveMeta(pathname: string): Promise<Meta> {
   const [section, slug] = segments;
 
   if (section === "ateneos" && slug) {
+    const staticEntry = STATIC_ATENEOS[slug];
+    const fallbackImage = staticEntry?.image ?? DEFAULT_IMAGE;
     const row = await fetchOne(
       "ateneos",
       `id=eq.${encodeURIComponent(slug)}&status=eq.published`,
@@ -151,7 +202,16 @@ async function resolveMeta(pathname: string): Promise<Meta> {
           String(row.descripcion || "") ||
             "Actividad académica de la Maestría Latinoamericana en Circulación Pulmonar.",
         ),
-        image: safeImage(row.imagen as string),
+        image: safeImage(row.imagen as string, fallbackImage),
+        url,
+        type: "article",
+      };
+    }
+    if (staticEntry) {
+      return {
+        title: `${staticEntry.title} | ${SITE_NAME}`,
+        description: clamp(staticEntry.description),
+        image: staticEntry.image,
         url,
         type: "article",
       };
@@ -169,7 +229,7 @@ async function resolveMeta(pathname: string): Promise<Meta> {
       return {
         title: `${String(row.title)} | ${SITE_NAME}`,
         description: clamp(String(row.excerpt || row.content || "")),
-        image: safeImage(row.image_url as string),
+        image: safeImage(row.image_url as string, DEFAULT_IMAGE),
         url,
         type: "article",
       };
@@ -187,7 +247,7 @@ async function resolveMeta(pathname: string): Promise<Meta> {
       return {
         title: `${String(row.title)} | Foro ${SITE_NAME}`,
         description: clamp(String(row.excerpt || row.content || "")),
-        image: safeImage(row.image_url as string),
+        image: safeImage(row.image_url as string, DEFAULT_IMAGE),
         url,
         type: "article",
       };
