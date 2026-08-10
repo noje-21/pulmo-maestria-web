@@ -55,12 +55,16 @@ const AteneoDetail = () => {
       <SEO
         title={`${ateneo.titulo} - Ateneos | Maestría en Circulación Pulmonar`}
         description={ateneo.descripcion}
+        ogImage={ateneo.imagen || undefined}
+        ogType="article"
+        canonicalUrl={`https://www.maestriacp.com/ateneos/${ateneo.id}`}
         jsonLd={{
           "@context": "https://schema.org",
           "@type": "Event",
           name: ateneo.titulo,
           description: ateneo.descripcion,
           startDate: ateneo.fecha,
+          image: ateneo.imagen || undefined,
           eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
           organizer: {
             "@type": "Organization",
