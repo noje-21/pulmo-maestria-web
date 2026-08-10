@@ -137,6 +137,12 @@ export const SEO = ({
 }: SEOProps) => {
   const location = useLocation();
   const canonical = canonicalUrl ?? `${SITE_URL}${location.pathname}`;
+  // Los crawlers exigen una URL absoluta y pública (https) para og:image.
+  const resolvedOgImage = ogImage
+    ? ogImage.startsWith("http")
+      ? ogImage.replace(/^http:\/\//, "https://")
+      : `${SITE_URL}${ogImage.startsWith("/") ? "" : "/"}${ogImage}`
+    : DEFAULT_OG_IMAGE;
   const ld = jsonLd || DEFAULT_JSON_LD;
   const breadcrumbLd = breadcrumbs && breadcrumbs.length > 0
     ? {
@@ -161,7 +167,11 @@ export const SEO = ({
       {/* Open Graph */}
       <meta property="og:title" content={title} />
       <meta property="og:description" content={description} />
-      <meta property="og:image" content={ogImage} />
+      <meta property="og:image" content={resolvedOgImage} />
+      <meta property="og:image:secure_url" content={resolvedOgImage} />
+      <meta property="og:image:width" content="1200" />
+      <meta property="og:image:height" content="630" />
+      <meta property="og:image:alt" content={title} />
       <meta property="og:url" content={canonical} />
       <meta property="og:type" content={ogType} />
       <meta property="og:site_name" content={SITE_NAME} />
@@ -170,7 +180,8 @@ export const SEO = ({
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:title" content={title} />
       <meta name="twitter:description" content={description} />
-      <meta name="twitter:image" content={ogImage} />
+      <meta name="twitter:image" content={resolvedOgImage} />
+      <meta name="twitter:url" content={canonical} />
       {/* JSON-LD */}
       <script type="application/ld+json">{JSON.stringify(ld)}</script>
       {breadcrumbLd && (
