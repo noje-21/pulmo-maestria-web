@@ -1,9 +1,8 @@
 import { Helmet } from "react-helmet-async";
 import { useLocation } from "react-router-dom";
+import { SITE_URL, sectionOgImage, stableOgImage } from "@/lib/ogImages";
 
 const SITE_NAME = "Maestría Latinoamericana en Circulación Pulmonar";
-const SITE_URL = "https://www.maestriacp.com";
-const DEFAULT_OG_IMAGE = `${SITE_URL}/og-image.jpg`;
 
 const DEFAULT_JSON_LD = {
   "@context": "https://schema.org",
@@ -128,7 +127,7 @@ export const SEO = ({
   title = "Maestría Latinoamericana en Circulación Pulmonar 2026",
   description = "Formación intensiva en circulación pulmonar dirigida a internistas, cardiólogos, reumatólogos y neumonólogos. Del 2 al 16 de noviembre 2026 en Buenos Aires.",
   keywords = "maestría, circulación pulmonar, hipertensión pulmonar, cardiología, Buenos Aires, medicina, formación médica",
-  ogImage = DEFAULT_OG_IMAGE,
+  ogImage,
   canonicalUrl,
   ogType = "website",
   jsonLd,
@@ -137,12 +136,10 @@ export const SEO = ({
 }: SEOProps) => {
   const location = useLocation();
   const canonical = canonicalUrl ?? `${SITE_URL}${location.pathname}`;
-  // Los crawlers exigen una URL absoluta y pública (https) para og:image.
-  const resolvedOgImage = ogImage
-    ? ogImage.startsWith("http")
-      ? ogImage.replace(/^http:\/\//, "https://")
-      : `${SITE_URL}${ogImage.startsWith("/") ? "" : "/"}${ogImage}`
-    : DEFAULT_OG_IMAGE;
+  // Misma fuente lógica que middleware.ts: carátula de sección salvo override
+  // explícito, siempre como URL absoluta https y estable.
+  const fallbackOgImage = sectionOgImage(location.pathname);
+  const resolvedOgImage = stableOgImage(ogImage, fallbackOgImage);
   const ld = jsonLd || DEFAULT_JSON_LD;
   const breadcrumbLd = breadcrumbs && breadcrumbs.length > 0
     ? {

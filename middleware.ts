@@ -9,6 +9,14 @@
  * de largo y reciben la SPA sin ningún cambio.
  */
 
+import {
+  DEFAULT_OG_IMAGE,
+  OG_IMAGES,
+  SITE_URL,
+  sectionOgImage,
+  stableOgImage,
+} from "./src/lib/ogImages";
+
 export const config = {
   matcher: [
     "/",
@@ -23,9 +31,8 @@ export const config = {
   ],
 };
 
-const SITE_URL = "https://www.maestriacp.com";
 const SITE_NAME = "Maestría Latinoamericana en Circulación Pulmonar";
-const DEFAULT_IMAGE = `${SITE_URL}/og-image.jpg`;
+const DEFAULT_IMAGE = DEFAULT_OG_IMAGE;
 
 /**
  * Carátulas estables para los ateneos que aún no viven en la base de datos
@@ -78,36 +85,42 @@ const SUPABASE_ANON_KEY =
 const CRAWLER_RE =
   /(facebookexternalhit|facebookcatalog|whatsapp|twitterbot|linkedinbot|telegrambot|slackbot|discordbot|pinterest|redditbot|skypeuripreview|vkshare|embedly|quora link preview|outbrain|nuzzel|bitlybot|applebot|bingbot|googlebot|google-inspectiontool|iframely|mastodon|bluesky|threadsbot)/i;
 
-const PAGES: Record<string, { title: string; description: string }> = {
+const PAGES: Record<string, { title: string; description: string; image: string }> = {
   "/": {
     title: "Maestría Latinoamericana en Circulación Pulmonar 2026",
     description:
       "Formación intensiva en circulación pulmonar para internistas, cardiólogos, reumatólogos y neumonólogos. Del 2 al 16 de noviembre de 2026, Buenos Aires.",
+    image: OG_IMAGES.home,
   },
   "/ateneos": {
     title: "Ateneos | Maestría Latinoamericana en Circulación Pulmonar",
     description:
       "Ateneos latinoamericanos de hipertensión pulmonar: casos clínicos, abordaje multidisciplinario y últimas novedades. Todos los lunes, 13:00 hs ARG por Zoom.",
+    image: OG_IMAGES.ateneos,
   },
   "/novedades": {
     title: "Novedades | Maestría Latinoamericana en Circulación Pulmonar",
     description:
       "Noticias, publicaciones y actualizaciones académicas de la Maestría Latinoamericana en Circulación Pulmonar.",
+    image: OG_IMAGES.novedades,
   },
   "/foro": {
     title: "Foro | Maestría Latinoamericana en Circulación Pulmonar",
     description:
       "Comunidad profesional para discutir casos clínicos, compartir recursos y resolver dudas sobre hipertensión y circulación pulmonar.",
+    image: OG_IMAGES.foro,
   },
   "/nosotros": {
     title: "Nosotros | Maestría Latinoamericana en Circulación Pulmonar",
     description:
       "Conocé al equipo docente y la trayectoria de la Maestría Latinoamericana en Circulación Pulmonar.",
+    image: OG_IMAGES.nosotros,
   },
   "/contacto": {
     title: "Contacto | Maestría Latinoamericana en Circulación Pulmonar",
     description:
       "Inscribite sin costo y comunicate con el equipo de la Maestría Latinoamericana en Circulación Pulmonar.",
+    image: OG_IMAGES.contacto,
   },
 };
 
@@ -132,18 +145,8 @@ function clamp(value: string, max = 200): string {
   return text.length > max ? `${text.slice(0, max - 1).trimEnd()}…` : text;
 }
 
-/**
- * Solo se aceptan imágenes públicas por HTTPS y estables.
- * Se descartan los bundles de Vite (/assets/*-hash.webp) porque su URL cambia
- * en cada build y WhatsApp/Facebook cachean la anterior.
- */
-function safeImage(url: string | null | undefined, fallback: string): string {
-  if (!url) return fallback;
-  if (url.startsWith("/assets/")) return fallback;
-  if (url.startsWith("/")) return `${SITE_URL}${url}`;
-  if (url.startsWith("https://")) return url;
-  return fallback;
-}
+// Imágenes estables (misma lógica que usa SEO.tsx en el navegador).
+const safeImage = stableOgImage;
 
 async function fetchOne(
   table: string,
@@ -181,7 +184,7 @@ async function resolveMeta(pathname: string): Promise<Meta> {
   const url = `${SITE_URL}${clean === "/" ? "/" : clean}`;
   const base = PAGES[clean];
   if (base) {
-    return { ...base, image: DEFAULT_IMAGE, url, type: "website" };
+    return { ...base, url, type: "website" };
   }
 
   const segments = clean.split("/").filter(Boolean);
@@ -189,7 +192,7 @@ async function resolveMeta(pathname: string): Promise<Meta> {
 
   if (section === "ateneos" && slug) {
     const staticEntry = STATIC_ATENEOS[slug];
-    const fallbackImage = staticEntry?.image ?? DEFAULT_IMAGE;
+    const fallbackImage = staticEntry?.image ?? OG_IMAGES.ateneos;
     const row = await fetchOne(
       "ateneos",
       `id=eq.${encodeURIComponent(slug)}&status=eq.published`,
@@ -216,7 +219,7 @@ async function resolveMeta(pathname: string): Promise<Meta> {
         type: "article",
       };
     }
-    return { ...PAGES["/ateneos"], image: DEFAULT_IMAGE, url, type: "article" };
+    return { ...PAGES["/ateneos"], image: OG_IMAGES.ateneos, url, type: "article" };
   }
 
   if (section === "novedades" && slug) {
@@ -229,12 +232,12 @@ async function resolveMeta(pathname: string): Promise<Meta> {
       return {
         title: `${String(row.title)} | ${SITE_NAME}`,
         description: clamp(String(row.excerpt || row.content || "")),
-        image: safeImage(row.image_url as string, DEFAULT_IMAGE),
+        image: safeImage(row.image_url as string, OG_IMAGES.novedades),
         url,
         type: "article",
       };
     }
-    return { ...PAGES["/novedades"], image: DEFAULT_IMAGE, url, type: "article" };
+    return { ...PAGES["/novedades"], image: OG_IMAGES.novedades, url, type: "article" };
   }
 
   if (section === "foro" && slug) {
@@ -247,15 +250,15 @@ async function resolveMeta(pathname: string): Promise<Meta> {
       return {
         title: `${String(row.title)} | Foro ${SITE_NAME}`,
         description: clamp(String(row.excerpt || row.content || "")),
-        image: safeImage(row.image_url as string, DEFAULT_IMAGE),
+        image: safeImage(row.image_url as string, OG_IMAGES.foro),
         url,
         type: "article",
       };
     }
-    return { ...PAGES["/foro"], image: DEFAULT_IMAGE, url, type: "article" };
+    return { ...PAGES["/foro"], image: OG_IMAGES.foro, url, type: "article" };
   }
 
-  return { ...PAGES["/"], image: DEFAULT_IMAGE, url, type: "website" };
+  return { ...PAGES["/"], image: sectionOgImage(clean) || DEFAULT_IMAGE, url, type: "website" };
 }
 
 function render(meta: Meta): string {
