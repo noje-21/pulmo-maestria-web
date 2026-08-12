@@ -9,6 +9,14 @@
  * de largo y reciben la SPA sin ningún cambio.
  */
 
+import {
+  DEFAULT_OG_IMAGE,
+  OG_IMAGES,
+  SITE_URL,
+  sectionOgImage,
+  stableOgImage,
+} from "./src/lib/ogImages";
+
 export const config = {
   matcher: [
     "/",
@@ -23,9 +31,8 @@ export const config = {
   ],
 };
 
-const SITE_URL = "https://www.maestriacp.com";
 const SITE_NAME = "Maestría Latinoamericana en Circulación Pulmonar";
-const DEFAULT_IMAGE = `${SITE_URL}/og-image.jpg`;
+const DEFAULT_IMAGE = DEFAULT_OG_IMAGE;
 
 /**
  * Carátulas estables para los ateneos que aún no viven en la base de datos
