@@ -32,6 +32,7 @@ const AdminNovedades = () => {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [page, setPage] = useState(1);
+  const [total, setTotal] = useState(0);
   const pageSize = 10;
 
   const [formData, setFormData] = useState({
@@ -43,22 +44,44 @@ const AdminNovedades = () => {
     status: "published" as "draft" | "published" | "archived",
   });
 
+  // Server-side pagination: only the current page is fetched.
   useEffect(() => {
-    loadNovedades();
-  }, []);
+    const t = setTimeout(() => {
+      setPage(1);
+      loadNovedades(1, searchQuery);
+    }, 300);
+    return () => clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchQuery]);
 
-  const loadNovedades = async () => {
+  useEffect(() => {
+    loadNovedades(page, searchQuery);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page]);
+
+  const loadNovedades = async (targetPage = page, search = searchQuery) => {
     try {
-      const { data, error } = await supabase
+      setLoading(true);
+      const from = (targetPage - 1) * pageSize;
+      let query = supabase
         .from("novedades")
         .select(`
           *,
           profiles!novedades_author_id_fkey(full_name)
-        `)
-        .order("created_at", { ascending: false });
+        `, { count: "exact" })
+        .order("created_at", { ascending: false })
+        .range(from, from + pageSize - 1);
+
+      const q = search.trim();
+      if (q) {
+        query = query.or(`title.ilike.%${q}%,excerpt.ilike.%${q}%`);
+      }
+
+      const { data, error, count } = await query;
 
       if (error) throw error;
       setNovedades(data || []);
+      setTotal(count ?? 0);
     } catch (error: unknown) {
       console.error("Error loading novedades:", error);
       toast.error("Error al cargar novedades");
@@ -311,18 +334,13 @@ const AdminNovedades = () => {
 
       {/* Novedades List */}
       {(() => {
-        const filteredNovedades = novedades.filter((n) => {
-          if (!searchQuery) return true;
-          const q = searchQuery.toLowerCase();
-          return n.title.toLowerCase().includes(q) || (n.excerpt || "").toLowerCase().includes(q);
-        });
-        const totalPages = Math.ceil(filteredNovedades.length / pageSize);
-        const paged = filteredNovedades.slice((page - 1) * pageSize, page * pageSize);
+        const paged = novedades;
+        const totalPages = Math.max(1, Math.ceil(total / pageSize));
 
         return (
       <div className="space-y-4">
         <div className="flex items-center justify-between text-sm text-muted-foreground mb-2">
-          <span>{filteredNovedades.length} novedad{filteredNovedades.length !== 1 ? "es" : ""}</span>
+          <span>{total} novedad{total !== 1 ? "es" : ""}</span>
           {totalPages > 1 && (
             <div className="flex items-center gap-2">
               <Button variant="ghost" size="sm" disabled={page <= 1} onClick={() => setPage(page - 1)}>
