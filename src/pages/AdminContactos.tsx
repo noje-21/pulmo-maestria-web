@@ -16,7 +16,14 @@ import { toast } from "sonner";
 import { motion } from "framer-motion";
 import AdminLayout from "@/features/admin/AdminLayout";
 import { TableSkeleton } from "@/components/common/LoadingSkeleton";
-import { Trash2, Mail, MapPin, Briefcase, User, Send, Loader2, FileText, Search } from "lucide-react";
+import { exportContactsCsv, exportContactsPdf } from "@/features/admin/exportContacts";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Trash2, Mail, MapPin, Briefcase, User, Send, Loader2, FileText, Search, Download, FileSpreadsheet } from "lucide-react";
 
 type ContactStatus = "nuevo" | "leido" | "respondido" | "spam";
 
@@ -219,6 +226,24 @@ const AdminContactos = () => {
             <SelectItem value="spam">Spam ({counts.spam || 0})</SelectItem>
           </SelectContent>
         </Select>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" className="gap-2" disabled={filtered.length === 0}>
+              <Download className="w-4 h-4" />
+              Descargar ({filtered.length})
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem onClick={() => exportContactsPdf(filtered)} className="gap-2">
+              <FileText className="w-4 h-4" />
+              Descargar PDF
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => exportContactsCsv(filtered)} className="gap-2">
+              <FileSpreadsheet className="w-4 h-4" />
+              Descargar Excel (CSV)
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
 
       {filtered.length === 0 ? (
