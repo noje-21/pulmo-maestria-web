@@ -226,6 +226,24 @@ const AdminContactos = () => {
             <SelectItem value="spam">Spam ({counts.spam || 0})</SelectItem>
           </SelectContent>
         </Select>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" className="gap-2" disabled={filtered.length === 0}>
+              <Download className="w-4 h-4" />
+              Descargar ({filtered.length})
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem onClick={() => exportContactsPdf(filtered)} className="gap-2">
+              <FileText className="w-4 h-4" />
+              Descargar PDF
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => exportContactsCsv(filtered)} className="gap-2">
+              <FileSpreadsheet className="w-4 h-4" />
+              Descargar Excel (CSV)
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
 
       {filtered.length === 0 ? (
