@@ -15,6 +15,7 @@ import { Plus, Trash2, Edit, Save, X, BookOpen, Search, Video, FileText, Calenda
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { getErrorMessage } from "@/lib/utils";
+import Pagination from "@/components/common/Pagination";
 
 type AteneoCategory = "caso_clinico" | "actualizacion" | "investigacion" | "rehabilitacion" | "imaging" | "general";
 type AteneoStatus = "draft" | "published" | "archived";
@@ -34,6 +35,9 @@ const AdminAteneos = () => {
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [page, setPage] = useState(1);
+  const [total, setTotal] = useState(0);
+  const PAGE_SIZE = 10;
 
   const [formData, setFormData] = useState({
     titulo: "",
@@ -48,19 +52,41 @@ const AdminAteneos = () => {
   });
   const [galleryImages, setGalleryImages] = useState<string[]>([]);
 
+  // Server-side pagination: only the current page is fetched.
   useEffect(() => {
-    loadAteneos();
-  }, []);
+    const t = setTimeout(() => {
+      setPage(1);
+      loadAteneos(1, searchQuery);
+    }, 300);
+    return () => clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchQuery]);
 
-  const loadAteneos = async () => {
+  useEffect(() => {
+    loadAteneos(page, searchQuery);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page]);
+
+  const loadAteneos = async (targetPage = page, search = searchQuery) => {
     try {
-      const { data, error } = await supabase
+      setLoading(true);
+      const from = (targetPage - 1) * PAGE_SIZE;
+      let query = supabase
         .from("ateneos")
-        .select("*")
-        .order("fecha", { ascending: false });
+        .select("*", { count: "exact" })
+        .order("fecha", { ascending: false })
+        .range(from, from + PAGE_SIZE - 1);
+
+      const q = search.trim();
+      if (q) {
+        query = query.or(`titulo.ilike.%${q}%,descripcion.ilike.%${q}%`);
+      }
+
+      const { data, error, count } = await query;
 
       if (error) throw error;
       setAteneos(data || []);
+      setTotal(count ?? 0);
     } catch (error: unknown) {
       console.error("Error loading ateneos:", error);
       toast.error("Error al cargar ateneos");
@@ -199,11 +225,8 @@ const AdminAteneos = () => {
     });
   };
 
-  const filteredAteneos = ateneos.filter((a) => {
-    if (!searchQuery) return true;
-    const q = searchQuery.toLowerCase();
-    return a.titulo.toLowerCase().includes(q) || a.descripcion.toLowerCase().includes(q);
-  });
+  const filteredAteneos = ateneos;
+  const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
 
   if (loading) {
     return (
