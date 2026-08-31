@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
@@ -17,20 +17,28 @@ import { useNovedadesList, useNovedadesAuthors } from "@/features/novedades/hook
 import NovedadCard from "@/features/novedades/components/NovedadCard";
 import NovedadFeatured from "@/features/novedades/components/NovedadFeatured";
 import { FeaturedSkeleton, NovedadCardSkeleton } from "@/features/novedades/components/NovedadesSkeletons";
+import Pagination from "@/components/common/Pagination";
 
 const Novedades = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [authorFilter, setAuthorFilter] = useState<string>("all");
   const [isFilterOpen, setIsFilterOpen] = useState(false);
-  const [visibleCount, setVisibleCount] = useState(6);
+  const [page, setPage] = useState(1);
+  const PAGE_SIZE = 9;
 
   const authors = useNovedadesAuthors();
-  const { novedades, loading } = useNovedadesList(searchQuery, authorFilter);
+  const { novedades, loading, total } = useNovedadesList(searchQuery, authorFilter, page, PAGE_SIZE);
 
-  const featuredNovedad = novedades[0];
-  const gridNovedades = novedades.slice(1, 1 + visibleCount);
-  const hasMore = novedades.length > 1 + visibleCount;
+  // Reset to the first page whenever the search or author filter changes.
+  useEffect(() => {
+    setPage(1);
+  }, [searchQuery, authorFilter]);
+
+  const isFirstPage = page === 1;
+  const featuredNovedad = isFirstPage ? novedades[0] : undefined;
+  const gridNovedades = isFirstPage ? novedades.slice(1) : novedades;
+  const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
   const hasActiveFilter = authorFilter !== "all";
 
   return (
@@ -186,7 +194,9 @@ const Novedades = () => {
 
                 {gridNovedades.length > 0 && (
                   <div>
-                    <h3 className="text-xl font-semibold mb-6">Más noticias</h3>
+                    <h3 className="text-xl font-semibold mb-6">
+                      {isFirstPage ? "Más noticias" : `Página ${page} de ${totalPages}`}
+                    </h3>
                     <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
                       {gridNovedades.map((novedad, index) => (
                         <NovedadCard key={novedad.id} novedad={novedad} index={index} />
@@ -195,19 +205,14 @@ const Novedades = () => {
                   </div>
                 )}
 
-                {hasMore && (
-                  <div className="text-center pt-4">
-                    <Button
-                      variant="outline"
-                      size="lg"
-                      onClick={() => setVisibleCount((c) => c + 6)}
-                      className="gap-2 rounded-xl"
-                    >
-                      Cargar más novedades
-                      <ArrowRight className="w-4 h-4" />
-                    </Button>
-                  </div>
-                )}
+                <Pagination
+                  currentPage={page}
+                  totalPages={totalPages}
+                  onPageChange={(p) => {
+                    setPage(p);
+                    window.scrollTo({ top: 0, behavior: "smooth" });
+                  }}
+                />
               </motion.div>
             )}
           </AnimatePresence>
