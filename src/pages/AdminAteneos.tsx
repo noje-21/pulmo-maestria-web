@@ -484,7 +484,17 @@ const AdminAteneos = () => {
           ))
         )}
       </div>
+
+      {total > 0 && (
+        <div className="mt-6">
+          <p className="text-center text-xs text-muted-foreground">
+            Mostrando {filteredAteneos.length} de {total} ateneo{total !== 1 ? "s" : ""}
+          </p>
+          <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} />
+        </div>
+      )}
     </AdminLayout>
+
   );
 };
 
