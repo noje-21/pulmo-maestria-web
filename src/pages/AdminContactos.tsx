@@ -16,7 +16,14 @@ import { toast } from "sonner";
 import { motion } from "framer-motion";
 import AdminLayout from "@/features/admin/AdminLayout";
 import { TableSkeleton } from "@/components/common/LoadingSkeleton";
-import { Trash2, Mail, MapPin, Briefcase, User, Send, Loader2, FileText, Search } from "lucide-react";
+import { exportContactsCsv, exportContactsPdf } from "@/features/admin/exportContacts";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Trash2, Mail, MapPin, Briefcase, User, Send, Loader2, FileText, Search, Download, FileSpreadsheet } from "lucide-react";
 
 type ContactStatus = "nuevo" | "leido" | "respondido" | "spam";
 
