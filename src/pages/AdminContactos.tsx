@@ -23,7 +23,15 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Trash2, Mail, MapPin, Briefcase, User, Send, Loader2, FileText, Search, Download, FileSpreadsheet } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Trash2, Mail, MapPin, Briefcase, User, Send, Loader2, FileText, Search, Download, FileSpreadsheet, MailCheck } from "lucide-react";
 
 type ContactStatus = "nuevo" | "leido" | "respondido" | "spam";
 
@@ -62,6 +70,10 @@ const AdminContactos = () => {
   const [cvLoadingId, setCvLoadingId] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<"all" | ContactStatus>("all");
+  const [emailDialogOpen, setEmailDialogOpen] = useState(false);
+  const [exportEmail, setExportEmail] = useState("");
+  const [exportNote, setExportNote] = useState("");
+  const [sendingExport, setSendingExport] = useState(false);
 
   useEffect(() => {
     loadSubmissions();
@@ -141,6 +153,34 @@ const AdminContactos = () => {
       toast.error("Error al enviar la respuesta");
     } finally {
       setSendingReply(null);
+    }
+  };
+
+  /** Envía el reporte institucional de los envíos filtrados a un email. */
+  const handleEmailExport = async (ids: string[]) => {
+    if (!exportEmail.trim()) {
+      toast.error("Escribe un email de destino");
+      return;
+    }
+    setSendingExport(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("export-contacts", {
+        body: {
+          recipientEmail: exportEmail.trim(),
+          ids,
+          note: exportNote.trim() || undefined,
+        },
+      });
+      if (error) throw error;
+      if (data?.error) throw new Error(String(data.error));
+      toast.success(`Reporte enviado a ${exportEmail.trim()}`);
+      setEmailDialogOpen(false);
+      setExportNote("");
+    } catch (error) {
+      console.error("Export email error:", error);
+      toast.error("No pudimos enviar el reporte por email");
+    } finally {
+      setSendingExport(false);
     }
   };
 
@@ -242,9 +282,54 @@ const AdminContactos = () => {
               <FileSpreadsheet className="w-4 h-4" />
               Descargar Excel (CSV)
             </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => setEmailDialogOpen(true)} className="gap-2">
+              <MailCheck className="w-4 h-4" />
+              Enviar por email
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
+
+      <Dialog open={emailDialogOpen} onOpenChange={setEmailDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Enviar envíos por email</DialogTitle>
+            <DialogDescription>
+              Se enviará un reporte institucional con los datos completos de los {filtered.length} envíos
+              actualmente visibles.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-3">
+            <Input
+              type="email"
+              value={exportEmail}
+              onChange={(e) => setExportEmail(e.target.value)}
+              placeholder="Email de destino"
+              aria-label="Email de destino"
+            />
+            <Textarea
+              value={exportNote}
+              onChange={(e) => setExportNote(e.target.value)}
+              placeholder="Nota interna (opcional)"
+              rows={3}
+              className="resize-none"
+            />
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setEmailDialogOpen(false)} disabled={sendingExport}>
+              Cancelar
+            </Button>
+            <Button
+              onClick={() => handleEmailExport(filtered.map((s) => s.id))}
+              disabled={sendingExport || filtered.length === 0}
+              className="gap-2"
+            >
+              {sendingExport ? <Loader2 className="w-4 h-4 animate-spin" /> : <MailCheck className="w-4 h-4" />}
+              Enviar reporte
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {filtered.length === 0 ? (
         <motion.div
