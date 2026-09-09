@@ -620,6 +620,7 @@ export type Database = {
           created_at: string
           device_type: string | null
           id: string
+          ip: string | null
           metric_delta: number | null
           metric_id: string | null
           metric_name: string
@@ -633,6 +634,7 @@ export type Database = {
           created_at?: string
           device_type?: string | null
           id?: string
+          ip?: string | null
           metric_delta?: number | null
           metric_id?: string | null
           metric_name: string
@@ -646,6 +648,7 @@ export type Database = {
           created_at?: string
           device_type?: string | null
           id?: string
+          ip?: string | null
           metric_delta?: number | null
           metric_id?: string | null
           metric_name?: string
@@ -674,6 +677,15 @@ export type Database = {
         Returns: Json
       }
       dashboard_live_stats: { Args: never; Returns: Json }
+      dashboard_timeseries: {
+        Args: { _days?: number }
+        Returns: {
+          day: string
+          interactions: number
+          users_new: number
+          visits: number
+        }[]
+      }
       get_user_reactions: {
         Args: { _post_ids: string[]; _post_type: string }
         Returns: string[]
@@ -692,6 +704,18 @@ export type Database = {
       prune_web_vitals: { Args: { _days?: number }; Returns: number }
       show_limit: { Args: never; Returns: number }
       show_trgm: { Args: { "": string }; Returns: string[] }
+      visit_history: {
+        Args: { _limit?: number; _offset?: number; _search?: string }
+        Returns: {
+          created_at: string
+          device_type: string
+          id: string
+          ip: string
+          page_url: string
+          total_count: number
+          user_agent: string
+        }[]
+      }
     }
     Enums: {
       app_role: "admin" | "user"
