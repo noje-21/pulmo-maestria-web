@@ -172,10 +172,10 @@ const Admin = () => {
                       {stat.label}
                     </p>
                     <p className="text-2xl md:text-3xl font-bold text-foreground mt-1">
-                      {stat.value}
+                      {statsLoading ? "…" : stat.value}
                     </p>
-                    <p className="text-xs text-green-600 font-medium mt-1">
-                      {stat.trend}
+                    <p className="text-xs text-muted-foreground font-medium mt-1">
+                      {stat.trend ?? (statsLoading ? "Cargando datos reales" : "Sin cambios")}
                     </p>
                   </div>
                   <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
