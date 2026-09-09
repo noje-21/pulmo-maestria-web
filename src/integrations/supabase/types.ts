@@ -673,6 +673,7 @@ export type Database = {
         }
         Returns: Json
       }
+      dashboard_live_stats: { Args: never; Returns: Json }
       get_user_reactions: {
         Args: { _post_ids: string[]; _post_type: string }
         Returns: string[]

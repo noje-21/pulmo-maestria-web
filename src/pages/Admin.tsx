@@ -1,5 +1,7 @@
 import { motion } from "framer-motion";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import AdminLayout from "@/features/admin/AdminLayout";
@@ -16,8 +18,64 @@ import {
   Activity
 } from "lucide-react";
 
+interface LiveStats {
+  users_total: number;
+  users_new_today: number;
+  visits_today: number;
+  visits_yesterday: number;
+  interactions_today: number;
+  interactions_yesterday: number;
+  generated_at: string;
+}
+
+const trendOf = (current: number, previous: number): string | null => {
+  if (previous <= 0) return current > 0 ? "Nuevo hoy" : null;
+  const pct = Math.round(((current - previous) / previous) * 100);
+  return `${pct >= 0 ? "+" : ""}${pct}% vs ayer`;
+};
+
 const Admin = () => {
   const navigate = useNavigate();
+  const [stats, setStats] = useState<LiveStats | null>(null);
+  const [statsLoading, setStatsLoading] = useState(true);
+
+  const loadStats = useCallback(async () => {
+    const { data, error } = await supabase.rpc("dashboard_live_stats");
+    if (!error && data) setStats(data as unknown as LiveStats);
+    setStatsLoading(false);
+  }, []);
+
+  const pending = useRef(false);
+  useEffect(() => {
+    void loadStats();
+
+    // Debounced refresh so a burst of changes triggers one query.
+    const refresh = () => {
+      if (pending.current) return;
+      pending.current = true;
+      setTimeout(() => {
+        pending.current = false;
+        void loadStats();
+      }, 800);
+    };
+
+    const channel = supabase
+      .channel("admin-live-stats")
+      .on("postgres_changes", { event: "*", schema: "public", table: "forum_comments" }, refresh)
+      .on("postgres_changes", { event: "*", schema: "public", table: "post_reactions" }, refresh)
+      .on("postgres_changes", { event: "*", schema: "public", table: "forum_posts" }, refresh)
+      .on("postgres_changes", { event: "*", schema: "public", table: "profiles" }, refresh)
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "web_vitals" }, refresh)
+      .subscribe();
+
+    // Safety net in case the socket drops.
+    const interval = window.setInterval((): void => void loadStats(), 60000);
+
+    return () => {
+      supabase.removeChannel(channel);
+      window.clearInterval(interval);
+    };
+  }, [loadStats]);
 
   const quickActions = [
     {
@@ -71,9 +129,24 @@ const Admin = () => {
   ];
 
   const statsCards = [
-    { label: "Usuarios Activos", value: "124", icon: Users, trend: "+12%" },
-    { label: "Visitas Hoy", value: "1,847", icon: Eye, trend: "+8%" },
-    { label: "Interacciones", value: "342", icon: Activity, trend: "+24%" },
+    {
+      label: "Usuarios Registrados",
+      value: stats ? stats.users_total.toLocaleString("es-AR") : "—",
+      icon: Users,
+      trend: stats && stats.users_new_today > 0 ? `+${stats.users_new_today} hoy` : null,
+    },
+    {
+      label: "Visitas Hoy",
+      value: stats ? stats.visits_today.toLocaleString("es-AR") : "—",
+      icon: Eye,
+      trend: stats ? trendOf(stats.visits_today, stats.visits_yesterday) : null,
+    },
+    {
+      label: "Interacciones Hoy",
+      value: stats ? stats.interactions_today.toLocaleString("es-AR") : "—",
+      icon: Activity,
+      trend: stats ? trendOf(stats.interactions_today, stats.interactions_yesterday) : null,
+    },
   ];
 
   return (
@@ -99,10 +172,10 @@ const Admin = () => {
                       {stat.label}
                     </p>
                     <p className="text-2xl md:text-3xl font-bold text-foreground mt-1">
-                      {stat.value}
+                      {statsLoading ? "…" : stat.value}
                     </p>
-                    <p className="text-xs text-green-600 font-medium mt-1">
-                      {stat.trend}
+                    <p className="text-xs text-muted-foreground font-medium mt-1">
+                      {stat.trend ?? (statsLoading ? "Cargando datos reales" : "Sin cambios")}
                     </p>
                   </div>
                   <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
