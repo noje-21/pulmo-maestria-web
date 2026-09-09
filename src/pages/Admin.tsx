@@ -129,9 +129,24 @@ const Admin = () => {
   ];
 
   const statsCards = [
-    { label: "Usuarios Activos", value: "124", icon: Users, trend: "+12%" },
-    { label: "Visitas Hoy", value: "1,847", icon: Eye, trend: "+8%" },
-    { label: "Interacciones", value: "342", icon: Activity, trend: "+24%" },
+    {
+      label: "Usuarios Registrados",
+      value: stats ? stats.users_total.toLocaleString("es-AR") : "—",
+      icon: Users,
+      trend: stats && stats.users_new_today > 0 ? `+${stats.users_new_today} hoy` : null,
+    },
+    {
+      label: "Visitas Hoy",
+      value: stats ? stats.visits_today.toLocaleString("es-AR") : "—",
+      icon: Eye,
+      trend: stats ? trendOf(stats.visits_today, stats.visits_yesterday) : null,
+    },
+    {
+      label: "Interacciones Hoy",
+      value: stats ? stats.interactions_today.toLocaleString("es-AR") : "—",
+      icon: Activity,
+      trend: stats ? trendOf(stats.interactions_today, stats.interactions_yesterday) : null,
+    },
   ];
 
   return (
