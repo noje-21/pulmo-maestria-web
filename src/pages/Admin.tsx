@@ -69,7 +69,7 @@ const Admin = () => {
       .subscribe();
 
     // Safety net in case the socket drops.
-    const interval = window.setInterval(() => void loadStats(), 60000);
+    const interval = window.setInterval((): void => void loadStats(), 60000);
 
     return () => {
       supabase.removeChannel(channel);
