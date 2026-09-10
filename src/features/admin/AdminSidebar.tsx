@@ -16,6 +16,7 @@ import {
   GraduationCap,
   BookOpen,
   ShieldCheck,
+  Globe,
   Activity
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -30,6 +31,7 @@ const menuItems = [
   { to: "/admin/novedades", label: "Novedades", icon: Newspaper },
   { to: "/admin/ateneos", label: "Ateneos", icon: BookOpen },
   { to: "/admin/media", label: "Archivos", icon: Image },
+  { to: "/admin/visitas", label: "Visitas", icon: Globe },
   { to: "/admin/vitals", label: "Web Vitals", icon: Activity },
   { to: "/admin/audit", label: "Auditoría", icon: ShieldCheck },
 ];
