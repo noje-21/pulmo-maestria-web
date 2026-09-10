@@ -680,7 +680,7 @@ export type Database = {
       dashboard_timeseries: {
         Args: { _days?: number }
         Returns: {
-          day: string
+          bucket: string
           interactions: number
           users_new: number
           visits: number
