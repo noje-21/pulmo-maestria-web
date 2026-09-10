@@ -74,6 +74,7 @@ Deno.serve(async (req) => {
       page_url: typeof data.url === "string" ? data.url.slice(0, 500) : null,
       device_type: isMobile ? "mobile" : "desktop",
       user_agent: ua.slice(0, 500),
+      ip: ip ? ip.slice(0, 60) : null,
     });
 
     if (error) {
