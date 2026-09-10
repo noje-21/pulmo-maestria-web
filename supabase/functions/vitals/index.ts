@@ -56,6 +56,13 @@ Deno.serve(async (req) => {
     const ua = req.headers.get("user-agent") ?? "";
     const isMobile = /Mobi|Android|iPhone|iPad/i.test(ua);
 
+    // First hop in x-forwarded-for is the client address.
+    const ip =
+      (req.headers.get("x-forwarded-for") ?? "").split(",")[0].trim() ||
+      req.headers.get("cf-connecting-ip") ||
+      req.headers.get("x-real-ip") ||
+      null;
+
     const { error } = await supabase.from("web_vitals").insert({
       metric_name: name,
       metric_value: value,
