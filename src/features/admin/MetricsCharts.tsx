@@ -14,7 +14,7 @@ import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 
 interface SeriesRow {
-  day: string;
+  bucket: string;
   users_new: number;
   visits: number;
   interactions: number;
@@ -67,7 +67,7 @@ export default function MetricsCharts() {
     { users: 0, visits: 0, interactions: 0 },
   );
 
-  const chartData = rows.map((r) => ({ ...r, label: formatDay(r.day) }));
+  const chartData = rows.map((r) => ({ ...r, label: formatDay(r.bucket) }));
 
   return (
     <Card className="p-4 md:p-6 bg-card border-border/50 mb-8">
