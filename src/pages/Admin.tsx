@@ -189,6 +189,9 @@ const Admin = () => {
         })}
       </div>
 
+      {/* Time-series metrics */}
+      <MetricsCharts />
+
       {/* Quick Actions */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
