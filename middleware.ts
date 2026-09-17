@@ -28,6 +28,7 @@ export const config = {
     "/foro/:path*",
     "/nosotros",
     "/contacto",
+    "/inscripcion",
   ],
 };
 
@@ -121,6 +122,12 @@ const PAGES: Record<string, { title: string; description: string; image: string 
     description:
       "Inscribite sin costo y comunicate con el equipo de la Maestría Latinoamericana en Circulación Pulmonar.",
     image: OG_IMAGES.contacto,
+  },
+  "/inscripcion": {
+    title: "Inscripción 2026 | Maestría Latinoamericana en Circulación Pulmonar",
+    description:
+      "12 días presenciales en Buenos Aires + campus virtual. Del 2 al 16 de noviembre de 2026. Solicitá información sin costo.",
+    image: OG_IMAGES.inscripcion,
   },
 };
 
