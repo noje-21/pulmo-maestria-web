@@ -37,6 +37,8 @@ const ForoStats = lazy(() => import("./pages/ForoStats"));
 const Novedades = lazy(() => import("./pages/Novedades"));
 const NovedadDetail = lazy(() => import("./pages/NovedadDetail"));
 const NotFound = lazy(() => import("./pages/NotFound"));
+// Landing de campaña: ruta pública aislada, fuera de la navegación del sitio
+const CampaignLanding = lazy(() => import("./pages/CampaignLanding"));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -78,6 +80,7 @@ const App = () => {
             <Routes>
               <Route path="/auth" element={<Auth />} />
               <Route path="/register" element={<Register />} />
+              <Route path="/inscripcion" element={<CampaignLanding />} />
               <Route path="/.lovable/oauth/consent" element={<OAuthConsent />} />
               <Route path="/admin" element={<ProtectedRoute requireAdmin={true}><Admin /></ProtectedRoute>} />
               <Route path="/admin/contactos" element={<ProtectedRoute requireAdmin={true}><AdminContactos /></ProtectedRoute>} />
