@@ -20,6 +20,7 @@ export const OG_IMAGES = {
   foro: `${SITE_URL}/og/foro.jpg`,
   nosotros: `${SITE_URL}/og/nosotros.jpg`,
   contacto: `${SITE_URL}/og/contacto.jpg`,
+  inscripcion: `${SITE_URL}/og/campana.jpg`,
 } as const;
 
 export const DEFAULT_OG_IMAGE = OG_IMAGES.home;
@@ -40,6 +41,8 @@ export function sectionOgImage(pathname: string): string {
       return OG_IMAGES.nosotros;
     case "contacto":
       return OG_IMAGES.contacto;
+    case "inscripcion":
+      return OG_IMAGES.inscripcion;
     default:
       return DEFAULT_OG_IMAGE;
   }
