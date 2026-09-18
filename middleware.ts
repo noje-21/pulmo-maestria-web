@@ -39,43 +39,14 @@ const DEFAULT_IMAGE = DEFAULT_OG_IMAGE;
  * Carátulas estables para los ateneos que aún no viven en la base de datos
  * (contenido estático de `src/data/ateneos.ts`). Se sirven desde /public/og
  * como JPEG 1200×630, URL pública y permanente — sin firmas ni expiración.
+ * Actualmente solo existe el ateneo de Hipertensión Pulmonar.
  */
 const STATIC_ATENEOS: Record<string, { title: string; description: string; image: string }> = {
   "1": {
-    title: "Ateneo de Hipertensión Arterial Pulmonar: Nuevas Guías 2026",
+    title: "Hipertensión Pulmonar — Ateneos Latinoamericanos 2026",
     description:
-      "Revisión de las últimas guías internacionales de diagnóstico y tratamiento de la hipertensión arterial pulmonar.",
+      "Ateneo semanal de hipertensión pulmonar: discusión de casos clínicos, abordaje multidisciplinario y últimas novedades. Todos los lunes, 13:00 hs ARG, por Zoom.",
     image: `${SITE_URL}/og/ateneo-1.jpg`,
-  },
-  "2": {
-    title: "Caso Clínico: Tromboembolismo Pulmonar Crónico",
-    description:
-      "Presentación y discusión de un caso complejo de CTEPH con abordaje multidisciplinario.",
-    image: `${SITE_URL}/og/ateneo-2.jpg`,
-  },
-  "3": {
-    title: "Actualización en Ecocardiografía y Circulación Pulmonar",
-    description:
-      "Revisión de las técnicas ecocardiográficas más avanzadas para la evaluación de la función ventricular derecha.",
-    image: `${SITE_URL}/og/ateneo-3.jpg`,
-  },
-  "4": {
-    title: "Hipertensión Pulmonar en Enfermedades del Tejido Conectivo",
-    description:
-      "Análisis del screening y manejo de HP en pacientes con esclerosis sistémica y lupus eritematoso.",
-    image: `${SITE_URL}/og/ateneo-4.jpg`,
-  },
-  "5": {
-    title: "Avances en Terapia Génica para Enfermedades Vasculares Pulmonares",
-    description:
-      "Estado actual de la investigación en terapia génica y su potencial aplicación en hipertensión pulmonar.",
-    image: `${SITE_URL}/og/ateneo-5.jpg`,
-  },
-  "6": {
-    title: "Rehabilitación Cardiopulmonar en Hipertensión Pulmonar",
-    description:
-      "Evidencia y experiencia clínica en programas de rehabilitación para pacientes con HP.",
-    image: `${SITE_URL}/og/ateneo-6.jpg`,
   },
 };
 
