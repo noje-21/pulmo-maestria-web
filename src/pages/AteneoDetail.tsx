@@ -27,8 +27,8 @@ const AteneoDetail = () => {
    * exactamente la misma URL que devuelve el middleware a los crawlers.
    */
   const shareImage = ateneo
-    ? /^[1-6]$/.test(ateneo.id)
-      ? `https://www.maestriacp.com/og/ateneo-${ateneo.id}.jpg`
+    ? ateneo.id === "1"
+      ? `https://www.maestriacp.com/og/ateneo-1.jpg`
       : ateneo.imagen?.startsWith("https://")
         ? ateneo.imagen
         : undefined
