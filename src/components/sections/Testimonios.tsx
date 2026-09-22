@@ -44,7 +44,7 @@ const testimonios: VideoTestimonio[] = [
   {
     id: 4,
     nombre: "Testimonio 4",
-    especialidad: "Cardiólogo",
+    especialidad: "Neumólogo",
     ubicacion: "Paraguay",
     frase: "Una formación única, con impacto clínico real e inmediato.",
     videoSrc: "/videos/testimonio-4.mp4",
@@ -52,7 +52,7 @@ const testimonios: VideoTestimonio[] = [
   {
     id: 5,
     nombre: "Testimonio 5",
-    especialidad: "Neumólogo",
+    especialidad: "Cardiólogo",
     ubicacion: "Argentina",
     frase: "Recomiendo esta experiencia a todo profesional comprometido.",
     videoSrc: "/videos/testimonio-5.mp4",
