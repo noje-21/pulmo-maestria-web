@@ -38,8 +38,8 @@ export const contactInfo: ContactItem[] = [
   {
     icon: Instagram,
     label: "Instagram",
-    value: "@magisterenhipertensionpulmonar",
-    href: "https://instagram.com/magisterenhipertensionpulmonar",
+    value: "@maestriacp",
+    href: "https://www.instagram.com/maestriacp?stkn=MW82b2YzdGo2ajcxdA==",
   },
   { icon: Globe, label: "Campus Virtual", value: "campus.maestriacp.com", href: "https://campus.maestriacp.com/" },
 ];
