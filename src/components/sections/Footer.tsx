@@ -24,7 +24,7 @@ const pageLinks = [
 const socialLinks = [
   { icon: Linkedin, href: "https://www.linkedin.com/in/hipertension-pulmonar-655a43253", label: "LinkedIn" },
   { icon: Facebook, href: "https://www.facebook.com/share/16s5MUKG3C/?mibextid=wwXIfr", label: "Facebook" },
-  { icon: Instagram, href: "https://instagram.com/magisterenhipertensionpulmonar", label: "Instagram" }
+  { icon: Instagram, href: "https://www.instagram.com/maestriacp?stkn=MW82b2YzdGo2ajcxdA==", label: "Instagram" }
 ];
 
 export const Footer = memo(function Footer() {
