@@ -22,7 +22,7 @@ export const CampaignHero = memo(function CampaignHero({ whatsappHref, onPrimary
 
   return (
     <>
-      <section className="relative isolate flex min-h-[720px] flex-col overflow-hidden bg-background text-foreground sm:min-h-[730px] lg:min-h-[780px]">
+      <section className="campaign-hero relative isolate flex min-h-[720px] flex-col overflow-hidden bg-background text-foreground sm:min-h-[730px] lg:min-h-[780px]">
         <motion.img
           src={heroImg}
           alt="Participantes de una edición anterior de la Maestría Latinoamericana en Circulación Pulmonar"
