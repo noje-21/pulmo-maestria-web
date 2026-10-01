@@ -26,7 +26,7 @@ const CampaignLanding = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="campaign-editorial min-h-screen bg-background">
       <SEO
         title={CAMPAIGN_META.title}
         description={CAMPAIGN_META.description}

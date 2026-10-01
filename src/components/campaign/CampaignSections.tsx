@@ -1,4 +1,5 @@
 import { memo } from "react";
+import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
   ArrowRight,
@@ -56,14 +57,14 @@ export const CampaignSections = memo(function CampaignSections({
   return (
     <>
       {/* PROPUESTA DE VALOR */}
-      <section className="bg-muted/40 px-5 py-14 sm:px-6 sm:py-20">
+      <section id="programa" className="scroll-mt-4 bg-muted/40 px-5 py-14 sm:px-6 sm:py-20">
         <div className="mx-auto max-w-6xl">
           <motion.div {...fade}>
             <p className="text-xs font-semibold uppercase tracking-[0.18em] text-accent">
               Por qué esta formación
             </p>
-            <h2 className="mt-3 text-2xl font-bold text-foreground sm:text-4xl">
-              Profundidad clínica que pocos programas ofrecen
+            <h2 className="mt-3 max-w-3xl text-3xl font-normal text-foreground sm:text-5xl">
+              Una formación para mirar más allá del diagnóstico.
             </h2>
             <p className="mt-3 max-w-2xl text-base leading-relaxed text-muted-foreground">
               La circulación pulmonar exige un enfoque integral. Este programa combina teoría,
@@ -77,13 +78,19 @@ export const CampaignSections = memo(function CampaignSections({
                 key={v.title}
                 {...fade}
                 transition={{ duration: 0.45, delay: Math.min(i, 3) * 0.06 }}
-                className="rounded-2xl border border-border bg-card p-6 shadow-sm"
+                className="rounded-sm border border-border bg-card p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-primary/40 hover:shadow-md"
               >
                 <BadgeCheck className="h-7 w-7 text-primary" aria-hidden="true" />
                 <h3 className="mt-4 text-lg font-bold text-foreground">{v.title}</h3>
                 <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{v.description}</p>
               </motion.article>
             ))}
+          </div>
+          <div className="mt-10 border-t border-border pt-7 sm:flex sm:items-center sm:justify-between sm:gap-6">
+            <p className="max-w-lg text-sm leading-relaxed text-muted-foreground">Conoce la historia, el equipo y la comunidad que hacen posible la Maestría.</p>
+            <Button asChild variant="link" className="mt-3 h-auto p-0 font-semibold text-primary sm:mt-0">
+              <Link to="/">Explorar la página principal <ArrowRight className="ml-2 h-4 w-4" aria-hidden="true" /></Link>
+            </Button>
           </div>
         </div>
       </section>
