@@ -1022,3 +1022,27 @@
 @media (prefers-reduced-motion: reduce) {
   .hero-bounce { animation: none; }
 }
+
+/* Editorial campaign skin; scoped so the institutional site remains unchanged. */
+.campaign-editorial {
+  --campaign-ink: 229 52% 9%;
+  --campaign-light: 0 0% 100%;
+  --campaign-seriffont: Georgia, 'Times New Roman', serif;
+}
+.campaign-editorial .campaign-hero {
+  --foreground: var(--campaign-light);
+  --background: var(--campaign-ink);
+}
+.campaign-editorial h1,
+.campaign-editorial h2 {
+  font-family: var(--campaign-seriffont);
+  letter-spacing: 0;
+}
+.campaign-editorial .campaign-photo-shade {
+  background: linear-gradient(90deg, hsl(var(--campaign-ink) / .96) 0%, hsl(var(--campaign-ink) / .83) 48%, hsl(var(--campaign-ink) / .38) 100%), linear-gradient(0deg, hsl(var(--campaign-ink) / .8), transparent 35%);
+}
+@media (max-width: 639px) {
+  .campaign-editorial .campaign-photo-shade {
+    background: linear-gradient(0deg, hsl(var(--campaign-ink) / .98) 0%, hsl(var(--campaign-ink) / .91) 38%, hsl(var(--campaign-ink) / .56) 100%);
+  }
+}
