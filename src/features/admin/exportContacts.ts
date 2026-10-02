@@ -6,6 +6,8 @@ export interface ExportableContact {
   email: string;
   country: string;
   specialty: string;
+  medical_center?: string | null;
+  phone?: string | null;
   message: string;
   status: string;
   created_at: string;
@@ -26,7 +28,7 @@ const timestamp = () => new Date().toISOString().slice(0, 10);
 
 /** Descarga los envíos como CSV (compatible con Excel / Google Sheets). */
 export function exportContactsCsv(rows: ExportableContact[]) {
-  const headers = ["Nombre", "Email", "País", "Especialidad", "Estado", "Fecha", "CV", "Mensaje"];
+  const headers = ["Nombre", "Email", "País", "Especialidad", "Centro médico", "Teléfono", "Estado", "Fecha", "CV", "Mensaje"];
   const escape = (value: string) => `"${String(value ?? "").replace(/"/g, '""')}"`;
   const lines = [
     headers.join(";"),
@@ -36,6 +38,8 @@ export function exportContactsCsv(rows: ExportableContact[]) {
         r.email,
         r.country,
         r.specialty,
+        r.medical_center || "No informado",
+        r.phone || "No informado",
         STATUS_LABEL[r.status] ?? r.status,
         formatDate(r.created_at),
         r.cv_url ? "Sí" : "No",
@@ -142,6 +146,8 @@ export function exportContactsPdf(rows: ExportableContact[]) {
         ["Correo electrónico", r.email],
         ["País", r.country],
         ["Especialidad", r.specialty],
+        ["Centro médico", r.medical_center || "No informado"],
+        ["Teléfono", r.phone || "No informado"],
         ["Estado del envío", STATUS_LABEL[r.status] ?? r.status],
         ["Fecha de recepción", formatDate(r.created_at)],
         ["Currículum", r.cv_url ? "Adjuntó CV (disponible en el panel de administración)" : "No adjuntó"],

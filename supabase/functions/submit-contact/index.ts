@@ -11,6 +11,12 @@ const BodySchema = z.object({
   email: z.string().trim().email().max(255),
   country: z.string().trim().min(1).max(100),
   specialty: z.string().trim().min(1).max(100),
+  medicalCenter: z.string().trim().min(2).max(200),
+  phone: z
+    .string()
+    .trim()
+    .max(30)
+    .refine((v) => /^\+?[\d\s().-]+$/.test(v) && v.replace(/\D/g, '').length >= 7 && v.replace(/\D/g, '').length <= 15),
   message: z.string().trim().min(10).max(2000),
   cvPath: z.string().max(500).nullable().optional(),
   turnstileToken: z.string().max(2048).optional(),
@@ -44,7 +50,7 @@ Deno.serve(async (req) => {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       })
     }
-    const { name, email, country, specialty, message, cvPath, turnstileToken } = parsed.data
+    const { name, email, country, specialty, medicalCenter, phone, message, cvPath, turnstileToken } = parsed.data
 
     const ip =
       req.headers.get('x-forwarded-for')?.split(',')[0].trim() ||
@@ -81,7 +87,7 @@ Deno.serve(async (req) => {
     }
 
     const { error: insertErr } = await supabase.from('contact_submissions').insert([
-      { name, email, country, specialty, message, cv_url: cvPath ?? null },
+      { name, email, country, specialty, medical_center: medicalCenter, phone, message, cv_url: cvPath ?? null },
     ])
     if (insertErr) throw insertErr
 
@@ -93,6 +99,8 @@ Deno.serve(async (req) => {
           email,
           country,
           specialty,
+          medicalCenter,
+          phone,
           message,
           cvPath: cvPath ?? null,
           adminEmail: 'magisterenhipertensionpulmonar@gmail.com',

@@ -31,7 +31,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Trash2, Mail, MapPin, Briefcase, User, Send, Loader2, FileText, Search, Download, FileSpreadsheet, MailCheck } from "lucide-react";
+import { Trash2, Mail, MapPin, Briefcase, User, Send, Loader2, FileText, Search, Download, FileSpreadsheet, MailCheck, Phone, Building2, Copy } from "lucide-react";
 
 type ContactStatus = "nuevo" | "leido" | "respondido" | "spam";
 
@@ -55,6 +55,8 @@ interface ContactSubmission {
   email: string;
   country: string;
   specialty: string;
+  medical_center: string | null;
+  phone: string | null;
   message: string;
   created_at: string;
   cv_url: string | null;
@@ -230,6 +232,8 @@ const AdminContactos = () => {
       s.email.toLowerCase().includes(q) ||
       s.country?.toLowerCase().includes(q) ||
       s.specialty?.toLowerCase().includes(q) ||
+      s.medical_center?.toLowerCase().includes(q) ||
+      s.phone?.toLowerCase().includes(q) ||
       s.message?.toLowerCase().includes(q)
     );
   });
@@ -418,6 +422,45 @@ const AdminContactos = () => {
                       <div className="min-w-0">
                         <p className="text-xs text-muted-foreground">Especialidad</p>
                         <p className="font-semibold truncate">{submission.specialty}</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
+                        <Building2 className="w-5 h-5 text-primary" />
+                      </div>
+                      <div className="min-w-0">
+                        <p className="text-xs text-muted-foreground">Centro médico</p>
+                        <p className={`font-semibold break-words ${submission.medical_center ? "" : "text-muted-foreground font-normal italic"}`}>
+                          {submission.medical_center || "No informado"}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-xl bg-accent/10 flex items-center justify-center flex-shrink-0">
+                        <Phone className="w-5 h-5 text-accent" />
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <p className="text-xs text-muted-foreground">Teléfono</p>
+                        {submission.phone ? (
+                          <div className="flex items-center gap-1.5">
+                            <a href={`tel:${submission.phone.replace(/[^\d+]/g, "")}`} className="font-semibold truncate hover:underline">
+                              {submission.phone}
+                            </a>
+                            <button
+                              type="button"
+                              aria-label="Copiar teléfono"
+                              onClick={() => {
+                                void navigator.clipboard.writeText(submission.phone ?? "");
+                                toast.success("Teléfono copiado");
+                              }}
+                              className="p-1 rounded-md hover:bg-muted"
+                            >
+                              <Copy className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        ) : (
+                          <p className="text-muted-foreground italic">No informado</p>
+                        )}
                       </div>
                     </div>
                   </div>

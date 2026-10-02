@@ -44,6 +44,14 @@ export const detectEmailTypo = (email: string): string | null => {
     : null;
 };
 
+/** Permissive international phone check: optional +, 7–15 digits, common separators. */
+export function isValidPhone(value: string): boolean {
+  const v = value.trim();
+  if (!/^\+?[\d\s().-]+$/.test(v)) return false;
+  const digits = v.replace(/\D/g, "");
+  return digits.length >= 7 && digits.length <= 15;
+}
+
 export const contactSchema = z
   .object({
     name: z.string().min(1, "El nombre es requerido").max(100),
@@ -51,6 +59,15 @@ export const contactSchema = z
     confirmEmail: z.string().email("Confirma tu email").max(255),
     country: z.string().min(1, "El país es requerido").max(100),
     specialty: z.string().min(1, "La especialidad es requerida").max(100),
+    medicalCenter: z
+      .string()
+      .min(2, "Ingresa el centro médico donde trabajas")
+      .max(200, "El nombre del centro médico es demasiado largo (máx. 200 caracteres)"),
+    phone: z
+      .string()
+      .min(1, "El número de teléfono es requerido")
+      .max(30, "El número de teléfono es demasiado largo")
+      .refine(isValidPhone, "Número inválido. Usa solo números, espacios, guiones o paréntesis e incluye el código de país (ej: +54 9 11 1234-5678)."),
     message: z.string().min(10, "El mensaje debe tener al menos 10 caracteres").max(2000),
   })
   .refine((data) => data.email === data.confirmEmail, {
@@ -64,6 +81,8 @@ export type ContactFormData = {
   confirmEmail: string;
   country: string;
   specialty: string;
+  medicalCenter: string;
+  phone: string;
   message: string;
 };
 
