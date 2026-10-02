@@ -132,8 +132,10 @@ export type Database = {
           cv_url: string | null
           email: string
           id: string
+          medical_center: string | null
           message: string
           name: string
+          phone: string | null
           specialty: string
           status: Database["public"]["Enums"]["contact_status"]
           updated_at: string
@@ -144,8 +146,10 @@ export type Database = {
           cv_url?: string | null
           email: string
           id?: string
+          medical_center?: string | null
           message: string
           name: string
+          phone?: string | null
           specialty: string
           status?: Database["public"]["Enums"]["contact_status"]
           updated_at?: string
@@ -156,8 +160,10 @@ export type Database = {
           cv_url?: string | null
           email?: string
           id?: string
+          medical_center?: string | null
           message?: string
           name?: string
+          phone?: string | null
           specialty?: string
           status?: Database["public"]["Enums"]["contact_status"]
           updated_at?: string

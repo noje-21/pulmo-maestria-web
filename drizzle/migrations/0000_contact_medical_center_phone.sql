@@ -1,0 +1,1 @@
+ALTER TABLE public.contact_submissions ADD COLUMN IF NOT EXISTS medical_center text, ADD COLUMN IF NOT EXISTS phone text;
