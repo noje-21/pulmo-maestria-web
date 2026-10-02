@@ -16,6 +16,7 @@ export function ContactForm({ api }: { api: ContactFormApi }) {
     setSuccessMsg,
     emailSuggestion,
     emailMismatch,
+    fieldErrors,
     uploading,
     uploadProgress,
     handleChange,
@@ -60,7 +61,7 @@ export function ContactForm({ api }: { api: ContactFormApi }) {
           )}
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} noValidate className="space-y-4">
           <div className="grid sm:grid-cols-2 gap-4">
             <Input
               name="name"
@@ -140,6 +141,56 @@ export function ContactForm({ api }: { api: ContactFormApi }) {
               aria-label="Especialidad médica"
               className="input-modern"
             />
+          </div>
+          <div className="grid sm:grid-cols-2 gap-4">
+            <div>
+              <label htmlFor="cf-medicalCenter" className="mb-1.5 block text-sm font-medium text-foreground">
+                Centro médico donde trabaja <span className="text-accent">*</span>
+              </label>
+              <Input
+                id="cf-medicalCenter"
+                name="medicalCenter"
+                value={formData.medicalCenter}
+                onChange={handleChange}
+                placeholder="Ingresa el nombre del hospital, clínica o centro médico donde trabajas"
+                required
+                maxLength={200}
+                autoComplete="organization"
+                aria-invalid={!!fieldErrors.medicalCenter || undefined}
+                aria-describedby={fieldErrors.medicalCenter ? "cf-medicalCenter-err" : undefined}
+                className={`input-modern ${fieldErrors.medicalCenter ? "border-destructive focus-visible:ring-destructive" : ""}`}
+              />
+              {fieldErrors.medicalCenter && (
+                <p id="cf-medicalCenter-err" role="alert" className="mt-1.5 text-xs text-destructive">
+                  {fieldErrors.medicalCenter}
+                </p>
+              )}
+            </div>
+            <div>
+              <label htmlFor="cf-phone" className="mb-1.5 block text-sm font-medium text-foreground">
+                Número de teléfono <span className="text-accent">*</span>
+              </label>
+              <Input
+                id="cf-phone"
+                name="phone"
+                type="tel"
+                inputMode="tel"
+                value={formData.phone}
+                onChange={handleChange}
+                placeholder="Ingresa tu número de teléfono con código de país"
+                required
+                maxLength={30}
+                autoComplete="tel"
+                aria-invalid={!!fieldErrors.phone || undefined}
+                aria-describedby={fieldErrors.phone ? "cf-phone-err" : undefined}
+                className={`input-modern ${fieldErrors.phone ? "border-destructive focus-visible:ring-destructive" : ""}`}
+              />
+              {fieldErrors.phone && (
+                <p id="cf-phone-err" role="alert" className="mt-1.5 text-xs text-destructive">
+                  {fieldErrors.phone}
+                </p>
+              )}
+            </div>
           </div>
           <Textarea
             name="message"

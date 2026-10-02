@@ -15,6 +15,8 @@ const EMPTY: ContactFormData = {
   confirmEmail: "",
   country: "",
   specialty: "",
+  medicalCenter: "",
+  phone: "",
   message: "",
 };
 
@@ -35,6 +37,7 @@ export function useContactForm() {
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [uploadedUrl, setUploadedUrl] = useState<string | null>(null);
   const [formData, setFormData] = useState<ContactFormData>(EMPTY);
+  const [fieldErrors, setFieldErrors] = useState<Partial<Record<keyof ContactFormData, string>>>({});
 
   useEffect(() => {
     if (successMsg) {
@@ -107,6 +110,7 @@ export function useContactForm() {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
+    setFieldErrors((prev) => (prev[name as keyof ContactFormData] ? { ...prev, [name]: undefined } : prev));
     setFormData((prev) => {
       const updated = { ...prev, [name]: value };
 
@@ -139,7 +143,8 @@ export function useContactForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (uploading) return;
+    if (uploading || loading) return;
+    setFieldErrors({});
     setLoading(true);
     try {
       const trimmedData = {
@@ -148,6 +153,8 @@ export function useContactForm() {
         confirmEmail: formData.confirmEmail.trim().toLowerCase(),
         country: formData.country.trim(),
         specialty: formData.specialty.trim(),
+        medicalCenter: formData.medicalCenter.trim().replace(/\s+/g, " "),
+        phone: formData.phone.trim().replace(/\s+/g, " "),
         message: formData.message.trim(),
       };
       const validated = contactSchema.parse(trimmedData);
@@ -170,6 +177,8 @@ export function useContactForm() {
           email: validated.email,
           country: validated.country,
           specialty: validated.specialty,
+          medicalCenter: validated.medicalCenter,
+          phone: validated.phone,
           message: validated.message,
           cvPath,
         },
@@ -197,6 +206,12 @@ export function useContactForm() {
       clearCv();
     } catch (error) {
       if (error instanceof z.ZodError) {
+        const errs: Partial<Record<keyof ContactFormData, string>> = {};
+        for (const issue of error.issues) {
+          const key = issue.path[0] as keyof ContactFormData;
+          if (key && !errs[key]) errs[key] = issue.message;
+        }
+        setFieldErrors(errs);
         toast.error(error.issues[0].message);
       } else {
         toast.error("No pudimos enviar tu mensaje. Por favor, intenta de nuevo.");
@@ -214,6 +229,7 @@ export function useContactForm() {
     setSuccessMsg,
     emailSuggestion,
     emailMismatch,
+    fieldErrors,
     // cv state
     cvFile,
     cvError,

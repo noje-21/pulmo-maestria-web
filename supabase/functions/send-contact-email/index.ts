@@ -13,6 +13,8 @@ const BodySchema = z.object({
   email: z.string().email().max(255),
   country: z.string().min(1).max(100),
   specialty: z.string().min(1).max(100),
+  medicalCenter: z.string().max(200).nullable().optional(),
+  phone: z.string().max(30).nullable().optional(),
   message: z.string().min(1).max(2000),
   adminEmail: z.string().email().max(255),
   cvPath: z.string().max(500).nullable().optional(),
@@ -47,12 +49,14 @@ Deno.serve(async (req) => {
       })
     }
 
-    const { name, email, country, specialty, message, adminEmail, cvPath } = parsed.data
+    const { name, email, country, specialty, medicalCenter, phone, message, adminEmail, cvPath } = parsed.data
 
     const safeName = escapeHtml(name)
     const safeEmail = escapeHtml(email)
     const safeCountry = escapeHtml(country)
     const safeSpecialty = escapeHtml(specialty)
+    const safeCenter = escapeHtml(medicalCenter || '—')
+    const safePhone = escapeHtml(phone || '—')
     const safeMessage = escapeHtml(message)
     const hasCv = !!cvPath
 
@@ -114,6 +118,20 @@ Deno.serve(async (req) => {
                 <td style="padding:10px 12px;background:#f8f9fc;border-radius:10px;" colspan="2">
                   <p style="font-size:11px;color:#8890a4;margin:0 0 2px;text-transform:uppercase;letter-spacing:0.5px;">Especialidad</p>
                   <p style="font-size:14px;color:#1a1a2e;margin:0;font-weight:600;">${safeSpecialty}</p>
+                </td>
+              </tr>
+              <tr><td height="8" colspan="2"></td></tr>
+              <tr>
+                <td style="padding:10px 12px;background:#f8f9fc;border-radius:10px;" colspan="2">
+                  <p style="font-size:11px;color:#8890a4;margin:0 0 2px;text-transform:uppercase;letter-spacing:0.5px;">Centro médico</p>
+                  <p style="font-size:14px;color:#1a1a2e;margin:0;font-weight:600;">${safeCenter}</p>
+                </td>
+              </tr>
+              <tr><td height="8" colspan="2"></td></tr>
+              <tr>
+                <td style="padding:10px 12px;background:#f8f9fc;border-radius:10px;" colspan="2">
+                  <p style="font-size:11px;color:#8890a4;margin:0 0 2px;text-transform:uppercase;letter-spacing:0.5px;">Teléfono</p>
+                  <p style="font-size:14px;color:#1a1a2e;margin:0;font-weight:600;">${safePhone}</p>
                 </td>
               </tr>
             </table>

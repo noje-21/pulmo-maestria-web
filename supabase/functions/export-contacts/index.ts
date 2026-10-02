@@ -42,6 +42,8 @@ interface Submission {
   email: string
   country: string
   specialty: string
+  medical_center: string | null
+  phone: string | null
   message: string
   status: string
   created_at: string
@@ -71,6 +73,8 @@ function recordHtml(s: Submission, index: number): string {
           ${field('Email', `<a href="mailto:${escapeHtml(s.email)}" style="color:#213ECC;text-decoration:none;">${escapeHtml(s.email)}</a>`)}
           ${field('País', escapeHtml(s.country))}
           ${field('Especialidad', escapeHtml(s.specialty))}
+          ${field('Centro médico', escapeHtml(s.medical_center || 'No informado'))}
+          ${field('Teléfono', escapeHtml(s.phone || 'No informado'))}
           ${field('Estado', escapeHtml(STATUS_LABEL[s.status] ?? s.status))}
           ${field('Currículum', s.cv_url ? 'Adjuntó CV (disponible en el panel de administración)' : 'No adjuntó')}
           ${field('Mensaje', `<span style="white-space:pre-line;line-height:1.6;">${escapeHtml(s.message)}</span>`)}
@@ -132,7 +136,7 @@ Deno.serve(async (req) => {
 
     let query = supabase
       .from('contact_submissions')
-      .select('id,name,email,country,specialty,message,status,created_at,cv_url')
+      .select('id,name,email,country,specialty,medical_center,phone,message,status,created_at,cv_url')
       .order('created_at', { ascending: false })
       .limit(500)
     if (ids && ids.length > 0) query = query.in('id', ids)
