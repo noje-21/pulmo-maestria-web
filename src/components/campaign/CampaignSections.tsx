@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import { equipoData } from "@/data/nosotros";
+import { CampaignGallery } from "./CampaignGallery";
 import g1 from "@/assets/secion/maestria_2025_1.webp";
 import g2 from "@/assets/secion/maestria_2025_3.webp";
 import g3 from "@/assets/secion/maestria_2025_7.webp";
@@ -222,28 +223,7 @@ export const CampaignSections = memo(function CampaignSections({
       </section>
 
       {/* GALERÍA */}
-      <section className="bg-background py-14 sm:py-20" aria-label="Imágenes de ediciones anteriores">
-        <div className="mx-auto mb-6 max-w-6xl px-5 sm:px-6">
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-accent">
-            Ediciones anteriores
-          </p>
-          <h2 className="mt-3 text-2xl font-bold text-foreground sm:text-4xl">
-            Así se vive la Maestría
-          </h2>
-        </div>
-        <div className="flex snap-x snap-mandatory gap-4 overflow-x-auto px-5 pb-4 sm:px-6">
-          {galeria.map((img) => (
-            <img
-              key={img.src}
-              src={img.src}
-              alt={img.alt}
-              loading="lazy"
-              decoding="async"
-              className="h-56 w-[80vw] max-w-sm shrink-0 snap-center rounded-2xl object-cover sm:h-72 sm:w-96"
-            />
-          ))}
-        </div>
-      </section>
+      <CampaignGallery images={galeria} />
 
       {/* INSTITUCIONES */}
       <section className="bg-muted/40 px-5 py-14 sm:px-6 sm:py-20">
