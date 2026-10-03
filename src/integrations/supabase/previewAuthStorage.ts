@@ -85,9 +85,9 @@ export function brokeredPreviewStorage() {
         }
       });
     },
-    removeItem: (key: string): void => {
+    removeItem: (key: string) => {
       localStorage.removeItem(key);
-      request('lovable-preview-auth:remove', key).then((): void => undefined);
+      return request('lovable-preview-auth:remove', key).then(() => undefined);
     },
   };
 }

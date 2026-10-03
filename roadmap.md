@@ -1,5 +1,6 @@
 # Roadmap
 
+- [ ] Ajustar y verificar la galería de /inscripcion en computadora, tablet y móvil, manteniendo el estilo editorial existente.
 - [x] Renovar /inscripcion con dirección editorial oscura, animaciones suaves y acceso claro a la página principal, conservando información y formulario.
 - [x] Admin: enviar envíos de contacto por email (edge function export-contacts)
 - [x] Exportación de contactos en formato institucional (PDF con fichas completas + CSV)
