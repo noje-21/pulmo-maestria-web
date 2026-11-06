@@ -14,6 +14,60 @@ export type Database = {
   }
   public: {
     Tables: {
+      announcements: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          cta_label: string
+          cta_url: string
+          delay_seconds: number
+          description: string
+          ends_at: string | null
+          frequency: string
+          id: string
+          image_url: string | null
+          is_active: boolean
+          priority: number
+          starts_at: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          cta_label?: string
+          cta_url: string
+          delay_seconds?: number
+          description?: string
+          ends_at?: string | null
+          frequency?: string
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          priority?: number
+          starts_at?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          cta_label?: string
+          cta_url?: string
+          delay_seconds?: number
+          description?: string
+          ends_at?: string | null
+          frequency?: string
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          priority?: number
+          starts_at?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       ateneos: {
         Row: {
           categoria: Database["public"]["Enums"]["ateneo_category"]
