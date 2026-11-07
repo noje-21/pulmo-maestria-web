@@ -28,7 +28,7 @@ export default function AnnouncementCard({ announcement, onClose, onCta }: Props
         <X className="h-5 w-5" />
       </button>
       {announcement.image_url && (
-        <div className="relative bg-primary/30 max-h-[38dvh] sm:max-h-none overflow-hidden">
+        <div className="relative bg-primary/30 max-h-[30dvh] sm:max-h-none overflow-hidden">
           <img
             src={announcement.image_url}
             alt={announcement.title}
@@ -37,10 +37,10 @@ export default function AnnouncementCard({ announcement, onClose, onCta }: Props
           />
         </div>
       )}
-      <div className="flex flex-col justify-center gap-4 p-6 sm:p-8 overflow-y-auto">
+      <div className="flex flex-col justify-center gap-3 sm:gap-4 p-6 sm:p-8 overflow-y-auto">
         <span className="text-[11px] font-semibold uppercase tracking-[0.25em] text-accent">Anuncio MLCP</span>
         <div className="h-px w-12 bg-accent" />
-        <h2 className="font-serif text-2xl sm:text-3xl leading-tight">{announcement.title}</h2>
+        <h2 className="font-serif text-2xl sm:text-3xl leading-tight !text-primary-foreground">{announcement.title}</h2>
         {announcement.description && (
           <p className="text-sm sm:text-base text-primary-foreground/75 leading-relaxed">{announcement.description}</p>
         )}
