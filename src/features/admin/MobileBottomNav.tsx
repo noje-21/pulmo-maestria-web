@@ -1,4 +1,4 @@
-import { Megaphone, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import { NavLink, Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { 
@@ -6,7 +6,8 @@ import {
   MessageSquare, 
   Newspaper,
   GraduationCap,
-  MoreHorizontal
+  MoreHorizontal,
+  Megaphone
 } from "lucide-react";
 import {
   Sheet,
