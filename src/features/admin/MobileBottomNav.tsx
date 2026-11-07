@@ -6,7 +6,8 @@ import {
   MessageSquare, 
   Newspaper,
   GraduationCap,
-  MoreHorizontal
+  MoreHorizontal,
+  Megaphone
 } from "lucide-react";
 import {
   Sheet,
@@ -37,6 +38,7 @@ const moreNavItems = [
   { to: "/admin/contactos", label: "Contactos", icon: Mail },
   { to: "/admin/content", label: "Contenido", icon: FileText },
   { to: "/admin/ateneos", label: "Ateneos", icon: BookOpen },
+  { to: "/admin/anuncios", label: "Anuncios", icon: Megaphone },
   { to: "/admin/media", label: "Archivos", icon: Image },
   { to: "/admin/audit", label: "Auditoría", icon: ShieldCheck },
 ];

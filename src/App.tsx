@@ -28,6 +28,7 @@ const AdminAteneos = lazy(() => import("./pages/AdminAteneos"));
 const AdminSiteAudit = lazy(() => import("./pages/AdminSiteAudit"));
 const AdminVitals = lazy(() => import("./pages/AdminVitals"));
 const AdminVisitas = lazy(() => import("./pages/AdminVisitas"));
+const AdminAnuncios = lazy(() => import("./pages/AdminAnuncios"));
 const Ateneos = lazy(() => import("./pages/Ateneos"));
 const AteneoDetail = lazy(() => import("./pages/AteneoDetail"));
 const Nosotros = lazy(() => import("./pages/Nosotros"));
@@ -93,6 +94,7 @@ const App = () => {
               <Route path="/admin/audit" element={<ProtectedRoute requireAdmin={true}><AdminSiteAudit /></ProtectedRoute>} />
               <Route path="/admin/vitals" element={<ProtectedRoute requireAdmin={true}><AdminVitals /></ProtectedRoute>} />
               <Route path="/admin/visitas" element={<ProtectedRoute requireAdmin={true}><AdminVisitas /></ProtectedRoute>} />
+              <Route path="/admin/anuncios" element={<ProtectedRoute requireAdmin={true}><AdminAnuncios /></ProtectedRoute>} />
               {/* Public routes share a global Navigation that never remounts */}
               <Route element={<PublicLayout />}>
                 <Route path="/" element={<Index />} />

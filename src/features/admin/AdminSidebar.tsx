@@ -17,7 +17,8 @@ import {
   BookOpen,
   ShieldCheck,
   Globe,
-  Activity
+  Activity,
+  Megaphone
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import logoMaestria from "@/assets/logo-maestria.webp";
@@ -30,6 +31,7 @@ const menuItems = [
   { to: "/admin/foro", label: "Foro", icon: MessageSquare },
   { to: "/admin/novedades", label: "Novedades", icon: Newspaper },
   { to: "/admin/ateneos", label: "Ateneos", icon: BookOpen },
+  { to: "/admin/anuncios", label: "Anuncios emergentes", icon: Megaphone },
   { to: "/admin/media", label: "Archivos", icon: Image },
   { to: "/admin/visitas", label: "Visitas", icon: Globe },
   { to: "/admin/vitals", label: "Web Vitals", icon: Activity },

@@ -4,6 +4,7 @@ import { SEO } from "@/components/common/SEO";
 import { SkipLink } from "@/components/common/SkipLink";
 import { Contacto } from "@/components/sections/Contacto";
 import { HeroFlyer } from "@/components/sections/HeroFlyer";
+const AnnouncementPopup = lazy(() => import("@/features/announcements/AnnouncementPopup"));
 
 // Lazy-loaded sections (below the fold)
 const Hero = lazy(() => import("@/components/sections/Hero").then(m => ({ default: m.Hero })));
@@ -75,6 +76,7 @@ const Index = () => {
         <MobileFunnelCTA />
         <WhatsAppButton />
         <AIAssistant />
+        <AnnouncementPopup />
       </Suspense>
     </div>
   );

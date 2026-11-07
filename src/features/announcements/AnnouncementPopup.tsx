@@ -51,8 +51,8 @@ export default function AnnouncementPopup() {
     };
     // Espera a que la página esté inactiva para no competir con la carga inicial
     const idle = (window as Window & { requestIdleCallback?: (cb: () => void) => number }).requestIdleCallback;
-    if (idle) idle(() => void load());
-    else setTimeout(() => void load(), 1200);
+    if (idle) idle((): void => { void load(); });
+    else setTimeout((): void => { void load(); }, 1200);
     return () => {
       cancelled = true;
       if (timer) clearTimeout(timer);
